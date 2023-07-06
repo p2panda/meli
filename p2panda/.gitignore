@@ -1,1 +1,21 @@
-target
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Flutter/Dart/Pub
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+pubspec.lock
+pubspec_overrides.yaml
+
+# Rust
+/Cargo.lock
+/platform-build
+/target/
