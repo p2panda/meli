@@ -12,9 +12,6 @@ analyzer:
   exclude:
     - '**.freezed.dart'
     - '**.g.dart'
-    - '**/bridge_generated.*dart'
-    - test/.test_coverage.dart
-    - lib/generated_plugin_registrant.dart
 
 linter:
   rules:
@@ -80,8 +77,8 @@ linter:
     - file_names
     - flutter_style_todos
     - hash_and_equals
-    - implicit_call_tearoffs
     - implementation_imports
+    - implicit_call_tearoffs
     - implicit_reopen
     - invalid_case_patterns
     - iterable_contains_unrelated_type
@@ -165,8 +162,8 @@ linter:
     - type_init_formals
     - unawaited_futures
     - unnecessary_await_in_return
-    - unnecessary_breaks
     - unnecessary_brace_in_string_interps
+    - unnecessary_breaks
     - unnecessary_const
     - unnecessary_constructor_name
     - unnecessary_getters_setters
