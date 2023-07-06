@@ -12,8 +12,6 @@
 .pub-cache/
 .pub/
 build/
-pubspec.lock
-pubspec_overrides.yaml
 
 # Rust
 /Cargo.lock
