@@ -1,0 +1,19 @@
+name: p2panda
+
+repository: https://github.com/p2panda/meli
+
+packages:
+  - packages/**
+
+scripts:
+  analyze:
+    exec: flutter analyze .
+    description: Analyze all Dart packages for code errors and warnings.
+
+  format:
+    exec: dart format .
+    description: Format all Dart packages according to linter settings.
+
+  build:
+    run: bash scripts/build.sh
+    description: Compile native library for Android.

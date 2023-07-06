@@ -1,0 +1,13 @@
+[package]
+name = "p2panda"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["staticlib", "cdylib"]
+
+[build-dependencies]
+flutter_rust_bridge_codegen = "1.78.0"
+
+[dependencies]
+flutter_rust_bridge = "1.78.0"

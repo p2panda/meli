@@ -1,0 +1,25 @@
+name: p2panda_flutter
+description: p2panda FFI bindings for Flutter
+version: 0.1.0
+repository: https://github.com/p2panda/meli
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.0.5 <4.0.0'
+  flutter: ">=3.3.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  p2panda:
+    path: ../p2panda
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        ffiPlugin: true
