@@ -1,4 +1,4 @@
-set(LibraryVersion "p2panda_flutter-v0.1.0")
+set(LibraryVersion "p2panda_flutter-v0.1.0") # generated; do not edit
 
 # Unlike the Windows & Linux CMakeLists.txt, this Android equivalent is just
 # here to download the Android binaries into src/main/jniLibs/ and does not
