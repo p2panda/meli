@@ -1,2 +1,0 @@
-[workspace]
-members = ["packages/p2panda/native"]
