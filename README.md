@@ -88,6 +88,22 @@ It is recommended to develop or run the project with [Android Studio](https://de
 
 * [`packages/app`](packages/app): Android application built with Flutter
 
+Here are some examples on how to run the app using the Flutter command line tool:
+
+```bash
+# Manage emulators
+flutter emulators
+
+# Launch an emulator
+flutter emulators --launch <id>
+
+# List all device ids (emulated or physical)
+flutter devices
+
+# Run app on emulated or connected device
+flutter run --device-id <id>
+```
+
 ## License
 
 GNU Affero General Public License v3.0 [`AGPL-3.0-or-later`](LICENSE)
