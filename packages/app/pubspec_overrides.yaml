@@ -1,0 +1,6 @@
+# melos_managed_dependency_overrides: p2panda,p2panda_flutter
+dependency_overrides:
+  p2panda:
+    path: ../p2panda
+  p2panda_flutter:
+    path: ../p2panda_flutter

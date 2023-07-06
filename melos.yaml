@@ -1,13 +1,12 @@
 name: p2panda
-
 repository: https://github.com/p2panda/meli
 
 packages:
-  - packages/**
+  - packages/*
 
 scripts:
   analyze:
-    exec: flutter analyze .
+    exec: flutter analyze
     description: Analyze all Dart packages for code errors and warnings.
 
   format:

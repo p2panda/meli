@@ -5,7 +5,7 @@ repository: https://github.com/p2panda/meli
 publish_to: 'none'
 
 environment:
-  sdk: ^3.0.5
+  sdk: '>=3.0.5 <4.0.0'
 
 dependencies:
   ffi: ^2.0.2
