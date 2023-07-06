@@ -1,10 +1,8 @@
-<h1 align="center">meli</h1>
+<h1 align="center">meli 🐝</h1>
 
 <div align="center">
-  <strong>Meli Android app built with p2panda</strong>
+  <strong>Meli Android app built on top of p2panda</strong>
 </div>
-
-<br />
 
 <div align="center">
   <h3>
@@ -20,21 +18,23 @@
 
 <br/>
 
-## Requirements
-
-> Listed versions are the ones we used successfully in our developer
-> environments, other versions might work well too.
-
-* [Rust](https://www.rust-lang.org/tools/install) `1.70.0`
-* [Android SDK](https://developer.android.com/tools)
-* [Android NDK](https://developer.android.com/ndk/)
-* [Flutter SDK](https://docs.flutter.dev/get-started/install) `3.10.5` and Dart SDK `3.0.5`
+This Android app is a collaborative database for sighting and categorisation of [Meliponini](https://en.wikipedia.org/wiki/Stingless_bee) bee species in the Brazilian Amazon. This project is a collaboration between [p2panda](https://p2panda.org/) and [Meli](https://www.meli-bees.org/). The app runs a full p2panda node and allows decentralised and offline-first collaboration among users, it is developed with Flutter and uses the p2panda SDK for its p2p functionalities.
 
 ## Development
 
 This is a [Melos](https://melos.invertase.dev) mono-repository managing both
 the Android application source-code and "external" Dart and Flutter libraries
 providing all p2panda functionality via FFI bindings.
+
+### Requirements
+
+> Listed versions are the ones we used successfully in our developer
+> environments, other versions might work well too.
+
+* [Rust](https://www.rust-lang.org/tools/install) `1.70.0`
+* [Android SDK](https://developer.android.com/tools) `34.0.0`
+* [Android NDK](https://developer.android.com/ndk/) `25.2.9519653`
+* [Flutter SDK](https://docs.flutter.dev/get-started/install) `3.10.5` and Dart SDK `3.0.5`
 
 ### Setup
 
@@ -64,9 +64,11 @@ with FFI bindings from Rust.
 
 The code resides in:
 
-* [packages/p2panda/native]: Rust API used in the Android application
-* [packages/p2panda]: p2panda Dart package
-* [packages/p2panda_flutter]: p2panda Flutter package
+* [`packages/p2panda/native`](packages/p2panda/native): Rust API used in the Android application
+* [`packages/p2panda`](packages/p2panda): p2panda Dart package
+* [`packages/p2panda_flutter`](packages/p2panda_flutter): p2panda Flutter package
+
+Use the following commands for FFI package development:
 
 ```bash
 # After changing the Rust code in `packages/p2panda/native` re-build the
@@ -80,11 +82,11 @@ melos build
 melos version
 ```
 
-### Android App
+### Flutter App
 
 It is recommended to develop or run the project with [Android Studio](https://developer.android.com/studio) or with the [`flutter-cli`] command line tool.
 
-* [packages/app]: Android application built with Flutter
+* [`packages/app`](packages/app): Android application built with Flutter
 
 ## License
 
