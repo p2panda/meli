@@ -2,7 +2,7 @@ name: p2panda
 description: p2panda FFI bindings for Dart
 version: 0.1.0
 repository: https://github.com/p2panda/meli
-publish_to: 'none'
+publish_to: none
 
 environment:
   sdk: '>=3.0.5 <4.0.0'

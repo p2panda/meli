@@ -1,6 +1,6 @@
 name: app
 description: Meli Bees App for Android
-publish_to: 'none'
+publish_to: none
 version: 0.1.0+1
 
 environment:
@@ -9,10 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  p2panda:
-    path: ../p2panda
-  p2panda_flutter:
-    path: ../p2panda_flutter
+  p2panda: ^0.1.0
+  p2panda_flutter: ^0.1.0
 
 dev_dependencies:
   flutter_test:
