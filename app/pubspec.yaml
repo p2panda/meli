@@ -10,9 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
   p2panda:
-    path: ../p2panda/packages/p2panda
+    path: ../p2panda-ffi/packages/p2panda
   p2panda_flutter:
-    path: ../p2panda/packages/p2panda_flutter
+    path: ../p2panda-ffi/packages/p2panda_flutter
 
 dev_dependencies:
   flutter_test:
