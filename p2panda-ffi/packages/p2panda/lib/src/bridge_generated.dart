@@ -18,12 +18,10 @@ abstract class P2Panda {
 
 class P2PandaImpl implements P2Panda {
   final P2PandaPlatform _platform;
-  factory P2PandaImpl(ExternalLibrary dylib) =>
-      P2PandaImpl.raw(P2PandaPlatform(dylib));
+  factory P2PandaImpl(ExternalLibrary dylib) => P2PandaImpl.raw(P2PandaPlatform(dylib));
 
   /// Only valid on web/WASM platforms.
-  factory P2PandaImpl.wasm(FutureOr<WasmModule> module) =>
-      P2PandaImpl(module as ExternalLibrary);
+  factory P2PandaImpl.wasm(FutureOr<WasmModule> module) => P2PandaImpl(module as ExternalLibrary);
   P2PandaImpl.raw(this._platform);
   Future<int> add({required int left, required int right, dynamic hint}) {
     var arg0 = api2wire_usize(left);
@@ -32,15 +30,20 @@ class P2PandaImpl implements P2Panda {
       callFfi: (port_) => _platform.inner.wire_add(port_, arg0, arg1),
       parseSuccessData: _wire2api_usize,
       constMeta: kAddConstMeta,
-      argValues: [left, right],
+      argValues: [
+        left,
+        right
+      ],
       hint: hint,
     ));
   }
 
-  FlutterRustBridgeTaskConstMeta get kAddConstMeta =>
-      const FlutterRustBridgeTaskConstMeta(
+  FlutterRustBridgeTaskConstMeta get kAddConstMeta => const FlutterRustBridgeTaskConstMeta(
         debugName: "add",
-        argNames: ["left", "right"],
+        argNames: [
+          "left",
+          "right"
+        ],
       );
 
   void dispose() {
@@ -84,32 +87,24 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
   late final dartApi = DartApiDl(init_frb_dart_api_dl);
 
   /// Holds the symbol lookup function.
-  final ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
-      _lookup;
+  final ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName) _lookup;
 
   /// The symbols are looked up in [dynamicLibrary].
-  P2PandaWire(ffi.DynamicLibrary dynamicLibrary)
-      : _lookup = dynamicLibrary.lookup;
+  P2PandaWire(ffi.DynamicLibrary dynamicLibrary) : _lookup = dynamicLibrary.lookup;
 
   /// The symbols are looked up with [lookup].
-  P2PandaWire.fromLookup(
-      ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
-          lookup)
-      : _lookup = lookup;
+  P2PandaWire.fromLookup(ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName) lookup) : _lookup = lookup;
 
   void store_dart_post_cobject(
-    int ptr,
+    DartPostCObjectFnType ptr,
   ) {
     return _store_dart_post_cobject(
       ptr,
     );
   }
 
-  late final _store_dart_post_cobjectPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int)>>(
-          'store_dart_post_cobject');
-  late final _store_dart_post_cobject =
-      _store_dart_post_cobjectPtr.asFunction<void Function(int)>();
+  late final _store_dart_post_cobjectPtr = _lookup<ffi.NativeFunction<ffi.Void Function(DartPostCObjectFnType)>>('store_dart_post_cobject');
+  late final _store_dart_post_cobject = _store_dart_post_cobjectPtr.asFunction<void Function(DartPostCObjectFnType)>();
 
   Object get_dart_object(
     int ptr,
@@ -119,11 +114,8 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
     );
   }
 
-  late final _get_dart_objectPtr =
-      _lookup<ffi.NativeFunction<ffi.Handle Function(ffi.UintPtr)>>(
-          'get_dart_object');
-  late final _get_dart_object =
-      _get_dart_objectPtr.asFunction<Object Function(int)>();
+  late final _get_dart_objectPtr = _lookup<ffi.NativeFunction<ffi.Handle Function(ffi.UintPtr)>>('get_dart_object');
+  late final _get_dart_object = _get_dart_objectPtr.asFunction<Object Function(int)>();
 
   void drop_dart_object(
     int ptr,
@@ -133,11 +125,8 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
     );
   }
 
-  late final _drop_dart_objectPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.UintPtr)>>(
-          'drop_dart_object');
-  late final _drop_dart_object =
-      _drop_dart_objectPtr.asFunction<void Function(int)>();
+  late final _drop_dart_objectPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.UintPtr)>>('drop_dart_object');
+  late final _drop_dart_object = _drop_dart_objectPtr.asFunction<void Function(int)>();
 
   int new_dart_opaque(
     Object handle,
@@ -147,11 +136,8 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
     );
   }
 
-  late final _new_dart_opaquePtr =
-      _lookup<ffi.NativeFunction<ffi.UintPtr Function(ffi.Handle)>>(
-          'new_dart_opaque');
-  late final _new_dart_opaque =
-      _new_dart_opaquePtr.asFunction<int Function(Object)>();
+  late final _new_dart_opaquePtr = _lookup<ffi.NativeFunction<ffi.UintPtr Function(ffi.Handle)>>('new_dart_opaque');
+  late final _new_dart_opaque = _new_dart_opaquePtr.asFunction<int Function(Object)>();
 
   int init_frb_dart_api_dl(
     ffi.Pointer<ffi.Void> obj,
@@ -161,11 +147,8 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
     );
   }
 
-  late final _init_frb_dart_api_dlPtr =
-      _lookup<ffi.NativeFunction<ffi.IntPtr Function(ffi.Pointer<ffi.Void>)>>(
-          'init_frb_dart_api_dl');
-  late final _init_frb_dart_api_dl = _init_frb_dart_api_dlPtr
-      .asFunction<int Function(ffi.Pointer<ffi.Void>)>();
+  late final _init_frb_dart_api_dlPtr = _lookup<ffi.NativeFunction<ffi.IntPtr Function(ffi.Pointer<ffi.Void>)>>('init_frb_dart_api_dl');
+  late final _init_frb_dart_api_dl = _init_frb_dart_api_dlPtr.asFunction<int Function(ffi.Pointer<ffi.Void>)>();
 
   void wire_add(
     int port_,
@@ -179,11 +162,8 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
     );
   }
 
-  late final _wire_addPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Int64, ffi.UintPtr, ffi.UintPtr)>>('wire_add');
-  late final _wire_add =
-      _wire_addPtr.asFunction<void Function(int, int, int)>();
+  late final _wire_addPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.UintPtr, ffi.UintPtr)>>('wire_add');
+  late final _wire_add = _wire_addPtr.asFunction<void Function(int, int, int)>();
 
   void free_WireSyncReturn(
     WireSyncReturn ptr,
@@ -193,11 +173,11 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
     );
   }
 
-  late final _free_WireSyncReturnPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(WireSyncReturn)>>(
-          'free_WireSyncReturn');
-  late final _free_WireSyncReturn =
-      _free_WireSyncReturnPtr.asFunction<void Function(WireSyncReturn)>();
+  late final _free_WireSyncReturnPtr = _lookup<ffi.NativeFunction<ffi.Void Function(WireSyncReturn)>>('free_WireSyncReturn');
+  late final _free_WireSyncReturn = _free_WireSyncReturnPtr.asFunction<void Function(WireSyncReturn)>();
 }
 
 final class _Dart_Handle extends ffi.Opaque {}
+
+typedef DartPostCObjectFnType = ffi.Pointer<ffi.NativeFunction<ffi.Bool Function(DartPort port_id, ffi.Pointer<ffi.Void> message)>>;
+typedef DartPort = ffi.Int64;

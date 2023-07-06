@@ -3,6 +3,9 @@
 # Build libraries for Android from our Rust codebase, with support for
 # generating the correct `jniLibs` directory structure.
 
+# See: https://cjycode.com/flutter_rust_bridge/integrate/deps.html#system-dependencies
+export CPATH="$(clang -v 2>&1 | grep "Selected GCC installation" | rev | cut -d' ' -f1 | rev)/include"
+
 # Make sure that target folder exists
 BUILD_DIR=platform-build
 mkdir -p $BUILD_DIR
