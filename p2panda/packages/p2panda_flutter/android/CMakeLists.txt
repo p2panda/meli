@@ -1,4 +1,4 @@
-set(LibraryVersion "p2panda_flutter-v0.1.0") # generated; do not edit
+set(LibraryVersion "p2panda_flutter-v0.1.0")
 
 # Unlike the Windows & Linux CMakeLists.txt, this Android equivalent is just
 # here to download the Android binaries into src/main/jniLibs/ and does not
@@ -13,6 +13,14 @@ cmake_minimum_required(VERSION 3.10)
 
 set(LibRoot "${CMAKE_CURRENT_SOURCE_DIR}/src/main/jniLibs")
 set(ArchivePath "${CMAKE_CURRENT_SOURCE_DIR}/${LibraryVersion}.tar.gz")
+
+if(NOT EXISTS ${ArchivePath})
+  file(DOWNLOAD
+    "https://github.com/p2panda/meli/raw/main/p2panda/platform-build/android.tar.gz"
+    ${ArchivePath}
+    TLS_VERIFY ON
+  )
+endif()
 
 # Extract the binaries, overriding any already present.
 file(REMOVE_RECURSE ${LibRoot})
