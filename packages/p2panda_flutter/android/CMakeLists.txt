@@ -12,20 +12,32 @@ set(LibraryVersion "p2panda_flutter-v0.1.0") # generated; do not edit
 cmake_minimum_required(VERSION 3.10)
 
 set(LibRoot "${CMAKE_CURRENT_SOURCE_DIR}/src/main/jniLibs")
-set(ArchivePath "${CMAKE_CURRENT_SOURCE_DIR}/${LibraryVersion}.tar.gz")
 
-if(NOT EXISTS ${ArchivePath})
-  file(DOWNLOAD
-    "https://github.com/p2panda/meli/raw/main/p2panda/platform-build/android.tar.gz"
-    ${ArchivePath}
-    TLS_VERIFY ON
-  )
+set(RemoteFromPath "https://github.com/p2panda/meli/raw/main/p2panda/platform-build/android.tar.gz")
+set(LocalFromPath "${CMAKE_CURRENT_SOURCE_DIR}/../../../platform-build/android.tar.gz")
+
+set(ToPath "${CMAKE_CURRENT_SOURCE_DIR}/${LibraryVersion}.tar.gz")
+
+if(NOT EXISTS ${ToPath})
+  # Check if file exists locally, otherwise download it from the internet
+  if(EXISTS ${LocalArchivePath})
+    file(COPY_FILE
+      ${LocalFromPath}
+      ${ToPath}
+    )
+  else()
+    file(DOWNLOAD
+      ${RemoteFromPath}
+      ${ToPath}
+      TLS_VERIFY ON
+    )
+  endif()
 endif()
 
 # Extract the binaries, overriding any already present.
 file(REMOVE_RECURSE ${LibRoot})
 file(MAKE_DIRECTORY ${LibRoot})
 execute_process(
-  COMMAND ${CMAKE_COMMAND} -E tar xzf ${ArchivePath}
+  COMMAND ${CMAKE_COMMAND} -E tar xzf ${ToPath}
   WORKING_DIRECTORY ${LibRoot}
 )
