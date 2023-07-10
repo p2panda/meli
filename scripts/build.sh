@@ -3,17 +3,19 @@
 # Build libraries for Android from our Rust codebase, with support for
 # generating the correct `jniLibs` directory structure.
 
-# See: https://cjycode.com/flutter_rust_bridge/integrate/deps.html#system-dependencies
-export CPATH="$(clang -v 2>&1 | grep "Selected GCC installation" | rev | cut -d' ' -f1 | rev)/include"
+echo "◆ Create folders"
+echo
 
-# Make sure that target folder exists
 BUILD_DIR=platform-build
+JNI_DIR=jniLibs
+
+# Make sure that target folders exist
 mkdir -p $BUILD_DIR
 cd $BUILD_DIR
-
-# Create the jniLibs build directory
-JNI_DIR=jniLibs
 mkdir -p $JNI_DIR
+
+echo "◆ Install Rust toolchain dependencies"
+echo
 
 # Set up cargo-ndk and Android compilation targets
 cargo install cargo-ndk
@@ -23,6 +25,9 @@ rustup target add \
         x86_64-linux-android \
         i686-linux-android
 
+echo "◆ Build project"
+echo
+
 # Build the android libraries in the jniLibs directory
 cargo ndk -o $JNI_DIR \
         --manifest-path ../Cargo.toml \
@@ -31,6 +36,9 @@ cargo ndk -o $JNI_DIR \
         -t x86 \
         -t x86_64 \
         build --release
+
+echo "◆ Archive binaries"
+echo
 
 # Archive the dynamic libs
 cd $JNI_DIR
