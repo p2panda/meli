@@ -35,6 +35,7 @@ providing all p2panda functionality via FFI bindings.
 * [Android SDK](https://developer.android.com/tools) `34.0.0`
 * [Android NDK](https://developer.android.com/ndk/) `25.2.9519653`
 * [Flutter SDK](https://docs.flutter.dev/get-started/install) `3.10.5` and Dart SDK `3.0.5`
+* [Melos](https://melos.invertase.dev/getting-started)
 
 ### Setup
 
