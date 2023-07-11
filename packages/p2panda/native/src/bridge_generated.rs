@@ -69,6 +69,34 @@ fn wire_encode_operation_impl(port_: MessagePort, json: impl Wire2Api<String> + 
         },
     )
 }
+fn wire_start_node_impl(
+    port_: MessagePort,
+    key_pair: impl Wire2Api<KeyPair> + UnwindSafe,
+    base_path: impl Wire2Api<String> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "start_node",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_key_pair = key_pair.wire2api();
+            let api_base_path = base_path.wire2api();
+            move |task_callback| start_node(api_key_pair, api_base_path)
+        },
+    )
+}
+fn wire_shutdown_node_impl(port_: MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "shutdown_node",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || move |task_callback| Ok(shutdown_node()),
+    )
+}
 fn wire_new__static_method__KeyPair_impl(port_: MessagePort) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap(
         WrapInfo {
@@ -205,6 +233,20 @@ mod io {
     #[no_mangle]
     pub extern "C" fn wire_encode_operation(port_: i64, json: *mut wire_uint_8_list) {
         wire_encode_operation_impl(port_, json)
+    }
+
+    #[no_mangle]
+    pub extern "C" fn wire_start_node(
+        port_: i64,
+        key_pair: *mut wire_KeyPair,
+        base_path: *mut wire_uint_8_list,
+    ) {
+        wire_start_node_impl(port_, key_pair, base_path)
+    }
+
+    #[no_mangle]
+    pub extern "C" fn wire_shutdown_node(port_: i64) {
+        wire_shutdown_node_impl(port_)
     }
 
     #[no_mangle]
