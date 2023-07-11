@@ -7,6 +7,7 @@ environment:
   sdk: '>=3.0.5 <4.0.0'
 
 dependencies:
+  convert: ^3.1.1
   flutter:
     sdk: flutter
   p2panda: ^0.1.0

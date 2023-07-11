@@ -21,21 +21,109 @@ use std::sync::Arc;
 
 // Section: wire functions
 
-fn wire_add_impl(
+fn wire_sign_and_encode_entry_impl(
     port_: MessagePort,
-    left: impl Wire2Api<usize> + UnwindSafe,
-    right: impl Wire2Api<usize> + UnwindSafe,
+    log_id: impl Wire2Api<u64> + UnwindSafe,
+    seq_num: impl Wire2Api<u64> + UnwindSafe,
+    skiplink_hash: impl Wire2Api<Option<String>> + UnwindSafe,
+    backlink_hash: impl Wire2Api<Option<String>> + UnwindSafe,
+    payload: impl Wire2Api<Vec<u8>> + UnwindSafe,
+    key_pair: impl Wire2Api<KeyPair> + UnwindSafe,
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap(
         WrapInfo {
-            debug_name: "add",
+            debug_name: "sign_and_encode_entry",
             port: Some(port_),
             mode: FfiCallMode::Normal,
         },
         move || {
-            let api_left = left.wire2api();
-            let api_right = right.wire2api();
-            move |task_callback| Ok(add(api_left, api_right))
+            let api_log_id = log_id.wire2api();
+            let api_seq_num = seq_num.wire2api();
+            let api_skiplink_hash = skiplink_hash.wire2api();
+            let api_backlink_hash = backlink_hash.wire2api();
+            let api_payload = payload.wire2api();
+            let api_key_pair = key_pair.wire2api();
+            move |task_callback| {
+                sign_and_encode_entry(
+                    api_log_id,
+                    api_seq_num,
+                    api_skiplink_hash,
+                    api_backlink_hash,
+                    api_payload,
+                    api_key_pair,
+                )
+            }
+        },
+    )
+}
+fn wire_encode_operation_impl(port_: MessagePort, json: impl Wire2Api<String> + UnwindSafe) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "encode_operation",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_json = json.wire2api();
+            move |task_callback| encode_operation(api_json)
+        },
+    )
+}
+fn wire_new__static_method__KeyPair_impl(port_: MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "new__static_method__KeyPair",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || move |task_callback| Ok(KeyPair::new()),
+    )
+}
+fn wire_from_private_key__static_method__KeyPair_impl(
+    port_: MessagePort,
+    bytes: impl Wire2Api<Vec<u8>> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "from_private_key__static_method__KeyPair",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_bytes = bytes.wire2api();
+            move |task_callback| KeyPair::from_private_key(api_bytes)
+        },
+    )
+}
+fn wire_private_key__method__KeyPair_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<KeyPair> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "private_key__method__KeyPair",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            move |task_callback| Ok(KeyPair::private_key(&api_that))
+        },
+    )
+}
+fn wire_public_key__method__KeyPair_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<KeyPair> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "public_key__method__KeyPair",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            move |task_callback| Ok(KeyPair::public_key(&api_that))
         },
     )
 }
@@ -61,12 +149,26 @@ where
         (!self.is_null()).then(|| self.wire2api())
     }
 }
-impl Wire2Api<usize> for usize {
-    fn wire2api(self) -> usize {
+
+impl Wire2Api<u64> for u64 {
+    fn wire2api(self) -> u64 {
         self
     }
 }
+impl Wire2Api<u8> for u8 {
+    fn wire2api(self) -> u8 {
+        self
+    }
+}
+
 // Section: impl IntoDart
+
+impl support::IntoDart for KeyPair {
+    fn into_dart(self) -> support::DartAbi {
+        vec![self.0.into_dart()].into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for KeyPair {}
 
 // Section: executor
 
@@ -80,17 +182,145 @@ mod io {
     // Section: wire functions
 
     #[no_mangle]
-    pub extern "C" fn wire_add(port_: i64, left: usize, right: usize) {
-        wire_add_impl(port_, left, right)
+    pub extern "C" fn wire_sign_and_encode_entry(
+        port_: i64,
+        log_id: u64,
+        seq_num: u64,
+        skiplink_hash: *mut wire_uint_8_list,
+        backlink_hash: *mut wire_uint_8_list,
+        payload: *mut wire_uint_8_list,
+        key_pair: *mut wire_KeyPair,
+    ) {
+        wire_sign_and_encode_entry_impl(
+            port_,
+            log_id,
+            seq_num,
+            skiplink_hash,
+            backlink_hash,
+            payload,
+            key_pair,
+        )
+    }
+
+    #[no_mangle]
+    pub extern "C" fn wire_encode_operation(port_: i64, json: *mut wire_uint_8_list) {
+        wire_encode_operation_impl(port_, json)
+    }
+
+    #[no_mangle]
+    pub extern "C" fn wire_new__static_method__KeyPair(port_: i64) {
+        wire_new__static_method__KeyPair_impl(port_)
+    }
+
+    #[no_mangle]
+    pub extern "C" fn wire_from_private_key__static_method__KeyPair(
+        port_: i64,
+        bytes: *mut wire_uint_8_list,
+    ) {
+        wire_from_private_key__static_method__KeyPair_impl(port_, bytes)
+    }
+
+    #[no_mangle]
+    pub extern "C" fn wire_private_key__method__KeyPair(port_: i64, that: *mut wire_KeyPair) {
+        wire_private_key__method__KeyPair_impl(port_, that)
+    }
+
+    #[no_mangle]
+    pub extern "C" fn wire_public_key__method__KeyPair(port_: i64, that: *mut wire_KeyPair) {
+        wire_public_key__method__KeyPair_impl(port_, that)
     }
 
     // Section: allocate functions
 
+    #[no_mangle]
+    pub extern "C" fn new_PandaKeyPair() -> wire_PandaKeyPair {
+        wire_PandaKeyPair::new_with_null_ptr()
+    }
+
+    #[no_mangle]
+    pub extern "C" fn new_box_autoadd_key_pair_0() -> *mut wire_KeyPair {
+        support::new_leak_box_ptr(wire_KeyPair::new_with_null_ptr())
+    }
+
+    #[no_mangle]
+    pub extern "C" fn new_uint_8_list_0(len: i32) -> *mut wire_uint_8_list {
+        let ans = wire_uint_8_list {
+            ptr: support::new_leak_vec_ptr(Default::default(), len),
+            len,
+        };
+        support::new_leak_box_ptr(ans)
+    }
+
     // Section: related functions
+
+    #[no_mangle]
+    pub extern "C" fn drop_opaque_PandaKeyPair(ptr: *const c_void) {
+        unsafe {
+            Arc::<PandaKeyPair>::decrement_strong_count(ptr as _);
+        }
+    }
+
+    #[no_mangle]
+    pub extern "C" fn share_opaque_PandaKeyPair(ptr: *const c_void) -> *const c_void {
+        unsafe {
+            Arc::<PandaKeyPair>::increment_strong_count(ptr as _);
+            ptr
+        }
+    }
 
     // Section: impl Wire2Api
 
+    impl Wire2Api<RustOpaque<PandaKeyPair>> for wire_PandaKeyPair {
+        fn wire2api(self) -> RustOpaque<PandaKeyPair> {
+            unsafe { support::opaque_from_dart(self.ptr as _) }
+        }
+    }
+    impl Wire2Api<String> for *mut wire_uint_8_list {
+        fn wire2api(self) -> String {
+            let vec: Vec<u8> = self.wire2api();
+            String::from_utf8_lossy(&vec).into_owned()
+        }
+    }
+    impl Wire2Api<KeyPair> for *mut wire_KeyPair {
+        fn wire2api(self) -> KeyPair {
+            let wrap = unsafe { support::box_from_leak_ptr(self) };
+            Wire2Api::<KeyPair>::wire2api(*wrap).into()
+        }
+    }
+    impl Wire2Api<KeyPair> for wire_KeyPair {
+        fn wire2api(self) -> KeyPair {
+            KeyPair(self.field0.wire2api())
+        }
+    }
+
+    impl Wire2Api<Vec<u8>> for *mut wire_uint_8_list {
+        fn wire2api(self) -> Vec<u8> {
+            unsafe {
+                let wrap = support::box_from_leak_ptr(self);
+                support::vec_from_leak_ptr(wrap.ptr, wrap.len)
+            }
+        }
+    }
     // Section: wire structs
+
+    #[repr(C)]
+    #[derive(Clone)]
+    pub struct wire_PandaKeyPair {
+        ptr: *const core::ffi::c_void,
+    }
+
+    #[repr(C)]
+    #[derive(Clone)]
+    pub struct wire_KeyPair {
+        field0: wire_PandaKeyPair,
+    }
+
+    #[repr(C)]
+    #[derive(Clone)]
+    pub struct wire_uint_8_list {
+        ptr: *mut u8,
+        len: i32,
+    }
 
     // Section: impl NewWithNullPtr
 
@@ -101,6 +331,28 @@ mod io {
     impl<T> NewWithNullPtr for *mut T {
         fn new_with_null_ptr() -> Self {
             std::ptr::null_mut()
+        }
+    }
+
+    impl NewWithNullPtr for wire_PandaKeyPair {
+        fn new_with_null_ptr() -> Self {
+            Self {
+                ptr: core::ptr::null(),
+            }
+        }
+    }
+
+    impl NewWithNullPtr for wire_KeyPair {
+        fn new_with_null_ptr() -> Self {
+            Self {
+                field0: wire_PandaKeyPair::new_with_null_ptr(),
+            }
+        }
+    }
+
+    impl Default for wire_KeyPair {
+        fn default() -> Self {
+            Self::new_with_null_ptr()
         }
     }
 
