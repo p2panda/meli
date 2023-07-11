@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+set -e
+
+BUILD_DIR=platform-build
+JNI_DIR=jniLibs
+APP_DIR=../packages/p2panda_flutter/android/src/main
+
+
 # Generate FFI bindings from Rust and build native libraries for Android.
 
 echo "◆ Install Rust toolchain dependencies"
@@ -29,9 +36,6 @@ echo
 echo "◆ Create folders"
 echo
 
-BUILD_DIR=platform-build
-JNI_DIR=jniLibs
-
 mkdir -p $BUILD_DIR
 cd $BUILD_DIR
 mkdir -p $JNI_DIR
@@ -48,8 +52,11 @@ cargo ndk -o $JNI_DIR \
         -t x86_64 \
         build --release
 
-echo "◆ Archive binaries"
+echo "◆ Publish libraries"
 echo
+
+# Move libraries into plugin folder
+cp -fR $JNI_DIR $APP_DIR
 
 # Archive the dynamic libraries
 cd $JNI_DIR
