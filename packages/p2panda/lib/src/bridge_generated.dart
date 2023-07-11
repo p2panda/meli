@@ -28,6 +28,15 @@ abstract class P2Panda {
 
   FlutterRustBridgeTaskConstMeta get kEncodeOperationConstMeta;
 
+  Future<void> startNode(
+      {required KeyPair keyPair, required String basePath, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kStartNodeConstMeta;
+
+  Future<void> shutdownNode({dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kShutdownNodeConstMeta;
+
   /// Generates a new key pair using the systems random number generator (CSPRNG) as a seed.
   Future<KeyPair> newStaticMethodKeyPair({dynamic hint});
 
@@ -166,6 +175,41 @@ class P2PandaImpl implements P2Panda {
         argNames: ["json"],
       );
 
+  Future<void> startNode(
+      {required KeyPair keyPair, required String basePath, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_key_pair(keyPair);
+    var arg1 = _platform.api2wire_String(basePath);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_start_node(port_, arg0, arg1),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kStartNodeConstMeta,
+      argValues: [keyPair, basePath],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kStartNodeConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "start_node",
+        argNames: ["keyPair", "basePath"],
+      );
+
+  Future<void> shutdownNode({dynamic hint}) {
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_shutdown_node(port_),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kShutdownNodeConstMeta,
+      argValues: [],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kShutdownNodeConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "shutdown_node",
+        argNames: [],
+      );
+
   Future<KeyPair> newStaticMethodKeyPair({dynamic hint}) {
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) =>
@@ -273,6 +317,10 @@ class P2PandaImpl implements P2Panda {
 
   Uint8List _wire2api_uint_8_list(dynamic raw) {
     return raw as Uint8List;
+  }
+
+  void _wire2api_unit(dynamic raw) {
+    return;
   }
 }
 
@@ -500,6 +548,40 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
               ffi.Pointer<wire_uint_8_list>)>>('wire_encode_operation');
   late final _wire_encode_operation = _wire_encode_operationPtr
       .asFunction<void Function(int, ffi.Pointer<wire_uint_8_list>)>();
+
+  void wire_start_node(
+    int port_,
+    ffi.Pointer<wire_KeyPair> key_pair,
+    ffi.Pointer<wire_uint_8_list> base_path,
+  ) {
+    return _wire_start_node(
+      port_,
+      key_pair,
+      base_path,
+    );
+  }
+
+  late final _wire_start_nodePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(ffi.Int64, ffi.Pointer<wire_KeyPair>,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_start_node');
+  late final _wire_start_node = _wire_start_nodePtr.asFunction<
+      void Function(
+          int, ffi.Pointer<wire_KeyPair>, ffi.Pointer<wire_uint_8_list>)>();
+
+  void wire_shutdown_node(
+    int port_,
+  ) {
+    return _wire_shutdown_node(
+      port_,
+    );
+  }
+
+  late final _wire_shutdown_nodePtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'wire_shutdown_node');
+  late final _wire_shutdown_node =
+      _wire_shutdown_nodePtr.asFunction<void Function(int)>();
 
   void wire_new__static_method__KeyPair(
     int port_,
