@@ -4,7 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:app/router.dart';
 
 class MeliApp extends StatelessWidget {
-  MeliApp({ super.key });
+  MeliApp({super.key});
 
   @override
   Widget build(BuildContext context) {
