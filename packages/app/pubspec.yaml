@@ -15,6 +15,7 @@ dependencies:
   flutter_native_splash: ^2.2.17
   go_router: ^9.0.3
   graphql_flutter: ^5.2.0-beta.5
+  intl: ^0.18.0
   p2panda: ^0.1.0
   p2panda_flutter: ^0.1.0
   path_provider: ^2.0.15
@@ -25,3 +26,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  # Enable code generation for localization
+  generate: true
