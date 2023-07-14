@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/router.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 class MeliApp extends StatelessWidget {
   MeliApp({ super.key });
@@ -18,6 +17,9 @@ class MeliApp extends StatelessWidget {
       // Setup localization
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
+
+      // Material theme configuration
+      theme: ThemeData(useMaterial3: true),
 
       // Disable "debug" banner shown in top right corner during development
       debugShowCheckedModeBanner: false,
