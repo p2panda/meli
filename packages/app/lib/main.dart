@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:app/app.dart';
+import 'package:app/io/p2panda/node.dart';
+import 'package:app/io/p2panda/schemas.dart';
 
 void main() async {
   // Wait until we've established connection to native Flutter backend. We need
@@ -15,8 +17,21 @@ void main() async {
   runApp(MeliApp());
 
   // Bootstrap backend for p2p communication and data persistence
-  // @TODO
+  await bootstrapNode();
 
   // Remove splash screen when bootstrap is complete
   FlutterNativeSplash.remove();
+}
+
+Future<void> bootstrapNode() async {
+  // Run p2panda node in the background
+  await startNode();
+
+  // Migrate pending p2panda schemas if necessary
+  final bool didMigrate = await migrateSchemas();
+  if (didMigrate) {
+    print("Migration succeeded");
+  } else {
+    print("No migration required");
+  }
 }

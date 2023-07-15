@@ -19,12 +19,15 @@ dependencies:
   p2panda: ^0.1.0
   p2panda_flutter: ^0.1.0
   path_provider: ^2.0.15
+  toml: "^0.14.0"
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
 flutter:
+  assets:
+    - assets/
   uses-material-design: true
 
   # Enable code generation for localization
