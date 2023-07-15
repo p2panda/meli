@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:app/colors.dart';
-import 'package:app/widgets/fab.dart';
+import 'package:app/ui/colors.dart';
+import 'package:app/ui/widgets/fab.dart';
 
 class MeliScaffold extends StatefulWidget {
   final String? title;

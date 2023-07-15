@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:app/screens/home.dart';
-import 'package:app/screens/create_new.dart';
-import 'package:app/screens/all_species.dart';
-import 'package:app/screens/settings.dart';
+import 'package:app/ui/screens/home.dart';
+import 'package:app/ui/screens/create_new.dart';
+import 'package:app/ui/screens/all_species.dart';
+import 'package:app/ui/screens/settings.dart';
 
 class RoutePath {
   static String home = '/'; // sightings

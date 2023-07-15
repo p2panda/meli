@@ -1,12 +1,14 @@
 import 'dart:typed_data';
 
-import 'package:app/io/p2panda/publish.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:toml/toml.dart';
 import 'package:convert/convert.dart';
 
-import 'package:app/io/p2panda/p2panda.dart';
-import 'package:app/io/graphql/queries.dart' as queries;
 import 'package:app/io/assets.dart';
+import 'package:app/io/graphql/graphql.dart';
+import 'package:app/io/graphql/queries.dart' as queries;
+import 'package:app/io/p2panda/p2panda.dart';
+import 'package:app/utils/sleep.dart';
 
 /// Path to .toml file holding all data for schema migrations.
 const String MIGRATION_FILE_PATH = 'assets/schema.lock';
@@ -67,9 +69,53 @@ Future<bool> migrateSchemas() async {
 
     // Publish commit to node, this will materialize the (updated) schema on
     // the node and give us a new GraphQL API
-    await publishRaw(commit['entry'] as String, commit['operation'] as String);
+    await queries.publish(
+        commit['entry'] as String, commit['operation'] as String);
     didMigrate = true;
   }
 
   return didMigrate;
+}
+
+/// Returns true if schema is materialized and ready on node.
+Future<bool> isSchemaAvailable(SchemaId schemaId) async {
+  String query = '''
+    query CheckSchemaStatus() {
+      status: all_$schemaId {
+        documents {
+          meta {
+            documentId
+          }
+        }
+      }
+    }
+  ''';
+
+  final options = QueryOptions(document: gql(query));
+  final result = await client.query(options);
+  return !result.hasException;
+}
+
+/// Async helper method to block until node materialized schemas and updated
+/// GraphQL API.
+Future<void> untilSchemasAvailable(List<SchemaId> schemaIds) async {
+  // Iterate over all required schema ids and check if they already exist
+  Future<bool> areAllSchemasAvailable() async {
+    for (var schemaId in schemaIds) {
+      if (!(await isSchemaAvailable(schemaId))) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // .. do this until all of them exist
+  while (true) {
+    if (await areAllSchemasAvailable()) {
+      break;
+    } else {
+      sleep(250);
+    }
+  }
 }

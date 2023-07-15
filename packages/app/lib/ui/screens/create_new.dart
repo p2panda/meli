@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:app/widgets/scaffold.dart';
+import 'package:app/ui/widgets/scaffold.dart';
 
 class CreateNewScreen extends StatefulWidget {
   CreateNewScreen({super.key});

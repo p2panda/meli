@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:app/colors.dart';
 import 'package:app/router.dart';
-import 'package:app/widgets/fab.dart';
-import 'package:app/widgets/scaffold.dart';
+import 'package:app/ui/colors.dart';
+import 'package:app/ui/widgets/fab.dart';
+import 'package:app/ui/widgets/scaffold.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
@@ -188,7 +188,7 @@ class _BackgroundDecorationPainter extends BoxPainter {
         end: Alignment.bottomCenter,
         colors: [
           MeliColors.electric,
-          MeliColors.lala,
+          MeliColors.grass,
         ],
       ).createShader(Rect.fromCenter(
           center: Offset(bounds!.width / 2, 200.0),

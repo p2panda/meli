@@ -1,3 +1,4 @@
+import 'package:app/logic/schema_ids.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
@@ -34,4 +35,8 @@ Future<void> bootstrapNode() async {
   } else {
     print("No migration required");
   }
+
+  // Wait until we're sure that all schema ids are ready on the node. This is
+  // mostly important after a migration took place
+  await untilSchemasAvailable(ALL_SCHEMA_IDS);
 }

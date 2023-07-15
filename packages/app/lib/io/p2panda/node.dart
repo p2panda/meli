@@ -18,7 +18,7 @@ Future<void> startNode() async {
 
   // .. since we can't `await` the FFI binding method from Rust we need to
   // poll here to find out until the node is ready
-  await isReady();
+  await _untilReady();
 }
 
 /// Shut down p2panda node.
@@ -27,7 +27,7 @@ Future<void> shutdownNode() async {
 }
 
 /// Async helper method to block until node is up and running.
-Future<void> isReady() async {
+Future<void> _untilReady() async {
   final _publicKey = await publicKeyHex;
 
   while (true) {
