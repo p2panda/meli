@@ -93,6 +93,19 @@ fn wire_encode_operation_impl(
         },
     )
 }
+fn wire_decode_operation_impl(port_: MessagePort, operation: impl Wire2Api<Vec<u8>> + UnwindSafe) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "decode_operation",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_operation = operation.wire2api();
+            move |task_callback| decode_operation(api_operation)
+        },
+    )
+}
 fn wire_start_node_impl(
     port_: MessagePort,
     key_pair: impl Wire2Api<KeyPair> + UnwindSafe,
@@ -250,6 +263,18 @@ impl support::IntoDart for KeyPair {
 }
 impl support::IntoDartExceptPrimitive for KeyPair {}
 
+impl support::IntoDart for OperationAction {
+    fn into_dart(self) -> support::DartAbi {
+        match self {
+            Self::Create => 0,
+            Self::Update => 1,
+            Self::Delete => 2,
+        }
+        .into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for OperationAction {}
+
 // Section: executor
 
 support::lazy_static! {
@@ -296,6 +321,11 @@ mod io {
         fields: *mut wire_list___record__String_operation_value,
     ) {
         wire_encode_operation_impl(port_, action, schema_id, previous, fields)
+    }
+
+    #[no_mangle]
+    pub extern "C" fn wire_decode_operation(port_: i64, operation: *mut wire_uint_8_list) {
+        wire_decode_operation_impl(port_, operation)
     }
 
     #[no_mangle]

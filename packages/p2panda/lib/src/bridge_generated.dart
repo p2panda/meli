@@ -50,6 +50,12 @@ abstract class P2Panda {
 
   FlutterRustBridgeTaskConstMeta get kEncodeOperationConstMeta;
 
+  /// Decodes an p2panda operation, returning it's action and schema id.
+  Future<(OperationAction, String)> decodeOperation(
+      {required Uint8List operation, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kDecodeOperationConstMeta;
+
   /// Runs a p2panda node in a separate thread in the background.
   ///
   /// Supports Android logging for logs coming from the node.
@@ -292,6 +298,24 @@ class P2PandaImpl implements P2Panda {
         argNames: ["action", "schemaId", "previous", "fields"],
       );
 
+  Future<(OperationAction, String)> decodeOperation(
+      {required Uint8List operation, dynamic hint}) {
+    var arg0 = _platform.api2wire_uint_8_list(operation);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_decode_operation(port_, arg0),
+      parseSuccessData: _wire2api___record__operation_action_String,
+      constMeta: kDecodeOperationConstMeta,
+      argValues: [operation],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kDecodeOperationConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "decode_operation",
+        argNames: ["operation"],
+      );
+
   Future<void> startNode(
       {required KeyPair keyPair, required String basePath, dynamic hint}) {
     var arg0 = _platform.api2wire_box_autoadd_key_pair(keyPair);
@@ -438,6 +462,22 @@ class P2PandaImpl implements P2Panda {
     );
   }
 
+  (OperationAction, String) _wire2api___record__operation_action_String(
+      dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2) {
+      throw Exception('Expected 2 elements, got ${arr.length}');
+    }
+    return (
+      _wire2api_operation_action(arr[0]),
+      _wire2api_String(arr[1]),
+    );
+  }
+
+  int _wire2api_i32(dynamic raw) {
+    return raw as int;
+  }
+
   KeyPair _wire2api_key_pair(dynamic raw) {
     final arr = raw as List<dynamic>;
     if (arr.length != 1)
@@ -446,6 +486,10 @@ class P2PandaImpl implements P2Panda {
       bridge: this,
       field0: _wire2api_PandaKeyPair(arr[0]),
     );
+  }
+
+  OperationAction _wire2api_operation_action(dynamic raw) {
+    return OperationAction.values[raw as int];
   }
 
   String? _wire2api_opt_String(dynamic raw) {
@@ -839,6 +883,23 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
           ffi.Pointer<wire_uint_8_list>,
           ffi.Pointer<wire_uint_8_list>,
           ffi.Pointer<wire_list___record__String_operation_value>)>();
+
+  void wire_decode_operation(
+    int port_,
+    ffi.Pointer<wire_uint_8_list> operation,
+  ) {
+    return _wire_decode_operation(
+      port_,
+      operation,
+    );
+  }
+
+  late final _wire_decode_operationPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(ffi.Int64,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_decode_operation');
+  late final _wire_decode_operation = _wire_decode_operationPtr
+      .asFunction<void Function(int, ffi.Pointer<wire_uint_8_list>)>();
 
   void wire_start_node(
     int port_,

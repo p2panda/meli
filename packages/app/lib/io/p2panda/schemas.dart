@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:app/io/p2panda/publish.dart';
 import 'package:toml/toml.dart';
 import 'package:convert/convert.dart';
 
@@ -66,8 +67,7 @@ Future<bool> migrateSchemas() async {
 
     // Publish commit to node, this will materialize the (updated) schema on
     // the node and give us a new GraphQL API
-    await queries.publish(
-        commit['entry'] as String, commit['operation'] as String);
+    await publishRaw(commit['entry'] as String, commit['operation'] as String);
     didMigrate = true;
   }
 

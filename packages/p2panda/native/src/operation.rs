@@ -17,6 +17,17 @@ impl From<OperationAction> for operation::OperationAction {
     }
 }
 
+/// Convert operation action from internal Rust type to external FFI Dart type.
+impl From<operation::OperationAction> for OperationAction {
+    fn from(value: operation::OperationAction) -> OperationAction {
+        match value {
+            operation::OperationAction::Create => OperationAction::Create,
+            operation::OperationAction::Update => OperationAction::Update,
+            operation::OperationAction::Delete => OperationAction::Delete,
+        }
+    }
+}
+
 /// Convert operation value from external FFI Dart type to internal Rust type.
 impl TryFrom<OperationValue> for operation::OperationValue {
     type Error = Error;

@@ -12,6 +12,7 @@ use p2panda_rs::entry::traits::{AsEncodedEntry, AsEntry};
 use p2panda_rs::hash::Hash;
 pub use p2panda_rs::identity::KeyPair as PandaKeyPair;
 use p2panda_rs::operation;
+use p2panda_rs::operation::traits::{Actionable, Schematic};
 use p2panda_rs::operation::EncodedOperation;
 use p2panda_rs::schema::SchemaId;
 use tokio::sync::OnceCell;
@@ -189,6 +190,18 @@ pub fn encode_operation(
 
     let encoded_operation = operation::encode::encode_operation(&operation)?;
     Ok(encoded_operation.into_bytes())
+}
+
+/// Decodes an p2panda operation, returning it's action and schema id.
+pub fn decode_operation(operation: Vec<u8>) -> Result<(OperationAction, String)> {
+    let encoded_operation = EncodedOperation::from_bytes(&operation);
+    let plain_operation = operation::decode::decode_operation(&encoded_operation)?;
+
+    // @TODO: This does not return the operation fields yet
+    Ok((
+        plain_operation.action().into(),
+        plain_operation.schema_id().to_string(),
+    ))
 }
 
 /// Runs a p2panda node in a separate thread in the background.
