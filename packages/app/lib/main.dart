@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/logic/schema_ids.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:app/app.dart';
 import 'package:app/io/p2panda/node.dart';
 import 'package:app/io/p2panda/schemas.dart';
+import 'package:app/models/schema_ids.dart';
 
 void main() async {
   // Wait until we've established connection to native Flutter backend. We need

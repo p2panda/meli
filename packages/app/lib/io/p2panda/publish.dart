@@ -18,19 +18,20 @@ typedef OperationFields = List<(FieldName, OperationValue)>;
 typedef DocumentViewId = String;
 
 /// Generates and publishes a CREATE operation on the p2panda node.
-Future<void> create(SchemaId schemaId, OperationFields fields) async {
-  await _publish(OperationAction.Create, schemaId, fields, null);
+Future<DocumentViewId> create(SchemaId schemaId, OperationFields fields) async {
+  return await _publish(OperationAction.Create, schemaId, fields, null);
 }
 
 /// Generates and publishes an UPDATE operation on the p2panda node.
-Future<void> update(
+Future<DocumentViewId> update(
     SchemaId schemaId, DocumentViewId previous, OperationFields fields) async {
-  await _publish(OperationAction.Update, schemaId, fields, previous);
+  return await _publish(OperationAction.Update, schemaId, fields, previous);
 }
 
 /// Generates and publishes a DELETE operation on the p2panda node.
-Future<void> delete(SchemaId schemaId, DocumentViewId previous) async {
-  await _publish(OperationAction.Delete, schemaId, null, previous);
+Future<DocumentViewId> delete(
+    SchemaId schemaId, DocumentViewId previous) async {
+  return await _publish(OperationAction.Delete, schemaId, null, previous);
 }
 
 /// Internal method to publish a p2panda operation and entry on the node.
@@ -38,7 +39,7 @@ Future<void> delete(SchemaId schemaId, DocumentViewId previous) async {
 /// This method automatically retreives the required entry arguments from
 /// the node, encodes and signs all data correctly and sends it off via
 /// GraphQL.
-Future<void> _publish(OperationAction action, SchemaId schemaId,
+Future<DocumentViewId> _publish(OperationAction action, SchemaId schemaId,
     OperationFields? fields, DocumentViewId? previous) async {
   // Create and encode p2panda operation
   final encodedOperation = await p2panda.encodeOperation(
@@ -59,5 +60,9 @@ Future<void> _publish(OperationAction action, SchemaId schemaId,
       keyPair: _keyPair);
 
   // ... finally publish entry and operation
-  await queries.publish(hex.encode(encodedEntry), hex.encode(encodedOperation));
+  final result = await queries.publish(
+      hex.encode(encodedEntry), hex.encode(encodedOperation));
+
+  // Return last document view id
+  return result.backlink!;
 }

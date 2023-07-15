@@ -55,32 +55,34 @@ NextArgs _toNextArgs(dynamic data) {
       skiplink: data['skiplink'] as String?);
 }
 
-/// Sends a GraphQL `publish` mutation to the node.
-Future<NextArgs> publish(String entry, String operation) async {
-  final options = QueryOptions(document: gql(PUBLISH_MUTATION), variables: {
-    'entry': entry,
-    'operation': operation,
-  });
+Future<Map<String, dynamic>> query(
+    {required String query, Map<String, dynamic> variables = const {}}) async {
+  final options = QueryOptions(document: gql(query), variables: variables);
   final result = await client.query(options);
 
   if (result.hasException) {
     throw Exception(result.exception);
   }
 
-  return _toNextArgs(result.data?['publish']);
+  return result.data as Map<String, dynamic>;
+}
+
+/// Sends a GraphQL `publish` mutation to the node.
+Future<NextArgs> publish(String entry, String operation) async {
+  final data = await query(query: PUBLISH_MUTATION, variables: {
+    'entry': entry,
+    'operation': operation,
+  });
+
+  return _toNextArgs(data['publish']);
 }
 
 /// Sends a GraphQL `nextArgs` query to the node.
 Future<NextArgs> nextArgs(String publicKey, String? viewId) async {
-  final options = QueryOptions(document: gql(NEXT_ARGS_QUERY), variables: {
+  final data = await query(query: NEXT_ARGS_QUERY, variables: {
     'publicKey': publicKey,
     'viewId': viewId,
   });
-  final result = await client.query(options);
 
-  if (result.hasException) {
-    throw Exception(result.exception);
-  }
-
-  return _toNextArgs(result.data?['nextArgs']);
+  return _toNextArgs(data['nextArgs']);
 }
