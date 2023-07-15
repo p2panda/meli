@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import 'dart:typed_data';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -49,8 +51,8 @@ Future<bool> migrateSchemas() async {
     BigInt logId = BigInt.parse(entry.$2);
     BigInt seqNum = BigInt.parse(entry.$3);
 
-    // Check if node already knows about this entry
     try {
+      // Check if node already knows about this entry
       final nextArgs =
           await queries.nextArgs(publicKey, commit['entry_hash'] as String);
 

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import 'package:app/io/p2panda/schemas.dart';
 
 /// Schema ids used by the meli app.

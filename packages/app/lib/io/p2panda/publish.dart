@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import 'package:convert/convert.dart';
 import 'package:p2panda_flutter/p2panda_flutter.dart';
 
