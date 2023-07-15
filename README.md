@@ -18,7 +18,13 @@
 
 <br/>
 
-This Android app is a collaborative database for sighting and categorisation of [Meliponini](https://en.wikipedia.org/wiki/Stingless_bee) bee species in the Brazilian Amazon. This project is a collaboration between [p2panda](https://p2panda.org/) and [Meli](https://www.meli-bees.org/). The app runs a full p2panda node and allows decentralised and offline-first collaboration among users, it is developed with Flutter and uses the p2panda SDK for its p2p functionalities.
+This Android app is a collaborative database for sighting and categorisation of
+[Meliponini](https://en.wikipedia.org/wiki/Stingless_bee) bee species in the
+Brazilian Amazon. This project is a collaboration between
+[p2panda](https://p2panda.org/) and [Meli](https://www.meli-bees.org/). The app
+runs a full p2panda node and allows decentralised and offline-first
+collaboration among users, it is developed with Flutter and uses the p2panda
+SDK for its p2p functionalities.
 
 ## Development
 
@@ -75,17 +81,20 @@ Use the following commands for FFI package development:
 # After changing the Rust code in `packages/p2panda/native` re-build the
 # library. This automatically installs Android compilation targets and the
 # cargo-ndk tool if missing.
+#
+# Additionally this script moves the native android libraries into the `app`
+# folder, where they are needed.
 melos build
 
-# Bump the package versions after your changes. We're not (yet) releasing the
-# Dart and Flutter packages publicly, but versioning is still required for the
-# Gradle building pipeline to detect changes to the external, native libraries.
+# Bump the package versions for release (we're not releasing yet).
 melos version
 ```
 
 ### Flutter App
 
-It is recommended to develop or run the project with [Android Studio](https://developer.android.com/studio) or with the [`flutter-cli`] command line tool.
+It is recommended to develop or run the project with [Android
+Studio](https://developer.android.com/studio) or with the [`flutter-cli`]
+command line tool.
 
 * [`packages/app`](packages/app): Android application built with Flutter
 
@@ -105,6 +114,13 @@ flutter devices
 flutter run --device-id <id>
 ```
 
+### Schema
+
+The p2panda schemas and migrations are managed in the `schemas` folder with the
+[`fishy`] command line tool.
+
+* [`schemas`](schemas): Meli Schemas
+
 ## License
 
 GNU Affero General Public License v3.0 [`AGPL-3.0-or-later`](LICENSE)
@@ -120,6 +136,7 @@ research and innovation programme within the framework of the NGI-POINTER
 Project funded under grant agreement No 871528*
 
 [`aquadoggo`]: https://github.com/p2panda/aquadoggo
+[`fishy`]: https://github.com/adzialocha/fishy
 [`flutter-cli`]: https://docs.flutter.dev/reference/flutter-cli
 [`flutter_rust_bridge`]: https://github.com/fzyzcjy/flutter_rust_bridge
 [`p2panda-rs`]: https://github.com/p2panda/p2panda
