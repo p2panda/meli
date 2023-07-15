@@ -2,29 +2,35 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:app/router.dart';
+import 'package:app/io/graphql/graphql.dart' as graphql;
 
 class MeliApp extends StatelessWidget {
   MeliApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      // Register router for navigation
-      routerDelegate: router.routerDelegate,
-      routeInformationProvider: router.routeInformationProvider,
-      routeInformationParser: router.routeInformationParser,
+    ValueNotifier<GraphQLClient> client = ValueNotifier(graphql.client);
 
-      // Setup localization
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
+    return GraphQLProvider(
+        client: client,
+        child: MaterialApp.router(
+          // Register router for navigation
+          routerDelegate: router.routerDelegate,
+          routeInformationProvider: router.routeInformationProvider,
+          routeInformationParser: router.routeInformationParser,
 
-      // Material theme configuration
-      theme: ThemeData(useMaterial3: true),
+          // Setup localization
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
 
-      // Disable "debug" banner shown in top right corner during development
-      debugShowCheckedModeBanner: false,
-    );
+          // Material theme configuration
+          theme: ThemeData(useMaterial3: true),
+
+          // Disable "debug" banner shown in top right corner during development
+          debugShowCheckedModeBanner: false,
+        ));
   }
 }

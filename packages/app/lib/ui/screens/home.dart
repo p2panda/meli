@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/models/sightings.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/scaffold.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
@@ -78,56 +80,47 @@ class Settings extends StatelessWidget {
   }
 }
 
-class SightingsList extends StatelessWidget {
+class SightingsList extends StatefulWidget {
+  SightingsList({super.key});
+
+  @override
+  State<SightingsList> createState() => _SightingsListState();
+}
+
+class _SightingsListState extends State<SightingsList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-        decoration: BoxDecoration(
-          color: MeliColors.magnolia,
-        ),
-        child:
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Card(
-              child: Container(
-                  padding: const EdgeInsets.all(20.0), child: Text("Hello"))),
-          Card(
-              child: Container(
-                  padding: const EdgeInsets.all(20.0), child: Text("Hello"))),
-          Card(
-              child: Container(
-                  padding: const EdgeInsets.all(20.0), child: Text("Hello"))),
-          Card(
-              child: Container(
-                  padding: const EdgeInsets.all(20.0), child: Text("Hello"))),
-          Card(
-              child: Container(
-                  padding: const EdgeInsets.all(20.0), child: Text("Hello"))),
-          Card(
-              child: Container(
-                  padding: const EdgeInsets.all(20.0), child: Text("Hello"))),
-          Card(
-              child: Container(
-                  padding: const EdgeInsets.all(20.0), child: Text("Hello"))),
-          Card(
-              child: Container(
-                  padding: const EdgeInsets.all(20.0), child: Text("Hello"))),
-          Card(
-              child: Container(
-                  padding: const EdgeInsets.all(20.0), child: Text("Hello"))),
-          Card(
-              child: Container(
-                  padding: const EdgeInsets.all(20.0), child: Text("Hello"))),
-          Card(
-              child: Container(
-                  padding: const EdgeInsets.all(20.0), child: Text("Hello"))),
-          Card(
-              child: Container(
-                  padding: const EdgeInsets.all(20.0), child: Text("Hello"))),
-          Card(
-              child: Container(
-                  padding: const EdgeInsets.all(20.0), child: Text("Hello"))),
-        ]));
+      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+      decoration: BoxDecoration(
+        color: MeliColors.magnolia,
+      ),
+      child: Query(
+          options: QueryOptions(
+              document: gql(allSightingsQuery),
+              pollInterval: const Duration(seconds: 1)),
+          builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
+            if (result.hasException) {
+              return Text(result.exception.toString());
+            }
+
+            if (result.isLoading) {
+              return const Text('Loading ...');
+            }
+
+            List<dynamic> documents =
+                result.data?['sightings']?['documents'] as List<dynamic>;
+
+            return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  ...documents.map((document) => Card(
+                      child: Container(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Text(document?['fields']?['name'] as String))))
+                ]);
+          }),
+    );
   }
 }
 
