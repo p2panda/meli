@@ -1,0 +1,5 @@
+[sightings]
+description = "Sightings of meliponini bees in the wild"
+
+[sightings.fields]
+name = { type = "str" }
