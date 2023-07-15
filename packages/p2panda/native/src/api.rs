@@ -6,12 +6,14 @@ use aquadoggo::Configuration;
 use ed25519_dalek::SecretKey;
 use flutter_rust_bridge::RustOpaque;
 use log::LevelFilter;
+use p2panda_rs::document::DocumentViewId;
 use p2panda_rs::entry;
-use p2panda_rs::entry::traits::AsEncodedEntry;
+use p2panda_rs::entry::traits::{AsEncodedEntry, AsEntry};
 use p2panda_rs::hash::Hash;
 pub use p2panda_rs::identity::KeyPair as PandaKeyPair;
 use p2panda_rs::operation;
 use p2panda_rs::operation::EncodedOperation;
+use p2panda_rs::schema::SchemaId;
 use tokio::sync::OnceCell;
 
 use crate::node::Manager;
@@ -19,7 +21,6 @@ use crate::node::Manager;
 static NODE_INSTANCE: OnceCell<Manager> = OnceCell::const_new();
 
 pub type HexString = String;
-pub type JsonString = String;
 
 /// Ed25519 key pair for authors to sign p2panda entries with.
 pub struct KeyPair(pub RustOpaque<PandaKeyPair>);
@@ -49,9 +50,13 @@ impl KeyPair {
 }
 
 /// Create, sign and encode a p2panda entry.
+///
+/// Takes large u64 integers for log id and seq num as strings. If we would declare them as u64
+/// here they will get converted to int which is not a real native u64 integer in Dart! We pass
+/// them over as strings and then safely convert them to u64 internally.
 pub fn sign_and_encode_entry(
-    log_id: u64,
-    seq_num: u64,
+    log_id: String,
+    seq_num: String,
     skiplink_hash: Option<HexString>,
     backlink_hash: Option<HexString>,
     payload: Vec<u8>,
@@ -74,8 +79,8 @@ pub fn sign_and_encode_entry(
     };
 
     let encoded_entry = entry::encode::sign_and_encode_entry(
-        &log_id.into(),
-        &seq_num.try_into()?,
+        &log_id.parse()?,
+        &seq_num.parse()?,
         skiplink_hash.as_ref(),
         backlink_hash.as_ref(),
         &EncodedOperation::from_bytes(&payload),
@@ -85,13 +90,110 @@ pub fn sign_and_encode_entry(
     Ok(encoded_entry.into_bytes())
 }
 
+/// Decodes a p2panda entry.
+///
+/// Returns large u64 integers for log id and seq num as strings. If we would declare them as u64
+/// here they will get converted to int which is not a real native u64 integer in Dart! We pass
+/// them over as strings and then safely convert them to `BigInt` in the Dart world.
+pub fn decode_entry(
+    entry: Vec<u8>,
+) -> Result<(String, String, String, Option<String>, Option<String>)> {
+    let encoded_entry = entry::EncodedEntry::from_bytes(&entry);
+    let entry = entry::decode::decode_entry(&encoded_entry)?;
+
+    Ok((
+        entry.public_key().to_string(),
+        format!("{}", entry.log_id().as_u64()),
+        format!("{}", entry.seq_num().as_u64()),
+        entry.backlink().map(|hash| hash.to_string()),
+        entry.skiplink().map(|hash| hash.to_string()),
+    ))
+}
+
+/// Operations are categorised by their action type.
+///
+/// An action defines the operation format and if this operation creates, updates or deletes a data
+/// document.
+pub enum OperationAction {
+    /// Operation creates a new document.
+    Create,
+
+    /// Operation updates an existing document.
+    Update,
+
+    /// Operation deletes an existing document.
+    Delete,
+}
+
+/// Enum of possible data types which can be added to the operations fields as values.
+pub enum OperationValue {
+    /// Boolean value.
+    Boolean(bool),
+
+    /// Floating point value.
+    Float(f64),
+
+    /// Signed integer value.
+    Integer(i64),
+
+    /// String value.
+    String(String),
+
+    /// Reference to a document.
+    Relation(HexString),
+
+    /// Reference to a list of documents.
+    RelationList(Vec<HexString>),
+
+    /// Reference to a document view.
+    ///
+    /// Multiple operation ids are separated by an understore ('_').
+    PinnedRelation(HexString),
+
+    /// Reference to a list of document views.
+    ///
+    /// Multiple operation ids are separated by an understore ('_').
+    PinnedRelationList(Vec<HexString>),
+}
+
 /// Encode a p2panda operation parsed from JSON input.
-pub fn encode_operation(json: JsonString) -> Result<Vec<u8>> {
-    let plain_operation = serde_json::from_str(&json)?;
-    let encoded_operation = operation::encode::encode_plain_operation(&plain_operation)?;
+pub fn encode_operation(
+    action: OperationAction,
+    schema_id: String,
+    previous: Option<String>,
+    fields: Option<Vec<(String, OperationValue)>>,
+) -> Result<Vec<u8>> {
+    let schema_id: SchemaId = schema_id.parse()?;
+
+    let mut builder = operation::OperationBuilder::new(&schema_id).action(action.into());
+
+    if let Some(view_id_str) = previous {
+        let view_id: DocumentViewId = view_id_str.parse()?;
+        builder = builder.previous(&view_id);
+    };
+
+    if let Some(fields) = fields {
+        let fields: Result<Vec<(String, operation::OperationValue)>> = fields
+            .into_iter()
+            .map(|(field_name, field_value)| {
+                // Convert operation value from external FFI Dart type to internal Rust type
+                let field_value: operation::OperationValue = field_value.try_into()?;
+                Ok((field_name, field_value))
+            })
+            .collect();
+
+        builder = builder.fields(fields?.as_ref());
+    }
+
+    let operation = builder.build()?;
+
+    let encoded_operation = operation::encode::encode_operation(&operation)?;
     Ok(encoded_operation.into_bytes())
 }
 
+/// Runs a p2panda node in a separate thread in the background.
+///
+/// Supports Android logging for logs coming from the node.
 pub fn start_node(key_pair: KeyPair, base_path: String) -> Result<()> {
     // Initialise logging for Android developer console
     android_logger::init_once(
@@ -121,6 +223,7 @@ pub fn start_node(key_pair: KeyPair, base_path: String) -> Result<()> {
     Ok(())
 }
 
+/// Turns off running node.
 pub fn shutdown_node() {
     match NODE_INSTANCE.get() {
         Some(manager) => manager.shutdown(),

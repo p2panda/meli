@@ -20,8 +20,8 @@ mixin _$OperationValue {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(bool field0) boolean,
-    required TResult Function(int field0) integer,
     required TResult Function(double field0) float,
+    required TResult Function(int field0) integer,
     required TResult Function(String field0) string,
     required TResult Function(String field0) relation,
     required TResult Function(List<String> field0) relationList,
@@ -32,8 +32,8 @@ mixin _$OperationValue {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(bool field0)? boolean,
-    TResult? Function(int field0)? integer,
     TResult? Function(double field0)? float,
+    TResult? Function(int field0)? integer,
     TResult? Function(String field0)? string,
     TResult? Function(String field0)? relation,
     TResult? Function(List<String> field0)? relationList,
@@ -44,8 +44,8 @@ mixin _$OperationValue {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(bool field0)? boolean,
-    TResult Function(int field0)? integer,
     TResult Function(double field0)? float,
+    TResult Function(int field0)? integer,
     TResult Function(String field0)? string,
     TResult Function(String field0)? relation,
     TResult Function(List<String> field0)? relationList,
@@ -57,8 +57,8 @@ mixin _$OperationValue {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(OperationValue_Boolean value) boolean,
-    required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_Float value) float,
+    required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_String value) string,
     required TResult Function(OperationValue_Relation value) relation,
     required TResult Function(OperationValue_RelationList value) relationList,
@@ -71,8 +71,8 @@ mixin _$OperationValue {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OperationValue_Boolean value)? boolean,
-    TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_Float value)? float,
+    TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_String value)? string,
     TResult? Function(OperationValue_Relation value)? relation,
     TResult? Function(OperationValue_RelationList value)? relationList,
@@ -84,8 +84,8 @@ mixin _$OperationValue {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OperationValue_Boolean value)? boolean,
-    TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_Float value)? float,
+    TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_String value)? string,
     TResult Function(OperationValue_Relation value)? relation,
     TResult Function(OperationValue_RelationList value)? relationList,
@@ -181,8 +181,8 @@ class _$OperationValue_Boolean implements OperationValue_Boolean {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(bool field0) boolean,
-    required TResult Function(int field0) integer,
     required TResult Function(double field0) float,
+    required TResult Function(int field0) integer,
     required TResult Function(String field0) string,
     required TResult Function(String field0) relation,
     required TResult Function(List<String> field0) relationList,
@@ -196,8 +196,8 @@ class _$OperationValue_Boolean implements OperationValue_Boolean {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(bool field0)? boolean,
-    TResult? Function(int field0)? integer,
     TResult? Function(double field0)? float,
+    TResult? Function(int field0)? integer,
     TResult? Function(String field0)? string,
     TResult? Function(String field0)? relation,
     TResult? Function(List<String> field0)? relationList,
@@ -211,8 +211,8 @@ class _$OperationValue_Boolean implements OperationValue_Boolean {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(bool field0)? boolean,
-    TResult Function(int field0)? integer,
     TResult Function(double field0)? float,
+    TResult Function(int field0)? integer,
     TResult Function(String field0)? string,
     TResult Function(String field0)? relation,
     TResult Function(List<String> field0)? relationList,
@@ -230,8 +230,8 @@ class _$OperationValue_Boolean implements OperationValue_Boolean {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(OperationValue_Boolean value) boolean,
-    required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_Float value) float,
+    required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_String value) string,
     required TResult Function(OperationValue_Relation value) relation,
     required TResult Function(OperationValue_RelationList value) relationList,
@@ -247,8 +247,8 @@ class _$OperationValue_Boolean implements OperationValue_Boolean {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OperationValue_Boolean value)? boolean,
-    TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_Float value)? float,
+    TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_String value)? string,
     TResult? Function(OperationValue_Relation value)? relation,
     TResult? Function(OperationValue_RelationList value)? relationList,
@@ -263,8 +263,8 @@ class _$OperationValue_Boolean implements OperationValue_Boolean {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OperationValue_Boolean value)? boolean,
-    TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_Float value)? float,
+    TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_String value)? string,
     TResult Function(OperationValue_Relation value)? relation,
     TResult Function(OperationValue_RelationList value)? relationList,
@@ -288,182 +288,6 @@ abstract class OperationValue_Boolean implements OperationValue {
   bool get field0;
   @JsonKey(ignore: true)
   _$$OperationValue_BooleanCopyWith<_$OperationValue_Boolean> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$OperationValue_IntegerCopyWith<$Res> {
-  factory _$$OperationValue_IntegerCopyWith(_$OperationValue_Integer value,
-          $Res Function(_$OperationValue_Integer) then) =
-      __$$OperationValue_IntegerCopyWithImpl<$Res>;
-  @useResult
-  $Res call({int field0});
-}
-
-/// @nodoc
-class __$$OperationValue_IntegerCopyWithImpl<$Res>
-    extends _$OperationValueCopyWithImpl<$Res, _$OperationValue_Integer>
-    implements _$$OperationValue_IntegerCopyWith<$Res> {
-  __$$OperationValue_IntegerCopyWithImpl(_$OperationValue_Integer _value,
-      $Res Function(_$OperationValue_Integer) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? field0 = null,
-  }) {
-    return _then(_$OperationValue_Integer(
-      null == field0
-          ? _value.field0
-          : field0 // ignore: cast_nullable_to_non_nullable
-              as int,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$OperationValue_Integer implements OperationValue_Integer {
-  const _$OperationValue_Integer(this.field0);
-
-  @override
-  final int field0;
-
-  @override
-  String toString() {
-    return 'OperationValue.integer(field0: $field0)';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$OperationValue_Integer &&
-            (identical(other.field0, field0) || other.field0 == field0));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, field0);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$OperationValue_IntegerCopyWith<_$OperationValue_Integer> get copyWith =>
-      __$$OperationValue_IntegerCopyWithImpl<_$OperationValue_Integer>(
-          this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(bool field0) boolean,
-    required TResult Function(int field0) integer,
-    required TResult Function(double field0) float,
-    required TResult Function(String field0) string,
-    required TResult Function(String field0) relation,
-    required TResult Function(List<String> field0) relationList,
-    required TResult Function(String field0) pinnedRelation,
-    required TResult Function(List<String> field0) pinnedRelationList,
-  }) {
-    return integer(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(bool field0)? boolean,
-    TResult? Function(int field0)? integer,
-    TResult? Function(double field0)? float,
-    TResult? Function(String field0)? string,
-    TResult? Function(String field0)? relation,
-    TResult? Function(List<String> field0)? relationList,
-    TResult? Function(String field0)? pinnedRelation,
-    TResult? Function(List<String> field0)? pinnedRelationList,
-  }) {
-    return integer?.call(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(bool field0)? boolean,
-    TResult Function(int field0)? integer,
-    TResult Function(double field0)? float,
-    TResult Function(String field0)? string,
-    TResult Function(String field0)? relation,
-    TResult Function(List<String> field0)? relationList,
-    TResult Function(String field0)? pinnedRelation,
-    TResult Function(List<String> field0)? pinnedRelationList,
-    required TResult orElse(),
-  }) {
-    if (integer != null) {
-      return integer(field0);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(OperationValue_Boolean value) boolean,
-    required TResult Function(OperationValue_Integer value) integer,
-    required TResult Function(OperationValue_Float value) float,
-    required TResult Function(OperationValue_String value) string,
-    required TResult Function(OperationValue_Relation value) relation,
-    required TResult Function(OperationValue_RelationList value) relationList,
-    required TResult Function(OperationValue_PinnedRelation value)
-        pinnedRelation,
-    required TResult Function(OperationValue_PinnedRelationList value)
-        pinnedRelationList,
-  }) {
-    return integer(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(OperationValue_Boolean value)? boolean,
-    TResult? Function(OperationValue_Integer value)? integer,
-    TResult? Function(OperationValue_Float value)? float,
-    TResult? Function(OperationValue_String value)? string,
-    TResult? Function(OperationValue_Relation value)? relation,
-    TResult? Function(OperationValue_RelationList value)? relationList,
-    TResult? Function(OperationValue_PinnedRelation value)? pinnedRelation,
-    TResult? Function(OperationValue_PinnedRelationList value)?
-        pinnedRelationList,
-  }) {
-    return integer?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(OperationValue_Boolean value)? boolean,
-    TResult Function(OperationValue_Integer value)? integer,
-    TResult Function(OperationValue_Float value)? float,
-    TResult Function(OperationValue_String value)? string,
-    TResult Function(OperationValue_Relation value)? relation,
-    TResult Function(OperationValue_RelationList value)? relationList,
-    TResult Function(OperationValue_PinnedRelation value)? pinnedRelation,
-    TResult Function(OperationValue_PinnedRelationList value)?
-        pinnedRelationList,
-    required TResult orElse(),
-  }) {
-    if (integer != null) {
-      return integer(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class OperationValue_Integer implements OperationValue {
-  const factory OperationValue_Integer(final int field0) =
-      _$OperationValue_Integer;
-
-  @override
-  int get field0;
-  @JsonKey(ignore: true)
-  _$$OperationValue_IntegerCopyWith<_$OperationValue_Integer> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -533,8 +357,8 @@ class _$OperationValue_Float implements OperationValue_Float {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(bool field0) boolean,
-    required TResult Function(int field0) integer,
     required TResult Function(double field0) float,
+    required TResult Function(int field0) integer,
     required TResult Function(String field0) string,
     required TResult Function(String field0) relation,
     required TResult Function(List<String> field0) relationList,
@@ -548,8 +372,8 @@ class _$OperationValue_Float implements OperationValue_Float {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(bool field0)? boolean,
-    TResult? Function(int field0)? integer,
     TResult? Function(double field0)? float,
+    TResult? Function(int field0)? integer,
     TResult? Function(String field0)? string,
     TResult? Function(String field0)? relation,
     TResult? Function(List<String> field0)? relationList,
@@ -563,8 +387,8 @@ class _$OperationValue_Float implements OperationValue_Float {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(bool field0)? boolean,
-    TResult Function(int field0)? integer,
     TResult Function(double field0)? float,
+    TResult Function(int field0)? integer,
     TResult Function(String field0)? string,
     TResult Function(String field0)? relation,
     TResult Function(List<String> field0)? relationList,
@@ -582,8 +406,8 @@ class _$OperationValue_Float implements OperationValue_Float {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(OperationValue_Boolean value) boolean,
-    required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_Float value) float,
+    required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_String value) string,
     required TResult Function(OperationValue_Relation value) relation,
     required TResult Function(OperationValue_RelationList value) relationList,
@@ -599,8 +423,8 @@ class _$OperationValue_Float implements OperationValue_Float {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OperationValue_Boolean value)? boolean,
-    TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_Float value)? float,
+    TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_String value)? string,
     TResult? Function(OperationValue_Relation value)? relation,
     TResult? Function(OperationValue_RelationList value)? relationList,
@@ -615,8 +439,8 @@ class _$OperationValue_Float implements OperationValue_Float {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OperationValue_Boolean value)? boolean,
-    TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_Float value)? float,
+    TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_String value)? string,
     TResult Function(OperationValue_Relation value)? relation,
     TResult Function(OperationValue_RelationList value)? relationList,
@@ -640,6 +464,182 @@ abstract class OperationValue_Float implements OperationValue {
   double get field0;
   @JsonKey(ignore: true)
   _$$OperationValue_FloatCopyWith<_$OperationValue_Float> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$OperationValue_IntegerCopyWith<$Res> {
+  factory _$$OperationValue_IntegerCopyWith(_$OperationValue_Integer value,
+          $Res Function(_$OperationValue_Integer) then) =
+      __$$OperationValue_IntegerCopyWithImpl<$Res>;
+  @useResult
+  $Res call({int field0});
+}
+
+/// @nodoc
+class __$$OperationValue_IntegerCopyWithImpl<$Res>
+    extends _$OperationValueCopyWithImpl<$Res, _$OperationValue_Integer>
+    implements _$$OperationValue_IntegerCopyWith<$Res> {
+  __$$OperationValue_IntegerCopyWithImpl(_$OperationValue_Integer _value,
+      $Res Function(_$OperationValue_Integer) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$OperationValue_Integer(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$OperationValue_Integer implements OperationValue_Integer {
+  const _$OperationValue_Integer(this.field0);
+
+  @override
+  final int field0;
+
+  @override
+  String toString() {
+    return 'OperationValue.integer(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$OperationValue_Integer &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$OperationValue_IntegerCopyWith<_$OperationValue_Integer> get copyWith =>
+      __$$OperationValue_IntegerCopyWithImpl<_$OperationValue_Integer>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(bool field0) boolean,
+    required TResult Function(double field0) float,
+    required TResult Function(int field0) integer,
+    required TResult Function(String field0) string,
+    required TResult Function(String field0) relation,
+    required TResult Function(List<String> field0) relationList,
+    required TResult Function(String field0) pinnedRelation,
+    required TResult Function(List<String> field0) pinnedRelationList,
+  }) {
+    return integer(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(bool field0)? boolean,
+    TResult? Function(double field0)? float,
+    TResult? Function(int field0)? integer,
+    TResult? Function(String field0)? string,
+    TResult? Function(String field0)? relation,
+    TResult? Function(List<String> field0)? relationList,
+    TResult? Function(String field0)? pinnedRelation,
+    TResult? Function(List<String> field0)? pinnedRelationList,
+  }) {
+    return integer?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(bool field0)? boolean,
+    TResult Function(double field0)? float,
+    TResult Function(int field0)? integer,
+    TResult Function(String field0)? string,
+    TResult Function(String field0)? relation,
+    TResult Function(List<String> field0)? relationList,
+    TResult Function(String field0)? pinnedRelation,
+    TResult Function(List<String> field0)? pinnedRelationList,
+    required TResult orElse(),
+  }) {
+    if (integer != null) {
+      return integer(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(OperationValue_Boolean value) boolean,
+    required TResult Function(OperationValue_Float value) float,
+    required TResult Function(OperationValue_Integer value) integer,
+    required TResult Function(OperationValue_String value) string,
+    required TResult Function(OperationValue_Relation value) relation,
+    required TResult Function(OperationValue_RelationList value) relationList,
+    required TResult Function(OperationValue_PinnedRelation value)
+        pinnedRelation,
+    required TResult Function(OperationValue_PinnedRelationList value)
+        pinnedRelationList,
+  }) {
+    return integer(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(OperationValue_Boolean value)? boolean,
+    TResult? Function(OperationValue_Float value)? float,
+    TResult? Function(OperationValue_Integer value)? integer,
+    TResult? Function(OperationValue_String value)? string,
+    TResult? Function(OperationValue_Relation value)? relation,
+    TResult? Function(OperationValue_RelationList value)? relationList,
+    TResult? Function(OperationValue_PinnedRelation value)? pinnedRelation,
+    TResult? Function(OperationValue_PinnedRelationList value)?
+        pinnedRelationList,
+  }) {
+    return integer?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(OperationValue_Boolean value)? boolean,
+    TResult Function(OperationValue_Float value)? float,
+    TResult Function(OperationValue_Integer value)? integer,
+    TResult Function(OperationValue_String value)? string,
+    TResult Function(OperationValue_Relation value)? relation,
+    TResult Function(OperationValue_RelationList value)? relationList,
+    TResult Function(OperationValue_PinnedRelation value)? pinnedRelation,
+    TResult Function(OperationValue_PinnedRelationList value)?
+        pinnedRelationList,
+    required TResult orElse(),
+  }) {
+    if (integer != null) {
+      return integer(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class OperationValue_Integer implements OperationValue {
+  const factory OperationValue_Integer(final int field0) =
+      _$OperationValue_Integer;
+
+  @override
+  int get field0;
+  @JsonKey(ignore: true)
+  _$$OperationValue_IntegerCopyWith<_$OperationValue_Integer> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -709,8 +709,8 @@ class _$OperationValue_String implements OperationValue_String {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(bool field0) boolean,
-    required TResult Function(int field0) integer,
     required TResult Function(double field0) float,
+    required TResult Function(int field0) integer,
     required TResult Function(String field0) string,
     required TResult Function(String field0) relation,
     required TResult Function(List<String> field0) relationList,
@@ -724,8 +724,8 @@ class _$OperationValue_String implements OperationValue_String {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(bool field0)? boolean,
-    TResult? Function(int field0)? integer,
     TResult? Function(double field0)? float,
+    TResult? Function(int field0)? integer,
     TResult? Function(String field0)? string,
     TResult? Function(String field0)? relation,
     TResult? Function(List<String> field0)? relationList,
@@ -739,8 +739,8 @@ class _$OperationValue_String implements OperationValue_String {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(bool field0)? boolean,
-    TResult Function(int field0)? integer,
     TResult Function(double field0)? float,
+    TResult Function(int field0)? integer,
     TResult Function(String field0)? string,
     TResult Function(String field0)? relation,
     TResult Function(List<String> field0)? relationList,
@@ -758,8 +758,8 @@ class _$OperationValue_String implements OperationValue_String {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(OperationValue_Boolean value) boolean,
-    required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_Float value) float,
+    required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_String value) string,
     required TResult Function(OperationValue_Relation value) relation,
     required TResult Function(OperationValue_RelationList value) relationList,
@@ -775,8 +775,8 @@ class _$OperationValue_String implements OperationValue_String {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OperationValue_Boolean value)? boolean,
-    TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_Float value)? float,
+    TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_String value)? string,
     TResult? Function(OperationValue_Relation value)? relation,
     TResult? Function(OperationValue_RelationList value)? relationList,
@@ -791,8 +791,8 @@ class _$OperationValue_String implements OperationValue_String {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OperationValue_Boolean value)? boolean,
-    TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_Float value)? float,
+    TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_String value)? string,
     TResult Function(OperationValue_Relation value)? relation,
     TResult Function(OperationValue_RelationList value)? relationList,
@@ -885,8 +885,8 @@ class _$OperationValue_Relation implements OperationValue_Relation {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(bool field0) boolean,
-    required TResult Function(int field0) integer,
     required TResult Function(double field0) float,
+    required TResult Function(int field0) integer,
     required TResult Function(String field0) string,
     required TResult Function(String field0) relation,
     required TResult Function(List<String> field0) relationList,
@@ -900,8 +900,8 @@ class _$OperationValue_Relation implements OperationValue_Relation {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(bool field0)? boolean,
-    TResult? Function(int field0)? integer,
     TResult? Function(double field0)? float,
+    TResult? Function(int field0)? integer,
     TResult? Function(String field0)? string,
     TResult? Function(String field0)? relation,
     TResult? Function(List<String> field0)? relationList,
@@ -915,8 +915,8 @@ class _$OperationValue_Relation implements OperationValue_Relation {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(bool field0)? boolean,
-    TResult Function(int field0)? integer,
     TResult Function(double field0)? float,
+    TResult Function(int field0)? integer,
     TResult Function(String field0)? string,
     TResult Function(String field0)? relation,
     TResult Function(List<String> field0)? relationList,
@@ -934,8 +934,8 @@ class _$OperationValue_Relation implements OperationValue_Relation {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(OperationValue_Boolean value) boolean,
-    required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_Float value) float,
+    required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_String value) string,
     required TResult Function(OperationValue_Relation value) relation,
     required TResult Function(OperationValue_RelationList value) relationList,
@@ -951,8 +951,8 @@ class _$OperationValue_Relation implements OperationValue_Relation {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OperationValue_Boolean value)? boolean,
-    TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_Float value)? float,
+    TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_String value)? string,
     TResult? Function(OperationValue_Relation value)? relation,
     TResult? Function(OperationValue_RelationList value)? relationList,
@@ -967,8 +967,8 @@ class _$OperationValue_Relation implements OperationValue_Relation {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OperationValue_Boolean value)? boolean,
-    TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_Float value)? float,
+    TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_String value)? string,
     TResult Function(OperationValue_Relation value)? relation,
     TResult Function(OperationValue_RelationList value)? relationList,
@@ -1070,8 +1070,8 @@ class _$OperationValue_RelationList implements OperationValue_RelationList {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(bool field0) boolean,
-    required TResult Function(int field0) integer,
     required TResult Function(double field0) float,
+    required TResult Function(int field0) integer,
     required TResult Function(String field0) string,
     required TResult Function(String field0) relation,
     required TResult Function(List<String> field0) relationList,
@@ -1085,8 +1085,8 @@ class _$OperationValue_RelationList implements OperationValue_RelationList {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(bool field0)? boolean,
-    TResult? Function(int field0)? integer,
     TResult? Function(double field0)? float,
+    TResult? Function(int field0)? integer,
     TResult? Function(String field0)? string,
     TResult? Function(String field0)? relation,
     TResult? Function(List<String> field0)? relationList,
@@ -1100,8 +1100,8 @@ class _$OperationValue_RelationList implements OperationValue_RelationList {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(bool field0)? boolean,
-    TResult Function(int field0)? integer,
     TResult Function(double field0)? float,
+    TResult Function(int field0)? integer,
     TResult Function(String field0)? string,
     TResult Function(String field0)? relation,
     TResult Function(List<String> field0)? relationList,
@@ -1119,8 +1119,8 @@ class _$OperationValue_RelationList implements OperationValue_RelationList {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(OperationValue_Boolean value) boolean,
-    required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_Float value) float,
+    required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_String value) string,
     required TResult Function(OperationValue_Relation value) relation,
     required TResult Function(OperationValue_RelationList value) relationList,
@@ -1136,8 +1136,8 @@ class _$OperationValue_RelationList implements OperationValue_RelationList {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OperationValue_Boolean value)? boolean,
-    TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_Float value)? float,
+    TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_String value)? string,
     TResult? Function(OperationValue_Relation value)? relation,
     TResult? Function(OperationValue_RelationList value)? relationList,
@@ -1152,8 +1152,8 @@ class _$OperationValue_RelationList implements OperationValue_RelationList {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OperationValue_Boolean value)? boolean,
-    TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_Float value)? float,
+    TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_String value)? string,
     TResult Function(OperationValue_Relation value)? relation,
     TResult Function(OperationValue_RelationList value)? relationList,
@@ -1248,8 +1248,8 @@ class _$OperationValue_PinnedRelation implements OperationValue_PinnedRelation {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(bool field0) boolean,
-    required TResult Function(int field0) integer,
     required TResult Function(double field0) float,
+    required TResult Function(int field0) integer,
     required TResult Function(String field0) string,
     required TResult Function(String field0) relation,
     required TResult Function(List<String> field0) relationList,
@@ -1263,8 +1263,8 @@ class _$OperationValue_PinnedRelation implements OperationValue_PinnedRelation {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(bool field0)? boolean,
-    TResult? Function(int field0)? integer,
     TResult? Function(double field0)? float,
+    TResult? Function(int field0)? integer,
     TResult? Function(String field0)? string,
     TResult? Function(String field0)? relation,
     TResult? Function(List<String> field0)? relationList,
@@ -1278,8 +1278,8 @@ class _$OperationValue_PinnedRelation implements OperationValue_PinnedRelation {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(bool field0)? boolean,
-    TResult Function(int field0)? integer,
     TResult Function(double field0)? float,
+    TResult Function(int field0)? integer,
     TResult Function(String field0)? string,
     TResult Function(String field0)? relation,
     TResult Function(List<String> field0)? relationList,
@@ -1297,8 +1297,8 @@ class _$OperationValue_PinnedRelation implements OperationValue_PinnedRelation {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(OperationValue_Boolean value) boolean,
-    required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_Float value) float,
+    required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_String value) string,
     required TResult Function(OperationValue_Relation value) relation,
     required TResult Function(OperationValue_RelationList value) relationList,
@@ -1314,8 +1314,8 @@ class _$OperationValue_PinnedRelation implements OperationValue_PinnedRelation {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OperationValue_Boolean value)? boolean,
-    TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_Float value)? float,
+    TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_String value)? string,
     TResult? Function(OperationValue_Relation value)? relation,
     TResult? Function(OperationValue_RelationList value)? relationList,
@@ -1330,8 +1330,8 @@ class _$OperationValue_PinnedRelation implements OperationValue_PinnedRelation {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OperationValue_Boolean value)? boolean,
-    TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_Float value)? float,
+    TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_String value)? string,
     TResult Function(OperationValue_Relation value)? relation,
     TResult Function(OperationValue_RelationList value)? relationList,
@@ -1436,8 +1436,8 @@ class _$OperationValue_PinnedRelationList
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(bool field0) boolean,
-    required TResult Function(int field0) integer,
     required TResult Function(double field0) float,
+    required TResult Function(int field0) integer,
     required TResult Function(String field0) string,
     required TResult Function(String field0) relation,
     required TResult Function(List<String> field0) relationList,
@@ -1451,8 +1451,8 @@ class _$OperationValue_PinnedRelationList
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(bool field0)? boolean,
-    TResult? Function(int field0)? integer,
     TResult? Function(double field0)? float,
+    TResult? Function(int field0)? integer,
     TResult? Function(String field0)? string,
     TResult? Function(String field0)? relation,
     TResult? Function(List<String> field0)? relationList,
@@ -1466,8 +1466,8 @@ class _$OperationValue_PinnedRelationList
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(bool field0)? boolean,
-    TResult Function(int field0)? integer,
     TResult Function(double field0)? float,
+    TResult Function(int field0)? integer,
     TResult Function(String field0)? string,
     TResult Function(String field0)? relation,
     TResult Function(List<String> field0)? relationList,
@@ -1485,8 +1485,8 @@ class _$OperationValue_PinnedRelationList
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(OperationValue_Boolean value) boolean,
-    required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_Float value) float,
+    required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_String value) string,
     required TResult Function(OperationValue_Relation value) relation,
     required TResult Function(OperationValue_RelationList value) relationList,
@@ -1502,8 +1502,8 @@ class _$OperationValue_PinnedRelationList
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OperationValue_Boolean value)? boolean,
-    TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_Float value)? float,
+    TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_String value)? string,
     TResult? Function(OperationValue_Relation value)? relation,
     TResult? Function(OperationValue_RelationList value)? relationList,
@@ -1518,8 +1518,8 @@ class _$OperationValue_PinnedRelationList
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OperationValue_Boolean value)? boolean,
-    TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_Float value)? float,
+    TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_String value)? string,
     TResult Function(OperationValue_Relation value)? relation,
     TResult Function(OperationValue_RelationList value)? relationList,

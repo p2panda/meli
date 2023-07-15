@@ -12,10 +12,9 @@ flutter_rust_bridge_codegen = "1.78.0"
 [dependencies]
 android_logger = "0.13.1"
 anyhow = "1.0.71"
-aquadoggo = { git = "https://github.com/p2panda/aquadoggo", rev = "91e25f31ea474f4fa294b4b0ec7b9d496a5dfa6f" }
+aquadoggo = { git = "https://github.com/p2panda/aquadoggo", rev = "074d09b0157a31adbf2d3a8a63c8ae6bd542e5bd" }
 ed25519-dalek = "1.0.1"
 flutter_rust_bridge = "1.78.0"
 log = "0.4.19"
-p2panda-rs = { git = "https://github.com/p2panda/p2panda", rev = "a535ee229b367c79f18a50626c6bcab61581e32b" }
-serde_json = "1.0.100"
+p2panda-rs = { git = "https://github.com/p2panda/p2panda", rev = "24d8be7fb130eaa5bf0f4a58e3712aefe2f7baab" }
 tokio = { version = "1.28.2", features = ["rt", "rt-multi-thread", "sync", "parking_lot"] }

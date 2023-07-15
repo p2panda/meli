@@ -23,8 +23,8 @@ use std::sync::Arc;
 
 fn wire_sign_and_encode_entry_impl(
     port_: MessagePort,
-    log_id: impl Wire2Api<u64> + UnwindSafe,
-    seq_num: impl Wire2Api<u64> + UnwindSafe,
+    log_id: impl Wire2Api<String> + UnwindSafe,
+    seq_num: impl Wire2Api<String> + UnwindSafe,
     skiplink_hash: impl Wire2Api<Option<String>> + UnwindSafe,
     backlink_hash: impl Wire2Api<Option<String>> + UnwindSafe,
     payload: impl Wire2Api<Vec<u8>> + UnwindSafe,
@@ -56,7 +56,26 @@ fn wire_sign_and_encode_entry_impl(
         },
     )
 }
-fn wire_encode_operation_impl(port_: MessagePort, json: impl Wire2Api<String> + UnwindSafe) {
+fn wire_decode_entry_impl(port_: MessagePort, entry: impl Wire2Api<Vec<u8>> + UnwindSafe) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "decode_entry",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_entry = entry.wire2api();
+            move |task_callback| decode_entry(api_entry)
+        },
+    )
+}
+fn wire_encode_operation_impl(
+    port_: MessagePort,
+    action: impl Wire2Api<OperationAction> + UnwindSafe,
+    schema_id: impl Wire2Api<String> + UnwindSafe,
+    previous: impl Wire2Api<Option<String>> + UnwindSafe,
+    fields: impl Wire2Api<Option<Vec<(String, OperationValue)>>> + UnwindSafe,
+) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap(
         WrapInfo {
             debug_name: "encode_operation",
@@ -64,8 +83,13 @@ fn wire_encode_operation_impl(port_: MessagePort, json: impl Wire2Api<String> + 
             mode: FfiCallMode::Normal,
         },
         move || {
-            let api_json = json.wire2api();
-            move |task_callback| encode_operation(api_json)
+            let api_action = action.wire2api();
+            let api_schema_id = schema_id.wire2api();
+            let api_previous = previous.wire2api();
+            let api_fields = fields.wire2api();
+            move |task_callback| {
+                encode_operation(api_action, api_schema_id, api_previous, api_fields)
+            }
         },
     )
 }
@@ -178,11 +202,39 @@ where
     }
 }
 
-impl Wire2Api<u64> for u64 {
-    fn wire2api(self) -> u64 {
+impl Wire2Api<bool> for bool {
+    fn wire2api(self) -> bool {
         self
     }
 }
+
+impl Wire2Api<f64> for f64 {
+    fn wire2api(self) -> f64 {
+        self
+    }
+}
+impl Wire2Api<i32> for i32 {
+    fn wire2api(self) -> i32 {
+        self
+    }
+}
+impl Wire2Api<i64> for i64 {
+    fn wire2api(self) -> i64 {
+        self
+    }
+}
+
+impl Wire2Api<OperationAction> for i32 {
+    fn wire2api(self) -> OperationAction {
+        match self {
+            0 => OperationAction::Create,
+            1 => OperationAction::Update,
+            2 => OperationAction::Delete,
+            _ => unreachable!("Invalid variant for OperationAction: {}", self),
+        }
+    }
+}
+
 impl Wire2Api<u8> for u8 {
     fn wire2api(self) -> u8 {
         self
@@ -212,8 +264,8 @@ mod io {
     #[no_mangle]
     pub extern "C" fn wire_sign_and_encode_entry(
         port_: i64,
-        log_id: u64,
-        seq_num: u64,
+        log_id: *mut wire_uint_8_list,
+        seq_num: *mut wire_uint_8_list,
         skiplink_hash: *mut wire_uint_8_list,
         backlink_hash: *mut wire_uint_8_list,
         payload: *mut wire_uint_8_list,
@@ -231,8 +283,19 @@ mod io {
     }
 
     #[no_mangle]
-    pub extern "C" fn wire_encode_operation(port_: i64, json: *mut wire_uint_8_list) {
-        wire_encode_operation_impl(port_, json)
+    pub extern "C" fn wire_decode_entry(port_: i64, entry: *mut wire_uint_8_list) {
+        wire_decode_entry_impl(port_, entry)
+    }
+
+    #[no_mangle]
+    pub extern "C" fn wire_encode_operation(
+        port_: i64,
+        action: i32,
+        schema_id: *mut wire_uint_8_list,
+        previous: *mut wire_uint_8_list,
+        fields: *mut wire_list___record__String_operation_value,
+    ) {
+        wire_encode_operation_impl(port_, action, schema_id, previous, fields)
     }
 
     #[no_mangle]
@@ -280,8 +343,31 @@ mod io {
     }
 
     #[no_mangle]
+    pub extern "C" fn new_StringList_0(len: i32) -> *mut wire_StringList {
+        let wrap = wire_StringList {
+            ptr: support::new_leak_vec_ptr(<*mut wire_uint_8_list>::new_with_null_ptr(), len),
+            len,
+        };
+        support::new_leak_box_ptr(wrap)
+    }
+
+    #[no_mangle]
     pub extern "C" fn new_box_autoadd_key_pair_0() -> *mut wire_KeyPair {
         support::new_leak_box_ptr(wire_KeyPair::new_with_null_ptr())
+    }
+
+    #[no_mangle]
+    pub extern "C" fn new_list___record__String_operation_value_0(
+        len: i32,
+    ) -> *mut wire_list___record__String_operation_value {
+        let wrap = wire_list___record__String_operation_value {
+            ptr: support::new_leak_vec_ptr(
+                <wire___record__String_operation_value>::new_with_null_ptr(),
+                len,
+            ),
+            len,
+        };
+        support::new_leak_box_ptr(wrap)
     }
 
     #[no_mangle]
@@ -323,15 +409,88 @@ mod io {
             String::from_utf8_lossy(&vec).into_owned()
         }
     }
+    impl Wire2Api<Vec<String>> for *mut wire_StringList {
+        fn wire2api(self) -> Vec<String> {
+            let vec = unsafe {
+                let wrap = support::box_from_leak_ptr(self);
+                support::vec_from_leak_ptr(wrap.ptr, wrap.len)
+            };
+            vec.into_iter().map(Wire2Api::wire2api).collect()
+        }
+    }
+    impl Wire2Api<(String, OperationValue)> for wire___record__String_operation_value {
+        fn wire2api(self) -> (String, OperationValue) {
+            (self.field0.wire2api(), self.field1.wire2api())
+        }
+    }
+
     impl Wire2Api<KeyPair> for *mut wire_KeyPair {
         fn wire2api(self) -> KeyPair {
             let wrap = unsafe { support::box_from_leak_ptr(self) };
             Wire2Api::<KeyPair>::wire2api(*wrap).into()
         }
     }
+
     impl Wire2Api<KeyPair> for wire_KeyPair {
         fn wire2api(self) -> KeyPair {
             KeyPair(self.field0.wire2api())
+        }
+    }
+    impl Wire2Api<Vec<(String, OperationValue)>> for *mut wire_list___record__String_operation_value {
+        fn wire2api(self) -> Vec<(String, OperationValue)> {
+            let vec = unsafe {
+                let wrap = support::box_from_leak_ptr(self);
+                support::vec_from_leak_ptr(wrap.ptr, wrap.len)
+            };
+            vec.into_iter().map(Wire2Api::wire2api).collect()
+        }
+    }
+
+    impl Wire2Api<OperationValue> for wire_OperationValue {
+        fn wire2api(self) -> OperationValue {
+            match self.tag {
+                0 => unsafe {
+                    let ans = support::box_from_leak_ptr(self.kind);
+                    let ans = support::box_from_leak_ptr(ans.Boolean);
+                    OperationValue::Boolean(ans.field0.wire2api())
+                },
+                1 => unsafe {
+                    let ans = support::box_from_leak_ptr(self.kind);
+                    let ans = support::box_from_leak_ptr(ans.Float);
+                    OperationValue::Float(ans.field0.wire2api())
+                },
+                2 => unsafe {
+                    let ans = support::box_from_leak_ptr(self.kind);
+                    let ans = support::box_from_leak_ptr(ans.Integer);
+                    OperationValue::Integer(ans.field0.wire2api())
+                },
+                3 => unsafe {
+                    let ans = support::box_from_leak_ptr(self.kind);
+                    let ans = support::box_from_leak_ptr(ans.String);
+                    OperationValue::String(ans.field0.wire2api())
+                },
+                4 => unsafe {
+                    let ans = support::box_from_leak_ptr(self.kind);
+                    let ans = support::box_from_leak_ptr(ans.Relation);
+                    OperationValue::Relation(ans.field0.wire2api())
+                },
+                5 => unsafe {
+                    let ans = support::box_from_leak_ptr(self.kind);
+                    let ans = support::box_from_leak_ptr(ans.RelationList);
+                    OperationValue::RelationList(ans.field0.wire2api())
+                },
+                6 => unsafe {
+                    let ans = support::box_from_leak_ptr(self.kind);
+                    let ans = support::box_from_leak_ptr(ans.PinnedRelation);
+                    OperationValue::PinnedRelation(ans.field0.wire2api())
+                },
+                7 => unsafe {
+                    let ans = support::box_from_leak_ptr(self.kind);
+                    let ans = support::box_from_leak_ptr(ans.PinnedRelationList);
+                    OperationValue::PinnedRelationList(ans.field0.wire2api())
+                },
+                _ => unreachable!(),
+            }
         }
     }
 
@@ -353,8 +512,29 @@ mod io {
 
     #[repr(C)]
     #[derive(Clone)]
+    pub struct wire_StringList {
+        ptr: *mut *mut wire_uint_8_list,
+        len: i32,
+    }
+
+    #[repr(C)]
+    #[derive(Clone)]
+    pub struct wire___record__String_operation_value {
+        field0: *mut wire_uint_8_list,
+        field1: wire_OperationValue,
+    }
+
+    #[repr(C)]
+    #[derive(Clone)]
     pub struct wire_KeyPair {
         field0: wire_PandaKeyPair,
+    }
+
+    #[repr(C)]
+    #[derive(Clone)]
+    pub struct wire_list___record__String_operation_value {
+        ptr: *mut wire___record__String_operation_value,
+        len: i32,
     }
 
     #[repr(C)]
@@ -362,6 +542,73 @@ mod io {
     pub struct wire_uint_8_list {
         ptr: *mut u8,
         len: i32,
+    }
+
+    #[repr(C)]
+    #[derive(Clone)]
+    pub struct wire_OperationValue {
+        tag: i32,
+        kind: *mut OperationValueKind,
+    }
+
+    #[repr(C)]
+    pub union OperationValueKind {
+        Boolean: *mut wire_OperationValue_Boolean,
+        Float: *mut wire_OperationValue_Float,
+        Integer: *mut wire_OperationValue_Integer,
+        String: *mut wire_OperationValue_String,
+        Relation: *mut wire_OperationValue_Relation,
+        RelationList: *mut wire_OperationValue_RelationList,
+        PinnedRelation: *mut wire_OperationValue_PinnedRelation,
+        PinnedRelationList: *mut wire_OperationValue_PinnedRelationList,
+    }
+
+    #[repr(C)]
+    #[derive(Clone)]
+    pub struct wire_OperationValue_Boolean {
+        field0: bool,
+    }
+
+    #[repr(C)]
+    #[derive(Clone)]
+    pub struct wire_OperationValue_Float {
+        field0: f64,
+    }
+
+    #[repr(C)]
+    #[derive(Clone)]
+    pub struct wire_OperationValue_Integer {
+        field0: i64,
+    }
+
+    #[repr(C)]
+    #[derive(Clone)]
+    pub struct wire_OperationValue_String {
+        field0: *mut wire_uint_8_list,
+    }
+
+    #[repr(C)]
+    #[derive(Clone)]
+    pub struct wire_OperationValue_Relation {
+        field0: *mut wire_uint_8_list,
+    }
+
+    #[repr(C)]
+    #[derive(Clone)]
+    pub struct wire_OperationValue_RelationList {
+        field0: *mut wire_StringList,
+    }
+
+    #[repr(C)]
+    #[derive(Clone)]
+    pub struct wire_OperationValue_PinnedRelation {
+        field0: *mut wire_uint_8_list,
+    }
+
+    #[repr(C)]
+    #[derive(Clone)]
+    pub struct wire_OperationValue_PinnedRelationList {
+        field0: *mut wire_StringList,
     }
 
     // Section: impl NewWithNullPtr
@@ -384,6 +631,21 @@ mod io {
         }
     }
 
+    impl NewWithNullPtr for wire___record__String_operation_value {
+        fn new_with_null_ptr() -> Self {
+            Self {
+                field0: core::ptr::null_mut(),
+                field1: Default::default(),
+            }
+        }
+    }
+
+    impl Default for wire___record__String_operation_value {
+        fn default() -> Self {
+            Self::new_with_null_ptr()
+        }
+    }
+
     impl NewWithNullPtr for wire_KeyPair {
         fn new_with_null_ptr() -> Self {
             Self {
@@ -396,6 +658,93 @@ mod io {
         fn default() -> Self {
             Self::new_with_null_ptr()
         }
+    }
+
+    impl Default for wire_OperationValue {
+        fn default() -> Self {
+            Self::new_with_null_ptr()
+        }
+    }
+
+    impl NewWithNullPtr for wire_OperationValue {
+        fn new_with_null_ptr() -> Self {
+            Self {
+                tag: -1,
+                kind: core::ptr::null_mut(),
+            }
+        }
+    }
+
+    #[no_mangle]
+    pub extern "C" fn inflate_OperationValue_Boolean() -> *mut OperationValueKind {
+        support::new_leak_box_ptr(OperationValueKind {
+            Boolean: support::new_leak_box_ptr(wire_OperationValue_Boolean {
+                field0: Default::default(),
+            }),
+        })
+    }
+
+    #[no_mangle]
+    pub extern "C" fn inflate_OperationValue_Float() -> *mut OperationValueKind {
+        support::new_leak_box_ptr(OperationValueKind {
+            Float: support::new_leak_box_ptr(wire_OperationValue_Float {
+                field0: Default::default(),
+            }),
+        })
+    }
+
+    #[no_mangle]
+    pub extern "C" fn inflate_OperationValue_Integer() -> *mut OperationValueKind {
+        support::new_leak_box_ptr(OperationValueKind {
+            Integer: support::new_leak_box_ptr(wire_OperationValue_Integer {
+                field0: Default::default(),
+            }),
+        })
+    }
+
+    #[no_mangle]
+    pub extern "C" fn inflate_OperationValue_String() -> *mut OperationValueKind {
+        support::new_leak_box_ptr(OperationValueKind {
+            String: support::new_leak_box_ptr(wire_OperationValue_String {
+                field0: core::ptr::null_mut(),
+            }),
+        })
+    }
+
+    #[no_mangle]
+    pub extern "C" fn inflate_OperationValue_Relation() -> *mut OperationValueKind {
+        support::new_leak_box_ptr(OperationValueKind {
+            Relation: support::new_leak_box_ptr(wire_OperationValue_Relation {
+                field0: core::ptr::null_mut(),
+            }),
+        })
+    }
+
+    #[no_mangle]
+    pub extern "C" fn inflate_OperationValue_RelationList() -> *mut OperationValueKind {
+        support::new_leak_box_ptr(OperationValueKind {
+            RelationList: support::new_leak_box_ptr(wire_OperationValue_RelationList {
+                field0: core::ptr::null_mut(),
+            }),
+        })
+    }
+
+    #[no_mangle]
+    pub extern "C" fn inflate_OperationValue_PinnedRelation() -> *mut OperationValueKind {
+        support::new_leak_box_ptr(OperationValueKind {
+            PinnedRelation: support::new_leak_box_ptr(wire_OperationValue_PinnedRelation {
+                field0: core::ptr::null_mut(),
+            }),
+        })
+    }
+
+    #[no_mangle]
+    pub extern "C" fn inflate_OperationValue_PinnedRelationList() -> *mut OperationValueKind {
+        support::new_leak_box_ptr(OperationValueKind {
+            PinnedRelationList: support::new_leak_box_ptr(wire_OperationValue_PinnedRelationList {
+                field0: core::ptr::null_mut(),
+            }),
+        })
     }
 
     // Section: sync execution mode utility

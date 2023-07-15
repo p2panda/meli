@@ -7,14 +7,21 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:uuid/uuid.dart';
+import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 
 import 'dart:ffi' as ffi;
 
+part 'bridge_generated.freezed.dart';
+
 abstract class P2Panda {
   /// Create, sign and encode a p2panda entry.
+  ///
+  /// Takes large u64 integers for log id and seq num as strings. If we would declare them as u64
+  /// here they will get converted to int which is not a real native u64 integer in Dart! We pass
+  /// them over as strings and then safely convert them to u64 internally.
   Future<Uint8List> signAndEncodeEntry(
-      {required int logId,
-      required int seqNum,
+      {required String logId,
+      required String seqNum,
       String? skiplinkHash,
       String? backlinkHash,
       required Uint8List payload,
@@ -23,16 +30,35 @@ abstract class P2Panda {
 
   FlutterRustBridgeTaskConstMeta get kSignAndEncodeEntryConstMeta;
 
+  /// Decodes a p2panda entry.
+  ///
+  /// Returns large u64 integers for log id and seq num as strings. If we would declare them as u64
+  /// here they will get converted to int which is not a real native u64 integer in Dart! We pass
+  /// them over as strings and then safely convert them to `BigInt` in the Dart world.
+  Future<(String, String, String, String?, String?)> decodeEntry(
+      {required Uint8List entry, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kDecodeEntryConstMeta;
+
   /// Encode a p2panda operation parsed from JSON input.
-  Future<Uint8List> encodeOperation({required String json, dynamic hint});
+  Future<Uint8List> encodeOperation(
+      {required OperationAction action,
+      required String schemaId,
+      String? previous,
+      List<(String, OperationValue)>? fields,
+      dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kEncodeOperationConstMeta;
 
+  /// Runs a p2panda node in a separate thread in the background.
+  ///
+  /// Supports Android logging for logs coming from the node.
   Future<void> startNode(
       {required KeyPair keyPair, required String basePath, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kStartNodeConstMeta;
 
+  /// Turns off running node.
   Future<void> shutdownNode({dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kShutdownNodeConstMeta;
@@ -112,6 +138,68 @@ class KeyPair {
       );
 }
 
+/// Operations are categorised by their action type.
+///
+/// An action defines the operation format and if this operation creates, updates or deletes a data
+/// document.
+enum OperationAction {
+  /// Operation creates a new document.
+  Create,
+
+  /// Operation updates an existing document.
+  Update,
+
+  /// Operation deletes an existing document.
+  Delete,
+}
+
+@freezed
+sealed class OperationValue with _$OperationValue {
+  /// Boolean value.
+  const factory OperationValue.boolean(
+    bool field0,
+  ) = OperationValue_Boolean;
+
+  /// Floating point value.
+  const factory OperationValue.float(
+    double field0,
+  ) = OperationValue_Float;
+
+  /// Signed integer value.
+  const factory OperationValue.integer(
+    int field0,
+  ) = OperationValue_Integer;
+
+  /// String value.
+  const factory OperationValue.string(
+    String field0,
+  ) = OperationValue_String;
+
+  /// Reference to a document.
+  const factory OperationValue.relation(
+    String field0,
+  ) = OperationValue_Relation;
+
+  /// Reference to a list of documents.
+  const factory OperationValue.relationList(
+    List<String> field0,
+  ) = OperationValue_RelationList;
+
+  /// Reference to a document view.
+  ///
+  /// Multiple operation ids are separated by an understore ('_').
+  const factory OperationValue.pinnedRelation(
+    String field0,
+  ) = OperationValue_PinnedRelation;
+
+  /// Reference to a list of document views.
+  ///
+  /// Multiple operation ids are separated by an understore ('_').
+  const factory OperationValue.pinnedRelationList(
+    List<String> field0,
+  ) = OperationValue_PinnedRelationList;
+}
+
 class P2PandaImpl implements P2Panda {
   final P2PandaPlatform _platform;
   factory P2PandaImpl(ExternalLibrary dylib) =>
@@ -122,15 +210,15 @@ class P2PandaImpl implements P2Panda {
       P2PandaImpl(module as ExternalLibrary);
   P2PandaImpl.raw(this._platform);
   Future<Uint8List> signAndEncodeEntry(
-      {required int logId,
-      required int seqNum,
+      {required String logId,
+      required String seqNum,
       String? skiplinkHash,
       String? backlinkHash,
       required Uint8List payload,
       required KeyPair keyPair,
       dynamic hint}) {
-    var arg0 = _platform.api2wire_u64(logId);
-    var arg1 = _platform.api2wire_u64(seqNum);
+    var arg0 = _platform.api2wire_String(logId);
+    var arg1 = _platform.api2wire_String(seqNum);
     var arg2 = _platform.api2wire_opt_String(skiplinkHash);
     var arg3 = _platform.api2wire_opt_String(backlinkHash);
     var arg4 = _platform.api2wire_uint_8_list(payload);
@@ -158,13 +246,42 @@ class P2PandaImpl implements P2Panda {
         ],
       );
 
-  Future<Uint8List> encodeOperation({required String json, dynamic hint}) {
-    var arg0 = _platform.api2wire_String(json);
+  Future<(String, String, String, String?, String?)> decodeEntry(
+      {required Uint8List entry, dynamic hint}) {
+    var arg0 = _platform.api2wire_uint_8_list(entry);
     return _platform.executeNormal(FlutterRustBridgeTask(
-      callFfi: (port_) => _platform.inner.wire_encode_operation(port_, arg0),
+      callFfi: (port_) => _platform.inner.wire_decode_entry(port_, arg0),
+      parseSuccessData:
+          _wire2api___record__String_String_String_opt_String_opt_String,
+      constMeta: kDecodeEntryConstMeta,
+      argValues: [entry],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kDecodeEntryConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "decode_entry",
+        argNames: ["entry"],
+      );
+
+  Future<Uint8List> encodeOperation(
+      {required OperationAction action,
+      required String schemaId,
+      String? previous,
+      List<(String, OperationValue)>? fields,
+      dynamic hint}) {
+    var arg0 = api2wire_operation_action(action);
+    var arg1 = _platform.api2wire_String(schemaId);
+    var arg2 = _platform.api2wire_opt_String(previous);
+    var arg3 =
+        _platform.api2wire_opt_list___record__String_operation_value(fields);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) =>
+          _platform.inner.wire_encode_operation(port_, arg0, arg1, arg2, arg3),
       parseSuccessData: _wire2api_uint_8_list,
       constMeta: kEncodeOperationConstMeta,
-      argValues: [json],
+      argValues: [action, schemaId, previous, fields],
       hint: hint,
     ));
   }
@@ -172,7 +289,7 @@ class P2PandaImpl implements P2Panda {
   FlutterRustBridgeTaskConstMeta get kEncodeOperationConstMeta =>
       const FlutterRustBridgeTaskConstMeta(
         debugName: "encode_operation",
-        argNames: ["json"],
+        argNames: ["action", "schemaId", "previous", "fields"],
       );
 
   Future<void> startNode(
@@ -301,6 +418,26 @@ class P2PandaImpl implements P2Panda {
     return PandaKeyPair.fromRaw(raw[0], raw[1], this);
   }
 
+  String _wire2api_String(dynamic raw) {
+    return raw as String;
+  }
+
+  (String, String, String, String?, String?)
+      _wire2api___record__String_String_String_opt_String_opt_String(
+          dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5) {
+      throw Exception('Expected 5 elements, got ${arr.length}');
+    }
+    return (
+      _wire2api_String(arr[0]),
+      _wire2api_String(arr[1]),
+      _wire2api_String(arr[2]),
+      _wire2api_opt_String(arr[3]),
+      _wire2api_opt_String(arr[4]),
+    );
+  }
+
   KeyPair _wire2api_key_pair(dynamic raw) {
     final arr = raw as List<dynamic>;
     if (arr.length != 1)
@@ -309,6 +446,10 @@ class P2PandaImpl implements P2Panda {
       bridge: this,
       field0: _wire2api_PandaKeyPair(arr[0]),
     );
+  }
+
+  String? _wire2api_opt_String(dynamic raw) {
+    return raw == null ? null : _wire2api_String(raw);
   }
 
   int _wire2api_u8(dynamic raw) {
@@ -325,6 +466,26 @@ class P2PandaImpl implements P2Panda {
 }
 
 // Section: api2wire
+
+@protected
+bool api2wire_bool(bool raw) {
+  return raw;
+}
+
+@protected
+double api2wire_f64(double raw) {
+  return raw;
+}
+
+@protected
+int api2wire_i32(int raw) {
+  return raw;
+}
+
+@protected
+int api2wire_operation_action(OperationAction raw) {
+  return api2wire_i32(raw.index);
+}
 
 @protected
 int api2wire_u8(int raw) {
@@ -351,10 +512,36 @@ class P2PandaPlatform extends FlutterRustBridgeBase<P2PandaWire> {
   }
 
   @protected
+  ffi.Pointer<wire_StringList> api2wire_StringList(List<String> raw) {
+    final ans = inner.new_StringList_0(raw.length);
+    for (var i = 0; i < raw.length; i++) {
+      ans.ref.ptr[i] = api2wire_String(raw[i]);
+    }
+    return ans;
+  }
+
+  @protected
   ffi.Pointer<wire_KeyPair> api2wire_box_autoadd_key_pair(KeyPair raw) {
     final ptr = inner.new_box_autoadd_key_pair_0();
     _api_fill_to_wire_key_pair(raw, ptr.ref);
     return ptr;
+  }
+
+  @protected
+  int api2wire_i64(int raw) {
+    return raw;
+  }
+
+  @protected
+  ffi.Pointer<wire_list___record__String_operation_value>
+      api2wire_list___record__String_operation_value(
+          List<(String, OperationValue)> raw) {
+    final ans = inner.new_list___record__String_operation_value_0(raw.length);
+    for (var i = 0; i < raw.length; ++i) {
+      _api_fill_to_wire___record__String_operation_value(
+          raw[i], ans.ref.ptr[i]);
+    }
+    return ans;
   }
 
   @protected
@@ -363,8 +550,12 @@ class P2PandaPlatform extends FlutterRustBridgeBase<P2PandaWire> {
   }
 
   @protected
-  int api2wire_u64(int raw) {
-    return raw;
+  ffi.Pointer<wire_list___record__String_operation_value>
+      api2wire_opt_list___record__String_operation_value(
+          List<(String, OperationValue)>? raw) {
+    return raw == null
+        ? ffi.nullptr
+        : api2wire_list___record__String_operation_value(raw);
   }
 
   @protected
@@ -385,6 +576,13 @@ class P2PandaPlatform extends FlutterRustBridgeBase<P2PandaWire> {
     wireObj.ptr = apiObj.shareOrMove();
   }
 
+  void _api_fill_to_wire___record__String_operation_value(
+      (String, OperationValue) apiObj,
+      wire___record__String_operation_value wireObj) {
+    wireObj.field0 = api2wire_String(apiObj.$1);
+    _api_fill_to_wire_operation_value(apiObj.$2, wireObj.field1);
+  }
+
   void _api_fill_to_wire_box_autoadd_key_pair(
       KeyPair apiObj, ffi.Pointer<wire_KeyPair> wireObj) {
     _api_fill_to_wire_key_pair(apiObj, wireObj.ref);
@@ -392,6 +590,66 @@ class P2PandaPlatform extends FlutterRustBridgeBase<P2PandaWire> {
 
   void _api_fill_to_wire_key_pair(KeyPair apiObj, wire_KeyPair wireObj) {
     wireObj.field0 = api2wire_PandaKeyPair(apiObj.field0);
+  }
+
+  void _api_fill_to_wire_operation_value(
+      OperationValue apiObj, wire_OperationValue wireObj) {
+    if (apiObj is OperationValue_Boolean) {
+      var pre_field0 = api2wire_bool(apiObj.field0);
+      wireObj.tag = 0;
+      wireObj.kind = inner.inflate_OperationValue_Boolean();
+      wireObj.kind.ref.Boolean.ref.field0 = pre_field0;
+      return;
+    }
+    if (apiObj is OperationValue_Float) {
+      var pre_field0 = api2wire_f64(apiObj.field0);
+      wireObj.tag = 1;
+      wireObj.kind = inner.inflate_OperationValue_Float();
+      wireObj.kind.ref.Float.ref.field0 = pre_field0;
+      return;
+    }
+    if (apiObj is OperationValue_Integer) {
+      var pre_field0 = api2wire_i64(apiObj.field0);
+      wireObj.tag = 2;
+      wireObj.kind = inner.inflate_OperationValue_Integer();
+      wireObj.kind.ref.Integer.ref.field0 = pre_field0;
+      return;
+    }
+    if (apiObj is OperationValue_String) {
+      var pre_field0 = api2wire_String(apiObj.field0);
+      wireObj.tag = 3;
+      wireObj.kind = inner.inflate_OperationValue_String();
+      wireObj.kind.ref.String.ref.field0 = pre_field0;
+      return;
+    }
+    if (apiObj is OperationValue_Relation) {
+      var pre_field0 = api2wire_String(apiObj.field0);
+      wireObj.tag = 4;
+      wireObj.kind = inner.inflate_OperationValue_Relation();
+      wireObj.kind.ref.Relation.ref.field0 = pre_field0;
+      return;
+    }
+    if (apiObj is OperationValue_RelationList) {
+      var pre_field0 = api2wire_StringList(apiObj.field0);
+      wireObj.tag = 5;
+      wireObj.kind = inner.inflate_OperationValue_RelationList();
+      wireObj.kind.ref.RelationList.ref.field0 = pre_field0;
+      return;
+    }
+    if (apiObj is OperationValue_PinnedRelation) {
+      var pre_field0 = api2wire_String(apiObj.field0);
+      wireObj.tag = 6;
+      wireObj.kind = inner.inflate_OperationValue_PinnedRelation();
+      wireObj.kind.ref.PinnedRelation.ref.field0 = pre_field0;
+      return;
+    }
+    if (apiObj is OperationValue_PinnedRelationList) {
+      var pre_field0 = api2wire_StringList(apiObj.field0);
+      wireObj.tag = 7;
+      wireObj.kind = inner.inflate_OperationValue_PinnedRelationList();
+      wireObj.kind.ref.PinnedRelationList.ref.field0 = pre_field0;
+      return;
+    }
   }
 }
 
@@ -493,8 +751,8 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
 
   void wire_sign_and_encode_entry(
     int port_,
-    int log_id,
-    int seq_num,
+    ffi.Pointer<wire_uint_8_list> log_id,
+    ffi.Pointer<wire_uint_8_list> seq_num,
     ffi.Pointer<wire_uint_8_list> skiplink_hash,
     ffi.Pointer<wire_uint_8_list> backlink_hash,
     ffi.Pointer<wire_uint_8_list> payload,
@@ -515,8 +773,8 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
       ffi.NativeFunction<
           ffi.Void Function(
               ffi.Int64,
-              ffi.Uint64,
-              ffi.Uint64,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
               ffi.Pointer<wire_uint_8_list>,
               ffi.Pointer<wire_uint_8_list>,
               ffi.Pointer<wire_uint_8_list>,
@@ -525,29 +783,62 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
       _wire_sign_and_encode_entryPtr.asFunction<
           void Function(
               int,
-              int,
-              int,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
               ffi.Pointer<wire_uint_8_list>,
               ffi.Pointer<wire_uint_8_list>,
               ffi.Pointer<wire_uint_8_list>,
               ffi.Pointer<wire_KeyPair>)>();
 
+  void wire_decode_entry(
+    int port_,
+    ffi.Pointer<wire_uint_8_list> entry,
+  ) {
+    return _wire_decode_entry(
+      port_,
+      entry,
+    );
+  }
+
+  late final _wire_decode_entryPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Int64, ffi.Pointer<wire_uint_8_list>)>>('wire_decode_entry');
+  late final _wire_decode_entry = _wire_decode_entryPtr
+      .asFunction<void Function(int, ffi.Pointer<wire_uint_8_list>)>();
+
   void wire_encode_operation(
     int port_,
-    ffi.Pointer<wire_uint_8_list> json,
+    int action,
+    ffi.Pointer<wire_uint_8_list> schema_id,
+    ffi.Pointer<wire_uint_8_list> previous,
+    ffi.Pointer<wire_list___record__String_operation_value> fields,
   ) {
     return _wire_encode_operation(
       port_,
-      json,
+      action,
+      schema_id,
+      previous,
+      fields,
     );
   }
 
   late final _wire_encode_operationPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Int64,
-              ffi.Pointer<wire_uint_8_list>)>>('wire_encode_operation');
-  late final _wire_encode_operation = _wire_encode_operationPtr
-      .asFunction<void Function(int, ffi.Pointer<wire_uint_8_list>)>();
+          ffi.NativeFunction<
+              ffi.Void Function(
+                  ffi.Int64,
+                  ffi.Int32,
+                  ffi.Pointer<wire_uint_8_list>,
+                  ffi.Pointer<wire_uint_8_list>,
+                  ffi.Pointer<wire_list___record__String_operation_value>)>>(
+      'wire_encode_operation');
+  late final _wire_encode_operation = _wire_encode_operationPtr.asFunction<
+      void Function(
+          int,
+          int,
+          ffi.Pointer<wire_uint_8_list>,
+          ffi.Pointer<wire_uint_8_list>,
+          ffi.Pointer<wire_list___record__String_operation_value>)>();
 
   void wire_start_node(
     int port_,
@@ -661,6 +952,20 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
   late final _new_PandaKeyPair =
       _new_PandaKeyPairPtr.asFunction<wire_PandaKeyPair Function()>();
 
+  ffi.Pointer<wire_StringList> new_StringList_0(
+    int len,
+  ) {
+    return _new_StringList_0(
+      len,
+    );
+  }
+
+  late final _new_StringList_0Ptr = _lookup<
+          ffi.NativeFunction<ffi.Pointer<wire_StringList> Function(ffi.Int32)>>(
+      'new_StringList_0');
+  late final _new_StringList_0 = _new_StringList_0Ptr
+      .asFunction<ffi.Pointer<wire_StringList> Function(int)>();
+
   ffi.Pointer<wire_KeyPair> new_box_autoadd_key_pair_0() {
     return _new_box_autoadd_key_pair_0();
   }
@@ -670,6 +975,24 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
           'new_box_autoadd_key_pair_0');
   late final _new_box_autoadd_key_pair_0 = _new_box_autoadd_key_pair_0Ptr
       .asFunction<ffi.Pointer<wire_KeyPair> Function()>();
+
+  ffi.Pointer<wire_list___record__String_operation_value>
+      new_list___record__String_operation_value_0(
+    int len,
+  ) {
+    return _new_list___record__String_operation_value_0(
+      len,
+    );
+  }
+
+  late final _new_list___record__String_operation_value_0Ptr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<wire_list___record__String_operation_value> Function(
+              ffi.Int32)>>('new_list___record__String_operation_value_0');
+  late final _new_list___record__String_operation_value_0 =
+      _new_list___record__String_operation_value_0Ptr.asFunction<
+          ffi.Pointer<wire_list___record__String_operation_value> Function(
+              int)>();
 
   ffi.Pointer<wire_uint_8_list> new_uint_8_list_0(
     int len,
@@ -715,6 +1038,92 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
   late final _share_opaque_PandaKeyPair = _share_opaque_PandaKeyPairPtr
       .asFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>();
 
+  ffi.Pointer<OperationValueKind> inflate_OperationValue_Boolean() {
+    return _inflate_OperationValue_Boolean();
+  }
+
+  late final _inflate_OperationValue_BooleanPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<OperationValueKind> Function()>>(
+          'inflate_OperationValue_Boolean');
+  late final _inflate_OperationValue_Boolean =
+      _inflate_OperationValue_BooleanPtr
+          .asFunction<ffi.Pointer<OperationValueKind> Function()>();
+
+  ffi.Pointer<OperationValueKind> inflate_OperationValue_Float() {
+    return _inflate_OperationValue_Float();
+  }
+
+  late final _inflate_OperationValue_FloatPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<OperationValueKind> Function()>>(
+          'inflate_OperationValue_Float');
+  late final _inflate_OperationValue_Float = _inflate_OperationValue_FloatPtr
+      .asFunction<ffi.Pointer<OperationValueKind> Function()>();
+
+  ffi.Pointer<OperationValueKind> inflate_OperationValue_Integer() {
+    return _inflate_OperationValue_Integer();
+  }
+
+  late final _inflate_OperationValue_IntegerPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<OperationValueKind> Function()>>(
+          'inflate_OperationValue_Integer');
+  late final _inflate_OperationValue_Integer =
+      _inflate_OperationValue_IntegerPtr
+          .asFunction<ffi.Pointer<OperationValueKind> Function()>();
+
+  ffi.Pointer<OperationValueKind> inflate_OperationValue_String() {
+    return _inflate_OperationValue_String();
+  }
+
+  late final _inflate_OperationValue_StringPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<OperationValueKind> Function()>>(
+          'inflate_OperationValue_String');
+  late final _inflate_OperationValue_String = _inflate_OperationValue_StringPtr
+      .asFunction<ffi.Pointer<OperationValueKind> Function()>();
+
+  ffi.Pointer<OperationValueKind> inflate_OperationValue_Relation() {
+    return _inflate_OperationValue_Relation();
+  }
+
+  late final _inflate_OperationValue_RelationPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<OperationValueKind> Function()>>(
+          'inflate_OperationValue_Relation');
+  late final _inflate_OperationValue_Relation =
+      _inflate_OperationValue_RelationPtr
+          .asFunction<ffi.Pointer<OperationValueKind> Function()>();
+
+  ffi.Pointer<OperationValueKind> inflate_OperationValue_RelationList() {
+    return _inflate_OperationValue_RelationList();
+  }
+
+  late final _inflate_OperationValue_RelationListPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<OperationValueKind> Function()>>(
+          'inflate_OperationValue_RelationList');
+  late final _inflate_OperationValue_RelationList =
+      _inflate_OperationValue_RelationListPtr
+          .asFunction<ffi.Pointer<OperationValueKind> Function()>();
+
+  ffi.Pointer<OperationValueKind> inflate_OperationValue_PinnedRelation() {
+    return _inflate_OperationValue_PinnedRelation();
+  }
+
+  late final _inflate_OperationValue_PinnedRelationPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<OperationValueKind> Function()>>(
+          'inflate_OperationValue_PinnedRelation');
+  late final _inflate_OperationValue_PinnedRelation =
+      _inflate_OperationValue_PinnedRelationPtr
+          .asFunction<ffi.Pointer<OperationValueKind> Function()>();
+
+  ffi.Pointer<OperationValueKind> inflate_OperationValue_PinnedRelationList() {
+    return _inflate_OperationValue_PinnedRelationList();
+  }
+
+  late final _inflate_OperationValue_PinnedRelationListPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<OperationValueKind> Function()>>(
+          'inflate_OperationValue_PinnedRelationList');
+  late final _inflate_OperationValue_PinnedRelationList =
+      _inflate_OperationValue_PinnedRelationListPtr
+          .asFunction<ffi.Pointer<OperationValueKind> Function()>();
+
   void free_WireSyncReturn(
     WireSyncReturn ptr,
   ) {
@@ -745,6 +1154,87 @@ final class wire_PandaKeyPair extends ffi.Struct {
 
 final class wire_KeyPair extends ffi.Struct {
   external wire_PandaKeyPair field0;
+}
+
+final class wire_OperationValue_Boolean extends ffi.Struct {
+  @ffi.Bool()
+  external bool field0;
+}
+
+final class wire_OperationValue_Float extends ffi.Struct {
+  @ffi.Double()
+  external double field0;
+}
+
+final class wire_OperationValue_Integer extends ffi.Struct {
+  @ffi.Int64()
+  external int field0;
+}
+
+final class wire_OperationValue_String extends ffi.Struct {
+  external ffi.Pointer<wire_uint_8_list> field0;
+}
+
+final class wire_OperationValue_Relation extends ffi.Struct {
+  external ffi.Pointer<wire_uint_8_list> field0;
+}
+
+final class wire_StringList extends ffi.Struct {
+  external ffi.Pointer<ffi.Pointer<wire_uint_8_list>> ptr;
+
+  @ffi.Int32()
+  external int len;
+}
+
+final class wire_OperationValue_RelationList extends ffi.Struct {
+  external ffi.Pointer<wire_StringList> field0;
+}
+
+final class wire_OperationValue_PinnedRelation extends ffi.Struct {
+  external ffi.Pointer<wire_uint_8_list> field0;
+}
+
+final class wire_OperationValue_PinnedRelationList extends ffi.Struct {
+  external ffi.Pointer<wire_StringList> field0;
+}
+
+final class OperationValueKind extends ffi.Union {
+  external ffi.Pointer<wire_OperationValue_Boolean> Boolean;
+
+  external ffi.Pointer<wire_OperationValue_Float> Float;
+
+  external ffi.Pointer<wire_OperationValue_Integer> Integer;
+
+  external ffi.Pointer<wire_OperationValue_String> String;
+
+  external ffi.Pointer<wire_OperationValue_Relation> Relation;
+
+  external ffi.Pointer<wire_OperationValue_RelationList> RelationList;
+
+  external ffi.Pointer<wire_OperationValue_PinnedRelation> PinnedRelation;
+
+  external ffi.Pointer<wire_OperationValue_PinnedRelationList>
+      PinnedRelationList;
+}
+
+final class wire_OperationValue extends ffi.Struct {
+  @ffi.Int32()
+  external int tag;
+
+  external ffi.Pointer<OperationValueKind> kind;
+}
+
+final class wire___record__String_operation_value extends ffi.Struct {
+  external ffi.Pointer<wire_uint_8_list> field0;
+
+  external wire_OperationValue field1;
+}
+
+final class wire_list___record__String_operation_value extends ffi.Struct {
+  external ffi.Pointer<wire___record__String_operation_value> ptr;
+
+  @ffi.Int32()
+  external int len;
 }
 
 typedef DartPostCObjectFnType = ffi.Pointer<
