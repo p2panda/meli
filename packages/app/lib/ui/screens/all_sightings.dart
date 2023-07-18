@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/models/sightings.dart';
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/scaffold.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:app/ui/widgets/sighting_card.dart';
 
 class AllSightingsScreen extends StatefulWidget {
   AllSightingsScreen({super.key});
@@ -54,11 +55,11 @@ class ScrollView extends StatelessWidget {
         child: Column(children: [
       Settings(),
       Container(
-        padding: EdgeInsets.only(bottom: 20.0),
+        padding: EdgeInsets.only(bottom: 30.0),
         child: BouncyBee(),
       ),
       Container(
-        padding: EdgeInsets.only(bottom: 100.0),
+        padding: EdgeInsets.only(bottom: 40.0),
         child: SightingsList(),
       )
     ]));
@@ -92,34 +93,32 @@ class _SightingsListState extends State<SightingsList> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-      decoration: BoxDecoration(
-        color: MeliColors.magnolia,
-      ),
-      child: Query(
-          options: QueryOptions(
-              document: gql(allSightingsQuery),
-              pollInterval: const Duration(seconds: 1)),
-          builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
-            if (result.hasException) {
-              return Text(result.exception.toString());
-            }
+      decoration: new SightingsListDecoration(),
+      child: Container(
+          padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
+          child: Query(
+              options: QueryOptions(
+                  document: gql(allSightingsQuery),
+                  pollInterval: const Duration(seconds: 1)),
+              builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
+                if (result.hasException) {
+                  return Text(result.exception.toString());
+                }
 
-            if (result.isLoading) {
-              return const Text('Loading ...');
-            }
+                if (result.isLoading) {
+                  return const Text('Loading ...');
+                }
 
-            List<dynamic> documents =
-                result.data?['sightings']?['documents'] as List<dynamic>;
+                List<dynamic> documents =
+                    result.data?['sightings']?['documents'] as List<dynamic>;
 
-            return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  ...documents.map((document) => Card(
-                      child: Container(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Text(document?['fields']?['name'] as String))))
-                ]);
-          }),
+                return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      ...documents.map((document) => SightingCard(
+                          name: document!['fields']['name'] as String)),
+                    ]);
+              })),
     );
   }
 }
@@ -134,7 +133,7 @@ class BouncyBee extends StatefulWidget {
 class _BouncyBeeState extends State<BouncyBee>
     with SingleTickerProviderStateMixin {
   late final AnimationController _beeAnimationController = AnimationController(
-    duration: const Duration(seconds: 2),
+    duration: const Duration(milliseconds: 1500),
     vsync: this,
   );
 
@@ -204,5 +203,42 @@ class _BackgroundDecorationPainter extends BoxPainter {
     path.close();
 
     canvas.drawPath(path.shift(offset + Offset(0, 80.0)), paint);
+  }
+}
+
+class SightingsListDecoration extends Decoration {
+  SightingsListDecoration();
+
+  @override
+  BoxPainter createBoxPainter([VoidCallback? onChanged]) {
+    return _SightingsListDecoration();
+  }
+}
+
+class _SightingsListDecoration extends BoxPainter {
+  @override
+  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+    final Size? bounds = configuration.size;
+
+    final paint = Paint()
+      ..color = MeliColors.magnolia
+      ..style = PaintingStyle.fill;
+
+    final partial = bounds!.width / 8;
+
+    final path = Path();
+    path.moveTo(0, 0);
+    path.lineTo(partial, -10.0);
+    path.lineTo(partial * 2, 10.0);
+    path.lineTo(partial * 4, -20.0);
+    path.lineTo(partial * 6, 10.0);
+    path.lineTo(partial * 7, -10.0);
+    path.lineTo(bounds.width, 0);
+    path.lineTo(bounds.width, bounds.height);
+    path.lineTo(bounds.width / 2, bounds.height - 20.0);
+    path.lineTo(0, bounds.height);
+    path.close();
+
+    canvas.drawPath(path.shift(offset), paint);
   }
 }

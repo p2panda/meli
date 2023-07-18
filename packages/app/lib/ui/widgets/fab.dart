@@ -22,6 +22,7 @@ class _MeliFloatingActionButtonState extends State<MeliFloatingActionButton> {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
+      foregroundColor: Colors.black,
       heroTag: widget.heroTag,
       child: widget.icon,
       shape: const CircleBorder(),
