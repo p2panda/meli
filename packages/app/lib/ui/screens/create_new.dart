@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/models/sightings.dart';
-import 'package:app/router.dart';
 import 'package:flutter/material.dart';
 
-import 'package:app/ui/widgets/scaffold.dart';
+import 'package:app/models/sightings.dart';
+import 'package:app/router.dart';
 import 'package:app/ui/widgets/fab.dart';
+import 'package:app/ui/widgets/scaffold.dart';
 
 class CreateNewScreen extends StatefulWidget {
   CreateNewScreen({super.key});
@@ -39,7 +39,7 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                     await createSighting(nameInput.text);
 
                     // Go back to sightings overview
-                    router.push('/');
+                    router.push(RoutePath.allSightings);
 
                     // Show notification
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(

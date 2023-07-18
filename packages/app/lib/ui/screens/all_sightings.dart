@@ -9,14 +9,14 @@ import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key});
+class AllSightingsScreen extends StatefulWidget {
+  AllSightingsScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<AllSightingsScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
+class _HomeScreenState extends State<AllSightingsScreen>
     with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
@@ -74,7 +74,7 @@ class Settings extends StatelessWidget {
       child: IconButton(
           icon: Icon(Icons.settings_outlined),
           onPressed: () {
-            router.push('/settings');
+            router.push(RoutePath.settings);
           }),
     );
   }

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
@@ -21,6 +22,9 @@ void main() async {
 
   // Bootstrap backend for p2p communication and data persistence
   await bootstrapNode();
+
+  // Go to main screen
+  router.go(RoutePath.allSightings);
 
   // Remove splash screen when bootstrap is complete
   FlutterNativeSplash.remove();

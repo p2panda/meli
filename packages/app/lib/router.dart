@@ -3,20 +3,25 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:app/ui/screens/home.dart';
-import 'package:app/ui/screens/create_new.dart';
+import 'package:app/ui/screens/all_sightings.dart';
 import 'package:app/ui/screens/all_species.dart';
+import 'package:app/ui/screens/create_new.dart';
 import 'package:app/ui/screens/settings.dart';
 
 class RoutePath {
-  static String home = '/'; // sightings
+  static String splash = '/';
+  static String allSightings = '/sightings';
   static String settings = '/settings';
   static String createNew = '/createNew';
   static String allSpecies = '/species';
 }
 
 final router = GoRouter(routes: [
-  _Route(RoutePath.home, (_) => HomeScreen()),
+  // The splash route is just a dummy which gets loaded in the background while
+  // the native splash screen is shown. We have this in place to not have any
+  // app logic running yet while everything else is bootstrapping.
+  _Route(RoutePath.splash, (_) => Container(color: Colors.white)),
+  _Route(RoutePath.allSightings, (_) => AllSightingsScreen()),
   _Route(RoutePath.settings, (_) => SettingsScreen()),
   _Route(RoutePath.createNew, (_) => CreateNewScreen()),
   _Route(RoutePath.allSpecies, (_) => AllSpeciesScreen()),
