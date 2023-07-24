@@ -136,7 +136,7 @@ research and innovation programme within the framework of the NGI-POINTER
 Project funded under grant agreement No 871528*
 
 [`aquadoggo`]: https://github.com/p2panda/aquadoggo
-[`fishy`]: https://github.com/adzialocha/fishy
+[`fishy`]: https://github.com/p2panda/fishy
 [`flutter-cli`]: https://docs.flutter.dev/reference/flutter-cli
 [`flutter_rust_bridge`]: https://github.com/fzyzcjy/flutter_rust_bridge
 [`p2panda-rs`]: https://github.com/p2panda/p2panda
