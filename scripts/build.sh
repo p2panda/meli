@@ -14,6 +14,7 @@ echo
 
 # Set up required Cargo toolbelt applications and Android compilation targets
 cargo install cargo-ndk
+cargo install cargo-expand
 cargo install flutter_rust_bridge_codegen
 rustup target add \
         aarch64-linux-android \
