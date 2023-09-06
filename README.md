@@ -46,7 +46,7 @@ providing all p2panda functionality via FFI bindings.
 ### Setup
 
 ```bash
-# Install all Dart dependencies, including Melos
+# Install all Dart dependencies, make sure you've installed melos globally
 dart pub get
 
 # Bootstrap your Melos environment
