@@ -207,7 +207,7 @@ pub fn decode_operation(operation: Vec<u8>) -> Result<(OperationAction, String)>
 /// Runs a p2panda node in a separate thread in the background.
 ///
 /// Supports Android logging for logs coming from the node.
-pub fn start_node(key_pair: KeyPair, base_path: String) -> Result<()> {
+pub fn start_node(key_pair: KeyPair, database_url: String) -> Result<()> {
     // Initialise logging for Android developer console
     android_logger::init_once(
         Config::default()
@@ -220,7 +220,8 @@ pub fn start_node(key_pair: KeyPair, base_path: String) -> Result<()> {
     );
 
     // Set node configuration
-    let mut config = Configuration::new(Some(base_path.into()))?;
+    let mut config = Configuration::default();
+    config.database_url = database_url;
     config.network.mdns = true;
 
     // Convert key pair from external FFI type to internal one

@@ -111,7 +111,7 @@ fn wire_decode_operation_impl(port_: MessagePort, operation: impl Wire2Api<Vec<u
 fn wire_start_node_impl(
     port_: MessagePort,
     key_pair: impl Wire2Api<KeyPair> + UnwindSafe,
-    base_path: impl Wire2Api<String> + UnwindSafe,
+    database_url: impl Wire2Api<String> + UnwindSafe,
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
         WrapInfo {
@@ -121,8 +121,8 @@ fn wire_start_node_impl(
         },
         move || {
             let api_key_pair = key_pair.wire2api();
-            let api_base_path = base_path.wire2api();
-            move |task_callback| start_node(api_key_pair, api_base_path)
+            let api_database_url = database_url.wire2api();
+            move |task_callback| start_node(api_key_pair, api_database_url)
         },
     )
 }
@@ -344,9 +344,9 @@ mod io {
     pub extern "C" fn wire_start_node(
         port_: i64,
         key_pair: *mut wire_KeyPair,
-        base_path: *mut wire_uint_8_list,
+        database_url: *mut wire_uint_8_list,
     ) {
-        wire_start_node_impl(port_, key_pair, base_path)
+        wire_start_node_impl(port_, key_pair, database_url)
     }
 
     #[no_mangle]

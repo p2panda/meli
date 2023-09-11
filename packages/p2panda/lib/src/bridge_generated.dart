@@ -60,7 +60,7 @@ abstract class P2Panda {
   ///
   /// Supports Android logging for logs coming from the node.
   Future<void> startNode(
-      {required KeyPair keyPair, required String basePath, dynamic hint});
+      {required KeyPair keyPair, required String databaseUrl, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kStartNodeConstMeta;
 
@@ -317,14 +317,14 @@ class P2PandaImpl implements P2Panda {
       );
 
   Future<void> startNode(
-      {required KeyPair keyPair, required String basePath, dynamic hint}) {
+      {required KeyPair keyPair, required String databaseUrl, dynamic hint}) {
     var arg0 = _platform.api2wire_box_autoadd_key_pair(keyPair);
-    var arg1 = _platform.api2wire_String(basePath);
+    var arg1 = _platform.api2wire_String(databaseUrl);
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) => _platform.inner.wire_start_node(port_, arg0, arg1),
       parseSuccessData: _wire2api_unit,
       constMeta: kStartNodeConstMeta,
-      argValues: [keyPair, basePath],
+      argValues: [keyPair, databaseUrl],
       hint: hint,
     ));
   }
@@ -332,7 +332,7 @@ class P2PandaImpl implements P2Panda {
   FlutterRustBridgeTaskConstMeta get kStartNodeConstMeta =>
       const FlutterRustBridgeTaskConstMeta(
         debugName: "start_node",
-        argNames: ["keyPair", "basePath"],
+        argNames: ["keyPair", "databaseUrl"],
       );
 
   Future<void> shutdownNode({dynamic hint}) {
@@ -904,12 +904,12 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
   void wire_start_node(
     int port_,
     ffi.Pointer<wire_KeyPair> key_pair,
-    ffi.Pointer<wire_uint_8_list> base_path,
+    ffi.Pointer<wire_uint_8_list> database_url,
   ) {
     return _wire_start_node(
       port_,
       key_pair,
-      base_path,
+      database_url,
     );
   }
 

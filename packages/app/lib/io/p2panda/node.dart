@@ -11,12 +11,15 @@ Future<void> startNode() async {
   // Determine folder where we can persist data
   final basePath = await applicationSupportDirectory;
 
+  // Set up SQLite database file inside of persisted phone directory
+  final databaseUrl = 'sqlite:/${basePath}/db.sqlite3';
+
   // Re-use client's key pair also for node. Note that during networking the
   // peer id will be a hashed version of the public key and it will not leak
   final _keyPair = await keyPair;
 
   // Start node in background thread
-  p2panda.startNode(keyPair: _keyPair, basePath: basePath);
+  p2panda.startNode(keyPair: _keyPair, databaseUrl: databaseUrl);
 
   // .. since we can't `await` the FFI binding method from Rust we need to
   // poll here to find out until the node is ready
