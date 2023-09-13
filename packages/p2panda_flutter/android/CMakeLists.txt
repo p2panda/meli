@@ -20,7 +20,7 @@ set(ToPath "${CMAKE_CURRENT_SOURCE_DIR}/${LibraryVersion}.tar.gz")
 
 if(NOT EXISTS ${ToPath})
   # Check if file exists locally, otherwise download it from the internet
-  if(EXISTS ${LocalArchivePath})
+  if(EXISTS ${LocalFromPath})
     file(COPY_FILE
       ${LocalFromPath}
       ${ToPath}
