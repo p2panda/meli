@@ -2,22 +2,80 @@
 
 import 'package:flutter/material.dart';
 
-class SightingCard extends StatefulWidget {
-  final String name;
+import 'card.dart';
 
-  SightingCard({super.key, required this.name});
+class SightingCard extends StatelessWidget {
+  final String species;
+  final String img;
+  final String dateTime;
 
-  @override
-  State<SightingCard> createState() => _SightingCardState();
-}
+  SightingCard(
+      {super.key,
+      required this.species,
+      required this.img,
+      required this.dateTime});
 
-class _SightingCardState extends State<SightingCard> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-        elevation: 0,
-        child: Container(
-            padding: const EdgeInsets.all(20.0),
-            child: Text(this.widget.name)));
+    return MeliCard(
+      child: Container(
+        height: 260,
+        width: 360,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 1,
+              child: Container(
+                width: double.infinity,
+                margin: EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      child: Text(
+                        this.species,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      child: Text(
+                        this.dateTime,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 4,
+              child: Container(
+                width: double.infinity,
+                decoration: ShapeDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(this.img),
+                    fit: BoxFit.fill,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
