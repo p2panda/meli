@@ -12,26 +12,18 @@ class MeliCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      child: Column(
-        children: [
-          Container(
-            width: 360,
-            height: 233,
-            padding: const EdgeInsets.all(1),
-            decoration: ShapeDecoration(
-              color: MeliColors.magnolia,
-              shape: RoundedRectangleBorder(
-                side: BorderSide(
-                  width: 3,
-                  strokeAlign: BorderSide.strokeAlignCenter,
-                  color: MeliColors.magnolia,
-                ),
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: this.child,
-          ),
-        ],
+      color: MeliColors.magnolia,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(
+          width: 5,
+          strokeAlign: BorderSide.strokeAlignCenter,
+          color: MeliColors.magnolia,
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(1),
+        child: this.child,
       ),
     );
   }
