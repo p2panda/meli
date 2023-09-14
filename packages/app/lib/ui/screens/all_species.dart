@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:flutter/material.dart';
-import 'package:app/ui/widgets/species_card.dart';
 import 'package:app/ui/widgets/scaffold.dart';
+import 'package:app/ui/widgets/species_card.dart';
 
 class AllSpeciesScreen extends StatefulWidget {
   AllSpeciesScreen({super.key});
