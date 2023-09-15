@@ -20,10 +20,17 @@ class _EditableCardState extends State<EditableCard> {
   @override
   Widget build(BuildContext context) {
     return MeliCard(
+      icon: GestureDetector(
+        child: Icon(Icons.edit),
+        onTap: () => setState(() {
+          this.editMode = !this.editMode;
+        }),
+      ),
       title: this.widget.title,
       child: Column(
         children: <Widget>[
           ...this.widget.fields.entries.map((entry) => FormBuilderTextField(
+                enabled: this.editMode,
                 name: entry.key,
                 initialValue: entry.value,
                 decoration: InputDecoration(

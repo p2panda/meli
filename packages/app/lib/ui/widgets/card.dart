@@ -8,9 +8,15 @@ class MeliCard extends StatelessWidget {
   final String? title;
   final String? subtitle;
   final String? footer;
+  final Widget? icon;
 
   MeliCard(
-      {super.key, required this.child, this.title, this.subtitle, this.footer});
+      {super.key,
+      required this.child,
+      this.title,
+      this.subtitle,
+      this.footer,
+      this.icon});
 
   Widget _header() {
     if (this.title != null) {
@@ -21,7 +27,15 @@ class MeliCard extends StatelessWidget {
             padding: const EdgeInsets.all(10),
             width: double.infinity,
             child: Column(
-              children: [this._title(), this._subtitle()],
+              children: [
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(flex: 4, child: this._title()),
+                      Expanded(flex: 1, child: this._icon())
+                    ]),
+                this._subtitle()
+              ],
             ),
           ));
     }
@@ -59,6 +73,17 @@ class MeliCard extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
+      );
+    }
+
+    return SizedBox(height: 0.0);
+  }
+
+  Widget _icon() {
+    if (this.icon != null) {
+      return Container(
+        alignment: AlignmentDirectional.centerEnd,
+        child: this.icon!,
       );
     }
 

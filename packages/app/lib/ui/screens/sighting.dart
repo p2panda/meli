@@ -26,7 +26,7 @@ class _SightingScreenState extends State<SightingScreen> {
   @override
   Widget build(BuildContext context) {
     return MeliScaffold(
-        title: 'New Sighting',
+        title: 'Sighting',
         body: SingleChildScrollView(
             child: Column(children: <Widget>[
           FormBuilder(
@@ -41,10 +41,14 @@ class _SightingScreenState extends State<SightingScreen> {
             child: Column(
               children: <Widget>[
                 EditableCard(
-                    title: 'Name', fields: {'Name': this._sighting()['name']!}),
+                  title: 'Name',
+                  fields: {'Name': this._sighting()['name']!},
+                ),
                 EditableCard(
                     title: 'Species',
-                    fields: {'Species': this._sighting()['species']!})
+                    fields: {'Species': this._sighting()['species']!}),
+                EditableCard(
+                    title: 'Image', fields: {'Image': this._sighting()['img']!})
               ],
             ),
           )
