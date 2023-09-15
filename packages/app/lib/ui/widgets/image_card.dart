@@ -19,19 +19,21 @@ class ImageCard extends StatelessWidget {
       title: this.title,
       subtitle: this.subtitle,
       footer: this.footer,
-      child: Container(
-        height: 240,
-        width: double.infinity,
-        decoration: ShapeDecoration(
-          image: DecorationImage(
-            image: NetworkImage(this.img),
-            fit: BoxFit.fill,
+      children: [
+        Container(
+          height: 240,
+          width: double.infinity,
+          decoration: ShapeDecoration(
+            image: DecorationImage(
+              image: NetworkImage(this.img),
+              fit: BoxFit.fill,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
+        )
+      ],
     );
   }
 }

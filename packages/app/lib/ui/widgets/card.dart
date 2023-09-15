@@ -2,21 +2,24 @@
 
 import 'package:flutter/material.dart';
 import 'package:app/ui/colors.dart';
+import 'package:expansion_tile_group/expansion_tile_group.dart';
 
 class MeliCard extends StatelessWidget {
-  final Widget child;
+  final List<Widget> children;
   final String? title;
   final String? subtitle;
   final String? footer;
   final Widget? icon;
+  final bool expandable;
 
   MeliCard(
       {super.key,
-      required this.child,
+      required this.children,
       this.title,
       this.subtitle,
       this.footer,
-      this.icon});
+      this.icon,
+      this.expandable = false});
 
   Widget _header() {
     if (this.title != null) {
@@ -106,23 +109,37 @@ class MeliCard extends StatelessWidget {
     return SizedBox(height: 0.0);
   }
 
+  Widget _content() {
+    if (this.expandable) {
+      return ExpansionTileGroup(children: [
+        ExpansionTileItem(
+          isHasTopBorder: false,
+          isHasBottomBorder: false,
+          isHasTrailing: false,
+          tilePadding: EdgeInsets.all(0.0),
+          title: this._header(),
+          children: [Text('child one'), Text('child two')],
+        )
+      ]);
+    }
+
+    return Column(children: [this._header(), Column(children: this.children), this._footer()]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 0,
-      color: MeliColors.magnolia,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(
-          width: 5,
-          strokeAlign: BorderSide.strokeAlignCenter,
-          color: MeliColors.magnolia,
+        elevation: 0,
+        color: MeliColors.magnolia,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(
+            width: 5,
+            strokeAlign: BorderSide.strokeAlignCenter,
+            color: MeliColors.magnolia,
+          ),
+          borderRadius: BorderRadius.circular(12),
         ),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Container(
-        margin: const EdgeInsets.all(5),
-        child: Column(children: [this._header(), this.child, this._footer()]),
-      ),
-    );
+        child:
+            Container(margin: const EdgeInsets.all(5), child: this._content()));
   }
 }

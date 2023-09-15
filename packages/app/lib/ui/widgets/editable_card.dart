@@ -27,19 +27,17 @@ class _EditableCardState extends State<EditableCard> {
         }),
       ),
       title: this.widget.title,
-      child: Column(
-        children: <Widget>[
-          ...this.widget.fields.entries.map((entry) => FormBuilderTextField(
-                enabled: this.editMode,
-                name: entry.key,
-                initialValue: entry.value,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
-              ))
-        ],
-      ),
+      children: <Widget>[
+        ...this.widget.fields.entries.map((entry) => FormBuilderTextField(
+              enabled: this.editMode,
+              name: entry.key,
+              initialValue: entry.value,
+              decoration: InputDecoration(
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ))
+      ],
     );
   }
 }

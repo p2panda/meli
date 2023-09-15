@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 
+import 'package:app/ui/widgets/expandable_card.dart';
 import 'package:app/ui/widgets/scaffold.dart';
-import 'package:app/ui/widgets/card.dart';
 
 class SettingsScreen extends StatefulWidget {
   SettingsScreen({super.key});
@@ -28,24 +28,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
 class SettingsList extends StatelessWidget {
   final List<Widget> menuListItems = [
-    MeliCard(
-        child: ExpansionTile(
-      title: Text('Language'),
-      subtitle: Text('language settings'),
+    ExpandableCard(
+      title: 'Language',
       children: [Text('portuguese'), Text('english')],
-    )),
-    MeliCard(
-        child: ExpansionTile(
-      title: Text('Advanced Settings'),
-      subtitle: Text('warning! There be dragons...'),
-      children: [Text('don\'t touch'), Text('don\'t touch here either')],
-    )),
-    MeliCard(
-        child: ExpansionTile(
-      title: Text('System Information'),
-      subtitle: Text('check out information about this device'),
-      children: [Text('......')],
-    ))
+    ),
+    ExpandableCard(
+      title: 'Advanced Settings',
+      children: [Text('Don\'t click here'), Text('Don\'t click here either!')],
+    ),
+    ExpandableCard(
+      title: 'Sytem Information',
+      children: [Text('...')],
+    ),
   ];
 
   @override
