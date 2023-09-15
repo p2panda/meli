@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/image_card.dart';
+import 'package:app/data.dart';
 
 class AllSpeciesScreen extends StatefulWidget {
   AllSpeciesScreen({super.key});
@@ -22,23 +23,7 @@ class _AllSpeciesScreenState extends State<AllSpeciesScreen> {
 }
 
 class SpeciesList extends StatefulWidget {
-  final List<Map<String, String>> data = [
-    {
-      'name': 'Melipona 1',
-      'img':
-          'https://fthmb.tqn.com/SGxhmRQ5AzFN7UTqNC3EzMIwJdQ=/2560x1686/filters:fill(auto,1)/stingless_bees-59c66d7568e1a20014f976cf.jpg'
-    },
-    {
-      'name': 'Melipona 2',
-      'img':
-          'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg',
-    },
-    {
-      'name': 'Melipona 3',
-      'img':
-          'https://i.pinimg.com/originals/50/9a/51/509a514607ac20c3c14694537adf346f.jpg'
-    }
-  ];
+  final List<Map<String, String>> data = species;
 
   SpeciesList({super.key});
 

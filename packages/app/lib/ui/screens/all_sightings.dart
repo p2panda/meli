@@ -5,6 +5,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
+import 'package:app/data.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/scaffold.dart';
@@ -109,19 +110,21 @@ class _SightingsListState extends State<SightingsList> {
                   return const Text('Loading ...');
                 }
 
+                // TODO: I'm not using this data we get back from the node at the moment.
                 List<dynamic> documents =
                     result.data?['sightings']?['documents'] as List<dynamic>;
 
                 return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      ...documents.map((document) => GestureDetector(
-                            onTap: () => {router.push(RoutePath.sighting)},
+                      ...sightings.map((sighting) => GestureDetector(
+                            onTap: () => {
+                              router.push(RoutePath.sighting, extra: sighting['id'])
+                            },
                             child: new ImageCard(
-                                title: document!['fields']['name'] as String,
-                                subtitle: '01.01.2023',
-                                img:
-                                    'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg'),
+                                title: sighting['name'],
+                                subtitle: sighting['timestamp'],
+                                img: sighting['img']!),
                           )),
                     ]);
               })),
