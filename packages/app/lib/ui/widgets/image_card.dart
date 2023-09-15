@@ -4,22 +4,21 @@ import 'package:flutter/material.dart';
 
 import 'card.dart';
 
-class SightingCard extends StatelessWidget {
-  final String species;
+class ImageCard extends StatelessWidget {
+  final String? title;
+  final String? subtitle;
   final String img;
-  final String dateTime;
+  final String? footer;
 
-  SightingCard(
-      {super.key,
-      required this.species,
-      required this.img,
-      required this.dateTime});
+  ImageCard(
+      {super.key, required this.img, this.title, this.subtitle, this.footer});
 
   @override
   Widget build(BuildContext context) {
     return MeliCard(
-      title: this.species,
-      subtitle: this.dateTime,
+      title: this.title,
+      subtitle: this.subtitle,
+      footer: this.footer,
       child: Container(
         height: 240,
         width: double.infinity,

@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:app/ui/widgets/scaffold.dart';
-import 'package:app/ui/widgets/species_card.dart';
+import 'package:app/ui/widgets/image_card.dart';
 
 class AllSpeciesScreen extends StatefulWidget {
   AllSpeciesScreen({super.key});
@@ -17,25 +17,27 @@ class _AllSpeciesScreenState extends State<AllSpeciesScreen> {
     return MeliScaffold(
         title: 'Species',
         fabAlignment: MainAxisAlignment.end,
-        body: SpeciesList()
-    );
+        body: SpeciesList());
   }
 }
 
 class SpeciesList extends StatefulWidget {
-  final List<SpeciesCard> data = [
-    new SpeciesCard(
-        name: 'Melipona 1',
-        img:
-            'https://fthmb.tqn.com/SGxhmRQ5AzFN7UTqNC3EzMIwJdQ=/2560x1686/filters:fill(auto,1)/stingless_bees-59c66d7568e1a20014f976cf.jpg'),
-    new SpeciesCard(
-        name: 'Melipona 2',
-        img:
-            'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg'),
-    new SpeciesCard(
-        name: 'Melipona 3',
-        img:
-            'https://i.pinimg.com/originals/50/9a/51/509a514607ac20c3c14694537adf346f.jpg')
+  final List<Map<String, String>> data = [
+    {
+      'name': 'Melipona 1',
+      'img':
+          'https://fthmb.tqn.com/SGxhmRQ5AzFN7UTqNC3EzMIwJdQ=/2560x1686/filters:fill(auto,1)/stingless_bees-59c66d7568e1a20014f976cf.jpg'
+    },
+    {
+      'name': 'Melipona 2',
+      'img':
+          'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg',
+    },
+    {
+      'name': 'Melipona 3',
+      'img':
+          'https://i.pinimg.com/originals/50/9a/51/509a514607ac20c3c14694537adf346f.jpg'
+    }
   ];
 
   SpeciesList({super.key});
@@ -45,6 +47,17 @@ class SpeciesList extends StatefulWidget {
 }
 
 class _SpeciesListState extends State<SpeciesList> {
+  List<ImageCard> _speciesCards() {
+    return this
+        .widget
+        .data
+        .map((species) => ImageCard(
+              footer: species['name']!,
+              img: species['img']!,
+            ))
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -53,7 +66,7 @@ class _SpeciesListState extends State<SpeciesList> {
           padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: this.widget.data)),
+              children: _speciesCards())),
     );
   }
 }

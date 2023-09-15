@@ -8,7 +8,7 @@ import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/scaffold.dart';
-import 'package:app/ui/widgets/sighting_card.dart';
+import 'package:app/ui/widgets/image_card.dart';
 
 class AllSightingsScreen extends StatefulWidget {
   AllSightingsScreen({super.key});
@@ -115,9 +115,9 @@ class _SightingsListState extends State<SightingsList> {
                 return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      ...documents.map((document) => new SightingCard(
-                          species: document!['fields']['name'] as String,
-                          dateTime: '01.01.2023',
+                      ...documents.map((document) => new ImageCard(
+                          title: document!['fields']['name'] as String,
+                          subtitle: '01.01.2023',
                           img:
                               'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg')),
                     ]);

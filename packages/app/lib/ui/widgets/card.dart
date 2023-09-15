@@ -15,14 +15,15 @@ class MeliCard extends StatelessWidget {
   Widget _header() {
     if (this.title != null) {
       return Card(
+          margin: const EdgeInsets.fromLTRB(0, 0, 0, 5),
           child: Container(
-        alignment: AlignmentDirectional.centerStart,
-        padding: const EdgeInsets.all(10),
-        width: double.infinity,
-        child: Column(
-          children: [this._title(), this._subtitle()],
-        ),
-      ));
+            alignment: AlignmentDirectional.centerStart,
+            padding: const EdgeInsets.all(10),
+            width: double.infinity,
+            child: Column(
+              children: [this._title(), this._subtitle()],
+            ),
+          ));
     }
 
     return SizedBox(height: 0.0);
@@ -53,7 +54,6 @@ class MeliCard extends StatelessWidget {
         alignment: AlignmentDirectional.centerStart,
         child: Text(
           this.title.toString(),
-          textAlign: TextAlign.left,
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w500,
@@ -71,7 +71,6 @@ class MeliCard extends StatelessWidget {
         alignment: AlignmentDirectional.centerStart,
         child: Text(
           this.subtitle.toString(),
-          textAlign: TextAlign.left,
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w400,
@@ -96,7 +95,7 @@ class MeliCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Container(
-        padding: const EdgeInsets.all(1),
+        margin: const EdgeInsets.all(5),
         child: Column(children: [this._header(), this.child, this._footer()]),
       ),
     );
