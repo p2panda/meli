@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+// TODO: not used at the moment.
+
 import 'package:flutter/material.dart';
 
 import 'package:app/models/sightings.dart';
