@@ -115,11 +115,14 @@ class _SightingsListState extends State<SightingsList> {
                 return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      ...documents.map((document) => new ImageCard(
-                          title: document!['fields']['name'] as String,
-                          subtitle: '01.01.2023',
-                          img:
-                              'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg')),
+                      ...documents.map((document) => GestureDetector(
+                            onTap: () => {router.push(RoutePath.sighting)},
+                            child: new ImageCard(
+                                title: document!['fields']['name'] as String,
+                                subtitle: '01.01.2023',
+                                img:
+                                    'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg'),
+                          )),
                     ]);
               })),
     );

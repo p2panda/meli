@@ -5,12 +5,14 @@ import 'package:go_router/go_router.dart';
 
 import 'package:app/ui/screens/all_sightings.dart';
 import 'package:app/ui/screens/all_species.dart';
+import 'package:app/ui/screens/sighting.dart';
 import 'package:app/ui/screens/create_sighting.dart';
 import 'package:app/ui/screens/settings.dart';
 
 class RoutePath {
   static String splash = '/';
   static String allSightings = '/sightings';
+  static String sighting = '/sighting';
   static String settings = '/settings';
   static String createSighting = '/createSighting';
   static String allSpecies = '/species';
@@ -22,6 +24,7 @@ final router = GoRouter(routes: [
   // app logic running yet while everything else is bootstrapping.
   _Route(RoutePath.splash, (_) => Container(color: Colors.white)),
   _Route(RoutePath.allSightings, (_) => AllSightingsScreen()),
+  _Route(RoutePath.sighting, (_) => SightingScreen()),
   _Route(RoutePath.settings, (_) => SettingsScreen()),
   _Route(RoutePath.createSighting, (_) => CreateSightingScreen()),
   _Route(RoutePath.allSpecies, (_) => AllSpeciesScreen()),
