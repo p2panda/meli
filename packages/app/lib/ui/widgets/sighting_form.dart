@@ -18,7 +18,7 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
   bool _speciesHasError = false;
 
   var speciesOptions = ['Melipolina', 'Melipolinio', 'Bumble Bee'];
-  
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
