@@ -15,7 +15,11 @@ class CreateSightingForm extends StatefulWidget {
 
 class _CreateSightingFormState extends State<CreateSightingForm> {
   final _formKey = GlobalKey<FormBuilderState>();
+  bool autoValidate = true;
+  bool readOnly = false;
+  bool showSegmentedControl = true;
   bool _speciesHasError = false;
+  bool _popularNameHasError = false;
 
   var speciesOptions = ['Melipolina', 'Melipolinio', 'Bumble Bee'];
 
@@ -41,6 +45,7 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
                   child: Container(
                     margin: EdgeInsets.all(4),
                     child: FormBuilderDropdown<String>(
+                      autovalidateMode: AutovalidateMode.always,
                       name: 'species',
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -55,20 +60,52 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
                           [FormBuilderValidators.required()]),
                       items: speciesOptions
                           .map((species) => DropdownMenuItem(
-                        alignment: AlignmentDirectional.centerStart,
-                        value: species,
-                        child: Text(species),
-                      ))
+                                alignment: AlignmentDirectional.centerStart,
+                                value: species,
+                                child: Text(species),
+                              ))
                           .toList(),
                       onChanged: (val) {
                         setState(() {
                           _speciesHasError = !(_formKey
-                              .currentState?.fields['species']
-                              ?.validate() ??
+                                  .currentState?.fields['species']
+                                  ?.validate() ??
                               false);
                         });
                       },
                       valueTransformer: (val) => val?.toString(),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                MeliCard(
+                  title: 'Popular Name',
+                  child: Container(
+                    margin: EdgeInsets.all(4),
+                    child: FormBuilderTextField(
+                      autovalidateMode: AutovalidateMode.always,
+                      name: 'popular_name',
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        suffixIcon: _popularNameHasError
+                            ? const Icon(Icons.error, color: Colors.red)
+                            : const Icon(Icons.check, color: Colors.green),
+                      ),
+                      onChanged: (val) {
+                        setState(() {
+                          _popularNameHasError = !(_formKey
+                                  .currentState?.fields['popular_name']
+                                  ?.validate() ??
+                              false);
+                        });
+                      },
+                      // valueTransformer: (text) => num.tryParse(text),
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(),
+                        FormBuilderValidators.max(70),
+                      ]),
+                      textInputAction: TextInputAction.next,
                     ),
                   ),
                 ),
