@@ -15,7 +15,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
   @override
   Widget build(BuildContext context) {
     return MeliScaffold(
-        title: 'Create Species',
+        title: 'New Sighting',
         body: Container(
             padding: EdgeInsets.all(10.0), child: CreateSightingForm()));
   }
