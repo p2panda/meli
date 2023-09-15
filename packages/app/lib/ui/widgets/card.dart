@@ -7,8 +7,10 @@ class MeliCard extends StatelessWidget {
   final Widget child;
   final String? title;
   final String? subtitle;
+  final String? footer;
 
-  MeliCard({super.key, required this.child, this.title, this.subtitle});
+  MeliCard(
+      {super.key, required this.child, this.title, this.subtitle, this.footer});
 
   Widget _header() {
     if (this.title != null) {
@@ -21,6 +23,25 @@ class MeliCard extends StatelessWidget {
           children: [this._title(), this._subtitle()],
         ),
       ));
+    }
+
+    return SizedBox(height: 0.0);
+  }
+
+  Widget _footer() {
+    if (this.footer != null) {
+      return Container(
+        padding: const EdgeInsets.all(10),
+        alignment: AlignmentDirectional.center,
+        child: Text(
+          this.footer.toString(),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      );
     }
 
     return SizedBox(height: 0.0);
@@ -76,7 +97,7 @@ class MeliCard extends StatelessWidget {
       ),
       child: Container(
         padding: const EdgeInsets.all(1),
-        child: Column(children: [this._header(), this.child]),
+        child: Column(children: [this._header(), this.child, this._footer()]),
       ),
     );
   }
