@@ -28,30 +28,26 @@ class _SightingScreenState extends State<SightingScreen> {
     return MeliScaffold(
         title: 'Sighting',
         body: SingleChildScrollView(
-            child: Column(children: <Widget>[
-          FormBuilder(
-            key: _formKey,
-            // enabled: false,
-            onChanged: () {
-              _formKey.currentState!.save();
-              debugPrint(_formKey.currentState!.value.toString());
-            },
-            autovalidateMode: AutovalidateMode.disabled,
-            skipDisabled: true,
-            child: Column(
-              children: <Widget>[
-                EditableCard(
-                  title: 'Name',
-                  fields: {'Name': this._sighting()['name']!},
-                ),
-                EditableCard(
-                    title: 'Species',
-                    fields: {'Species': this._sighting()['species']!}),
-                EditableCard(
-                    title: 'Image', fields: {'Image': this._sighting()['img']!})
-              ],
-            ),
-          )
-        ])));
+            child: FormBuilder(
+          key: _formKey,
+          // enabled: false,
+          onChanged: () {
+            _formKey.currentState!.save();
+            debugPrint(_formKey.currentState!.value.toString());
+          },
+          child: Column(
+            children: <Widget>[
+              EditableCard(
+                title: 'Name',
+                fields: {'Name': this._sighting()['name']!},
+              ),
+              EditableCard(
+                  title: 'Species',
+                  fields: {'Species': this._sighting()['species']!}),
+              EditableCard(
+                  title: 'Image', fields: {'Image': this._sighting()['img']!})
+            ],
+          ),
+        )));
   }
 }
