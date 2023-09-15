@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'card.dart';
 
+// TODO: needs reworking in order to conform to desired card styling
+
 class ExpansionCard extends StatelessWidget {
   final String title;
   final String subtitle;
