@@ -118,12 +118,16 @@ class MeliCard extends StatelessWidget {
           isHasTrailing: false,
           tilePadding: EdgeInsets.all(0.0),
           title: this._header(),
-          children: [Text('child one'), Text('child two')],
+          children: this.children,
         )
       ]);
     }
 
-    return Column(children: [this._header(), Column(children: this.children), this._footer()]);
+    return Column(children: [
+      this._header(),
+      Column(children: this.children),
+      this._footer()
+    ]);
   }
 
   @override
