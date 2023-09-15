@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:app/ui/screens/all_sightings.dart';
 import 'package:app/ui/screens/all_species.dart';
 import 'package:app/ui/screens/create_sighting.dart';
-import 'package:app/ui/screens/create_species.dart';
 import 'package:app/ui/screens/settings.dart';
 
 class RoutePath {
@@ -14,7 +13,6 @@ class RoutePath {
   static String allSightings = '/sightings';
   static String settings = '/settings';
   static String createSighting = '/createSighting';
-  static String createSpecies = '/createSpecies';
   static String allSpecies = '/species';
 }
 
@@ -26,7 +24,6 @@ final router = GoRouter(routes: [
   _Route(RoutePath.allSightings, (_) => AllSightingsScreen()),
   _Route(RoutePath.settings, (_) => SettingsScreen()),
   _Route(RoutePath.createSighting, (_) => CreateSightingScreen()),
-  _Route(RoutePath.createSpecies, (_) => CreateSpeciesScreen()),
   _Route(RoutePath.allSpecies, (_) => AllSpeciesScreen()),
 ]);
 

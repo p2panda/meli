@@ -3,8 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/species_card.dart';
-import 'package:app/ui/widgets/fab.dart';
-import 'package:app/router.dart';
 
 class AllSpeciesScreen extends StatefulWidget {
   AllSpeciesScreen({super.key});
@@ -19,14 +17,6 @@ class _AllSpeciesScreenState extends State<AllSpeciesScreen> {
     return MeliScaffold(
         title: 'Species',
         fabAlignment: MainAxisAlignment.end,
-        floatingActionButtons: [
-          MeliFloatingActionButton(
-              heroTag: 'create_species',
-              icon: Icon(Icons.create),
-              onPressed: () {
-                router.push(RoutePath.createSpecies);
-              }),
-        ],
         body: SpeciesList()
     );
   }
