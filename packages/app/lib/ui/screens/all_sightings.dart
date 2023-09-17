@@ -5,7 +5,6 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
-import 'package:app/data.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/scaffold.dart';
@@ -114,17 +113,21 @@ class _SightingsListState extends State<SightingsList> {
                 List<dynamic> documents =
                     result.data?['sightings']?['documents'] as List<dynamic>;
 
+                final sightingsList =
+                    SightingList.fromJson(documents).sightings;
+
                 return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      ...sightings.map((sighting) => GestureDetector(
+                      ...sightingsList.map((sighting) => GestureDetector(
                             onTap: () => {
-                              router.push(RoutePath.sighting, extra: sighting['id'])
+                              router.push(RoutePath.sighting,
+                                  extra: sighting.id)
                             },
                             child: new ImageCard(
-                                title: sighting['name'],
-                                subtitle: sighting['timestamp'],
-                                img: sighting['img']!),
+                                title: sighting.name,
+                                subtitle: sighting.timestamp,
+                                img: sighting.img),
                           )),
                     ]);
               })),

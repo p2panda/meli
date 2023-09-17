@@ -2,7 +2,6 @@
 
 import 'package:app/ui/widgets/card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class EditableCard extends StatefulWidget {
   final Map<String, String> fields;
@@ -28,9 +27,8 @@ class _EditableCardState extends State<EditableCard> {
       ),
       title: this.widget.title,
       children: <Widget>[
-        ...this.widget.fields.entries.map((entry) => FormBuilderTextField(
+        ...this.widget.fields.entries.map((entry) => TextFormField(
               enabled: this.editMode,
-              name: entry.key,
               initialValue: entry.value,
               decoration: InputDecoration(
                 border:

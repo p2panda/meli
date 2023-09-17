@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/data.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import '../widgets/editable_card.dart';
 
@@ -17,7 +16,7 @@ class SightingScreen extends StatefulWidget {
 }
 
 class _SightingScreenState extends State<SightingScreen> {
-  final _formKey = GlobalKey<FormBuilderState>();
+  final _formKey = GlobalKey<FormState>();
 
   Map<String, String> _sighting() {
     return sightings.where((element) => element['id'] == this.widget.id).first;
@@ -28,13 +27,8 @@ class _SightingScreenState extends State<SightingScreen> {
     return MeliScaffold(
         title: 'Sighting',
         body: SingleChildScrollView(
-            child: FormBuilder(
+            child: Form(
           key: _formKey,
-          // enabled: false,
-          onChanged: () {
-            _formKey.currentState!.save();
-            debugPrint(_formKey.currentState!.value.toString());
-          },
           child: Column(
             children: <Widget>[
               EditableCard(
