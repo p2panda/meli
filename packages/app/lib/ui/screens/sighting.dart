@@ -2,8 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:app/ui/widgets/scaffold.dart';
-import 'package:app/data.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../../models/sightings.dart';
 import '../widgets/editable_card.dart';
 
 class SightingScreen extends StatefulWidget {
@@ -18,30 +19,47 @@ class SightingScreen extends StatefulWidget {
 class _SightingScreenState extends State<SightingScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  Map<String, String> _sighting() {
-    return sightings.where((element) => element['id'] == this.widget.id).first;
-  }
-
   @override
   Widget build(BuildContext context) {
     return MeliScaffold(
         title: 'Sighting',
         body: SingleChildScrollView(
-            child: Form(
-          key: _formKey,
-          child: Column(
-            children: <Widget>[
-              EditableCard(
-                title: 'Name',
-                fields: {'Name': this._sighting()['name']!},
-              ),
-              EditableCard(
-                  title: 'Species',
-                  fields: {'Species': this._sighting()['species']!}),
-              EditableCard(
-                  title: 'Image', fields: {'Image': this._sighting()['img']!})
-            ],
-          ),
-        )));
+            child: Query(
+                options: QueryOptions(
+                    document: gql(sightingQuery(this.widget.id)),
+                    pollInterval: const Duration(seconds: 1)),
+                builder: (result,
+                    {VoidCallback? refetch, FetchMore? fetchMore}) {
+                  if (result.hasException) {
+                    return Text(result.exception.toString());
+                  }
+
+                  if (result.isLoading) {
+                    return const Text('Loading ...');
+                  }
+
+                  // TODO: I'm not using this data we get back from the node at the moment.
+                  Map<String, dynamic> sightingJson =
+                      result.data?['sighting'] as Map<String, dynamic>;
+
+                  final sighting = Sighting.fromJson(sightingJson);
+
+                  return Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        EditableCard(
+                          title: 'Name',
+                          fields: {'Name': sighting.name},
+                        ),
+                        EditableCard(
+                            title: 'Species',
+                            fields: {'Species': sighting.species}),
+                        EditableCard(
+                            title: 'Image', fields: {'Image': sighting.img})
+                      ],
+                    ),
+                  );
+                })));
   }
 }

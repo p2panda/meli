@@ -64,6 +64,24 @@ String get allSightingsQuery {
   ''';
 }
 
+String sightingQuery(String id) {
+  final schemaId = SchemaIds.sightings;
+  return '''
+    query GetSighting() {
+      sighting: $schemaId(id: "$id") {
+        meta {
+          owner
+          documentId
+          viewId
+        }
+        fields {
+          name
+        }
+      }
+    }
+  ''';
+}
+
 Future<DocumentViewId> createSighting(String name) async {
   return await create(
       SchemaIds.sightings, [("name", OperationValue.string(name))]);
