@@ -109,7 +109,6 @@ class _SightingsListState extends State<SightingsList> {
                   return const Text('Loading ...');
                 }
 
-                // TODO: I'm not using this data we get back from the node at the moment.
                 List<dynamic> documents =
                     result.data?['sightings']?['documents'] as List<dynamic>;
 

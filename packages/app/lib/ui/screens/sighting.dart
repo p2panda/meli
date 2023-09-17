@@ -38,11 +38,8 @@ class _SightingScreenState extends State<SightingScreen> {
                     return const Text('Loading ...');
                   }
 
-                  // TODO: I'm not using this data we get back from the node at the moment.
-                  Map<String, dynamic> sightingJson =
-                      result.data?['sighting'] as Map<String, dynamic>;
-
-                  final sighting = Sighting.fromJson(sightingJson);
+                  final sighting = Sighting.fromJson(
+                      result.data?['sighting'] as Map<String, dynamic>);
 
                   return Form(
                     key: _formKey,
