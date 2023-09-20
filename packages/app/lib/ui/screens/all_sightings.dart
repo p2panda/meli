@@ -8,7 +8,6 @@ import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/scaffold.dart';
-import 'package:app/ui/widgets/species_card.dart';
 
 class AllSightingsScreen extends StatefulWidget {
   AllSightingsScreen({super.key});

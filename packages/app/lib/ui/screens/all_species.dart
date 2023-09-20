@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/species_card.dart';
+import 'package:app/ui/colors.dart';
 import 'package:app/data.dart';
 
 class AllSpeciesScreen extends StatefulWidget {
@@ -37,8 +38,9 @@ class _SpeciesListState extends State<SpeciesList> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+      decoration: new BackgroundDecoration(),
       child: SingleChildScrollView(
-          padding: EdgeInsets.only(top: 0.0, bottom: 20.0),
+          padding: EdgeInsets.only(top: 80.0, bottom: 20.0),
           child:
               Wrap(spacing: 0.0, runSpacing: 20.0, children: _speciesCards())),
     );
@@ -51,5 +53,37 @@ class _SpeciesListState extends State<SpeciesList> {
         .map((species) =>
             SpeciesCard(title: species['name']!, image: species['img']!))
         .toList();
+  }
+}
+
+class BackgroundDecoration extends Decoration {
+  BackgroundDecoration();
+
+  @override
+  BoxPainter createBoxPainter([VoidCallback? onChanged]) {
+    return _BackgroundDecorationPainter();
+  }
+}
+
+class _BackgroundDecorationPainter extends BoxPainter {
+  @override
+  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+    final Size? bounds = configuration.size;
+
+    final paint = Paint()
+      ..color = MeliColors.peach
+      ..style = PaintingStyle.fill;
+
+    final path = Path();
+    path.moveTo(0, 0);
+    path.lineTo((bounds!.width / 4) * 1, -50.0);
+    path.lineTo((bounds.width / 4) * 2, 0.0);
+    path.lineTo((bounds.width / 4) * 3, -50.0);
+    path.lineTo((bounds.width / 4) * 4, 0.0);
+    path.lineTo(bounds.width, bounds.height);
+    path.lineTo(0, bounds.height);
+    path.close();
+
+    canvas.drawPath(path.shift(Offset(0.0, 130.0)), paint);
   }
 }
