@@ -57,12 +57,7 @@ echo "◆ Publish libraries"
 echo
 
 # Move libraries into plugin folder
-cp -fR $JNI_DIR $APP_DIR
-
-# Archive the dynamic libraries
-cd $JNI_DIR
-tar -czvf ../android.tar.gz *
-cd -
+cp -fvR $JNI_DIR $APP_DIR
 
 # Cleanup
 rm -rf $JNI_DIR
