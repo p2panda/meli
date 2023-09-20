@@ -21,3 +21,7 @@ scripts:
   build:
     run: bash scripts/build.sh
     description: Compile native p2panda library for Android.
+
+  clear:
+    run: bash scripts/clear.sh
+    description: Remove artifacts which got created after building.
