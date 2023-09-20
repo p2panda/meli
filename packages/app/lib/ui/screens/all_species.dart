@@ -36,7 +36,7 @@ class _SpeciesListState extends State<SpeciesList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
       child: SingleChildScrollView(
           padding: EdgeInsets.only(top: 0.0, bottom: 20.0),
           child:
