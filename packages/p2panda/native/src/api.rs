@@ -140,6 +140,9 @@ pub enum OperationValue {
     /// String value.
     String(String),
 
+    /// Bytes value.
+    Bytes(Vec<u8>),
+
     /// Reference to a document.
     Relation(HexString),
 

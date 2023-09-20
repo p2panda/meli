@@ -513,20 +513,25 @@ mod io {
                 },
                 4 => unsafe {
                     let ans = support::box_from_leak_ptr(self.kind);
+                    let ans = support::box_from_leak_ptr(ans.Bytes);
+                    OperationValue::Bytes(ans.field0.wire2api())
+                },
+                5 => unsafe {
+                    let ans = support::box_from_leak_ptr(self.kind);
                     let ans = support::box_from_leak_ptr(ans.Relation);
                     OperationValue::Relation(ans.field0.wire2api())
                 },
-                5 => unsafe {
+                6 => unsafe {
                     let ans = support::box_from_leak_ptr(self.kind);
                     let ans = support::box_from_leak_ptr(ans.RelationList);
                     OperationValue::RelationList(ans.field0.wire2api())
                 },
-                6 => unsafe {
+                7 => unsafe {
                     let ans = support::box_from_leak_ptr(self.kind);
                     let ans = support::box_from_leak_ptr(ans.PinnedRelation);
                     OperationValue::PinnedRelation(ans.field0.wire2api())
                 },
-                7 => unsafe {
+                8 => unsafe {
                     let ans = support::box_from_leak_ptr(self.kind);
                     let ans = support::box_from_leak_ptr(ans.PinnedRelationList);
                     OperationValue::PinnedRelationList(ans.field0.wire2api())
@@ -599,6 +604,7 @@ mod io {
         Float: *mut wire_OperationValue_Float,
         Integer: *mut wire_OperationValue_Integer,
         String: *mut wire_OperationValue_String,
+        Bytes: *mut wire_OperationValue_Bytes,
         Relation: *mut wire_OperationValue_Relation,
         RelationList: *mut wire_OperationValue_RelationList,
         PinnedRelation: *mut wire_OperationValue_PinnedRelation,
@@ -626,6 +632,12 @@ mod io {
     #[repr(C)]
     #[derive(Clone)]
     pub struct wire_OperationValue_String {
+        field0: *mut wire_uint_8_list,
+    }
+
+    #[repr(C)]
+    #[derive(Clone)]
+    pub struct wire_OperationValue_Bytes {
         field0: *mut wire_uint_8_list,
     }
 
@@ -748,6 +760,15 @@ mod io {
     pub extern "C" fn inflate_OperationValue_String() -> *mut OperationValueKind {
         support::new_leak_box_ptr(OperationValueKind {
             String: support::new_leak_box_ptr(wire_OperationValue_String {
+                field0: core::ptr::null_mut(),
+            }),
+        })
+    }
+
+    #[no_mangle]
+    pub extern "C" fn inflate_OperationValue_Bytes() -> *mut OperationValueKind {
+        support::new_leak_box_ptr(OperationValueKind {
+            Bytes: support::new_leak_box_ptr(wire_OperationValue_Bytes {
                 field0: core::ptr::null_mut(),
             }),
         })

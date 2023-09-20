@@ -38,6 +38,7 @@ impl TryFrom<OperationValue> for operation::OperationValue {
             OperationValue::Float(value) => Ok(operation::OperationValue::Float(value)),
             OperationValue::Integer(value) => Ok(operation::OperationValue::Integer(value)),
             OperationValue::String(value) => Ok(operation::OperationValue::String(value)),
+            OperationValue::Bytes(value) => Ok(operation::OperationValue::Bytes(value)),
             OperationValue::Relation(document_id_str) => {
                 let document_id: DocumentId = document_id_str.parse()?;
                 Ok(operation::OperationValue::Relation(Relation::new(

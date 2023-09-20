@@ -181,6 +181,11 @@ sealed class OperationValue with _$OperationValue {
     String field0,
   ) = OperationValue_String;
 
+  /// Bytes value.
+  const factory OperationValue.bytes(
+    Uint8List field0,
+  ) = OperationValue_Bytes;
+
   /// Reference to a document.
   const factory OperationValue.relation(
     String field0,
@@ -680,30 +685,37 @@ class P2PandaPlatform extends FlutterRustBridgeBase<P2PandaWire> {
       wireObj.kind.ref.String.ref.field0 = pre_field0;
       return;
     }
+    if (apiObj is OperationValue_Bytes) {
+      var pre_field0 = api2wire_uint_8_list(apiObj.field0);
+      wireObj.tag = 4;
+      wireObj.kind = inner.inflate_OperationValue_Bytes();
+      wireObj.kind.ref.Bytes.ref.field0 = pre_field0;
+      return;
+    }
     if (apiObj is OperationValue_Relation) {
       var pre_field0 = api2wire_String(apiObj.field0);
-      wireObj.tag = 4;
+      wireObj.tag = 5;
       wireObj.kind = inner.inflate_OperationValue_Relation();
       wireObj.kind.ref.Relation.ref.field0 = pre_field0;
       return;
     }
     if (apiObj is OperationValue_RelationList) {
       var pre_field0 = api2wire_StringList(apiObj.field0);
-      wireObj.tag = 5;
+      wireObj.tag = 6;
       wireObj.kind = inner.inflate_OperationValue_RelationList();
       wireObj.kind.ref.RelationList.ref.field0 = pre_field0;
       return;
     }
     if (apiObj is OperationValue_PinnedRelation) {
       var pre_field0 = api2wire_String(apiObj.field0);
-      wireObj.tag = 6;
+      wireObj.tag = 7;
       wireObj.kind = inner.inflate_OperationValue_PinnedRelation();
       wireObj.kind.ref.PinnedRelation.ref.field0 = pre_field0;
       return;
     }
     if (apiObj is OperationValue_PinnedRelationList) {
       var pre_field0 = api2wire_StringList(apiObj.field0);
-      wireObj.tag = 7;
+      wireObj.tag = 8;
       wireObj.kind = inner.inflate_OperationValue_PinnedRelationList();
       wireObj.kind.ref.PinnedRelationList.ref.field0 = pre_field0;
       return;
@@ -1155,6 +1167,16 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
   late final _inflate_OperationValue_String = _inflate_OperationValue_StringPtr
       .asFunction<ffi.Pointer<OperationValueKind> Function()>();
 
+  ffi.Pointer<OperationValueKind> inflate_OperationValue_Bytes() {
+    return _inflate_OperationValue_Bytes();
+  }
+
+  late final _inflate_OperationValue_BytesPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<OperationValueKind> Function()>>(
+          'inflate_OperationValue_Bytes');
+  late final _inflate_OperationValue_Bytes = _inflate_OperationValue_BytesPtr
+      .asFunction<ffi.Pointer<OperationValueKind> Function()>();
+
   ffi.Pointer<OperationValueKind> inflate_OperationValue_Relation() {
     return _inflate_OperationValue_Relation();
   }
@@ -1250,6 +1272,10 @@ final class wire_OperationValue_String extends ffi.Struct {
   external ffi.Pointer<wire_uint_8_list> field0;
 }
 
+final class wire_OperationValue_Bytes extends ffi.Struct {
+  external ffi.Pointer<wire_uint_8_list> field0;
+}
+
 final class wire_OperationValue_Relation extends ffi.Struct {
   external ffi.Pointer<wire_uint_8_list> field0;
 }
@@ -1281,6 +1307,8 @@ final class OperationValueKind extends ffi.Union {
   external ffi.Pointer<wire_OperationValue_Integer> Integer;
 
   external ffi.Pointer<wire_OperationValue_String> String;
+
+  external ffi.Pointer<wire_OperationValue_Bytes> Bytes;
 
   external ffi.Pointer<wire_OperationValue_Relation> Relation;
 

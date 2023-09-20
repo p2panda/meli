@@ -23,6 +23,7 @@ mixin _$OperationValue {
     required TResult Function(double field0) float,
     required TResult Function(int field0) integer,
     required TResult Function(String field0) string,
+    required TResult Function(Uint8List field0) bytes,
     required TResult Function(String field0) relation,
     required TResult Function(List<String> field0) relationList,
     required TResult Function(String field0) pinnedRelation,
@@ -35,6 +36,7 @@ mixin _$OperationValue {
     TResult? Function(double field0)? float,
     TResult? Function(int field0)? integer,
     TResult? Function(String field0)? string,
+    TResult? Function(Uint8List field0)? bytes,
     TResult? Function(String field0)? relation,
     TResult? Function(List<String> field0)? relationList,
     TResult? Function(String field0)? pinnedRelation,
@@ -47,6 +49,7 @@ mixin _$OperationValue {
     TResult Function(double field0)? float,
     TResult Function(int field0)? integer,
     TResult Function(String field0)? string,
+    TResult Function(Uint8List field0)? bytes,
     TResult Function(String field0)? relation,
     TResult Function(List<String> field0)? relationList,
     TResult Function(String field0)? pinnedRelation,
@@ -60,6 +63,7 @@ mixin _$OperationValue {
     required TResult Function(OperationValue_Float value) float,
     required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_String value) string,
+    required TResult Function(OperationValue_Bytes value) bytes,
     required TResult Function(OperationValue_Relation value) relation,
     required TResult Function(OperationValue_RelationList value) relationList,
     required TResult Function(OperationValue_PinnedRelation value)
@@ -74,6 +78,7 @@ mixin _$OperationValue {
     TResult? Function(OperationValue_Float value)? float,
     TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_String value)? string,
+    TResult? Function(OperationValue_Bytes value)? bytes,
     TResult? Function(OperationValue_Relation value)? relation,
     TResult? Function(OperationValue_RelationList value)? relationList,
     TResult? Function(OperationValue_PinnedRelation value)? pinnedRelation,
@@ -87,6 +92,7 @@ mixin _$OperationValue {
     TResult Function(OperationValue_Float value)? float,
     TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_String value)? string,
+    TResult Function(OperationValue_Bytes value)? bytes,
     TResult Function(OperationValue_Relation value)? relation,
     TResult Function(OperationValue_RelationList value)? relationList,
     TResult Function(OperationValue_PinnedRelation value)? pinnedRelation,
@@ -184,6 +190,7 @@ class _$OperationValue_Boolean implements OperationValue_Boolean {
     required TResult Function(double field0) float,
     required TResult Function(int field0) integer,
     required TResult Function(String field0) string,
+    required TResult Function(Uint8List field0) bytes,
     required TResult Function(String field0) relation,
     required TResult Function(List<String> field0) relationList,
     required TResult Function(String field0) pinnedRelation,
@@ -199,6 +206,7 @@ class _$OperationValue_Boolean implements OperationValue_Boolean {
     TResult? Function(double field0)? float,
     TResult? Function(int field0)? integer,
     TResult? Function(String field0)? string,
+    TResult? Function(Uint8List field0)? bytes,
     TResult? Function(String field0)? relation,
     TResult? Function(List<String> field0)? relationList,
     TResult? Function(String field0)? pinnedRelation,
@@ -214,6 +222,7 @@ class _$OperationValue_Boolean implements OperationValue_Boolean {
     TResult Function(double field0)? float,
     TResult Function(int field0)? integer,
     TResult Function(String field0)? string,
+    TResult Function(Uint8List field0)? bytes,
     TResult Function(String field0)? relation,
     TResult Function(List<String> field0)? relationList,
     TResult Function(String field0)? pinnedRelation,
@@ -233,6 +242,7 @@ class _$OperationValue_Boolean implements OperationValue_Boolean {
     required TResult Function(OperationValue_Float value) float,
     required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_String value) string,
+    required TResult Function(OperationValue_Bytes value) bytes,
     required TResult Function(OperationValue_Relation value) relation,
     required TResult Function(OperationValue_RelationList value) relationList,
     required TResult Function(OperationValue_PinnedRelation value)
@@ -250,6 +260,7 @@ class _$OperationValue_Boolean implements OperationValue_Boolean {
     TResult? Function(OperationValue_Float value)? float,
     TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_String value)? string,
+    TResult? Function(OperationValue_Bytes value)? bytes,
     TResult? Function(OperationValue_Relation value)? relation,
     TResult? Function(OperationValue_RelationList value)? relationList,
     TResult? Function(OperationValue_PinnedRelation value)? pinnedRelation,
@@ -266,6 +277,7 @@ class _$OperationValue_Boolean implements OperationValue_Boolean {
     TResult Function(OperationValue_Float value)? float,
     TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_String value)? string,
+    TResult Function(OperationValue_Bytes value)? bytes,
     TResult Function(OperationValue_Relation value)? relation,
     TResult Function(OperationValue_RelationList value)? relationList,
     TResult Function(OperationValue_PinnedRelation value)? pinnedRelation,
@@ -360,6 +372,7 @@ class _$OperationValue_Float implements OperationValue_Float {
     required TResult Function(double field0) float,
     required TResult Function(int field0) integer,
     required TResult Function(String field0) string,
+    required TResult Function(Uint8List field0) bytes,
     required TResult Function(String field0) relation,
     required TResult Function(List<String> field0) relationList,
     required TResult Function(String field0) pinnedRelation,
@@ -375,6 +388,7 @@ class _$OperationValue_Float implements OperationValue_Float {
     TResult? Function(double field0)? float,
     TResult? Function(int field0)? integer,
     TResult? Function(String field0)? string,
+    TResult? Function(Uint8List field0)? bytes,
     TResult? Function(String field0)? relation,
     TResult? Function(List<String> field0)? relationList,
     TResult? Function(String field0)? pinnedRelation,
@@ -390,6 +404,7 @@ class _$OperationValue_Float implements OperationValue_Float {
     TResult Function(double field0)? float,
     TResult Function(int field0)? integer,
     TResult Function(String field0)? string,
+    TResult Function(Uint8List field0)? bytes,
     TResult Function(String field0)? relation,
     TResult Function(List<String> field0)? relationList,
     TResult Function(String field0)? pinnedRelation,
@@ -409,6 +424,7 @@ class _$OperationValue_Float implements OperationValue_Float {
     required TResult Function(OperationValue_Float value) float,
     required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_String value) string,
+    required TResult Function(OperationValue_Bytes value) bytes,
     required TResult Function(OperationValue_Relation value) relation,
     required TResult Function(OperationValue_RelationList value) relationList,
     required TResult Function(OperationValue_PinnedRelation value)
@@ -426,6 +442,7 @@ class _$OperationValue_Float implements OperationValue_Float {
     TResult? Function(OperationValue_Float value)? float,
     TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_String value)? string,
+    TResult? Function(OperationValue_Bytes value)? bytes,
     TResult? Function(OperationValue_Relation value)? relation,
     TResult? Function(OperationValue_RelationList value)? relationList,
     TResult? Function(OperationValue_PinnedRelation value)? pinnedRelation,
@@ -442,6 +459,7 @@ class _$OperationValue_Float implements OperationValue_Float {
     TResult Function(OperationValue_Float value)? float,
     TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_String value)? string,
+    TResult Function(OperationValue_Bytes value)? bytes,
     TResult Function(OperationValue_Relation value)? relation,
     TResult Function(OperationValue_RelationList value)? relationList,
     TResult Function(OperationValue_PinnedRelation value)? pinnedRelation,
@@ -536,6 +554,7 @@ class _$OperationValue_Integer implements OperationValue_Integer {
     required TResult Function(double field0) float,
     required TResult Function(int field0) integer,
     required TResult Function(String field0) string,
+    required TResult Function(Uint8List field0) bytes,
     required TResult Function(String field0) relation,
     required TResult Function(List<String> field0) relationList,
     required TResult Function(String field0) pinnedRelation,
@@ -551,6 +570,7 @@ class _$OperationValue_Integer implements OperationValue_Integer {
     TResult? Function(double field0)? float,
     TResult? Function(int field0)? integer,
     TResult? Function(String field0)? string,
+    TResult? Function(Uint8List field0)? bytes,
     TResult? Function(String field0)? relation,
     TResult? Function(List<String> field0)? relationList,
     TResult? Function(String field0)? pinnedRelation,
@@ -566,6 +586,7 @@ class _$OperationValue_Integer implements OperationValue_Integer {
     TResult Function(double field0)? float,
     TResult Function(int field0)? integer,
     TResult Function(String field0)? string,
+    TResult Function(Uint8List field0)? bytes,
     TResult Function(String field0)? relation,
     TResult Function(List<String> field0)? relationList,
     TResult Function(String field0)? pinnedRelation,
@@ -585,6 +606,7 @@ class _$OperationValue_Integer implements OperationValue_Integer {
     required TResult Function(OperationValue_Float value) float,
     required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_String value) string,
+    required TResult Function(OperationValue_Bytes value) bytes,
     required TResult Function(OperationValue_Relation value) relation,
     required TResult Function(OperationValue_RelationList value) relationList,
     required TResult Function(OperationValue_PinnedRelation value)
@@ -602,6 +624,7 @@ class _$OperationValue_Integer implements OperationValue_Integer {
     TResult? Function(OperationValue_Float value)? float,
     TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_String value)? string,
+    TResult? Function(OperationValue_Bytes value)? bytes,
     TResult? Function(OperationValue_Relation value)? relation,
     TResult? Function(OperationValue_RelationList value)? relationList,
     TResult? Function(OperationValue_PinnedRelation value)? pinnedRelation,
@@ -618,6 +641,7 @@ class _$OperationValue_Integer implements OperationValue_Integer {
     TResult Function(OperationValue_Float value)? float,
     TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_String value)? string,
+    TResult Function(OperationValue_Bytes value)? bytes,
     TResult Function(OperationValue_Relation value)? relation,
     TResult Function(OperationValue_RelationList value)? relationList,
     TResult Function(OperationValue_PinnedRelation value)? pinnedRelation,
@@ -712,6 +736,7 @@ class _$OperationValue_String implements OperationValue_String {
     required TResult Function(double field0) float,
     required TResult Function(int field0) integer,
     required TResult Function(String field0) string,
+    required TResult Function(Uint8List field0) bytes,
     required TResult Function(String field0) relation,
     required TResult Function(List<String> field0) relationList,
     required TResult Function(String field0) pinnedRelation,
@@ -727,6 +752,7 @@ class _$OperationValue_String implements OperationValue_String {
     TResult? Function(double field0)? float,
     TResult? Function(int field0)? integer,
     TResult? Function(String field0)? string,
+    TResult? Function(Uint8List field0)? bytes,
     TResult? Function(String field0)? relation,
     TResult? Function(List<String> field0)? relationList,
     TResult? Function(String field0)? pinnedRelation,
@@ -742,6 +768,7 @@ class _$OperationValue_String implements OperationValue_String {
     TResult Function(double field0)? float,
     TResult Function(int field0)? integer,
     TResult Function(String field0)? string,
+    TResult Function(Uint8List field0)? bytes,
     TResult Function(String field0)? relation,
     TResult Function(List<String> field0)? relationList,
     TResult Function(String field0)? pinnedRelation,
@@ -761,6 +788,7 @@ class _$OperationValue_String implements OperationValue_String {
     required TResult Function(OperationValue_Float value) float,
     required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_String value) string,
+    required TResult Function(OperationValue_Bytes value) bytes,
     required TResult Function(OperationValue_Relation value) relation,
     required TResult Function(OperationValue_RelationList value) relationList,
     required TResult Function(OperationValue_PinnedRelation value)
@@ -778,6 +806,7 @@ class _$OperationValue_String implements OperationValue_String {
     TResult? Function(OperationValue_Float value)? float,
     TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_String value)? string,
+    TResult? Function(OperationValue_Bytes value)? bytes,
     TResult? Function(OperationValue_Relation value)? relation,
     TResult? Function(OperationValue_RelationList value)? relationList,
     TResult? Function(OperationValue_PinnedRelation value)? pinnedRelation,
@@ -794,6 +823,7 @@ class _$OperationValue_String implements OperationValue_String {
     TResult Function(OperationValue_Float value)? float,
     TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_String value)? string,
+    TResult Function(OperationValue_Bytes value)? bytes,
     TResult Function(OperationValue_Relation value)? relation,
     TResult Function(OperationValue_RelationList value)? relationList,
     TResult Function(OperationValue_PinnedRelation value)? pinnedRelation,
@@ -816,6 +846,189 @@ abstract class OperationValue_String implements OperationValue {
   String get field0;
   @JsonKey(ignore: true)
   _$$OperationValue_StringCopyWith<_$OperationValue_String> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$OperationValue_BytesCopyWith<$Res> {
+  factory _$$OperationValue_BytesCopyWith(_$OperationValue_Bytes value,
+          $Res Function(_$OperationValue_Bytes) then) =
+      __$$OperationValue_BytesCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Uint8List field0});
+}
+
+/// @nodoc
+class __$$OperationValue_BytesCopyWithImpl<$Res>
+    extends _$OperationValueCopyWithImpl<$Res, _$OperationValue_Bytes>
+    implements _$$OperationValue_BytesCopyWith<$Res> {
+  __$$OperationValue_BytesCopyWithImpl(_$OperationValue_Bytes _value,
+      $Res Function(_$OperationValue_Bytes) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$OperationValue_Bytes(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as Uint8List,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$OperationValue_Bytes implements OperationValue_Bytes {
+  const _$OperationValue_Bytes(this.field0);
+
+  @override
+  final Uint8List field0;
+
+  @override
+  String toString() {
+    return 'OperationValue.bytes(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$OperationValue_Bytes &&
+            const DeepCollectionEquality().equals(other.field0, field0));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(field0));
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$OperationValue_BytesCopyWith<_$OperationValue_Bytes> get copyWith =>
+      __$$OperationValue_BytesCopyWithImpl<_$OperationValue_Bytes>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(bool field0) boolean,
+    required TResult Function(double field0) float,
+    required TResult Function(int field0) integer,
+    required TResult Function(String field0) string,
+    required TResult Function(Uint8List field0) bytes,
+    required TResult Function(String field0) relation,
+    required TResult Function(List<String> field0) relationList,
+    required TResult Function(String field0) pinnedRelation,
+    required TResult Function(List<String> field0) pinnedRelationList,
+  }) {
+    return bytes(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(bool field0)? boolean,
+    TResult? Function(double field0)? float,
+    TResult? Function(int field0)? integer,
+    TResult? Function(String field0)? string,
+    TResult? Function(Uint8List field0)? bytes,
+    TResult? Function(String field0)? relation,
+    TResult? Function(List<String> field0)? relationList,
+    TResult? Function(String field0)? pinnedRelation,
+    TResult? Function(List<String> field0)? pinnedRelationList,
+  }) {
+    return bytes?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(bool field0)? boolean,
+    TResult Function(double field0)? float,
+    TResult Function(int field0)? integer,
+    TResult Function(String field0)? string,
+    TResult Function(Uint8List field0)? bytes,
+    TResult Function(String field0)? relation,
+    TResult Function(List<String> field0)? relationList,
+    TResult Function(String field0)? pinnedRelation,
+    TResult Function(List<String> field0)? pinnedRelationList,
+    required TResult orElse(),
+  }) {
+    if (bytes != null) {
+      return bytes(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(OperationValue_Boolean value) boolean,
+    required TResult Function(OperationValue_Float value) float,
+    required TResult Function(OperationValue_Integer value) integer,
+    required TResult Function(OperationValue_String value) string,
+    required TResult Function(OperationValue_Bytes value) bytes,
+    required TResult Function(OperationValue_Relation value) relation,
+    required TResult Function(OperationValue_RelationList value) relationList,
+    required TResult Function(OperationValue_PinnedRelation value)
+        pinnedRelation,
+    required TResult Function(OperationValue_PinnedRelationList value)
+        pinnedRelationList,
+  }) {
+    return bytes(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(OperationValue_Boolean value)? boolean,
+    TResult? Function(OperationValue_Float value)? float,
+    TResult? Function(OperationValue_Integer value)? integer,
+    TResult? Function(OperationValue_String value)? string,
+    TResult? Function(OperationValue_Bytes value)? bytes,
+    TResult? Function(OperationValue_Relation value)? relation,
+    TResult? Function(OperationValue_RelationList value)? relationList,
+    TResult? Function(OperationValue_PinnedRelation value)? pinnedRelation,
+    TResult? Function(OperationValue_PinnedRelationList value)?
+        pinnedRelationList,
+  }) {
+    return bytes?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(OperationValue_Boolean value)? boolean,
+    TResult Function(OperationValue_Float value)? float,
+    TResult Function(OperationValue_Integer value)? integer,
+    TResult Function(OperationValue_String value)? string,
+    TResult Function(OperationValue_Bytes value)? bytes,
+    TResult Function(OperationValue_Relation value)? relation,
+    TResult Function(OperationValue_RelationList value)? relationList,
+    TResult Function(OperationValue_PinnedRelation value)? pinnedRelation,
+    TResult Function(OperationValue_PinnedRelationList value)?
+        pinnedRelationList,
+    required TResult orElse(),
+  }) {
+    if (bytes != null) {
+      return bytes(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class OperationValue_Bytes implements OperationValue {
+  const factory OperationValue_Bytes(final Uint8List field0) =
+      _$OperationValue_Bytes;
+
+  @override
+  Uint8List get field0;
+  @JsonKey(ignore: true)
+  _$$OperationValue_BytesCopyWith<_$OperationValue_Bytes> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -888,6 +1101,7 @@ class _$OperationValue_Relation implements OperationValue_Relation {
     required TResult Function(double field0) float,
     required TResult Function(int field0) integer,
     required TResult Function(String field0) string,
+    required TResult Function(Uint8List field0) bytes,
     required TResult Function(String field0) relation,
     required TResult Function(List<String> field0) relationList,
     required TResult Function(String field0) pinnedRelation,
@@ -903,6 +1117,7 @@ class _$OperationValue_Relation implements OperationValue_Relation {
     TResult? Function(double field0)? float,
     TResult? Function(int field0)? integer,
     TResult? Function(String field0)? string,
+    TResult? Function(Uint8List field0)? bytes,
     TResult? Function(String field0)? relation,
     TResult? Function(List<String> field0)? relationList,
     TResult? Function(String field0)? pinnedRelation,
@@ -918,6 +1133,7 @@ class _$OperationValue_Relation implements OperationValue_Relation {
     TResult Function(double field0)? float,
     TResult Function(int field0)? integer,
     TResult Function(String field0)? string,
+    TResult Function(Uint8List field0)? bytes,
     TResult Function(String field0)? relation,
     TResult Function(List<String> field0)? relationList,
     TResult Function(String field0)? pinnedRelation,
@@ -937,6 +1153,7 @@ class _$OperationValue_Relation implements OperationValue_Relation {
     required TResult Function(OperationValue_Float value) float,
     required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_String value) string,
+    required TResult Function(OperationValue_Bytes value) bytes,
     required TResult Function(OperationValue_Relation value) relation,
     required TResult Function(OperationValue_RelationList value) relationList,
     required TResult Function(OperationValue_PinnedRelation value)
@@ -954,6 +1171,7 @@ class _$OperationValue_Relation implements OperationValue_Relation {
     TResult? Function(OperationValue_Float value)? float,
     TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_String value)? string,
+    TResult? Function(OperationValue_Bytes value)? bytes,
     TResult? Function(OperationValue_Relation value)? relation,
     TResult? Function(OperationValue_RelationList value)? relationList,
     TResult? Function(OperationValue_PinnedRelation value)? pinnedRelation,
@@ -970,6 +1188,7 @@ class _$OperationValue_Relation implements OperationValue_Relation {
     TResult Function(OperationValue_Float value)? float,
     TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_String value)? string,
+    TResult Function(OperationValue_Bytes value)? bytes,
     TResult Function(OperationValue_Relation value)? relation,
     TResult Function(OperationValue_RelationList value)? relationList,
     TResult Function(OperationValue_PinnedRelation value)? pinnedRelation,
@@ -1073,6 +1292,7 @@ class _$OperationValue_RelationList implements OperationValue_RelationList {
     required TResult Function(double field0) float,
     required TResult Function(int field0) integer,
     required TResult Function(String field0) string,
+    required TResult Function(Uint8List field0) bytes,
     required TResult Function(String field0) relation,
     required TResult Function(List<String> field0) relationList,
     required TResult Function(String field0) pinnedRelation,
@@ -1088,6 +1308,7 @@ class _$OperationValue_RelationList implements OperationValue_RelationList {
     TResult? Function(double field0)? float,
     TResult? Function(int field0)? integer,
     TResult? Function(String field0)? string,
+    TResult? Function(Uint8List field0)? bytes,
     TResult? Function(String field0)? relation,
     TResult? Function(List<String> field0)? relationList,
     TResult? Function(String field0)? pinnedRelation,
@@ -1103,6 +1324,7 @@ class _$OperationValue_RelationList implements OperationValue_RelationList {
     TResult Function(double field0)? float,
     TResult Function(int field0)? integer,
     TResult Function(String field0)? string,
+    TResult Function(Uint8List field0)? bytes,
     TResult Function(String field0)? relation,
     TResult Function(List<String> field0)? relationList,
     TResult Function(String field0)? pinnedRelation,
@@ -1122,6 +1344,7 @@ class _$OperationValue_RelationList implements OperationValue_RelationList {
     required TResult Function(OperationValue_Float value) float,
     required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_String value) string,
+    required TResult Function(OperationValue_Bytes value) bytes,
     required TResult Function(OperationValue_Relation value) relation,
     required TResult Function(OperationValue_RelationList value) relationList,
     required TResult Function(OperationValue_PinnedRelation value)
@@ -1139,6 +1362,7 @@ class _$OperationValue_RelationList implements OperationValue_RelationList {
     TResult? Function(OperationValue_Float value)? float,
     TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_String value)? string,
+    TResult? Function(OperationValue_Bytes value)? bytes,
     TResult? Function(OperationValue_Relation value)? relation,
     TResult? Function(OperationValue_RelationList value)? relationList,
     TResult? Function(OperationValue_PinnedRelation value)? pinnedRelation,
@@ -1155,6 +1379,7 @@ class _$OperationValue_RelationList implements OperationValue_RelationList {
     TResult Function(OperationValue_Float value)? float,
     TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_String value)? string,
+    TResult Function(OperationValue_Bytes value)? bytes,
     TResult Function(OperationValue_Relation value)? relation,
     TResult Function(OperationValue_RelationList value)? relationList,
     TResult Function(OperationValue_PinnedRelation value)? pinnedRelation,
@@ -1251,6 +1476,7 @@ class _$OperationValue_PinnedRelation implements OperationValue_PinnedRelation {
     required TResult Function(double field0) float,
     required TResult Function(int field0) integer,
     required TResult Function(String field0) string,
+    required TResult Function(Uint8List field0) bytes,
     required TResult Function(String field0) relation,
     required TResult Function(List<String> field0) relationList,
     required TResult Function(String field0) pinnedRelation,
@@ -1266,6 +1492,7 @@ class _$OperationValue_PinnedRelation implements OperationValue_PinnedRelation {
     TResult? Function(double field0)? float,
     TResult? Function(int field0)? integer,
     TResult? Function(String field0)? string,
+    TResult? Function(Uint8List field0)? bytes,
     TResult? Function(String field0)? relation,
     TResult? Function(List<String> field0)? relationList,
     TResult? Function(String field0)? pinnedRelation,
@@ -1281,6 +1508,7 @@ class _$OperationValue_PinnedRelation implements OperationValue_PinnedRelation {
     TResult Function(double field0)? float,
     TResult Function(int field0)? integer,
     TResult Function(String field0)? string,
+    TResult Function(Uint8List field0)? bytes,
     TResult Function(String field0)? relation,
     TResult Function(List<String> field0)? relationList,
     TResult Function(String field0)? pinnedRelation,
@@ -1300,6 +1528,7 @@ class _$OperationValue_PinnedRelation implements OperationValue_PinnedRelation {
     required TResult Function(OperationValue_Float value) float,
     required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_String value) string,
+    required TResult Function(OperationValue_Bytes value) bytes,
     required TResult Function(OperationValue_Relation value) relation,
     required TResult Function(OperationValue_RelationList value) relationList,
     required TResult Function(OperationValue_PinnedRelation value)
@@ -1317,6 +1546,7 @@ class _$OperationValue_PinnedRelation implements OperationValue_PinnedRelation {
     TResult? Function(OperationValue_Float value)? float,
     TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_String value)? string,
+    TResult? Function(OperationValue_Bytes value)? bytes,
     TResult? Function(OperationValue_Relation value)? relation,
     TResult? Function(OperationValue_RelationList value)? relationList,
     TResult? Function(OperationValue_PinnedRelation value)? pinnedRelation,
@@ -1333,6 +1563,7 @@ class _$OperationValue_PinnedRelation implements OperationValue_PinnedRelation {
     TResult Function(OperationValue_Float value)? float,
     TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_String value)? string,
+    TResult Function(OperationValue_Bytes value)? bytes,
     TResult Function(OperationValue_Relation value)? relation,
     TResult Function(OperationValue_RelationList value)? relationList,
     TResult Function(OperationValue_PinnedRelation value)? pinnedRelation,
@@ -1439,6 +1670,7 @@ class _$OperationValue_PinnedRelationList
     required TResult Function(double field0) float,
     required TResult Function(int field0) integer,
     required TResult Function(String field0) string,
+    required TResult Function(Uint8List field0) bytes,
     required TResult Function(String field0) relation,
     required TResult Function(List<String> field0) relationList,
     required TResult Function(String field0) pinnedRelation,
@@ -1454,6 +1686,7 @@ class _$OperationValue_PinnedRelationList
     TResult? Function(double field0)? float,
     TResult? Function(int field0)? integer,
     TResult? Function(String field0)? string,
+    TResult? Function(Uint8List field0)? bytes,
     TResult? Function(String field0)? relation,
     TResult? Function(List<String> field0)? relationList,
     TResult? Function(String field0)? pinnedRelation,
@@ -1469,6 +1702,7 @@ class _$OperationValue_PinnedRelationList
     TResult Function(double field0)? float,
     TResult Function(int field0)? integer,
     TResult Function(String field0)? string,
+    TResult Function(Uint8List field0)? bytes,
     TResult Function(String field0)? relation,
     TResult Function(List<String> field0)? relationList,
     TResult Function(String field0)? pinnedRelation,
@@ -1488,6 +1722,7 @@ class _$OperationValue_PinnedRelationList
     required TResult Function(OperationValue_Float value) float,
     required TResult Function(OperationValue_Integer value) integer,
     required TResult Function(OperationValue_String value) string,
+    required TResult Function(OperationValue_Bytes value) bytes,
     required TResult Function(OperationValue_Relation value) relation,
     required TResult Function(OperationValue_RelationList value) relationList,
     required TResult Function(OperationValue_PinnedRelation value)
@@ -1505,6 +1740,7 @@ class _$OperationValue_PinnedRelationList
     TResult? Function(OperationValue_Float value)? float,
     TResult? Function(OperationValue_Integer value)? integer,
     TResult? Function(OperationValue_String value)? string,
+    TResult? Function(OperationValue_Bytes value)? bytes,
     TResult? Function(OperationValue_Relation value)? relation,
     TResult? Function(OperationValue_RelationList value)? relationList,
     TResult? Function(OperationValue_PinnedRelation value)? pinnedRelation,
@@ -1521,6 +1757,7 @@ class _$OperationValue_PinnedRelationList
     TResult Function(OperationValue_Float value)? float,
     TResult Function(OperationValue_Integer value)? integer,
     TResult Function(OperationValue_String value)? string,
+    TResult Function(OperationValue_Bytes value)? bytes,
     TResult Function(OperationValue_Relation value)? relation,
     TResult Function(OperationValue_RelationList value)? relationList,
     TResult Function(OperationValue_PinnedRelation value)? pinnedRelation,
