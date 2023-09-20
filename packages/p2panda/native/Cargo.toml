@@ -7,14 +7,14 @@ edition = "2021"
 crate-type = ["staticlib", "cdylib"]
 
 [build-dependencies]
-flutter_rust_bridge_codegen = "1.81.0"
+flutter_rust_bridge_codegen = "1.82.1"
 
 [dependencies]
 android_logger = "0.13.1"
 anyhow = "1.0.71"
 aquadoggo = "0.5.0"
 ed25519-dalek = "1.0.1"
-flutter_rust_bridge = "1.78.0"
+flutter_rust_bridge = "1.82.1"
 log = "0.4.19"
 p2panda-rs = "0.7.1"
 tokio = { version = "1.28.2", features = ["rt", "rt-multi-thread", "sync", "parking_lot"] }
