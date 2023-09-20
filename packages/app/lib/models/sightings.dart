@@ -26,6 +26,7 @@ class Sighting {
       required this.comment});
 
   factory Sighting.fromJson(Map<String, dynamic> json) {
+    // @TODO: Needs to select the field for each item in species and local_names
     List<String> species_list = json['fields']['species'] as List<String>;
     List<String> local_names_list =
         json['fields']['local_names'] as List<String>;
@@ -75,13 +76,18 @@ String get allSightingsQuery {
               documents {
                 meta {
                   documentId
-                }  
+                }
               }
             }
             species {
               documents {
                 fields {
-                  name
+                  description
+                  species {
+                    fields {
+                      name
+                    }
+                  }
                 }
               }
             }
@@ -93,7 +99,7 @@ String get allSightingsQuery {
               }
             }
             comment
-          }        
+          }
         }
       }
     }
@@ -118,13 +124,18 @@ String sightingQuery(String id) {
             documents {
               meta {
                 documentId
-              }  
+              }
             }
           }
           species {
             documents {
               fields {
-                name
+                description
+                species {
+                  fields {
+                    name
+                  }
+                }
               }
             }
           }
