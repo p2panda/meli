@@ -1,5 +1,129 @@
-[sightings]
-description = "Sightings of meliponini bees in the wild"
+# Sightings and species
 
-[sightings.fields]
+[meli_sighting]
+description = "A bee sighting"
+
+[meli_sighting.fields]
+datetime = { type = "str" }
+latitude = { type = "float" }
+longitude = { type = "float" }
+images = { type = "relation_list", schema = { id = "blob_v1" } }
+comment = { type = "str" }
+
+[meli_species]
+description = "The species of a bee"
+
+[meli_species.fields]
+description = { type = "str" }
+species = { type = "relation", schema = { name = "taxonomy_species" } }
+
+[meli_sighting_species]
+description = "Association of a species with a bee sighting"
+
+[meli_sighting_species.fields]
+sighting = { type = "relation", schema = { name = "meli_sighting" } }
+species = { type = "relation", schema = { name = "meli_species" } }
+
+[meli_local_name]
+description = "A name this bee is known by locally"
+
+[meli_local_name.fields]
 name = { type = "str" }
+species = { type = "relation", schema = { name = "meli_species" } }
+
+# Attributes
+
+[meli_attributes_used_for]
+description = "What a bees honey is used for"
+
+[meli_attributes_used_for.fields]
+sighting = { type = "relation", schema = { name = "meli_sighting" } }
+used_for = { type = "str" }
+
+[meli_attributes_location_tree]
+description = "Bee sighting location: tree"
+
+[meli_attributes_location_tree.fields]
+sighting = { type = "relation", schema = { name = "meli_sighting" } }
+
+[meli_attributes_location_building]
+description = "Bee sighting location: building"
+
+[meli_attributes_location_building.fields]
+sighting = { type = "relation", schema = { name = "meli_sighting" } }
+
+[meli_attributes_location_ground]
+description = "Bee sighting location: ground"
+
+[meli_attributes_location_ground.fields]
+sighting = { type = "relation", schema = { name = "meli_sighting" } }
+
+[meli_attributes_location_box]
+description = "Bee sighting location: box"
+
+[meli_attributes_location_box.fields]
+sighting = { type = "relation", schema = { name = "meli_sighting" } }
+
+# Taxonomy
+
+[taxonomy_kingdom]
+description = "Taxonomy: kingdom"
+
+[taxonomy_kingdom.fields]
+name = { type = "str" }
+
+[taxonomy_phylum]
+description = "Taxonomy: phylum"
+
+[taxonomy_phylum.fields]
+name = { type = "str" }
+kingdom = { type = "relation", schema = { name = "taxonomy_kingdom" } }
+
+[taxonomy_class]
+description = "Taxonomy: class"
+
+[taxonomy_class.fields]
+name = { type = "str" }
+phylum = { type = "relation", schema = { name = "taxonomy_phylum" } }
+
+[taxonomy_order]
+description = "Taxonomy: order"
+
+[taxonomy_order.fields]
+name = { type = "str" }
+class = { type = "relation", schema = { name = "taxonomy_class" } }
+
+[taxonomy_family]
+description = "Taxonomy: family"
+
+[taxonomy_family.fields]
+name = { type = "str" }
+order = { type = "relation", schema = { name = "taxonomy_order" } }
+
+[taxonomy_subfamily]
+description = "Taxonomy: subfamily"
+
+[taxonomy_subfamily.fields]
+name = { type = "str" }
+family = { type = "relation", schema = { name = "taxonomy_family" } }
+
+[taxonomy_tribe]
+description = "Taxonomy: tribe"
+
+[taxonomy_tribe.fields]
+name = { type = "str" }
+subfamily = { type = "relation", schema = { name = "taxonomy_subfamily" } }
+
+[taxonomy_genus]
+description = "Taxonomy: genus"
+
+[taxonomy_genus.fields]
+name = { type = "str" }
+tribe = { type = "relation", schema = { name = "taxonomy_tribe" } }
+
+[taxonomy_species]
+description = "Taxonomy: species"
+
+[taxonomy_species.fields]
+name = { type = "str" }
+genus = { type = "relation", schema = { name = "taxonomy_genus" } }
