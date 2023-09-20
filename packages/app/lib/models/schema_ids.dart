@@ -4,62 +4,57 @@ import 'package:app/io/p2panda/schemas.dart';
 
 /// Schema ids used by the meli app.
 abstract final class SchemaIds {
-  /// Sighting schema.
-  static const SchemaId meli_sighting =
-      'meli_sighting_0020a84f751ffb3c2d3690d2a1cde853505ca1bf7c92c3aa7f807330a032e36cabdd';
-  static const SchemaId meli_sighting_species =
-      'meli_sighting_species_00201d4ebf6464024a85ca9bdbaa05631755f6f3ad697d324e1a915bb1cb635df15a';
+  /// Sighting and species schema.
+  static const SchemaId bee_sighting =
+      'bee_sighting_0020df662f01bd4eed879ebb2128edd3e0b55902f179eeaf8978e58011f96b488717';
+  static const SchemaId bee_local_name =
+      'bee_local_name_0020aeaca910c8a3f5fb0f80f7e8e6878720272d3bdcefa45c97cfc627e3b5e4252c';
+  static const SchemaId bee_species =
+      'bee_species_00207889f44a73c94bb9f7e7d087e47d87ab4854c3693bca35bf16c596c8c91c5fe7';
 
-  /// Species schema.
-  static const SchemaId meli_species =
-      'meli_species_0020888a6482080bbfd0130ab4fbbe899db2f25d83d6324ed1c049866cabcecfcc87';
-  static const SchemaId meli_local_name =
-      'meli_local_name_00209d88ef8ed780eabcfbb8198aeaffea6945510cc305afa8751bf57b4769a7b79c';
-
-  /// Meli attributes schema.
-  static const SchemaId meli_attributes_location_tree =
-      'meli_attributes_location_tree_00205aac7316b3206fee6b3984b82146108b62ca6ed20922d9eacd766d1a5a2a63c9';
-  static const SchemaId meli_attributes_location_ground =
-      'meli_attributes_location_ground_0020d9632431bb68cbd01b6f55672346d7d6c75e04af7ff700aabbcd92fb1e68c93f';
-  static const SchemaId meli_attributes_location_building =
-      'meli_attributes_location_building_00203c185e59e59f0c551fa770904043cbe33caf12d669b773733ecbea004508b6e8';
-  static const SchemaId meli_attributes_location_box =
-      'meli_attributes_location_box_00202224257c5524b44c939e2a82af1de54edd26eaa52a5dbf8399e880f4a97b2ec6';
-  static const SchemaId meli_attributes_used_for =
-      'meli_attributes_used_for_0020abfbe46e69cdc15ac68f50bfb46dac8e9ddc26ae92c48ea27ffc18f8f0c574bf';
+  /// Bee attributes schema.
+  static const SchemaId bee_attributes_location_tree =
+      'bee_attributes_location_tree_00204947039d87f4d7af1bbc1245c99933b1b15d1563e5ec19d5e25a11e0018146e2';
+  static const SchemaId bee_attributes_location_ground =
+      'bee_attributes_location_ground_00207f1b4d7115e518ed754024db27c86756479c9448aebc3f39a0e67c18b611bc25';
+  static const SchemaId bee_attributes_location_building =
+      'bee_attributes_location_building_002021849ffe9546354fab1c421a6e5f5aaa49ae6d1bddffbe057444f67ba6e4743f';
+  static const SchemaId bee_attributes_location_box =
+      'bee_attributes_location_box_00202a2f65b79de2f10a03fbd2adeeea491bfb36dd86998af86f8335414a654dbde0';
+  static const SchemaId bee_attributes_used_for =
+      'bee_attributes_used_for_002064feb6c43eca60974c8f5e60475b1b931cdc920e8441bd4c88f280a0b2f0cedc';
 
   /// Taxonomy schema.
   static const SchemaId taxonomy_kingdom =
-      'taxonomy_kingdom_00204396e665a96afcbef5cd3cd87babadd647ce65a6ad543c725ecc9ecb0a941dc8';
+      'taxonomy_kingdom_0020f3cd78f31cd41fb554d605b11b8facdccba5d93322376ba988a4fee4d7893f43';
   static const SchemaId taxonomy_phylum =
-      'taxonomy_phylum_00205063692cfe2adcd3fe5462686513ab82481c62428ae1af32c33b69545e45a5a5';
+      'taxonomy_phylum_002098b9c13e1162b360a528196c4293ed1e00e71359048323e9af2929ddf1e30313';
   static const SchemaId taxonomy_class =
-      'taxonomy_class_00207d2f642dafda066d632b7f57b63d23afd4e870e38232fc5da964564e876f4a5b';
+      'taxonomy_class_0020c790691e036ed090392b4c06eb3586eb130edaee6ece2d4a48607f240bc11f91';
   static const SchemaId taxonomy_order =
-      'taxonomy_order_0020e10395284ab88ae5599bda2f278a0e562334a2a84a8a82e48b552f347d2d1be4';
+      'taxonomy_order_00208ced5b9fc23a3f3e87444c4be7f305bbfcf4989d77cf6d208c579de1fe0a3b79';
   static const SchemaId taxonomy_family =
-      'taxonomy_family_0020c19907f238ca92e045c2cc5445ccaaf43c2b2a244276b5f4e3de72e74f9ee0c1';
+      'taxonomy_family_0020bdb78e578befd97784e2ec7710f5314fc22fb484e59eef7a66f948ea953a38dc';
   static const SchemaId taxonomy_subfamily =
-      'taxonomy_subfamily_002091b7017280f9e59471c63f775ce08f8d78cc1f014f1fbbde896438641c6d5e26';
+      'taxonomy_subfamily_0020abf0e567ec55d407c288f7d77bd58f1a529fdb0eb6cbb74279b83b53fb4fa9c2';
   static const SchemaId taxonomy_tribe =
-      'taxonomy_tribe_0020172cfaeeda3371de0e237d5202d82ea20abcd1a712e821825aa23a599fe5b16c';
+      'taxonomy_tribe_0020eff38ee4ed5bed12b61452c6472f8cd9c692e4f39b36a6b35f16fde309d56d00';
   static const SchemaId taxonomy_genus =
-      'taxonomy_genus_0020229eeb50b4a6092f5c2e42a3a7bbaadad63dea3ec3d9618e1552a4318ababa6e';
+      'taxonomy_genus_0020ebf2746448b4fdf563de1486efc082c1243522d2579aeaaf12e7937c6bc86eba';
   static const SchemaId taxonomy_species =
-      'taxonomy_species_002026ba2daee99a70bc66fa93cbde2732fbe8484634fd6557de457741b8cd813686';
+      'taxonomy_species_0020e1567cb6f7e097b449cd05174f96ac17f774d8b80ffea423c4d4b386e423cb0a';
 }
 
 /// List of all schema ids which are used by the meli app.
 const List<SchemaId> ALL_SCHEMA_IDS = [
-  SchemaIds.meli_sighting,
-  SchemaIds.meli_sighting_species,
-  SchemaIds.meli_species,
-  SchemaIds.meli_local_name,
-  SchemaIds.meli_attributes_location_tree,
-  SchemaIds.meli_attributes_location_ground,
-  SchemaIds.meli_attributes_location_building,
-  SchemaIds.meli_attributes_location_box,
-  SchemaIds.meli_attributes_used_for,
+  SchemaIds.bee_sighting,
+  SchemaIds.bee_local_name,
+  SchemaIds.bee_species,
+  SchemaIds.bee_attributes_location_tree,
+  SchemaIds.bee_attributes_location_ground,
+  SchemaIds.bee_attributes_location_building,
+  SchemaIds.bee_attributes_location_box,
+  SchemaIds.bee_attributes_used_for,
   SchemaIds.taxonomy_kingdom,
   SchemaIds.taxonomy_phylum,
   SchemaIds.taxonomy_class,
