@@ -1,68 +1,62 @@
 # Sightings and species
 
-[meli_sighting]
+[bee_sighting]
 description = "A bee sighting"
 
-[meli_sighting.fields]
+[bee_sighting.fields]
 datetime = { type = "str" }
 latitude = { type = "float" }
 longitude = { type = "float" }
 images = { type = "relation_list", schema = { id = "blob_v1" } }
+species = { type = "relation_list", schema = { name = "bee_species" } }
+local_names = { type = "relation_list", schema = { name = "bee_local_name" } }
 comment = { type = "str" }
 
-[meli_species]
+[bee_species]
 description = "The species of a bee"
 
-[meli_species.fields]
+[bee_species.fields]
 description = { type = "str" }
 species = { type = "relation", schema = { name = "taxonomy_species" } }
 
-[meli_sighting_species]
-description = "Association of a species with a bee sighting"
+[bee_local_name]
+description = "Name a bee is known by locally"
 
-[meli_sighting_species.fields]
-sighting = { type = "relation", schema = { name = "meli_sighting" } }
-species = { type = "relation", schema = { name = "meli_species" } }
-
-[meli_local_name]
-description = "A name this bee is known by locally"
-
-[meli_local_name.fields]
+[bee_local_name.fields]
 name = { type = "str" }
-species = { type = "relation", schema = { name = "meli_species" } }
 
 # Attributes
 
-[meli_attributes_used_for]
+[bee_attributes_used_for]
 description = "What a bees honey is used for"
 
-[meli_attributes_used_for.fields]
-sighting = { type = "relation", schema = { name = "meli_sighting" } }
+[bee_attributes_used_for.fields]
+sighting = { type = "relation", schema = { name = "bee_sighting" } }
 used_for = { type = "str" }
 
-[meli_attributes_location_tree]
+[bee_attributes_location_tree]
 description = "Bee sighting location: tree"
 
-[meli_attributes_location_tree.fields]
-sighting = { type = "relation", schema = { name = "meli_sighting" } }
+[bee_attributes_location_tree.fields]
+sighting = { type = "relation", schema = { name = "bee_sighting" } }
 
-[meli_attributes_location_building]
+[bee_attributes_location_building]
 description = "Bee sighting location: building"
 
-[meli_attributes_location_building.fields]
-sighting = { type = "relation", schema = { name = "meli_sighting" } }
+[bee_attributes_location_building.fields]
+sighting = { type = "relation", schema = { name = "bee_sighting" } }
 
-[meli_attributes_location_ground]
+[bee_attributes_location_ground]
 description = "Bee sighting location: ground"
 
-[meli_attributes_location_ground.fields]
-sighting = { type = "relation", schema = { name = "meli_sighting" } }
+[bee_attributes_location_ground.fields]
+sighting = { type = "relation", schema = { name = "bee_sighting" } }
 
-[meli_attributes_location_box]
+[bee_attributes_location_box]
 description = "Bee sighting location: box"
 
-[meli_attributes_location_box.fields]
-sighting = { type = "relation", schema = { name = "meli_sighting" } }
+[bee_attributes_location_box.fields]
+sighting = { type = "relation", schema = { name = "bee_sighting" } }
 
 # Taxonomy
 
