@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:flutter/material.dart';
+
 import 'package:app/ui/widgets/scaffold.dart';
-import 'package:app/ui/widgets/image_card.dart';
+import 'package:app/ui/widgets/species_card.dart';
 import 'package:app/data.dart';
 
 class AllSpeciesScreen extends StatefulWidget {
@@ -32,26 +33,23 @@ class SpeciesList extends StatefulWidget {
 }
 
 class _SpeciesListState extends State<SpeciesList> {
-  List<ImageCard> _speciesCards() {
-    return this
-        .widget
-        .data
-        .map((species) => ImageCard(
-              footer: species['name']!,
-              img: species['img']!,
-            ))
-        .toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
       child: SingleChildScrollView(
-          padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: _speciesCards())),
+          padding: EdgeInsets.only(top: 0.0, bottom: 20.0),
+          child:
+              Wrap(spacing: 0.0, runSpacing: 20.0, children: _speciesCards())),
     );
+  }
+
+  List<SpeciesCard> _speciesCards() {
+    return this
+        .widget
+        .data
+        .map((species) =>
+            SpeciesCard(title: species['name']!, image: species['img']!))
+        .toList();
   }
 }

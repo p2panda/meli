@@ -8,7 +8,7 @@ import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/scaffold.dart';
-import 'package:app/ui/widgets/image_card.dart';
+import 'package:app/ui/widgets/species_card.dart';
 
 class AllSightingsScreen extends StatefulWidget {
   AllSightingsScreen({super.key});
@@ -119,15 +119,11 @@ class _SightingsListState extends State<SightingsList> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       ...sightingsList.map((sighting) => GestureDetector(
-                            onTap: () => {
-                              router.push(RoutePath.sighting,
-                                  extra: sighting.id)
-                            },
-                            child: new ImageCard(
-                                title: sighting.datetime,
-                                subtitle: sighting.local_name,
-                                img: sighting.images.first),
-                          )),
+                          onTap: () => {
+                                router.push(RoutePath.sighting,
+                                    extra: sighting.id)
+                              },
+                          child: Text(sighting.datetime))),
                     ]);
               })),
     );
