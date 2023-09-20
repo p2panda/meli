@@ -4,7 +4,6 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/scaffold.dart';
@@ -38,7 +37,8 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                 if (_formKey.currentState!.validate()) {
                   // Create sighting data
                   try {
-                    await createSighting(nameInput.text);
+                    // TODO: update for new createSighting API
+                    // await createSighting(nameInput.text);
 
                     // Go back to sightings overview
                     router.push(RoutePath.allSightings);

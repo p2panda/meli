@@ -124,9 +124,9 @@ class _SightingsListState extends State<SightingsList> {
                                   extra: sighting.id)
                             },
                             child: new ImageCard(
-                                title: sighting.name,
-                                subtitle: sighting.timestamp,
-                                img: sighting.img),
+                                title: sighting.datetime,
+                                subtitle: sighting.local_name,
+                                img: sighting.images.first),
                           )),
                     ]);
               })),
