@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/sighting_card.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -122,7 +123,12 @@ class _SightingsListState extends State<SightingsList> {
                                 router.push(RoutePath.sighting,
                                     extra: sighting.id)
                               },
-                          child: Text(sighting.datetime))),
+                          child: SightingCard(
+                              title: sighting.datetime,
+                              subtitle: sighting.local_name,
+                              // TODO: use actual image url here
+                              image:
+                                  'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg'))),
                     ]);
               })),
     );
