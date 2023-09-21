@@ -8,6 +8,8 @@ import 'package:app/router.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 
+import '../../models/sightings.dart';
+
 class CreateNewScreen extends StatefulWidget {
   CreateNewScreen({super.key});
 
@@ -37,8 +39,10 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                 if (_formKey.currentState!.validate()) {
                   // Create sighting data
                   try {
-                    // TODO: update for new createSighting API
-                    // await createSighting(nameInput.text);
+                    // TODO: populate all fields from form
+                    DateTime datetime = DateTime.now();
+                    await createSighting(datetime.toString(), 0.0, 0.0, [],
+                        null, null, "Some comment about this sighting");
 
                     // Go back to sightings overview
                     router.push(RoutePath.allSightings);
@@ -65,7 +69,7 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                     TextFormField(
                       controller: nameInput,
                       decoration: const InputDecoration(
-                        hintText: 'Name',
+                        hintText: 'Local Name',
                       ),
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
