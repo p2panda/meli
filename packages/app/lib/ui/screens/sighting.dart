@@ -47,7 +47,7 @@ class _SightingScreenState extends State<SightingScreen> {
                       children: <Widget>[
                         EditableCard(
                           title: 'Name',
-                          fields: {'Name': sighting.datetime},
+                          fields: {'Name': sighting.datetime.toString()},
                         ),
                         EditableCard(
                             title: 'Comment', fields: {'Comment': sighting.comment})

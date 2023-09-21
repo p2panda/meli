@@ -41,7 +41,7 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                   try {
                     // TODO: populate all fields from form
                     DateTime datetime = DateTime.now();
-                    await createSighting(datetime.toString(), 0.0, 0.0, [],
+                    await createSighting(datetime, 0.0, 0.0, [],
                         null, null, "Some comment about this sighting");
 
                     // Go back to sightings overview

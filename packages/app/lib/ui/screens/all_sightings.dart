@@ -124,7 +124,8 @@ class _SightingsListState extends State<SightingsList> {
                                     extra: sighting.id)
                               },
                           child: SightingCard(
-                              title: sighting.datetime,
+                              title:
+                                  '${sighting.datetime.day}.${sighting.datetime.month}.${sighting.datetime.year}',
                               subtitle: sighting.local_name,
                               // TODO: use actual image url here
                               image:

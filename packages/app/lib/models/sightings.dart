@@ -7,7 +7,7 @@ import 'package:app/models/schema_ids.dart';
 
 class Sighting {
   final String id;
-  final String datetime;
+  final DateTime datetime;
   final double latitude;
   final double longitude;
   final List<String> images;
@@ -44,7 +44,7 @@ class Sighting {
 
     return Sighting(
         id: result['meta']['documentId'] as String,
-        datetime: result['fields']['datetime'] as String,
+        datetime: DateTime.parse(result['fields']['datetime'] as String),
         latitude: result['fields']['latitude'] as double,
         longitude: result['fields']['latitude'] as double,
         images: imageIds,
@@ -165,7 +165,7 @@ String sightingQuery(String id) {
 }
 
 Future<DocumentViewId> createSighting(
-    String datetime,
+    DateTime datetime,
     double latitude,
     double longitude,
     List<String> images,
@@ -173,7 +173,7 @@ Future<DocumentViewId> createSighting(
     String? local_name,
     String comment) async {
   List<(String, OperationValue)> fields = [
-    ("datetime", OperationValue.string(datetime)),
+    ("datetime", OperationValue.string(datetime.toString())),
     ("latitude", OperationValue.float(latitude)),
     ("longitude", OperationValue.float(longitude)),
     ("images", OperationValue.relationList(images)),
@@ -199,7 +199,7 @@ Future<DocumentViewId> createSighting(
 
 Future<DocumentViewId> updateSighting(
     DocumentViewId viewId,
-    String? datetime,
+    DateTime? datetime,
     double? latitude,
     double? longitude,
     List<String>? images,
@@ -209,7 +209,7 @@ Future<DocumentViewId> updateSighting(
   List<(String, OperationValue)> fields = [];
 
   if (datetime != null) {
-    fields.add(("datetime", OperationValue.string(datetime)));
+    fields.add(("datetime", OperationValue.string(datetime.toString())));
   }
 
   if (latitude != null) {
