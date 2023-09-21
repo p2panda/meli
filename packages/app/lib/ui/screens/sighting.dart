@@ -50,7 +50,7 @@ class _SightingScreenState extends State<SightingScreen> {
                           fields: {'Name': sighting.datetime},
                         ),
                         EditableCard(
-                            title: 'Image', fields: {'Image': sighting.comment})
+                            title: 'Comment', fields: {'Comment': sighting.comment})
                       ],
                     ),
                   );
