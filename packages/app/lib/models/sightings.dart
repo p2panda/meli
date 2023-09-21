@@ -25,21 +25,32 @@ class Sighting {
       this.local_name,
       required this.comment});
 
-  factory Sighting.fromJson(Map<String, dynamic> json) {
-    // @TODO: Needs to select the field for each item in species and local_names
-    List<String> species_list = json['fields']['species'] as List<String>;
-    List<String> local_names_list =
-        json['fields']['local_names'] as List<String>;
+  factory Sighting.fromJson(Map<String, dynamic> result) {
+    final imageDocuments = result['fields']['images']['documents'] as List;
+    List<String> imageIds = imageDocuments
+        .map((item) => item['meta']['documentId'] as String)
+        .toList();
+
+    final speciesDocuments = result['fields']['species']['documents'] as List;
+    List<String> speciesNames = speciesDocuments
+        .map((item) => item['fields']['name'] as String)
+        .toList();
+
+    final localNameDocuments =
+        result['fields']['local_names']['documents'] as List;
+    List<String> localNames = localNameDocuments
+        .map((item) => item['fields']['name'] as String)
+        .toList();
 
     return Sighting(
-        id: json['meta']['documentId'] as String,
-        datetime: json['fields']['datetime'] as String,
-        latitude: json['fields']['latitude'] as double,
-        longitude: json['fields']['latitude'] as double,
-        images: json['fields']['images'] as List<String>,
-        species: species_list.firstOrNull,
-        local_name: local_names_list.firstOrNull,
-        comment: json['fields']['comment'] as String);
+        id: result['meta']['documentId'] as String,
+        datetime: result['fields']['datetime'] as String,
+        latitude: result['fields']['latitude'] as double,
+        longitude: result['fields']['latitude'] as double,
+        images: imageIds,
+        species: speciesNames.firstOrNull,
+        local_name: localNames.firstOrNull,
+        comment: result['fields']['comment'] as String);
   }
 }
 
@@ -176,10 +187,12 @@ Future<DocumentViewId> createSighting(
   }
 
   if (local_name != null) {
-    fields.add(("local_name", OperationValue.relationList([local_name])));
+    fields.add(("local_names", OperationValue.relationList([local_name])));
   } else {
-    fields.add(("local_name", OperationValue.relationList([])));
+    fields.add(("local_names", OperationValue.relationList([])));
   }
+
+  print(fields);
 
   return await create(SchemaIds.bee_sighting, fields);
 }
