@@ -97,28 +97,44 @@ class _SightingsListState extends State<SightingsList> {
       child: Container(
           padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
           child: Query(
-              options: QueryOptions(
-                  document: gql(allSightingsQuery),
-                  pollInterval: const Duration(seconds: 1)),
+              options: QueryOptions(document: gql(allSightingsQuery(null))),
               builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
                 if (result.hasException) {
                   return Text(result.exception.toString());
                 }
 
-                if (result.isLoading) {
+                if (result.isLoading && result.data == null) {
                   return const Text('Loading ...');
                 }
 
-                List<dynamic> documents =
-                    result.data?['sightings']?['documents'] as List<dynamic>;
+                final data = PaginatedSightingList.fromJson(
+                    result.data?['sightings'] as Map<String, dynamic>);
 
-                final sightingsList =
-                    SightingList.fromJson(documents).sightings;
+                FetchMoreOptions opts = FetchMoreOptions(
+                  document: gql(allSightingsQuery(data.endCursor)),
+                  updateQuery: (previousResultData, fetchMoreResultData) {
+                    // this function will be called so as to combine both the original and fetchMore results
+                    // it allows you to combine them as you would like
+                    final List<dynamic> documents = [
+                      ...previousResultData?['sightings']['documents']
+                          as List<dynamic>,
+                      ...fetchMoreResultData?['sightings']['documents']
+                          as List<dynamic>
+                    ];
+
+                    // to avoid a lot of work, lets just update the list of repos in returned
+                    // data with new data, this also ensures we have the endCursor already set
+                    // correctly
+                    fetchMoreResultData?['sightings']['documents'] = documents;
+
+                    return fetchMoreResultData;
+                  },
+                );
 
                 return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      ...sightingsList.map((sighting) => GestureDetector(
+                      ...data.sightings.map((sighting) => GestureDetector(
                           onTap: () => {
                                 router.push(RoutePath.sighting,
                                     extra: sighting.id)
@@ -130,6 +146,18 @@ class _SightingsListState extends State<SightingsList> {
                               // TODO: use actual image url here
                               image:
                                   'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg'))),
+                      if (data.hasNextPage)
+                        TextButton(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text("Load More"),
+                            ],
+                          ),
+                          onPressed: () {
+                            fetchMore!(opts);
+                          },
+                        )
                     ]);
               })),
     );

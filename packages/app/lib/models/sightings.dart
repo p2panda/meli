@@ -68,11 +68,39 @@ class SightingList {
   }
 }
 
-String get allSightingsQuery {
+class PaginatedSightingList {
+  final List<Sighting> sightings;
+  String? endCursor;
+  final bool hasNextPage;
+
+  PaginatedSightingList(
+      {required this.sightings, this.endCursor, required this.hasNextPage});
+
+  factory PaginatedSightingList.fromJson(Map<String, dynamic> json) {
+    final documents = json['documents'] as List;
+    List<Sighting> sightingsList = documents
+        .map((sighting) => Sighting.fromJson(sighting as Map<String, dynamic>))
+        .toList();
+
+    String? endCursor = json['endCursor'] as String;
+    bool hasNextPage = json['hasNextPage'] as bool;
+
+    return PaginatedSightingList(
+        sightings: sightingsList,
+        endCursor: endCursor,
+        hasNextPage: hasNextPage);
+  }
+}
+
+String allSightingsQuery(String? cursor) {
+  String after = (cursor != null) ? '''after: "$cursor",''' : "";
+
   final schemaId = SchemaIds.bee_sighting;
   return '''
-    query AllSightings() {
-      sightings: all_$schemaId(orderBy: "datetime", orderDirection: DESC) {
+    query AllSightings {
+      sightings: all_$schemaId(first: 3, $after orderBy: "datetime", orderDirection: DESC) {
+        hasNextPage
+        endCursor
         documents {
           meta {
             owner
