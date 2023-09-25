@@ -24,7 +24,7 @@ void main() async {
   await bootstrapNode();
 
   // Go to main screen
-  router.go(RoutePath.allSightings);
+  router.go(RoutePaths.allSightings.path);
 
   // Remove splash screen when bootstrap is complete
   FlutterNativeSplash.remove();

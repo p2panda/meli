@@ -10,39 +10,41 @@ import 'package:app/ui/screens/all_species.dart';
 import 'package:app/ui/screens/sighting.dart';
 import 'package:app/ui/screens/settings.dart';
 
-class Route {
+class RoutePath {
   final String name;
   final String path;
 
-  Route(this.name, this.path);
+  RoutePath(this.name, this.path);
 }
 
-class Routes {
-  static Route splash = Route('splash', '/');
-  static Route allSightings = Route('all_sightings', '/allSightings');
-  static Route sighting = Route('sightings', '/sighting');
-  static Route settings = Route('settings', '/settings');
-  static Route createSighting = Route('create_sighting', '/createSighting');
-  static Route allSpecies = Route('species', '/species');
-  static Route imagePicker = Route('image_picker', '/imagePicker');
+class RoutePaths {
+  static RoutePath splash = RoutePath('splash', '/');
+  static RoutePath allSightings = RoutePath('all_sightings', '/allSightings');
+  static RoutePath sighting = RoutePath('sightings', '/sighting');
+  static RoutePath settings = RoutePath('settings', '/settings');
+  static RoutePath createSighting =
+      RoutePath('create_sighting', '/createSighting');
+  static RoutePath allSpecies = RoutePath('species', '/species');
+  static RoutePath imagePicker = RoutePath('image_picker', '/imagePicker');
 }
 
 final router = GoRouter(routes: [
   // The splash route is just a dummy which gets loaded in the background while
   // the native splash screen is shown. We have this in place to not have any
   // app logic running yet while everything else is bootstrapping.
-  _Route(Routes.splash, (_) => Container(color: Colors.white)),
-  _Route(Routes.allSightings, (_) => AllSightingsScreen()),
-  _Route(
-      Routes.sighting, (state) => SightingScreen(id: state.extra.toString())),
-  _Route(Routes.settings, (_) => SettingsScreen()),
-  _Route(Routes.createSighting, (_) => CreateNewScreen()),
-  _Route(Routes.imagePicker, (_) => ImageFromGalleryEx("")),
-  _Route(Routes.allSpecies, (_) => AllSpeciesScreen()),
+  _Route(RoutePaths.splash, (_) => Container(color: Colors.white)),
+  _Route(RoutePaths.allSightings, (_) => AllSightingsScreen()),
+  _Route(RoutePaths.sighting,
+      (state) => SightingScreen(id: state.queryParameters["id"]!)),
+  _Route(RoutePaths.settings, (_) => SettingsScreen()),
+  _Route(RoutePaths.createSighting, (_) => CreateNewScreen()),
+  _Route(RoutePaths.imagePicker,
+      (state) => ImageFromGalleryEx(state.queryParameters["type"]!)),
+  _Route(RoutePaths.allSpecies, (_) => AllSpeciesScreen()),
 ]);
 
 class _Route extends GoRoute {
-  _Route(Route route, Widget Function(GoRouterState state) builder)
+  _Route(RoutePath route, Widget Function(GoRouterState state) builder)
       : super(
             name: route.name,
             path: route.path,

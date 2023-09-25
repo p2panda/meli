@@ -27,13 +27,13 @@ class _HomeScreenState extends State<AllSightingsScreen>
             heroTag: 'all_species',
             icon: Icon(Icons.hive_outlined),
             onPressed: () {
-              router.push(RoutePath.allSpecies);
+              router.push(RoutePaths.allSpecies.path);
             }),
         MeliFloatingActionButton(
             heroTag: 'create_new',
             icon: Icon(Icons.camera_alt_outlined),
             onPressed: () {
-              router.push(RoutePath.camera);
+              router.push(RoutePaths.createSighting.path);
             }),
       ],
       body: Container(
@@ -75,7 +75,7 @@ class Settings extends StatelessWidget {
       child: IconButton(
           icon: Icon(Icons.settings_outlined),
           onPressed: () {
-            router.push(RoutePath.settings);
+            router.push(RoutePaths.settings.path);
           }),
     );
   }
@@ -136,7 +136,7 @@ class _SightingsListState extends State<SightingsList> {
                     children: <Widget>[
                       ...data.sightings.map((sighting) => GestureDetector(
                           onTap: () => {
-                                router.push(RoutePath.sighting,
+                                router.push(RoutePaths.sighting.path,
                                     extra: sighting.id)
                               },
                           child: SightingCard(
