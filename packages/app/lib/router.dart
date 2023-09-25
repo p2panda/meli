@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/screens/camera.dart';
 import 'package:app/ui/screens/create_new.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +17,7 @@ class RoutePath {
   static String settings = '/settings';
   static String createSighting = '/createSighting';
   static String allSpecies = '/species';
+  static String camera = '/camera';
 }
 
 final router = GoRouter(routes: [
@@ -28,6 +30,7 @@ final router = GoRouter(routes: [
       (state) => SightingScreen(id: state.extra.toString())),
   _Route(RoutePath.settings, (_) => SettingsScreen()),
   _Route(RoutePath.createSighting, (_) => CreateNewScreen()),
+  _Route(RoutePath.camera, (_) => TakePictureScreen()),
   _Route(RoutePath.allSpecies, (_) => AllSpeciesScreen()),
 ]);
 

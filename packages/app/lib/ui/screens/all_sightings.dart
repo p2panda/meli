@@ -33,7 +33,7 @@ class _HomeScreenState extends State<AllSightingsScreen>
             heroTag: 'create_new',
             icon: Icon(Icons.camera_alt_outlined),
             onPressed: () {
-              router.push(RoutePath.createSighting);
+              router.push(RoutePath.camera);
             }),
       ],
       body: Container(
