@@ -128,7 +128,14 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                               : () {},
                         ),
                       ],
-                    )
+                    ),
+                    if (_image != null)
+                      Container(
+                          height: 400,
+                          child: Image.file(
+                            _image!,
+                            fit: BoxFit.cover,
+                          )),
                   ],
                 ))));
   }
