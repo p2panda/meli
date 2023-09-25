@@ -41,6 +41,46 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  camera:
+    dependency: "direct main"
+    description:
+      name: camera
+      sha256: f63f2687fb1795c36f7c57b18a03071880eabb0fd8b5291b0fcd3fb979cb0fb1
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.5+4"
+  camera_android:
+    dependency: transitive
+    description:
+      name: camera_android
+      sha256: "647af159e244b8bc0fb80abc11e5b86e692bdfc9e4a77c656ef2c1cd52d68e44"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.8+9"
+  camera_avfoundation:
+    dependency: transitive
+    description:
+      name: camera_avfoundation
+      sha256: dde42d19ad4cdf79287f9e410599db72beaec7e505787dc6abfd0ce5b526e9c0
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.13+5"
+  camera_platform_interface:
+    dependency: transitive
+    description:
+      name: camera_platform_interface
+      sha256: "8734d1c682f034bdb12d0d6ff379b0535a9b8e44266b530025bf8266d6a62f28"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.2"
+  camera_web:
+    dependency: transitive
+    description:
+      name: camera_web
+      sha256: d4c2c571c7af04f8b10702ca16bb9ed2a26e64534171e8f75c9349b2c004d8f1
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.2+3"
   characters:
     dependency: transitive
     description:
@@ -89,6 +129,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.1"
+  cross_file:
+    dependency: transitive
+    description:
+      name: cross_file
+      sha256: fd832b5384d0d6da4f6df60b854d33accaaeb63aa9e10e736a87381f08dee2cb
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.3+5"
   crypto:
     dependency: transitive
     description:
@@ -171,6 +219,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
+  flutter_plugin_android_lifecycle:
+    dependency: transitive
+    description:
+      name: flutter_plugin_android_lifecycle
+      sha256: f185ac890306b5779ecbd611f52502d8d4d63d27703ef73161ca0407e815f02c
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.16"
   flutter_rust_bridge:
     dependency: transitive
     description:
@@ -420,7 +476,7 @@ packages:
     source: path
     version: "0.1.0"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       sha256: "8829d8a55c13fc0e37127c29fedf290c102f4e40ae94ada574091fe0ff96c917"
@@ -523,6 +579,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.0"
+  quiver:
+    dependency: transitive
+    description:
+      name: quiver
+      sha256: b1c1ac5ce6688d77f65f3375a9abb9319b3cb32486bdc7a1e0fdf004d7ba4e47
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.1"
   rxdart:
     dependency: transitive
     description:
@@ -584,6 +648,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  stream_transform:
+    dependency: transitive
+    description:
+      name: stream_transform
+      sha256: "14a00e794c7c11aa145a170587321aedce29769c08d7f58b1d141da75e3b1c6f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   string_scanner:
     dependency: transitive
     description:
@@ -705,5 +777,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.1.0-185.0.dev <4.0.0"
-  flutter: ">=3.10.0"
+  dart: ">=3.1.0 <4.0.0"
+  flutter: ">=3.13.0"
