@@ -136,8 +136,8 @@ class _SightingsListState extends State<SightingsList> {
                     children: <Widget>[
                       ...data.sightings.map((sighting) => GestureDetector(
                           onTap: () => {
-                                router.push(RoutePaths.sighting.path,
-                                    extra: sighting.id)
+                                router.pushNamed(RoutePaths.sighting.name,
+                                    queryParameters: {'id': sighting.id})
                               },
                           child: SightingCard(
                               subtitle:
