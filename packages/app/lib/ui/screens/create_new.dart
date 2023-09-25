@@ -2,11 +2,14 @@
 
 // TODO: not used at the moment.
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:app/router.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/scaffold.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../models/sightings.dart';
 
@@ -20,6 +23,14 @@ class CreateNewScreen extends StatefulWidget {
 class _CreateNewScreenState extends State<CreateNewScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final nameInput = TextEditingController();
+  ImagePicker? imagePicker;
+  File? _image;
+
+  @override
+  void initState() {
+    super.initState();
+    imagePicker = new ImagePicker();
+  }
 
   @override
   void dispose() {
@@ -41,11 +52,11 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                   try {
                     // TODO: populate all fields from form
                     DateTime datetime = DateTime.now();
-                    await createSighting(datetime, 0.0, 0.0, [],
-                        null, null, "Some comment about this sighting");
+                    await createSighting(datetime, 0.0, 0.0, [], null, null,
+                        "Some comment about this sighting");
 
                     // Go back to sightings overview
-                    router.push(RoutePath.allSightings);
+                    router.push(RoutePaths.allSightings.path);
 
                     // Show notification
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -78,6 +89,46 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                         return null;
                       },
                     ),
+                    Row(
+                      children: [
+                        IconButton(
+                          color: (imagePicker != null)
+                              ? Colors.black
+                              : Colors.grey,
+                          icon: Icon(Icons.image),
+                          onPressed: (imagePicker != null)
+                              ? () async {
+                                  XFile image = await imagePicker!.pickImage(
+                                      source: ImageSource.gallery,
+                                      imageQuality: 50,
+                                      preferredCameraDevice:
+                                          CameraDevice.front) as XFile;
+                                  setState(() {
+                                    _image = File(image.path);
+                                  });
+                                }
+                              : () {},
+                        ),
+                        IconButton(
+                          color: (imagePicker != null)
+                              ? Colors.black
+                              : Colors.grey,
+                          icon: Icon(Icons.photo_camera),
+                          onPressed: (imagePicker != null)
+                              ? () async {
+                                  XFile image = await imagePicker!.pickImage(
+                                      source: ImageSource.camera,
+                                      imageQuality: 50,
+                                      preferredCameraDevice:
+                                          CameraDevice.front) as XFile;
+                                  setState(() {
+                                    _image = File(image.path);
+                                  });
+                                }
+                              : () {},
+                        ),
+                      ],
+                    )
                   ],
                 ))));
   }
