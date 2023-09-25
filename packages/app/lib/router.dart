@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:app/ui/screens/create_new.dart';
-import 'package:app/ui/screens/image_from_gallery.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -25,7 +24,6 @@ class RoutePaths {
   static RoutePath createSighting =
       RoutePath('create_sighting', '/createSighting');
   static RoutePath allSpecies = RoutePath('species', '/species');
-  static RoutePath imagePicker = RoutePath('image_picker', '/imagePicker');
 }
 
 final router = GoRouter(routes: [
@@ -38,8 +36,6 @@ final router = GoRouter(routes: [
       (state) => SightingScreen(id: state.queryParameters["id"]!)),
   _Route(RoutePaths.settings, (_) => SettingsScreen()),
   _Route(RoutePaths.createSighting, (_) => CreateNewScreen()),
-  _Route(RoutePaths.imagePicker,
-      (state) => ImageFromGalleryEx(state.queryParameters["type"]!)),
   _Route(RoutePaths.allSpecies, (_) => AllSpeciesScreen()),
 ]);
 
