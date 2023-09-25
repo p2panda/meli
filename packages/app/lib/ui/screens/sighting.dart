@@ -50,7 +50,8 @@ class _SightingScreenState extends State<SightingScreen> {
                           fields: {'Name': sighting.datetime.toString()},
                         ),
                         EditableCard(
-                            title: 'Comment', fields: {'Comment': sighting.comment})
+                            title: 'Comment',
+                            fields: {'Comment': sighting.comment})
                       ],
                     ),
                   );
