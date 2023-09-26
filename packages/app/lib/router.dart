@@ -32,8 +32,10 @@ final router = GoRouter(routes: [
   // app logic running yet while everything else is bootstrapping.
   _Route(RoutePaths.splash, (_) => Container(color: Colors.white)),
   _Route(RoutePaths.allSightings, (_) => AllSightingsScreen()),
-  _Route(RoutePaths.sighting,
-      (state) => SightingScreen(documentId: state.queryParameters["documentId"]!)),
+  _Route(
+      RoutePaths.sighting,
+      (state) =>
+          SightingScreen(documentId: state.queryParameters["documentId"]!)),
   _Route(RoutePaths.settings, (_) => SettingsScreen()),
   _Route(RoutePaths.createSighting, (_) => CreateNewScreen()),
   _Route(RoutePaths.allSpecies, (_) => AllSpeciesScreen()),
