@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/widgets/card.dart';
 import 'package:flutter/material.dart';
+
+import 'package:app/ui/widgets/card.dart';
 
 class EditableCard extends StatefulWidget {
   final Map<String, String> fields;

@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/screens/create_new.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:app/ui/screens/all_sightings.dart';
 import 'package:app/ui/screens/all_species.dart';
+import 'package:app/ui/screens/create_sighting.dart';
 import 'package:app/ui/screens/sighting.dart';
 import 'package:app/ui/screens/settings.dart';
 
@@ -18,12 +18,12 @@ class RoutePath {
 
 class RoutePaths {
   static RoutePath splash = RoutePath('splash', '/');
-  static RoutePath allSightings = RoutePath('all_sightings', '/allSightings');
-  static RoutePath sighting = RoutePath('sightings', '/sighting');
   static RoutePath settings = RoutePath('settings', '/settings');
+  static RoutePath sighting = RoutePath('sighting', '/sightings/:documentId');
+  static RoutePath allSightings = RoutePath('all_sightings', '/sightings');
   static RoutePath createSighting =
-      RoutePath('create_sighting', '/createSighting');
-  static RoutePath allSpecies = RoutePath('species', '/species');
+      RoutePath('create_sighting', '/create/sighting');
+  static RoutePath allSpecies = RoutePath('all_species', '/species');
 }
 
 final router = GoRouter(routes: [
@@ -33,7 +33,7 @@ final router = GoRouter(routes: [
   _Route(RoutePaths.splash, (_) => Container(color: Colors.white)),
   _Route(RoutePaths.allSightings, (_) => AllSightingsScreen()),
   _Route(RoutePaths.sighting,
-      (state) => SightingScreen(id: state.queryParameters["id"]!)),
+      (state) => SightingScreen(documentId: state.queryParameters["documentId"]!)),
   _Route(RoutePaths.settings, (_) => SettingsScreen()),
   _Route(RoutePaths.createSighting, (_) => CreateNewScreen()),
   _Route(RoutePaths.allSpecies, (_) => AllSpeciesScreen()),

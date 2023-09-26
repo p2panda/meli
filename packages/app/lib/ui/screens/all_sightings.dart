@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/widgets/sighting_card.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -9,6 +8,7 @@ import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/scaffold.dart';
+import 'package:app/ui/widgets/sighting_card.dart';
 
 class AllSightingsScreen extends StatefulWidget {
   AllSightingsScreen({super.key});

@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:flutter/material.dart';
-import 'package:app/ui/colors.dart';
 import 'package:expansion_tile_group/expansion_tile_group.dart';
+
+import 'package:app/ui/colors.dart';
 
 class MeliCard extends StatelessWidget {
   final List<Widget> children;

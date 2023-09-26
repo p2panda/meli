@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-// TODO: this is still very rough, really just trying out the features of flutter_form_builder to see if we want to use it.
-
 import 'package:flutter/material.dart';
-
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+
 import 'package:app/ui/widgets/card.dart';
 
 class CreateSightingForm extends StatefulWidget {

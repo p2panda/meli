@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../colors.dart';
+import 'package:app/ui/colors.dart';
 
 class SightingCard extends StatelessWidget {
   final String? localName;

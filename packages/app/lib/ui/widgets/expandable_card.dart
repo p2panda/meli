@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'card.dart';
+import 'package:app/ui/widgets/card.dart';
 
 class ExpandableCard extends StatelessWidget {
   final String title;
