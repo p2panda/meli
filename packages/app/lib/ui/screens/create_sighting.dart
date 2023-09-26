@@ -11,6 +11,7 @@ import 'package:app/router.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/models/sightings.dart';
+import 'package:app/utils/camera.dart';
 
 class CreateNewScreen extends StatefulWidget {
   CreateNewScreen({super.key});
@@ -22,13 +23,16 @@ class CreateNewScreen extends StatefulWidget {
 class _CreateNewScreenState extends State<CreateNewScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final nameInput = TextEditingController();
-  ImagePicker? imagePicker;
   File? _image;
 
   @override
   void initState() {
     super.initState();
-    imagePicker = new ImagePicker();
+    getImage(ImageSource.camera).then((image) => {
+          setState(() {
+            _image = image;
+          })
+        });
   }
 
   @override
@@ -91,40 +95,21 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                     Row(
                       children: [
                         IconButton(
-                          color: (imagePicker != null)
-                              ? Colors.black
-                              : Colors.grey,
-                          icon: Icon(Icons.image),
-                          onPressed: (imagePicker != null)
-                              ? () async {
-                                  XFile image = await imagePicker!.pickImage(
-                                      source: ImageSource.gallery,
-                                      imageQuality: 50,
-                                      preferredCameraDevice:
-                                          CameraDevice.front) as XFile;
-                                  setState(() {
-                                    _image = File(image.path);
-                                  });
-                                }
-                              : () {},
-                        ),
+                            icon: Icon(Icons.image),
+                            onPressed: () async {
+                              File image = await getImage(ImageSource.gallery);
+                              setState(() {
+                                _image = image;
+                              });
+                            }),
                         IconButton(
-                          color: (imagePicker != null)
-                              ? Colors.black
-                              : Colors.grey,
                           icon: Icon(Icons.photo_camera),
-                          onPressed: (imagePicker != null)
-                              ? () async {
-                                  XFile image = await imagePicker!.pickImage(
-                                      source: ImageSource.camera,
-                                      imageQuality: 50,
-                                      preferredCameraDevice:
-                                          CameraDevice.front) as XFile;
-                                  setState(() {
-                                    _image = File(image.path);
-                                  });
-                                }
-                              : () {},
+                          onPressed: () async {
+                            File image = await getImage(ImageSource.camera);
+                            setState(() {
+                              _image = image;
+                            });
+                          },
                         ),
                       ],
                     ),
