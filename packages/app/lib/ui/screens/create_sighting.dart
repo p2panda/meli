@@ -4,6 +4,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -23,6 +24,7 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final nameInput = TextEditingController();
   final _imagePicker = ImagePicker();
+  String? _retrieveDataError;
   File? _image;
 
   void _setImage(XFile? image) {
@@ -34,10 +36,87 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
   }
 
   Future<XFile?> _getImage(ImageSource source) async {
-    return await this._imagePicker.pickImage(
+    return await _imagePicker.pickImage(
         source: source,
         imageQuality: 50,
         preferredCameraDevice: CameraDevice.front);
+  }
+
+  Text? _getRetrieveErrorWidget() {
+    if (_retrieveDataError != null) {
+      final Text result = Text(_retrieveDataError!);
+      _retrieveDataError = null;
+      return result;
+    }
+    return null;
+  }
+
+  Future<void> _retrieveLostData() async {
+    final LostDataResponse response =
+        await this._imagePicker.retrieveLostData();
+    if (response.isEmpty) {
+      return;
+    }
+    if (response.file != null) {
+      setState(() {
+        _setImage(response.file);
+      });
+    } else {
+      _retrieveDataError = response.exception!.code;
+    }
+  }
+
+  Widget _handlePreview() {
+    final Text? retrieveError = _getRetrieveErrorWidget();
+    if (retrieveError != null) {
+      return retrieveError;
+    }
+    if (_image != null) {
+      return Container(
+        height: 300,
+        child: Image.file(
+          _image!,
+          fit: BoxFit.cover,
+        ),
+      );
+    } else {
+      return const Text(
+        'You have not yet picked an image.',
+        textAlign: TextAlign.center,
+      );
+    }
+  }
+
+  Widget _previewImage() {
+    return defaultTargetPlatform == TargetPlatform.android
+        ? FutureBuilder<void>(
+            future: _retrieveLostData(),
+            builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                case ConnectionState.waiting:
+                  return const Text(
+                    'You have not yet picked an image.',
+                    textAlign: TextAlign.center,
+                  );
+                case ConnectionState.done:
+                  return _handlePreview();
+                case ConnectionState.active:
+                  if (snapshot.hasError) {
+                    return Text(
+                      'Pick image/video error: ${snapshot.error}}',
+                      textAlign: TextAlign.center,
+                    );
+                  } else {
+                    return const Text(
+                      'You have not yet picked an image.',
+                      textAlign: TextAlign.center,
+                    );
+                  }
+              }
+            },
+          )
+        : _handlePreview();
   }
 
   @override
@@ -122,13 +201,7 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                         ),
                       ],
                     ),
-                    if (_image != null)
-                      Container(
-                          height: 400,
-                          child: Image.file(
-                            _image!,
-                            fit: BoxFit.cover,
-                          )),
+                    _previewImage(),
                   ],
                 ))));
   }
