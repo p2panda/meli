@@ -5,13 +5,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:app/router.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/scaffold.dart';
-import 'package:image_picker/image_picker.dart';
-
-import '../../models/sightings.dart';
+import 'package:app/models/sightings.dart';
 
 class CreateNewScreen extends StatefulWidget {
   CreateNewScreen({super.key});
