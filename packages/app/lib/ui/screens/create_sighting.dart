@@ -11,7 +11,6 @@ import 'package:app/router.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/models/sightings.dart';
-import 'package:app/utils/camera.dart';
 
 class CreateNewScreen extends StatefulWidget {
   CreateNewScreen({super.key});
@@ -23,16 +22,28 @@ class CreateNewScreen extends StatefulWidget {
 class _CreateNewScreenState extends State<CreateNewScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final nameInput = TextEditingController();
+  final _imagePicker = ImagePicker();
   File? _image;
+
+  void _setImage(XFile? image) {
+    if (image != null) {
+      setState(() {
+        _image = File(image.path);
+      });
+    }
+  }
+
+  Future<XFile?> _getImage(ImageSource source) async {
+    return await this._imagePicker.pickImage(
+        source: source,
+        imageQuality: 50,
+        preferredCameraDevice: CameraDevice.front);
+  }
 
   @override
   void initState() {
     super.initState();
-    getImage(ImageSource.camera).then((image) => {
-          setState(() {
-            _image = image;
-          })
-        });
+    this._getImage(ImageSource.camera).then((image) => this._setImage(image));
   }
 
   @override
@@ -97,18 +108,16 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                         IconButton(
                             icon: Icon(Icons.image),
                             onPressed: () async {
-                              File image = await getImage(ImageSource.gallery);
-                              setState(() {
-                                _image = image;
-                              });
+                              XFile? image =
+                                  await this._getImage(ImageSource.gallery);
+                              this._setImage(image);
                             }),
                         IconButton(
                           icon: Icon(Icons.photo_camera),
                           onPressed: () async {
-                            File image = await getImage(ImageSource.camera);
-                            setState(() {
-                              _image = image;
-                            });
+                            XFile? image =
+                                await this._getImage(ImageSource.camera);
+                            this._setImage(image);
                           },
                         ),
                       ],
