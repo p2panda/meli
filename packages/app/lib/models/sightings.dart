@@ -82,7 +82,7 @@ class PaginatedSightingList {
         .map((sighting) => Sighting.fromJson(sighting as Map<String, dynamic>))
         .toList();
 
-    String? endCursor = json['endCursor'] as String;
+    String? endCursor = json['endCursor'] as String?;
     bool hasNextPage = json['hasNextPage'] as bool;
 
     return PaginatedSightingList(
