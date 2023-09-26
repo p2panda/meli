@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:flutter/material.dart';
-import 'package:expansion_tile_group/expansion_tile_group.dart';
 
 import 'package:app/ui/colors.dart';
+import 'package:app/ui/widgets/expansion_tile.dart';
 
 class MeliCard extends StatelessWidget {
   final List<Widget> children;
@@ -24,11 +24,14 @@ class MeliCard extends StatelessWidget {
 
   Widget _header() {
     if (this.title != null) {
-      return Card(
-          margin: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+      return Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(12.0))),
           child: Container(
             alignment: AlignmentDirectional.centerStart,
-            padding: const EdgeInsets.all(10),
+            padding:
+                const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
             width: double.infinity,
             child: Column(
               children: [
@@ -56,7 +59,7 @@ class MeliCard extends StatelessWidget {
           this.footer.toString(),
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 16.0,
             fontWeight: FontWeight.w400,
           ),
         ),
@@ -73,7 +76,7 @@ class MeliCard extends StatelessWidget {
         child: Text(
           this.title.toString(),
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 16.0,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -112,16 +115,18 @@ class MeliCard extends StatelessWidget {
 
   Widget _content() {
     if (this.expandable) {
-      return ExpansionTileGroup(children: [
-        ExpansionTileItem(
-          isHasTopBorder: false,
-          isHasBottomBorder: false,
-          isHasTrailing: false,
-          tilePadding: EdgeInsets.all(0.0),
-          title: this._header(),
-          children: this.children,
-        )
-      ]);
+      return ExpansionTileItem(
+        isHasTopBorder: false,
+        isHasBottomBorder: false,
+        isHasLeftBorder: false,
+        isHasRightBorder: false,
+        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+        isHasTrailing: false,
+        tilePadding: EdgeInsets.all(0.0),
+        childrenPadding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+        title: this._header(),
+        children: this.children,
+      );
     }
 
     return Column(children: [
@@ -134,17 +139,17 @@ class MeliCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        elevation: 0,
-        color: MeliColors.magnolia,
+        elevation: 5.0,
+        color: MeliColors.peach,
+        surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            width: 5,
+            width: 5.0,
             strokeAlign: BorderSide.strokeAlignCenter,
-            color: MeliColors.magnolia,
+            color: MeliColors.peach,
           ),
           borderRadius: BorderRadius.circular(12),
         ),
-        child:
-            Container(margin: const EdgeInsets.all(5), child: this._content()));
+        child: this._content());
   }
 }

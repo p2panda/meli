@@ -37,15 +37,13 @@ class SettingsList extends StatelessWidget {
       children: [Text('Don\'t click here'), Text('Don\'t click here either!')],
     ),
     ExpandableCard(
-      title: 'Sytem Information',
+      title: 'System Information',
       children: [Text('...')],
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: menuListItems);
+    return Wrap(spacing: 0.0, runSpacing: 20.0, children: menuListItems);
   }
 }
