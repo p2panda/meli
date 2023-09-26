@@ -9,7 +9,6 @@ environment:
 dependencies:
   camera: ^0.10.5+4
   convert: ^3.1.1
-  expansion_tile_group: ^1.2.3
   flutter:
     sdk: flutter
   flutter_form_builder: ^9.1.0

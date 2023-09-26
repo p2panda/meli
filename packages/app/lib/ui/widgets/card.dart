@@ -27,6 +27,13 @@ class MeliCard extends StatelessWidget {
       return Container(
           decoration: BoxDecoration(
               color: Colors.white,
+              border: Border.fromBorderSide(
+                BorderSide(
+                  width: 6.0,
+                  strokeAlign: BorderSide.strokeAlignCenter,
+                  color: MeliColors.peach,
+                ),
+              ),
               borderRadius: BorderRadius.all(Radius.circular(12.0))),
           child: Container(
             alignment: AlignmentDirectional.centerStart,
@@ -47,7 +54,7 @@ class MeliCard extends StatelessWidget {
           ));
     }
 
-    return SizedBox(height: 0.0);
+    return SizedBox.shrink();
   }
 
   Widget _footer() {
@@ -66,7 +73,7 @@ class MeliCard extends StatelessWidget {
       );
     }
 
-    return SizedBox(height: 0.0);
+    return SizedBox.shrink();
   }
 
   Widget _title() {
@@ -83,7 +90,7 @@ class MeliCard extends StatelessWidget {
       );
     }
 
-    return SizedBox(height: 0.0);
+    return SizedBox.shrink();
   }
 
   Widget _icon() {
@@ -94,7 +101,7 @@ class MeliCard extends StatelessWidget {
       );
     }
 
-    return SizedBox(height: 0.0);
+    return SizedBox.shrink();
   }
 
   Widget _subtitle() {
@@ -110,21 +117,14 @@ class MeliCard extends StatelessWidget {
         ),
       );
     }
-    return SizedBox(height: 0.0);
+
+    return SizedBox.shrink();
   }
 
   Widget _content() {
     if (this.expandable) {
-      return ExpansionTileItem(
-        isHasTopBorder: false,
-        isHasBottomBorder: false,
-        isHasLeftBorder: false,
-        isHasRightBorder: false,
-        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-        isHasTrailing: false,
-        tilePadding: EdgeInsets.all(0.0),
-        childrenPadding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
-        title: this._header(),
+      return MeliExpansionTile(
+        header: this._header(),
         children: this.children,
       );
     }
@@ -144,7 +144,7 @@ class MeliCard extends StatelessWidget {
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            width: 5.0,
+            width: 6.0,
             strokeAlign: BorderSide.strokeAlignCenter,
             color: MeliColors.peach,
           ),
