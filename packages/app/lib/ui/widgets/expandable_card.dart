@@ -34,7 +34,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
           borderRadius: _borderRadius),
       child: Container(
         alignment: AlignmentDirectional.centerStart,
-        padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
+        padding: EdgeInsets.symmetric(vertical: 9.0, horizontal: 16.0),
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           this._title(),
