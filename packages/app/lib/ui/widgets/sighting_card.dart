@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:app/ui/colors.dart';
+import 'package:app/ui/widgets/card.dart';
 
 class SightingCard extends StatelessWidget {
   final String? localName;
@@ -40,22 +41,13 @@ class SightingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return MeliCard(
         elevation: 0,
         color: MeliColors.white,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(
-            width: 3,
-            strokeAlign: BorderSide.strokeAlignCenter,
-            color: MeliColors.white,
-          ),
-          borderRadius: BorderRadius.circular(12),
-        ),
         child: Column(children: [
           Container(
             alignment: AlignmentDirectional.centerStart,
             padding: const EdgeInsets.all(10),
-            width: double.infinity,
             child: Column(
               children: [
                 Row(
@@ -69,20 +61,20 @@ class SightingCard extends StatelessWidget {
             ),
           ),
           Container(
-              margin: const EdgeInsets.all(5),
               child: Container(
-                height: 240,
-                width: double.infinity,
-                decoration: ShapeDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(this.image),
-                    fit: BoxFit.fill,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              )),
+            height: 210,
+            decoration: ShapeDecoration(
+              image: DecorationImage(
+                image: NetworkImage(this.image),
+                fit: BoxFit.fill,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(12.0),
+                    bottomRight: Radius.circular(12.0)),
+              ),
+            ),
+          )),
         ]));
   }
 }

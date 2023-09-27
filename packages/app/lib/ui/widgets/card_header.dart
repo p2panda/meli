@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:app/ui/widgets/card.dart';
+import 'package:app/ui/colors.dart';
 
 class MeliCardHeader extends StatelessWidget {
   final String title;
@@ -27,8 +27,12 @@ class MeliCardHeader extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.fromBorderSide(borderSide),
-          borderRadius: borderRadius),
+          border: Border.fromBorderSide(BorderSide(
+            width: 6.0,
+            strokeAlign: BorderSide.strokeAlignCenter,
+            color: MeliColors.pink,
+          )),
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
       child: Container(
         alignment: AlignmentDirectional.centerStart,
         padding: EdgeInsets.symmetric(

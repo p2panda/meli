@@ -4,27 +4,30 @@ import 'package:flutter/material.dart';
 
 import 'package:app/ui/colors.dart';
 
-const borderSide = BorderSide(
-  width: 6.0,
-  strokeAlign: BorderSide.strokeAlignCenter,
-  color: MeliColors.pink,
-);
-const borderRadius = BorderRadius.all(Radius.circular(12.0));
-
 class MeliCard extends StatelessWidget {
   final Widget child;
+  final double elevation;
+  final Color color;
 
-  MeliCard({super.key, required this.child});
+  MeliCard(
+      {super.key,
+      required this.child,
+      this.elevation = 5.0,
+      this.color = MeliColors.pink});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-        elevation: 5.0,
-        color: MeliColors.pink,
+        elevation: this.elevation,
+        color: this.color,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          side: borderSide,
-          borderRadius: borderRadius,
+          side: BorderSide(
+            width: 6.0,
+            strokeAlign: BorderSide.strokeAlignCenter,
+            color: this.color,
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(12.0)),
         ),
         child: this.child);
   }
