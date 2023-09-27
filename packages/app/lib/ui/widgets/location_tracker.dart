@@ -23,13 +23,14 @@ class _LocationTrackerState extends State<LocationTracker> {
 
     _initStream() async {
       try {
-        // Attempt access to geolocation API of device
+        // Attempt access to geolocation API of device and establish an async
+        // stream of position data coming in. This can fail when we haven't
+        // received any permission to track the location of this device for
+        // example.
         final positionStream = await trackPosition();
-
-        // Establish an async stream of position data coming in
         streamController.addStream(positionStream);
       } catch (error) {
-        print(error);
+        streamController.addError(error);
       }
     }
 
@@ -46,19 +47,17 @@ class _LocationTrackerState extends State<LocationTracker> {
           stream: this.streamController.stream,
           builder: (BuildContext context, AsyncSnapshot<Position> snapshot) {
             if (snapshot.hasError) {
-              return Text('Error');
+              return Text(snapshot.error!.toString());
             } else {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
-                  return Text('State = None');
+                case ConnectionState.done:
                 case ConnectionState.waiting:
-                  return Text('State = Waiting');
+                  return Text('State = Standby');
                 case ConnectionState.active:
                   final latitude = snapshot.data!.latitude;
                   final longitude = snapshot.data!.longitude;
-                  return Text('State = Active $latitude $longitude');
-                case ConnectionState.done:
-                  return Text('State = Done');
+                  return Text('Position: $latitude $longitude');
               }
             }
           }),
