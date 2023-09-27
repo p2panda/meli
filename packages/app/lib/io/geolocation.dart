@@ -4,6 +4,9 @@ import 'dart:async';
 
 import 'package:geolocator/geolocator.dart';
 
+/// Ignore updates when position has not changed for x meters.
+const DISTANCE_FILTER_METERS = 5;
+
 /// Determine the current position of the device.
 ///
 /// When the location services are not enabled or permissions are denied the
@@ -40,11 +43,9 @@ Future<Stream<Position>> trackPosition() async {
 
   // When we reach here, permissions are granted and we can
   // continue accessing the position of the device.
-  // return await Geolocator.getCurrentPosition();
-
   final LocationSettings locationSettings = LocationSettings(
     accuracy: LocationAccuracy.high,
-    distanceFilter: 100,
+    distanceFilter: DISTANCE_FILTER_METERS,
   );
 
   return Geolocator.getPositionStream(locationSettings: locationSettings);

@@ -201,7 +201,13 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                       ],
                     ),
                     _previewImage(),
-                    LocationTracker(),
+                    LocationTracker(onPositionChanged: (position) {
+                      if (position == null) {
+                        print('Position: n/a');
+                      } else {
+                        print('Position: $position');
+                      }
+                    }),
                   ],
                 ))));
   }
