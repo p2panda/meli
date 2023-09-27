@@ -35,7 +35,7 @@ final router = GoRouter(routes: [
   _Route(
       RoutePaths.sighting,
       (state) =>
-          SightingScreen(documentId: state.queryParameters["documentId"]!)),
+          SightingScreen(documentId: state.pathParameters["documentId"]!)),
   _Route(RoutePaths.settings, (_) => SettingsScreen()),
   _Route(RoutePaths.createSighting, (_) => CreateNewScreen()),
   _Route(RoutePaths.allSpecies, (_) => AllSpeciesScreen()),

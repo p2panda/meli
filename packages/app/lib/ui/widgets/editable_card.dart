@@ -3,40 +3,45 @@
 import 'package:flutter/material.dart';
 
 import 'package:app/ui/widgets/card.dart';
+import 'package:app/ui/widgets/card_action_button.dart';
+import 'package:app/ui/widgets/card_header.dart';
 
 class EditableCard extends StatefulWidget {
-  final Map<String, String> fields;
-  final String? title;
+  final String title;
+  final Widget child;
 
-  EditableCard({super.key, this.title, required this.fields});
+  const EditableCard({super.key, required this.title, required this.child});
 
   @override
   State<EditableCard> createState() => _EditableCardState();
 }
 
 class _EditableCardState extends State<EditableCard> {
-  bool editMode = false;
+  bool isEditMode = false;
+
+  Widget _icon() {
+    final icon =
+        this.isEditMode ? Icon(Icons.check) : Icon(Icons.edit_outlined);
+    return CardActionButton(
+        icon: icon,
+        onPressed: () {
+          setState(() {
+            this.isEditMode = !this.isEditMode;
+          });
+        });
+  }
+
+  Widget _content() {
+    return Column(
+      children: [
+        MeliCardHeader(title: widget.title, icon: this._icon()),
+        widget.child,
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MeliCard(
-      icon: GestureDetector(
-        child: Icon(Icons.edit),
-        onTap: () => setState(() {
-          this.editMode = !this.editMode;
-        }),
-      ),
-      title: this.widget.title,
-      children: <Widget>[
-        ...this.widget.fields.entries.map((entry) => TextFormField(
-              enabled: this.editMode,
-              initialValue: entry.value,
-              decoration: InputDecoration(
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-            ))
-      ],
-    );
+    return MeliCard(child: this._content());
   }
 }

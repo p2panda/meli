@@ -20,10 +20,10 @@ class MeliExpansionTile extends StatefulWidget {
   });
 
   @override
-  State<MeliExpansionTile> createState() => ExpansionTileState();
+  State<MeliExpansionTile> createState() => MeliExpansionTileState();
 }
 
-class ExpansionTileState extends State<MeliExpansionTile>
+class MeliExpansionTileState extends State<MeliExpansionTile>
     with SingleTickerProviderStateMixin {
   static final Animatable<double> _easeInTween =
       CurveTween(curve: Curves.easeIn);
