@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/simple_card.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app/ui/widgets/expandable_card.dart';
@@ -30,22 +31,25 @@ class SettingsList extends StatelessWidget {
   final List<Widget> menuListItems = [
     ExpandableCard(
       title: 'Language',
-      children: [Text('portuguese'), Text('english')],
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [Text('portuguese'), Text('english')]),
     ),
     ExpandableCard(
       title: 'Advanced Settings',
-      children: [Text('Don\'t click here'), Text('Don\'t click here either!')],
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text('Don\'t click here'),
+        Text('Don\'t click here either!')
+      ]),
     ),
     ExpandableCard(
-      title: 'Sytem Information',
-      children: [Text('...')],
+      title: 'System Information',
+      child: Text('...'),
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: menuListItems);
+    return Wrap(spacing: 0.0, runSpacing: 20.0, children: menuListItems);
   }
 }

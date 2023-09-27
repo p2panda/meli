@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:app/ui/colors.dart';
+import 'package:app/ui/widgets/card.dart';
 
 class SpeciesCard extends StatelessWidget {
   final String title;
@@ -12,33 +13,28 @@ class SpeciesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return MeliCard(
         elevation: 0,
         color: MeliColors.white,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(
-            width: 3,
-            strokeAlign: BorderSide.strokeAlignCenter,
-            color: MeliColors.white,
-          ),
-          borderRadius: BorderRadius.circular(12),
-        ),
         child: Column(children: [
           Container(
-              margin: const EdgeInsets.all(5),
               child: Container(
-                height: 240,
-                width: double.infinity,
-                decoration: ShapeDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(this.image),
-                    fit: BoxFit.fill,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+            height: 240,
+            decoration: ShapeDecoration(
+              image: DecorationImage(
+                image: NetworkImage(this.image),
+                fit: BoxFit.fill,
+              ),
+              shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  width: 6.0,
+                  strokeAlign: BorderSide.strokeAlignCenter,
+                  color: Colors.transparent,
                 ),
-              )),
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          )),
           Container(
             padding: const EdgeInsets.only(
                 top: 8.0, right: 6.0, bottom: 10.0, left: 6.0),
