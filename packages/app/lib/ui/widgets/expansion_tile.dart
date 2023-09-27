@@ -6,13 +6,15 @@ const Duration _kExpand = Duration(milliseconds: 200);
 
 class MeliExpansionTile extends StatefulWidget {
   final Widget header;
-  final List<Widget> children;
+  final Widget child;
   final EdgeInsetsGeometry childrenPadding;
+  final ValueChanged<bool>? onExpansionChanged;
 
   const MeliExpansionTile({
     super.key,
     required this.header,
-    this.children = const <Widget>[],
+    required this.child,
+    this.onExpansionChanged,
     this.childrenPadding =
         const EdgeInsets.only(top: 5.0, right: 8.0, bottom: 8.0, left: 8.0),
   });
@@ -79,6 +81,9 @@ class ExpansionTileState extends State<MeliExpansionTile>
         }
         PageStorage.of(context).writeState(context, _isExpanded);
       });
+      if (widget.onExpansionChanged != null) {
+        widget.onExpansionChanged!(_isExpanded);
+      }
     }
   }
 
@@ -99,6 +104,7 @@ class ExpansionTileState extends State<MeliExpansionTile>
       }
       PageStorage.of(context).writeState(context, _isExpanded);
     });
+    widget.onExpansionChanged?.call(_isExpanded);
   }
 
   Widget _buildChildren(BuildContext context, Widget? child) {
@@ -131,10 +137,7 @@ class ExpansionTileState extends State<MeliExpansionTile>
         enabled: !closed,
         child: Padding(
           padding: widget.childrenPadding,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: widget.children,
-          ),
+          child: widget.child,
         ),
       ),
     );

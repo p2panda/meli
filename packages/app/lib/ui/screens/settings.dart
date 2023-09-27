@@ -30,15 +30,20 @@ class SettingsList extends StatelessWidget {
   final List<Widget> menuListItems = [
     ExpandableCard(
       title: 'Language',
-      children: [Text('portuguese'), Text('english')],
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [Text('portuguese'), Text('english')]),
     ),
     ExpandableCard(
       title: 'Advanced Settings',
-      children: [Text('Don\'t click here'), Text('Don\'t click here either!')],
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text('Don\'t click here'),
+        Text('Don\'t click here either!')
+      ]),
     ),
     ExpandableCard(
       title: 'System Information',
-      children: [Text('...')],
+      child: Text('...'),
     ),
   ];
 

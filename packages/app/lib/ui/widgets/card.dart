@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:app/ui/colors.dart';
-import 'package:app/ui/widgets/expansion_tile.dart';
 
 class MeliCard extends StatelessWidget {
   final List<Widget> children;
@@ -11,7 +10,6 @@ class MeliCard extends StatelessWidget {
   final String? subtitle;
   final String? footer;
   final Widget? icon;
-  final bool expandable;
 
   MeliCard(
       {super.key,
@@ -19,8 +17,7 @@ class MeliCard extends StatelessWidget {
       this.title,
       this.subtitle,
       this.footer,
-      this.icon,
-      this.expandable = false});
+      this.icon});
 
   Widget _header() {
     if (this.title != null) {
@@ -122,13 +119,6 @@ class MeliCard extends StatelessWidget {
   }
 
   Widget _content() {
-    if (this.expandable) {
-      return MeliExpansionTile(
-        header: this._header(),
-        children: this.children,
-      );
-    }
-
     return Column(children: [
       this._header(),
       Column(children: this.children),
