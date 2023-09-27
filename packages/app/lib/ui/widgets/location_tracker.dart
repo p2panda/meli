@@ -69,7 +69,7 @@ class _LocationTrackerState extends State<LocationTracker> {
       _hasUserGivenConsent = true;
     });
 
-    this._startStream();
+    this._subscribe();
   }
 
   void _removeTracking() {
@@ -80,7 +80,7 @@ class _LocationTrackerState extends State<LocationTracker> {
     });
   }
 
-  void _startStream() async {
+  void _subscribe() async {
     // Make sure to only start stream once
     if (this._hasTrackerStarted) {
       return;
@@ -119,6 +119,12 @@ class _LocationTrackerState extends State<LocationTracker> {
       _streamController.addStream(positionStream);
     } catch (error) {
       _streamController.addError(error);
+    }
+  }
+
+  void _unsubscribe() async {
+    if (this._subscription != null) {
+      await this._subscription!.cancel();
     }
   }
 
@@ -180,12 +186,8 @@ class _LocationTrackerState extends State<LocationTracker> {
   }
 
   @override
-  void dispose() async {
+  void dispose() {
+    this._unsubscribe();
     super.dispose();
-
-    // Make sure to close position stream
-    if (this._subscription != null) {
-      await this._subscription!.cancel();
-    }
   }
 }
