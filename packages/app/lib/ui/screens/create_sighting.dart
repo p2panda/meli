@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-// TODO: not used at the moment.
-
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -11,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/scaffold.dart';
+import 'package:app/ui/widgets/location_tracker.dart';
 import 'package:app/models/sightings.dart';
 
 class CreateNewScreen extends StatefulWidget {
@@ -202,6 +201,7 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                       ],
                     ),
                     _previewImage(),
+                    LocationTracker(),
                   ],
                 ))));
   }
