@@ -19,7 +19,7 @@ class RoutePath {
 class RoutePaths {
   static RoutePath splash = RoutePath('splash', '/');
   static RoutePath settings = RoutePath('settings', '/settings');
-  static RoutePath sighting = RoutePath('sighting', '/sighting');
+  static RoutePath sighting = RoutePath('sighting', '/sighting/:documentId');
   static RoutePath allSightings = RoutePath('all_sightings', '/sightings');
   static RoutePath createSighting =
       RoutePath('create_sighting', '/create/sighting');
