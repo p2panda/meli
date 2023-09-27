@@ -17,16 +17,12 @@ class LocationTracker extends StatefulWidget {
 class _LocationTrackerState extends State<LocationTracker> {
   StreamController<Position> streamController = new StreamController();
 
-  @override
-  void initState() {
-    super.initState();
-
+  // Attempt access to geolocation API of device and establish an async stream
+  // of position data coming in. This can fail when we haven't received any
+  // permission to track the location of this device for example.
+  _enablePositionTracker() {
     _initStream() async {
       try {
-        // Attempt access to geolocation API of device and establish an async
-        // stream of position data coming in. This can fail when we haven't
-        // received any permission to track the location of this device for
-        // example.
         final positionStream = await trackPosition();
         streamController.addStream(positionStream);
       } catch (error) {
