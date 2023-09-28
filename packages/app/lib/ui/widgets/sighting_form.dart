@@ -60,13 +60,10 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
 }
 
 class SightingImagesCarousel extends StatelessWidget {
-  const SightingImagesCarousel({
-    super.key,
-  });
-
   @override
   Widget build(BuildContext context) {
     final cameraImageProvider = MeliCameraProviderInherited.of(context);
+    final showDelete = cameraImageProvider.hasImages();
     final images = cameraImageProvider.hasImages()
         ? cameraImageProvider.getImages().map((file) {
             return Image.file(file);
@@ -85,36 +82,55 @@ class SightingImagesCarousel extends StatelessWidget {
           builder: (BuildContext context) {
             int index = item.$1;
             Image image = item.$2;
-            return Container(
-                width: double.infinity,
-                margin: EdgeInsets.symmetric(horizontal: 5),
-                decoration: BoxDecoration(
-                    color: MeliColors.pink,
-                    borderRadius: BorderRadius.all(Radius.circular(12.0))),
-                child: Stack(children: [
-                  Container(alignment: Alignment.center, child: image),
-                  Container(
-                    alignment: Alignment.bottomCenter,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              Colors.red[800]!),
-                          shape: MaterialStateProperty.all<CircleBorder>(
-                              CircleBorder(
-                                  side: BorderSide(color: Colors.red[800]!)))),
-                      onPressed: () {
-                        cameraImageProvider.removeAt(index);
-                      },
-                      child: Icon(
-                        Icons.delete_outlined,
-                        color: Colors.white,
-                      ),
-                    ),
-                  )
-                ]));
+            return CarouselItem(
+                image: image, index: index, showDelete: showDelete);
           },
         );
       }).toList(),
     );
+  }
+}
+
+class CarouselItem extends StatelessWidget {
+  const CarouselItem(
+      {super.key,
+      required this.image,
+      required this.index,
+      this.showDelete = false});
+
+  final Image image;
+  final int index;
+  final bool showDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final cameraImageProvider = MeliCameraProviderInherited.of(context);
+
+    return Container(
+        width: double.infinity,
+        margin: EdgeInsets.symmetric(horizontal: 5),
+        decoration: BoxDecoration(
+            color: MeliColors.pink,
+            borderRadius: BorderRadius.all(Radius.circular(12.0))),
+        child: Stack(children: [
+          Container(alignment: Alignment.center, child: image),
+          if (showDelete) Container(
+            alignment: Alignment.bottomCenter,
+            child: ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.red[800]!),
+                  shape: MaterialStateProperty.all<CircleBorder>(
+                      CircleBorder(side: BorderSide(color: Colors.red[800]!)))),
+              onPressed: () {
+                cameraImageProvider.removeAt(index);
+              },
+              child: Icon(
+                Icons.delete_outlined,
+                color: Colors.white,
+              ),
+            ),
+          )
+        ]));
   }
 }
