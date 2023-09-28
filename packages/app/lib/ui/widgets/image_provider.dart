@@ -27,11 +27,9 @@ class MeliCameraProviderState extends State<MeliCameraProvider> {
     return (images.length != 0);
   }
 
-  void addImage(File imageFile) {
+  void addImages(List<File> newImages) {
     setState(() {
-      List<File> newImages = [];
       newImages.addAll(images);
-      newImages.add(imageFile);
       images = newImages;
     });
   }
@@ -51,11 +49,21 @@ class MeliCameraProviderState extends State<MeliCameraProvider> {
       return;
     }
     if (response.file != null) {
-      addImage(File(response.file!.path));
+      addImages([File(response.file!.path)]);
     } else {
       _retrieveDataError = response.exception!.code;
       print('CameraProvider error: ${_retrieveDataError}');
     }
+  }
+
+  // Pick photos from the gallery.
+  Future<void> pickFromGallery() async {
+    List<XFile> imageFiles =
+        await _imagePicker.pickMultiImage(imageQuality: 50);
+
+    addImages(imageFiles.map((file) {
+      return File(file.path);
+    }).toList());
   }
 
   // Capture a photo from the camera.
@@ -72,7 +80,7 @@ class MeliCameraProviderState extends State<MeliCameraProvider> {
         preferredCameraDevice: CameraDevice.front);
 
     if (imageFile != null) {
-      addImage(File(imageFile.path));
+      addImages([File(imageFile.path)]);
     }
   }
 

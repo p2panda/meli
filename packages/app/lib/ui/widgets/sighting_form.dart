@@ -70,23 +70,46 @@ class SightingImagesCarousel extends StatelessWidget {
           })
         : [Image.asset(PLACEHOLDER_IMG)];
 
-    return CarouselSlider(
-      options: CarouselOptions(
-          height: 200.0,
-          enableInfiniteScroll: false,
-          viewportFraction: 1,
-          padEnds: false,
-          enlargeCenterPage: true),
-      items: images.indexed.map((item) {
-        return Builder(
-          builder: (BuildContext context) {
-            int index = item.$1;
-            Image image = item.$2;
-            return CarouselItem(
-                image: image, index: index, showDelete: showDelete);
-          },
-        );
-      }).toList(),
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      height: 200.0,
+      child: Stack(children: [
+        CarouselSlider(
+          options: CarouselOptions(
+              height: 200.0,
+              enableInfiniteScroll: false,
+              viewportFraction: 1,
+              padEnds: false,
+              enlargeCenterPage: true),
+          items: images.indexed.map((item) {
+            return Builder(
+              builder: (BuildContext context) {
+                int index = item.$1;
+                Image image = item.$2;
+                return CarouselItem(
+                    image: image, index: index, showDelete: showDelete);
+              },
+            );
+          }).toList(),
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(vertical: 4),
+          alignment: Alignment.bottomLeft,
+          child: ElevatedButton(
+            style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Colors.green[800]!),
+                shape: MaterialStateProperty.all<CircleBorder>(CircleBorder())),
+            onPressed: () {
+              cameraImageProvider.pickFromGallery();
+            },
+            child: Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ]),
     );
   }
 }
@@ -108,29 +131,33 @@ class CarouselItem extends StatelessWidget {
 
     return Container(
         width: double.infinity,
-        margin: EdgeInsets.symmetric(horizontal: 5),
         decoration: BoxDecoration(
             color: MeliColors.pink,
-            borderRadius: BorderRadius.all(Radius.circular(12.0))),
+            borderRadius: BorderRadius.all(Radius.circular(12.0)),
+            border: Border.all(width: 3, color: Colors.black)),
         child: Stack(children: [
-          Container(alignment: Alignment.center, child: image),
-          if (showDelete) Container(
-            alignment: Alignment.bottomCenter,
-            child: ElevatedButton(
-              style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.red[800]!),
-                  shape: MaterialStateProperty.all<CircleBorder>(
-                      CircleBorder(side: BorderSide(color: Colors.red[800]!)))),
-              onPressed: () {
-                cameraImageProvider.removeAt(index);
-              },
-              child: Icon(
-                Icons.delete_outlined,
-                color: Colors.white,
+          Container(
+            alignment: Alignment.center,
+            child: image,
+          ),
+          if (showDelete)
+            Container(
+              alignment: Alignment.bottomCenter,
+              child: ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.red[800]!),
+                    shape: MaterialStateProperty.all<CircleBorder>(
+                        CircleBorder())),
+                onPressed: () {
+                  cameraImageProvider.removeAt(index);
+                },
+                child: Icon(
+                  Icons.delete_outlined,
+                  color: Colors.white,
+                ),
               ),
-            ),
-          )
+            )
         ]));
   }
 }
