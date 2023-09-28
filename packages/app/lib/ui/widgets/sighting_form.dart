@@ -63,9 +63,9 @@ class SightingImagesCarousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cameraImageProvider = MeliCameraProviderInherited.of(context);
-    final showDelete = cameraImageProvider.hasImages();
-    final images = cameraImageProvider.hasImages()
-        ? cameraImageProvider.getImages().map((file) {
+    final showDelete = !cameraImageProvider.isEmpty();
+    final images = !cameraImageProvider.isEmpty()
+        ? cameraImageProvider.getAll().map((file) {
             return Image.file(file);
           })
         : [Image.asset(PLACEHOLDER_IMG)];

@@ -19,15 +19,15 @@ class MeliCameraProviderState extends State<MeliCameraProvider> {
   String? _retrieveDataError;
   List<File> images = [];
 
-  List<File> getImages() {
+  List<File> getAll() {
     return images;
   }
 
-  bool hasImages() {
-    return (images.length != 0);
+  bool isEmpty() {
+    return (images.length == 0);
   }
 
-  void addImages(List<File> newImages) {
+  void addAll(List<File> newImages) {
     setState(() {
       newImages.addAll(images);
       images = newImages;
@@ -49,7 +49,7 @@ class MeliCameraProviderState extends State<MeliCameraProvider> {
       return;
     }
     if (response.file != null) {
-      addImages([File(response.file!.path)]);
+      addAll([File(response.file!.path)]);
     } else {
       _retrieveDataError = response.exception!.code;
       print('CameraProvider error: ${_retrieveDataError}');
@@ -61,7 +61,7 @@ class MeliCameraProviderState extends State<MeliCameraProvider> {
     List<XFile> imageFiles =
         await _imagePicker.pickMultiImage(imageQuality: 50);
 
-    addImages(imageFiles.map((file) {
+    addAll(imageFiles.map((file) {
       return File(file.path);
     }).toList());
   }
@@ -80,7 +80,7 @@ class MeliCameraProviderState extends State<MeliCameraProvider> {
         preferredCameraDevice: CameraDevice.front);
 
     if (imageFile != null) {
-      addImages([File(imageFile.path)]);
+      addAll([File(imageFile.path)]);
     }
   }
 
