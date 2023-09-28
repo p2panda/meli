@@ -31,7 +31,7 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
               MeliCameraProviderInherited.of(context).capturePhoto();
             }),
         MeliFloatingActionButton(
-            heroTag: 'create_new',
+            heroTag: 'submit',
             icon: Icon(Icons.check),
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
