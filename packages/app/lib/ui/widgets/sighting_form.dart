@@ -89,7 +89,25 @@ class SightingImagesCarousel extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: MeliColors.pink,
                     borderRadius: BorderRadius.all(Radius.circular(12.0))),
-                child: image);
+                child: Stack(children: [
+                  Container(alignment: Alignment.center, child: image),
+                  Container(
+                    alignment: Alignment.bottomCenter,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.red[800]!),
+                          shape: MaterialStateProperty.all<CircleBorder>(
+                              CircleBorder(
+                                  side: BorderSide(color: Colors.red[800]!)))),
+                      onPressed: () {},
+                      child: Icon(
+                        Icons.delete_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
+                ]));
           },
         );
       }).toList(),
