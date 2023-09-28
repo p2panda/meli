@@ -30,8 +30,17 @@ class MeliCameraProviderState extends State<MeliCameraProvider> {
   void addImage(File imageFile) {
     setState(() {
       List<File> newImages = [];
-      newImages.add(imageFile);
       newImages.addAll(images);
+      newImages.add(imageFile);
+      images = newImages;
+    });
+  }
+
+  void removeAt(int index) {
+    setState(() {
+      List<File> newImages = [];
+      newImages.addAll(images);
+      newImages.removeAt(index);
       images = newImages;
     });
   }

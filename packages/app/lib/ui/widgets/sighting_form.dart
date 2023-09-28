@@ -80,9 +80,11 @@ class SightingImagesCarousel extends StatelessWidget {
           viewportFraction: 1,
           padEnds: false,
           enlargeCenterPage: true),
-      items: images.map((image) {
+      items: images.indexed.map((item) {
         return Builder(
           builder: (BuildContext context) {
+            int index = item.$1;
+            Image image = item.$2;
             return Container(
                 width: double.infinity,
                 margin: EdgeInsets.symmetric(horizontal: 5),
@@ -95,12 +97,14 @@ class SightingImagesCarousel extends StatelessWidget {
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
                       style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.red[800]!),
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Colors.red[800]!),
                           shape: MaterialStateProperty.all<CircleBorder>(
                               CircleBorder(
                                   side: BorderSide(color: Colors.red[800]!)))),
-                      onPressed: () {},
+                      onPressed: () {
+                        cameraImageProvider.removeAt(index);
+                      },
                       child: Icon(
                         Icons.delete_outlined,
                         color: Colors.white,
