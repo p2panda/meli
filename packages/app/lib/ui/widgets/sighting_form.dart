@@ -71,45 +71,25 @@ class SightingImagesCarousel extends StatelessWidget {
         : [Image.asset(PLACEHOLDER_IMG)];
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      height: 200.0,
-      child: Stack(children: [
-        CarouselSlider(
-          options: CarouselOptions(
-              height: 200.0,
-              enableInfiniteScroll: false,
-              viewportFraction: 1,
-              padEnds: false,
-              enlargeCenterPage: true),
-          items: images.indexed.map((item) {
-            return Builder(
-              builder: (BuildContext context) {
-                int index = item.$1;
-                Image image = item.$2;
-                return CarouselItem(
-                    image: image, index: index, showDelete: showDelete);
-              },
-            );
-          }).toList(),
-        ),
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 4),
-          alignment: Alignment.bottomLeft,
-          child: ElevatedButton(
-            style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.green[800]!),
-                shape: MaterialStateProperty.all<CircleBorder>(CircleBorder())),
-            onPressed: () {
-              cameraImageProvider.pickFromGallery();
+      padding: EdgeInsets.symmetric(vertical: 5),
+      child: CarouselSlider(
+        options: CarouselOptions(
+            height: 200.0,
+            enableInfiniteScroll: false,
+            viewportFraction: 1,
+            padEnds: false,
+            enlargeCenterPage: true),
+        items: images.indexed.map((item) {
+          return Builder(
+            builder: (BuildContext context) {
+              int index = item.$1;
+              Image image = item.$2;
+              return CarouselItem(
+                  image: image, index: index, showDelete: showDelete);
             },
-            child: Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ]),
+          );
+        }).toList(),
+      ),
     );
   }
 }

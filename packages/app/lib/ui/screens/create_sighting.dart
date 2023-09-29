@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/expandable_fab.dart';
 import 'package:app/ui/widgets/image_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -20,17 +21,33 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _initialImagePickAttemptComplete = false;
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildScreen(BuildContext context) {
+    final cameraImageProvider = MeliCameraProviderInherited.of(context);
+
     return MeliScaffold(
       title: 'Create new',
       floatingActionButtons: [
-        MeliFloatingActionButton(
-            heroTag: 'create_new',
-            icon: Icon(Icons.camera_alt_outlined),
-            onPressed: () {
-              MeliCameraProviderInherited.of(context).capturePhoto();
-            }),
+        // MeliFloatingActionButton(
+        //     heroTag: 'create_new',
+        //     icon: Icon(Icons.camera_alt_outlined),
+        //     onPressed: () {
+        //       MeliCameraProviderInherited.of(context).capturePhoto();
+        //     }),
+        ExpandableFab(
+          icon: const Icon(Icons.add_a_photo),
+          expandDirection: ExpandDirection.right,
+          distance: 80,
+          children: [
+            ActionButton(
+              onPressed: cameraImageProvider.pickFromGallery,
+              icon: const Icon(Icons.insert_photo_outlined),
+            ),
+            ActionButton(
+              onPressed: cameraImageProvider.capturePhoto,
+              icon: const Icon(Icons.camera_alt_outlined),
+            ),
+          ],
+        ),
         MeliFloatingActionButton(
             heroTag: 'submit',
             icon: Icon(Icons.check),
