@@ -33,6 +33,12 @@ class MeliCameraProviderState extends State<MeliCameraProvider> {
     });
   }
 
+  void removeAll() {
+    setState(() {
+      images = [];
+    });
+  }
+
   void removeAt(int index) {
     setState(() {
       List<File> newImages = [];
