@@ -18,6 +18,7 @@ class CreateNewScreen extends StatefulWidget {
 
 class _CreateNewScreenState extends State<CreateNewScreen> {
   final _formKey = GlobalKey<FormState>();
+  bool _initialImagePickAttemptComplete = false;
 
   @override
   Widget build(BuildContext context) {
@@ -59,5 +60,35 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
       ],
       body: CreateSightingForm(formKey: this._formKey),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Check if we already attempted to pick an initial image, immediately return
+    // the child wrapped in the image provider if so.
+    if (_initialImagePickAttemptComplete) {
+      return _buildScreen(context);
+    }
+
+    // On initial build we want to go straight to the camera so the user can choose
+    // an image before being shown child widget.
+    final cameraImageProvider = MeliCameraProviderInherited.of(context);
+    return FutureBuilder(
+        // Trigger capturing a photo, this displays the camera view.
+        future: cameraImageProvider.capturePhoto(),
+        builder: (context, snapshot) {
+          _initialImagePickAttemptComplete = true;
+
+          if (snapshot.hasError) {
+            print('ImageProvider Error: ${snapshot.error}');
+            return _buildScreen(context);
+          }
+
+          if (snapshot.connectionState == ConnectionState.done) {
+            return _buildScreen(context);
+          }
+
+          return Container(color: Colors.black);
+        });
   }
 }

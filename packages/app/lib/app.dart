@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/image_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -16,7 +17,7 @@ class MeliApp extends StatelessWidget {
 
     return GraphQLProvider(
         client: client,
-        child: MaterialApp.router(
+        child: MeliCameraProvider(MaterialApp.router(
           // Register router for navigation
           routerDelegate: router.routerDelegate,
           routeInformationProvider: router.routeInformationProvider,
@@ -31,6 +32,6 @@ class MeliApp extends StatelessWidget {
 
           // Disable "debug" banner shown in top right corner during development
           debugShowCheckedModeBanner: false,
-        ));
+        )));
   }
 }

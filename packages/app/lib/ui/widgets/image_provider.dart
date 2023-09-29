@@ -15,7 +15,6 @@ class MeliCameraProvider extends StatefulWidget {
 
 class MeliCameraProviderState extends State<MeliCameraProvider> {
   final _imagePicker = ImagePicker();
-  bool _initialImagePickAttemptComplete = false;
   String? _retrieveDataError;
   List<File> images = [];
 
@@ -95,31 +94,8 @@ class MeliCameraProviderState extends State<MeliCameraProvider> {
     // the provider.
     retrieveLostData();
 
-    // Check if we already attempted to pick an initial image, immediately return
-    // the child wrapped in the image provider if so.
-    if (_initialImagePickAttemptComplete) {
-      return MeliCameraProviderInherited(
-          images: images, state: this, child: this.widget.child);
-    }
-
-    // On initial build we want to go straight to the camera so the user can choose
-    // an image before being shown child widget.
-    return FutureBuilder(
-        // Trigger capturing a photo, this displays the camera view.
-        future: capturePhoto(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            print('ImageProvider Error: ${snapshot.error}');
-            return renderChildren();
-          }
-
-          if (snapshot.connectionState == ConnectionState.done) {
-            return renderChildren();
-          }
-
-          _initialImagePickAttemptComplete = true;
-          return Container(color: Colors.black);
-        });
+    return MeliCameraProviderInherited(
+        images: images, state: this, child: this.widget.child);
   }
 }
 

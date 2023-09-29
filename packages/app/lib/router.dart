@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/widgets/image_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -38,7 +37,7 @@ final router = GoRouter(routes: [
       (state) =>
           SightingScreen(documentId: state.pathParameters["documentId"]!)),
   _Route(RoutePaths.settings, (_) => SettingsScreen()),
-  _Route(RoutePaths.createSighting, (_) => MeliCameraProvider(CreateNewScreen())),
+  _Route(RoutePaths.createSighting, (_) => CreateNewScreen()),
   _Route(RoutePaths.allSpecies, (_) => AllSpeciesScreen()),
 ]);
 
