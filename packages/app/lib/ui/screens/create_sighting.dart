@@ -95,14 +95,24 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
               content: Text('ImageProvider Error: ${snapshot.error}'),
             ));
             router.push(RoutePaths.allSightings.path);
-            return Container(color: Colors.black);
           }
 
           if (snapshot.connectionState == ConnectionState.done) {
             return _buildScreen(context);
           }
 
-          return Container(color: Colors.black);
+          return Container(
+            color: Colors.black,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                CircularProgressIndicator(
+                  color: Colors.grey,
+                  semanticsLabel: 'Circular progress indicator',
+                ),
+              ],
+            ),
+          );
         });
   }
 }
