@@ -54,9 +54,6 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                   await createSighting(datetime, 0.0, 0.0, [], null, null,
                       "Some comment about this sighting");
 
-                  // Remove captured images from the provider
-                  cameraImageProvider.removeAll();
-
                   // Go back to sightings overview
                   router.push(RoutePaths.allSightings.path);
 
@@ -94,8 +91,11 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
           _initialImagePickAttemptComplete = true;
 
           if (snapshot.hasError) {
-            print('ImageProvider Error: ${snapshot.error}');
-            return _buildScreen(context);
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('ImageProvider Error: ${snapshot.error}'),
+            ));
+            router.push(RoutePaths.allSightings.path);
+            return Container(color: Colors.black);
           }
 
           if (snapshot.connectionState == ConnectionState.done) {
