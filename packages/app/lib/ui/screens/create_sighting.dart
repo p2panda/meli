@@ -27,12 +27,6 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
     return MeliScaffold(
       title: 'Create new',
       floatingActionButtons: [
-        // MeliFloatingActionButton(
-        //     heroTag: 'create_new',
-        //     icon: Icon(Icons.camera_alt_outlined),
-        //     onPressed: () {
-        //       MeliCameraProviderInherited.of(context).capturePhoto();
-        //     }),
         ExpandableFab(
           icon: const Icon(Icons.add_a_photo),
           expandDirection: ExpandDirection.right,
