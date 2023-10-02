@@ -125,7 +125,6 @@ class MeliCameraProviderInherited extends InheritedWidget {
   @override
   bool updateShouldNotify(MeliCameraProviderInherited oldWidget) {
     bool result = (images != oldWidget.images);
-    print(result);
     return result;
   }
 }
