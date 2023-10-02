@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/widgets/image_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:app/router.dart';
+import 'package:app/ui/widgets/image_provider.dart';
 import 'package:app/io/graphql/graphql.dart' as graphql;
 
 class MeliApp extends StatelessWidget {
