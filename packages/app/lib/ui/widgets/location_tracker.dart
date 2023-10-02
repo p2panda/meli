@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'package:app/io/geolocation.dart';
@@ -14,25 +15,19 @@ enum TrackerStatus {
   Failure,
 }
 
-typedef LocationTrackerBuilder = Widget Function(
-  Position? position,
-  TrackerStatus status,
-  Exception? lastError,
-  Function addLocation,
-  Function removeLocation,
-);
-
 class LocationTracker extends StatefulWidget {
   final ValueChanged<Position?>? onPositionChanged;
-  final LocationTrackerBuilder builder;
 
-  LocationTracker({super.key, required this.builder, this.onPositionChanged});
+  LocationTracker({super.key, this.onPositionChanged});
 
   @override
   State<LocationTracker> createState() => _LocationTrackerState();
 }
 
 class _LocationTrackerState extends State<LocationTracker> {
+  /// Locale provider instance.
+  AppLocalizations? _locale;
+
   /// Current position value which is exposed to other widgets.
   Position? _position;
 
@@ -40,7 +35,21 @@ class _LocationTrackerState extends State<LocationTracker> {
   TrackerStatus _status = TrackerStatus.Standby;
 
   /// Keep track of the last known error.
-  Exception? _lastError;
+  String? _errorMessage;
+
+  /// User confirmed that they want to track their location. This does not have
+  /// anything to do with the device's permission settings but merely with the
+  /// user interface in the Meli app.
+  bool _hasUserGivenConsent = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      this._locale = AppLocalizations.of(context);
+    });
+  }
 
   Future<Position?> getPosition() async {
     return this._position;
@@ -57,20 +66,25 @@ class _LocationTrackerState extends State<LocationTracker> {
   void _addLocation() async {
     setState(() {
       this._status = TrackerStatus.Waiting;
+      this._errorMessage = null;
     });
 
     try {
       final position = await determinePosition();
-
-      setState(() {
-        this._updatePosition(position);
-        this._status = TrackerStatus.Active;
-      });
+      this._updatePosition(position);
+      this._status = TrackerStatus.Active;
+    } on PermissionDeniedException {
+      this._errorMessage = _locale!.locationPermissionDenied;
+    } on LocationServiceDisabledException {
+      this._errorMessage = _locale!.locationServiceDisabled;
+    } on TimeoutException {
+      this._errorMessage = _locale!.locationTimeout;
     } catch (error) {
-      setState(() {
-        this._lastError = error as Exception;
-        this._status = TrackerStatus.Failure;
-      });
+      this._errorMessage = _locale!.locationUnknownError;
+    } finally {
+      this._status =
+          this._errorMessage != null ? TrackerStatus.Failure : this._status;
+      setState(() {});
     }
   }
 
@@ -82,9 +96,71 @@ class _LocationTrackerState extends State<LocationTracker> {
     this._updatePosition(null);
   }
 
+  Widget _standby() {
+    return Column(children: [
+      Text('Do you want to add a GPS location?'),
+      TextButton(
+          child: Text('Add location to image'),
+          onPressed: () {
+            setState(() {
+              _hasUserGivenConsent = true;
+            });
+
+            _addLocation();
+          }),
+    ]);
+  }
+
+  Widget _waiting() {
+    return Text('Retreiving location ...');
+  }
+
+  Widget _success() {
+    if (this._position == null) {
+      return SizedBox.shrink();
+    }
+
+    final latitude = this._position!.latitude;
+    final longitude = this._position!.longitude;
+
+    return Column(children: [
+      Text('Location recorded: $latitude $longitude'),
+      TextButton(
+          onPressed: () {
+            setState(() {
+              _hasUserGivenConsent = false;
+            });
+
+            _removeLocation();
+          },
+          child: Text('Remove location'))
+    ]);
+  }
+
+  Widget _failed() {
+    return Column(children: [
+      Text(this._errorMessage!),
+      Text(this._locale!.locationTryAgain),
+      TextButton(
+          onPressed: _addLocation,
+          child: Text(this._locale!.locationActionTryAgain))
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return widget.builder(
-        _position, _status, _lastError, _addLocation, _removeLocation);
+    if (!this._hasUserGivenConsent) {
+      return this._standby();
+    }
+
+    switch (this._status) {
+      case TrackerStatus.Standby:
+      case TrackerStatus.Waiting:
+        return this._waiting();
+      case TrackerStatus.Active:
+        return this._success();
+      case TrackerStatus.Failure:
+        return this._failed();
+    }
   }
 }

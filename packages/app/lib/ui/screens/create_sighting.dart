@@ -9,7 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/widgets/fab.dart';
-import 'package:app/ui/widgets/location_input.dart';
+import 'package:app/ui/widgets/location_tracker.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 
 class CreateNewScreen extends StatefulWidget {
@@ -201,7 +201,7 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                       ],
                     ),
                     _previewImage(),
-                    LocationInput(onPositionChanged: (position) {
+                    LocationTracker(onPositionChanged: (position) {
                       if (position == null) {
                         print('Position: n/a');
                       } else {
