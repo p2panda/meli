@@ -14,10 +14,19 @@ enum TrackerStatus {
   Failure,
 }
 
+typedef LocationTrackerBuilder = Widget Function(
+  Position? position,
+  TrackerStatus status,
+  Exception? lastError,
+  Function addLocation,
+  Function removeLocation,
+);
+
 class LocationTracker extends StatefulWidget {
   final ValueChanged<Position?>? onPositionChanged;
+  final LocationTrackerBuilder builder;
 
-  LocationTracker({super.key, this.onPositionChanged});
+  LocationTracker({super.key, required this.builder, this.onPositionChanged});
 
   @override
   State<LocationTracker> createState() => _LocationTrackerState();
@@ -25,14 +34,14 @@ class LocationTracker extends StatefulWidget {
 
 class _LocationTrackerState extends State<LocationTracker> {
   /// Current position value which is exposed to other widgets.
-  Position? _value;
+  Position? _position;
 
   /// Current status of the position tracker stream.
-  TrackerStatus _trackerStatus = TrackerStatus.Standby;
+  TrackerStatus _status = TrackerStatus.Standby;
 
   /// Internal position value. We keep this to restore it as soon as the user
   /// decides to track their position _again_.
-  Position? _lastValue;
+  Position? _lastKnownPosition;
 
   /// Controller managing the position stream.
   StreamController<Position> _streamController = new StreamController();
@@ -41,43 +50,30 @@ class _LocationTrackerState extends State<LocationTracker> {
   StreamSubscription<Position>? _subscription;
 
   /// Keep track of the last known error.
-  dynamic _lastError;
-
-  /// User confirmed that they want to track their location. This does not have
-  /// anything to do with the device's permission settings but merely with the
-  /// user interface in the Meli app.
-  bool _hasUserGivenConsent = false;
+  Exception? _lastError;
 
   /// Flag to make sure that we only start the position tracker stream once.
   bool _hasTrackerStarted = false;
 
-  Future<Position?> getValue() async {
-    return this._value;
+  Future<Position?> getPosition() async {
+    return this._position;
   }
 
   void _updatePosition(Position? value) {
-    this._value = value;
+    this._position = value;
 
     if (widget.onPositionChanged != null) {
       widget.onPositionChanged!.call(value);
     }
   }
 
-  void _addTracking() {
-    setState(() {
-      this._updatePosition(this._lastValue);
-      _hasUserGivenConsent = true;
-    });
-
+  void _addLocation() {
+    this._updatePosition(this._lastKnownPosition);
     this._subscribe();
   }
 
-  void _removeTracking() {
+  void _removeLocation() {
     this._updatePosition(null);
-
-    setState(() {
-      _hasUserGivenConsent = false;
-    });
   }
 
   void _subscribe() async {
@@ -89,24 +85,21 @@ class _LocationTrackerState extends State<LocationTracker> {
 
     // Set up state machine reading from position stream
     setState(() {
-      this._trackerStatus = TrackerStatus.Waiting;
+      this._status = TrackerStatus.Waiting;
     });
 
     this._subscription = _streamController.stream.listen((Position? position) {
       if (position != null) {
         setState(() {
-          this._trackerStatus = TrackerStatus.Active;
-          this._lastValue = position;
-
-          if (this._hasUserGivenConsent) {
-            this._updatePosition(position);
-          }
+          this._updatePosition(position);
+          this._lastKnownPosition = position;
+          this._status = TrackerStatus.Active;
         });
       }
     }, onError: (dynamic error) {
       setState(() {
-        this._trackerStatus = TrackerStatus.Failure;
-        this._lastError = error;
+        this._lastError = error as Exception;
+        this._status = TrackerStatus.Failure;
       });
     });
 
@@ -128,61 +121,10 @@ class _LocationTrackerState extends State<LocationTracker> {
     }
   }
 
-  Widget _standby() {
-    return Column(children: [
-      Text('Do you want to add a GPS location?'),
-      TextButton(
-          child: Text('Add location to image'),
-          onPressed: () {
-            this._addTracking();
-          }),
-    ]);
-  }
-
-  Widget _waiting() {
-    return Text('Retreiving location ...');
-  }
-
-  Widget _success() {
-    if (this._value == null) {
-      return SizedBox.shrink();
-    }
-
-    final latitude = this._value!.latitude;
-    final longitude = this._value!.longitude;
-
-    return Column(children: [
-      Text('Location recorded: $latitude $longitude'),
-      TextButton(
-          onPressed: () {
-            this._removeTracking();
-          },
-          child: Text('Remove location'))
-    ]);
-  }
-
-  Widget _failed() {
-    final error =
-        this._lastError != null ? this._lastError!.toString() : 'Unknown error';
-    return Text('Could not retreive location: $error');
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (!this._hasUserGivenConsent) {
-      return this._standby();
-    } else {
-      switch (this._trackerStatus) {
-        case TrackerStatus.Standby:
-          return this._standby();
-        case TrackerStatus.Waiting:
-          return this._waiting();
-        case TrackerStatus.Active:
-          return this._success();
-        case TrackerStatus.Failure:
-          return this._failed();
-      }
-    }
+    return widget.builder(
+        _position, _status, _lastError, _addLocation, _removeLocation);
   }
 
   @override

@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 
 /// Ignore updates when position has not changed for x meters.
-const DISTANCE_FILTER_METERS = 5;
+const DISTANCE_FILTER_METERS = 1;
 
 /// Determine the current position of the device.
 ///
@@ -20,7 +20,7 @@ Future<Stream<Position>> trackPosition() async {
   if (!serviceEnabled) {
     // Location services are not enabled don't continue accessing the position
     // and request users of the App to enable the location services.
-    return Future.error('Location services are disabled.');
+    return Future.error(LocationServiceDisabledException);
   }
 
   permission = await Geolocator.checkPermission();
@@ -31,14 +31,13 @@ Future<Stream<Position>> trackPosition() async {
       // again (this is also where Android's shouldShowRequestPermissionRationale
       // returned true. According to Android guidelines your App should show an
       // explanatory UI now.
-      return Future.error('Location permissions are denied');
+      return Future.error(PermissionDeniedException);
     }
   }
 
   if (permission == LocationPermission.deniedForever) {
     // Permissions are denied forever, handle appropriately.
-    return Future.error(
-        'Location permissions are permanently denied, we cannot request permissions.');
+    return Future.error(PermissionDeniedException);
   }
 
   // When we reach here, permissions are granted and we can
