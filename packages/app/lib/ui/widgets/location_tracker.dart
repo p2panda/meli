@@ -74,13 +74,13 @@ class _LocationTrackerState extends State<LocationTracker> {
       this._updatePosition(position);
       this._status = TrackerStatus.Active;
     } on PermissionDeniedException {
-      this._errorMessage = _locale!.locationPermissionDenied;
+      this._errorMessage = _locale!.locationErrorPermissionDenied;
     } on LocationServiceDisabledException {
-      this._errorMessage = _locale!.locationServiceDisabled;
+      this._errorMessage = _locale!.locationErrorServiceDisabled;
     } on TimeoutException {
-      this._errorMessage = _locale!.locationTimeout;
+      this._errorMessage = _locale!.locationErrorTimeout;
     } catch (error) {
-      this._errorMessage = _locale!.locationUnknownError;
+      this._errorMessage = _locale!.locationErrorUnknown;
     } finally {
       this._status =
           this._errorMessage != null ? TrackerStatus.Failure : this._status;
@@ -143,7 +143,7 @@ class _LocationTrackerState extends State<LocationTracker> {
       Text(this._locale!.locationTryAgain),
       TextButton(
           onPressed: _addLocation,
-          child: Text(this._locale!.locationActionTryAgain))
+          child: Text(this._locale!.locationTryAgainAction))
     ]);
   }
 

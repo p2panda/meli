@@ -1,32 +1,8 @@
 {
-    "locationPermissionDenied": "Location permission was denied",
-    "@locationPermissionDenied": {
-        "description": "Error message shown when location permission was denied",
-        "type": "text"
-    },
-    "locationServiceDisabled": "Location service is disabled",
-    "@locationServiceDisabled": {
-        "description": "Error message shown when location service is disabled",
-        "type": "text"
-    },
-    "locationTimeout": "Location could not be retreived",
-    "@locationTimeout": {
-        "description": "Error message shown when determining the position timed out",
-        "type": "text"
-    },
-    "locationUnknownError": "An unknown error occurred",
-    "@locationUnknownError": {
-        "description": "Error message shown when we don't know what happened",
-        "type": "text"
-    },
-    "locationTryAgain": "Try adjusting your device's location permissions for this app and click 'repeat'",
-    "@locationTryAgain": {
-        "description": "Instruction to the user which steps to take to retreive position when something went wrong",
-        "type": "text"
-    },
-    "locationActionTryAgain": "Try again",
-    "@locationActionTryAgain": {
-        "description": "Button the user can press to try retreiving the location again",
-        "type": "text"
-    }
+    "locationErrorPermissionDenied": "Location permission was denied",
+    "locationErrorServiceDisabled": "Location service is disabled",
+    "locationErrorTimeout": "Location could not be retreived",
+    "locationErrorUnknown": "An unknown error occurred",
+    "locationTryAgain": "Adjust your device's location permissions for this app and try again",
+    "locationTryAgainAction": "Try again"
 }
