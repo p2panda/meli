@@ -81,6 +81,8 @@ class _LocationInputState extends State<LocationInput> {
       return Text('Could not retreive location: $error');
     } on LocationServiceDisabledException {
       return Text('Could not retreive location: $error');
+    } catch (error) {
+      return Text('Could not retreive location: $error');
     }
   }
 

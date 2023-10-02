@@ -4,14 +4,14 @@ import 'dart:async';
 
 import 'package:geolocator/geolocator.dart';
 
-/// Ignore updates when position has not changed for x meters.
-const DISTANCE_FILTER_METERS = 1;
+/// Throw exception after waiting for x seconds.
+const TIMEOUT_DURATION = Duration(seconds: 30);
 
 /// Determine the current position of the device.
 ///
 /// When the location services are not enabled or permissions are denied the
 /// `Future` will return an error.
-Future<Stream<Position>> trackPosition() async {
+Future<Position> determinePosition() async {
   bool serviceEnabled;
   LocationPermission permission;
 
@@ -42,10 +42,5 @@ Future<Stream<Position>> trackPosition() async {
 
   // When we reach here, permissions are granted and we can
   // continue accessing the position of the device.
-  final LocationSettings locationSettings = LocationSettings(
-    accuracy: LocationAccuracy.high,
-    distanceFilter: DISTANCE_FILTER_METERS,
-  );
-
-  return Geolocator.getPositionStream(locationSettings: locationSettings);
+  return await Geolocator.getCurrentPosition(timeLimit: TIMEOUT_DURATION);
 }
