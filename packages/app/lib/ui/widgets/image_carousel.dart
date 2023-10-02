@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/colors.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+
+import 'package:app/ui/colors.dart';
 
 class ImageCarousel extends StatelessWidget {
   final List<Image> images;

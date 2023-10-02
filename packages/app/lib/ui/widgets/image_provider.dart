@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
 import 'package:image_picker/image_picker.dart';
 
 class MeliCameraProvider extends StatefulWidget {
@@ -64,7 +65,7 @@ class MeliCameraProviderState extends State<MeliCameraProvider> {
   // Pick photos from the gallery.
   Future<void> pickFromGallery() async {
     List<XFile> imageFiles =
-        await _imagePicker.pickMultiImage(imageQuality: 50);
+        await _imagePicker.pickMultiImage(imageQuality: 80);
 
     addAll(imageFiles.map((file) {
       return File(file.path);
@@ -81,7 +82,7 @@ class MeliCameraProviderState extends State<MeliCameraProvider> {
 
     XFile? imageFile = await _imagePicker.pickImage(
         source: ImageSource.camera,
-        imageQuality: 50,
+        imageQuality: 80,
         preferredCameraDevice: CameraDevice.front);
 
     if (imageFile != null) {

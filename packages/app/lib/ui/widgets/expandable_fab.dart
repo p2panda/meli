@@ -1,7 +1,10 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import 'dart:math' as math;
 
-import 'package:app/ui/colors.dart';
 import 'package:flutter/material.dart';
+
+import 'package:app/ui/colors.dart';
 
 enum ExpandDirection { left, right }
 

@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/widgets/expandable_fab.dart';
-import 'package:app/ui/widgets/image_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app/router.dart';
 import 'package:app/ui/widgets/sighting_form.dart';
+import 'package:app/ui/widgets/expandable_fab.dart';
+import 'package:app/ui/widgets/image_provider.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/models/sightings.dart';
