@@ -71,6 +71,7 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
           FocusNode focusNode, VoidCallback onFieldSubmitted) {
         return TextFormField(
           decoration: InputDecoration(
+            suffixIcon: Icon(Icons.arrow_drop_down),
             errorText: _isError ? 'Error, please try again.' : null,
           ),
           controller: controller,
