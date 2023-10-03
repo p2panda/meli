@@ -9,6 +9,6 @@
     "locationLoading": "Retrieving location ..",
     "locationRemoveAction": "Remove",
     "locationSuccessful": "Location recorded\n({latitude}, {longitude})",
-    "locationTryAgain": "Adjust your device's location permissions for this app and try again",
+    "locationTryAgain": "Adjust your device's location permissions for this app or enable the location service and try again",
     "locationTryAgainAction": "Try again"
 }

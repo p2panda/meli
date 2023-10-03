@@ -20,7 +20,7 @@ Future<Position> determinePosition() async {
   if (!serviceEnabled) {
     // Location services are not enabled don't continue accessing the position
     // and request users of the App to enable the location services.
-    return Future.error(LocationServiceDisabledException);
+    throw LocationServiceDisabledException();
   }
 
   permission = await Geolocator.checkPermission();
@@ -31,13 +31,13 @@ Future<Position> determinePosition() async {
       // again (this is also where Android's shouldShowRequestPermissionRationale
       // returned true. According to Android guidelines your App should show an
       // explanatory UI now.
-      return Future.error(PermissionDeniedException);
+      throw PermissionDeniedException('Permission was denied');
     }
   }
 
   if (permission == LocationPermission.deniedForever) {
     // Permissions are denied forever, handle appropriately.
-    return Future.error(PermissionDeniedException);
+    throw PermissionDeniedException('Permission is permamently denied');
   }
 
   // When we reach here, permissions are granted and we can
