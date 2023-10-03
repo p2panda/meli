@@ -9,8 +9,14 @@ const String PLACEHOLDER_IMG = 'assets/images/placeholder-bee.png';
 
 class CreateSightingForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
+  final List<Image> images;
+  final Function onDeleteImage;
 
-  const CreateSightingForm({super.key, required this.formKey});
+  const CreateSightingForm(
+      {super.key,
+      required this.formKey,
+      this.images = const [],
+      required this.onDeleteImage});
 
   @override
   State<CreateSightingForm> createState() => _CreateSightingFormState();
@@ -25,6 +31,13 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    MeliCameraProviderInherited.of(context).retrieveLostData().then(
+        (file) => {if (file != null) this.widget.images.add(Image.file(file))});
+  }
+
+  @override
   void dispose() {
     nameInput.dispose();
     super.dispose();
@@ -32,11 +45,6 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
 
   @override
   Widget build(BuildContext context) {
-    final cameraImageProvider = MeliCameraProviderInherited.of(context);
-    final images = cameraImageProvider.getAll().map((file) {
-      return Image.file(file);
-    });
-
     return SingleChildScrollView(
         child: Container(
             padding: EdgeInsets.all(20.0),
@@ -57,12 +65,12 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
                         return null;
                       },
                     ),
-                    cameraImageProvider.isEmpty()
+                    this.widget.images.isEmpty
                         ? ImageCarousel(images: [Image.asset(PLACEHOLDER_IMG)])
                         : ImageCarousel(
-                            images: images.toList(),
+                            images: this.widget.images,
                             onDelete: (int index) {
-                              cameraImageProvider.removeAt(index);
+                              this.widget.onDeleteImage(index);
                             })
                   ],
                 ))));

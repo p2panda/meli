@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:app/router.dart';
@@ -19,11 +21,72 @@ class CreateNewScreen extends StatefulWidget {
 
 class _CreateNewScreenState extends State<CreateNewScreen> {
   final _formKey = GlobalKey<FormState>();
-  bool _initialImagePickAttemptComplete = false;
+  List<Image> images = [];
 
-  Widget _buildScreen(BuildContext context) {
-    final cameraImageProvider = MeliCameraProviderInherited.of(context);
+  void removeImageAt(int index) {
+    setState(() {
+      images.removeAt(index);
+    });
+  }
 
+  void addImage(File file) {
+    setState(() {
+      images.add(Image.file(file));
+    });
+  }
+
+  void addAllImages(List<File> files) {
+    final newImages = files.map((file) {
+      return Image.file(file);
+    });
+
+    setState(() {
+      images.addAll(newImages);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  // This method is called directly after `initState`. We trigger the initial
+  // image capture event here as it is safe to depend on inherited widgets (not
+  // possible in `initState`) as well as trigger navigation events (not
+  // recommended in build).
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    MeliCameraProviderInherited.of(context).capturePhoto().then((file) {
+      if (file != null) {
+        addImage(file);
+      } else {
+        // If no file was captured navigate back to all sightings screen.
+        router.push(RoutePaths.allSightings.path);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // If no images have been captured yet then return a spinner.
+    if (images.isEmpty) {
+      return Container(
+        color: Colors.black,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            CircularProgressIndicator(
+              color: Colors.grey,
+              semanticsLabel: 'Circular progress indicator',
+            ),
+          ],
+        ),
+      );
+    }
+
+    // If images were successfully captured return the full view.
     return MeliScaffold(
       title: 'Create new',
       floatingActionButtons: [
@@ -33,11 +96,22 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
           distance: 80,
           children: [
             ActionButton(
-              onPressed: cameraImageProvider.pickFromGallery,
+              onPressed: () async {
+                List<File> newImages =
+                    await MeliCameraProviderInherited.of(context)
+                        .pickFromGallery();
+                addAllImages(newImages);
+              },
               icon: const Icon(Icons.insert_photo_outlined),
             ),
             ActionButton(
-              onPressed: cameraImageProvider.capturePhoto,
+              onPressed: () async {
+                File? newImage = await MeliCameraProviderInherited.of(context)
+                    .capturePhoto();
+                if (newImage != null) {
+                  addImage(newImage);
+                }
+              },
               icon: const Icon(Icons.camera_alt_outlined),
             ),
           ],
@@ -69,50 +143,10 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
               }
             }),
       ],
-      body: CreateSightingForm(formKey: this._formKey),
+      body: CreateSightingForm(
+          formKey: this._formKey,
+          images: this.images,
+          onDeleteImage: this.removeImageAt),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // Check if we already attempted to pick an initial image, immediately return
-    // the child wrapped in the image provider if so.
-    if (_initialImagePickAttemptComplete) {
-      return _buildScreen(context);
-    }
-
-    // On initial build we want to go straight to the camera so the user can choose
-    // an image before being shown child widget.
-    final cameraImageProvider = MeliCameraProviderInherited.of(context);
-    return FutureBuilder(
-        // Trigger capturing a photo, this displays the camera view.
-        future: cameraImageProvider.capturePhoto(),
-        builder: (context, snapshot) {
-          _initialImagePickAttemptComplete = true;
-
-          if (snapshot.hasError) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('ImageProvider Error: ${snapshot.error}'),
-            ));
-            router.push(RoutePaths.allSightings.path);
-          }
-
-          if (snapshot.connectionState == ConnectionState.done) {
-            return _buildScreen(context);
-          }
-
-          return Container(
-            color: Colors.black,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                CircularProgressIndicator(
-                  color: Colors.grey,
-                  semanticsLabel: 'Circular progress indicator',
-                ),
-              ],
-            ),
-          );
-        });
   }
 }

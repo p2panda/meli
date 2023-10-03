@@ -17,63 +17,32 @@ class MeliCameraProvider extends StatefulWidget {
 class MeliCameraProviderState extends State<MeliCameraProvider> {
   final _imagePicker = ImagePicker();
   String? _retrieveDataError;
-  List<File> images = [];
 
-  List<File> getAll() {
-    return images;
-  }
-
-  bool isEmpty() {
-    return (images.length == 0);
-  }
-
-  void addAll(List<File> newImages) {
-    setState(() {
-      newImages.addAll(images);
-      images = newImages;
-    });
-  }
-
-  void removeAll() {
-    setState(() {
-      images = [];
-    });
-  }
-
-  void removeAt(int index) {
-    setState(() {
-      List<File> newImages = [];
-      newImages.addAll(images);
-      newImages.removeAt(index);
-      images = newImages;
-    });
-  }
-
-  Future<void> retrieveLostData() async {
+  Future<File?> retrieveLostData() async {
     final LostDataResponse response = await _imagePicker.retrieveLostData();
-    if (response.isEmpty) {
-      return;
-    }
+
     if (response.file != null) {
-      addAll([File(response.file!.path)]);
-    } else {
+      return File(response.file!.path);
+    } else if (response.exception != null) {
       _retrieveDataError = response.exception!.code;
       print('CameraProvider error: ${_retrieveDataError}');
     }
+
+    return null;
   }
 
   // Pick photos from the gallery.
-  Future<void> pickFromGallery() async {
+  Future<List<File>> pickFromGallery() async {
     List<XFile> imageFiles =
         await _imagePicker.pickMultiImage(imageQuality: 80);
 
-    addAll(imageFiles.map((file) {
+    return imageFiles.map((file) {
       return File(file.path);
-    }).toList());
+    }).toList();
   }
 
   // Capture a photo from the camera.
-  Future<void> capturePhoto() async {
+  Future<File?> capturePhoto() async {
     ImageSource source = ImageSource.camera;
     if (!_imagePicker.supportsImageSource(source)) {
       print('Camera source not supported');
@@ -86,33 +55,27 @@ class MeliCameraProviderState extends State<MeliCameraProvider> {
         preferredCameraDevice: CameraDevice.front);
 
     if (imageFile != null) {
-      addAll([File(imageFile.path)]);
+      return File(imageFile.path);
+    } else {
+      return null;
     }
   }
 
   Widget renderChildren() {
-    return MeliCameraProviderInherited(
-        images: images, state: this, child: this.widget.child);
+    return MeliCameraProviderInherited(state: this, child: this.widget.child);
   }
 
   @override
   Widget build(BuildContext context) {
-    // Trigger this on every build, if there is lost data it will add it back to
-    // the provider.
-    retrieveLostData();
-
-    return MeliCameraProviderInherited(
-        images: images, state: this, child: this.widget.child);
+    return MeliCameraProviderInherited(state: this, child: this.widget.child);
   }
 }
 
 class MeliCameraProviderInherited extends InheritedWidget {
-  final List<File> images;
   final MeliCameraProviderState state;
 
   MeliCameraProviderInherited({
     Key? key,
-    required List<File> this.images,
     required MeliCameraProviderState this.state,
     required Widget child,
   }) : super(key: key, child: child);
@@ -124,8 +87,7 @@ class MeliCameraProviderInherited extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(MeliCameraProviderInherited oldWidget) {
-    bool result = (images != oldWidget.images);
-    return result;
+  bool updateShouldNotify(covariant InheritedWidget oldWidget) {
+    return false;
   }
 }
