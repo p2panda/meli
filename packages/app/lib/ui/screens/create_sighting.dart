@@ -201,7 +201,7 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                       ],
                     ),
                     _previewImage(),
-                    LocationTracker(onPositionChanged: (position) {
+                    LocationTrackerInput(onPositionChanged: (position) {
                       if (position == null) {
                         print('Position: n/a');
                       } else {

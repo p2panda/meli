@@ -78,7 +78,10 @@ class _LocationTrackerState extends State<LocationTracker> {
     });
 
     try {
+      // Retrieve position from location service
       final position = await determinePosition();
+
+      // Inform external widgets about the position or handle potential errors
       this._updatePosition(position);
       this._status = LocationTrackerStatus.Active;
     } on PermissionDeniedException {
@@ -93,6 +96,8 @@ class _LocationTrackerState extends State<LocationTracker> {
       this._status = this._errorMessage != null
           ? LocationTrackerStatus.Failure
           : this._status;
+
+      // Force refresh UI
       setState(() {});
     }
   }
