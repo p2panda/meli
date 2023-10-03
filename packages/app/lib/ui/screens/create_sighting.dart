@@ -2,6 +2,9 @@
 
 import 'dart:io';
 
+import 'package:app/ui/widgets/autocomplete.dart';
+import 'package:app/ui/widgets/local_name_autocomplete.dart';
+import 'package:app/ui/widgets/simple_card.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -168,18 +171,7 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
               padding: EdgeInsets.only(
                   top: 0, right: 20.0, bottom: 75.0, left: 20.0),
               children: [
-                TextFormField(
-                  controller: nameInput,
-                  decoration: const InputDecoration(
-                    hintText: 'Local Name',
-                  ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                ),
+                SimpleCard(title: 'Local Name', child: LocalNameAutocomplete()),
                 Row(
                   children: [
                     IconButton(
