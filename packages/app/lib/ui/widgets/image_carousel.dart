@@ -14,7 +14,12 @@ class ImageCarousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(
+          color: MeliColors.pink,
+          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          border: Border.all(width: 3, color: Colors.black)),
       padding: EdgeInsets.symmetric(vertical: 5),
+      margin: EdgeInsets.symmetric(vertical: 5),
       child: CarouselSlider(
         options: CarouselOptions(
             height: 200.0,
@@ -49,10 +54,6 @@ class CarouselItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         width: double.infinity,
-        decoration: BoxDecoration(
-            color: MeliColors.pink,
-            borderRadius: BorderRadius.all(Radius.circular(12.0)),
-            border: Border.all(width: 3, color: Colors.black)),
         child: Stack(children: [
           Container(
             alignment: Alignment.center,
