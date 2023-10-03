@@ -129,18 +129,21 @@ class _LocationTrackerInputState extends State<LocationTrackerInput> {
   }
 
   Widget _header(IconData icon, String text) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 40.0,
-          color: Colors.black,
-        ),
-        SizedBox(width: 10),
-        Expanded(
-            child: Text(text, style: Theme.of(context).textTheme.bodyLarge)),
-      ],
-    );
+    return Container(
+        width: double.infinity,
+        child: Column(
+          children: [
+            Icon(
+              icon,
+              size: 40.0,
+              color: Colors.black,
+            ),
+            SizedBox(height: 10),
+            Text(text,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge),
+          ],
+        ));
   }
 
   Widget _standby(VoidCallback? addLocation) {
@@ -164,21 +167,17 @@ class _LocationTrackerInputState extends State<LocationTrackerInput> {
   Widget _waiting() {
     final t = AppLocalizations.of(context)!;
 
-    return Column(children: [
-      Row(
-        children: [
-          SizedBox(
-              width: 30.0,
-              height: 30.0,
-              child: CircularProgressIndicator(
-                  color: Colors.black, strokeWidth: 3.0)),
-          SizedBox(width: 15),
-          Expanded(
-              child: Text(t.locationLoading,
-                  style: Theme.of(context).textTheme.bodyLarge)),
-        ],
-      ),
-    ]);
+    return Column(
+      children: [
+        SizedBox(
+            width: 30.0,
+            height: 30.0,
+            child: CircularProgressIndicator(
+                color: Colors.black, strokeWidth: 3.0)),
+        SizedBox(height: 15),
+        Text(t.locationLoading, style: Theme.of(context).textTheme.bodyLarge),
+      ],
+    );
   }
 
   Widget _success(Position position, VoidCallback? removeLocation) {
