@@ -8,7 +8,7 @@
     "locationHeader": "Location",
     "locationLoading": "Retrieving location ..",
     "locationRemoveAction": "Remove",
-    "locationSuccessful": "Location recorded ({latitude}, {longitude})",
+    "locationSuccessful": "Location recorded\n({latitude}, {longitude})",
     "locationTryAgain": "Adjust your device's location permissions for this app and try again",
     "locationTryAgainAction": "Try again"
 }

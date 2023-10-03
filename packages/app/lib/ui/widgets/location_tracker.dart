@@ -128,24 +128,26 @@ class _LocationTrackerInputState extends State<LocationTrackerInput> {
     return this._trackerKey.currentState!.getPosition();
   }
 
+  Widget _header(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          size: 40.0,
+          color: Colors.black,
+        ),
+        SizedBox(width: 10),
+        Expanded(
+            child: Text(text, style: Theme.of(context).textTheme.bodyLarge)),
+      ],
+    );
+  }
+
   Widget _standby(VoidCallback? addLocation) {
     final t = AppLocalizations.of(context)!;
 
-    return Column(children: [
-      Row(
-        children: [
-          Icon(
-            Icons.location_searching,
-            size: 40.0,
-            color: Colors.black,
-          ),
-          SizedBox(width: 10),
-          Expanded(
-              child:
-                  Text(t.locationAdd, style: TextStyle(fontSize: 16.0))),
-        ],
-      ),
-      SizedBox(height: 10.0),
+    return Wrap(runSpacing: 10.0, alignment: WrapAlignment.center, children: [
+      _header(Icons.location_searching, t.locationAdd),
       MeliIconButton(
           child: Text(t.locationAddAction),
           icon: Icon(Icons.add),
@@ -165,11 +167,15 @@ class _LocationTrackerInputState extends State<LocationTrackerInput> {
     return Column(children: [
       Row(
         children: [
-          CircularProgressIndicator(color: Colors.black, strokeWidth: 3.0),
+          SizedBox(
+              width: 30.0,
+              height: 30.0,
+              child: CircularProgressIndicator(
+                  color: Colors.black, strokeWidth: 3.0)),
           SizedBox(width: 15),
           Expanded(
               child: Text(t.locationLoading,
-                  style: TextStyle(fontSize: 16.0))),
+                  style: Theme.of(context).textTheme.bodyLarge)),
         ],
       ),
     ]);
@@ -181,26 +187,9 @@ class _LocationTrackerInputState extends State<LocationTrackerInput> {
     final latitude = position.latitude;
     final longitude = position.longitude;
 
-    return Column(children: [
-      Row(
-        children: [
-          Icon(
-            Icons.location_pin,
-            size: 40.0,
-            color: Colors.black,
-          ),
-          Icon(
-            Icons.check,
-            size: 40.0,
-            color: Colors.black,
-          ),
-          SizedBox(width: 10),
-          Expanded(
-              child: Text(t.locationSuccessful(latitude, longitude),
-                  style: TextStyle(fontSize: 16.0))),
-        ],
-      ),
-      SizedBox(height: 10.0),
+    return Wrap(runSpacing: 10.0, alignment: WrapAlignment.center, children: [
+      _header(Icons.where_to_vote_rounded,
+          t.locationSuccessful(latitude, longitude)),
       MeliIconButton(
           child: Text(t.locationRemoveAction),
           icon: Icon(Icons.remove),
@@ -217,21 +206,9 @@ class _LocationTrackerInputState extends State<LocationTrackerInput> {
   Widget _failed(String errorMessage, VoidCallback? addLocation) {
     final t = AppLocalizations.of(context)!;
 
-    return Column(children: [
-      Row(
-        children: [
-          Icon(
-            Icons.wrong_location_rounded,
-            size: 40.0,
-            color: Colors.black,
-          ),
-          SizedBox(width: 10),
-          Expanded(child: Text(errorMessage, style: TextStyle(fontSize: 16.0))),
-        ],
-      ),
-      SizedBox(height: 10.0),
-      Text(t.locationTryAgain, style: TextStyle(fontSize: 16.0)),
-      SizedBox(height: 10.0),
+    return Wrap(runSpacing: 10.0, alignment: WrapAlignment.center, children: [
+      _header(Icons.wrong_location_rounded, errorMessage),
+      Text(t.locationTryAgain, style: Theme.of(context).textTheme.bodyLarge),
       MeliIconButton(
           child: Text(t.locationTryAgainAction),
           icon: Icon(Icons.loop),
