@@ -28,9 +28,18 @@ class _MeliScaffoldState extends State<MeliScaffold> {
   AppBar? _appBar() {
     if (widget.title != null) {
       return AppBar(
+        automaticallyImplyLeading: false,
         forceMaterialTransparency: true,
-        centerTitle: true,
-        title: Text(widget.title!),
+        title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          IconButton(
+              icon: Icon(Icons.arrow_back_rounded),
+              onPressed: () {
+                Navigator.of(context).pop();
+              }),
+          SizedBox(width: 7.0),
+          Text(widget.title!),
+          SizedBox(width: 35.0),
+        ]),
       );
     }
 
