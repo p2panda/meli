@@ -162,53 +162,52 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                 }
               }),
         ],
-        body: Container(
-            padding: EdgeInsets.all(20.0),
-            child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        body: Form(
+            key: _formKey,
+            child: ListView(
+              padding: EdgeInsets.only(
+                  top: 0, right: 20.0, bottom: 75.0, left: 20.0),
+              children: [
+                TextFormField(
+                  controller: nameInput,
+                  decoration: const InputDecoration(
+                    hintText: 'Local Name',
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                ),
+                Row(
                   children: [
-                    TextFormField(
-                      controller: nameInput,
-                      decoration: const InputDecoration(
-                        hintText: 'Local Name',
-                      ),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
+                    IconButton(
+                        icon: Icon(Icons.image),
+                        onPressed: () async {
+                          XFile? image =
+                              await this._getImage(ImageSource.gallery);
+                          this._setImage(image);
+                        }),
+                    IconButton(
+                      icon: Icon(Icons.photo_camera),
+                      onPressed: () async {
+                        XFile? image = await this._getImage(ImageSource.camera);
+                        this._setImage(image);
                       },
                     ),
-                    Row(
-                      children: [
-                        IconButton(
-                            icon: Icon(Icons.image),
-                            onPressed: () async {
-                              XFile? image =
-                                  await this._getImage(ImageSource.gallery);
-                              this._setImage(image);
-                            }),
-                        IconButton(
-                          icon: Icon(Icons.photo_camera),
-                          onPressed: () async {
-                            XFile? image =
-                                await this._getImage(ImageSource.camera);
-                            this._setImage(image);
-                          },
-                        ),
-                      ],
-                    ),
-                    _previewImage(),
-                    LocationTrackerInput(onPositionChanged: (position) {
-                      if (position == null) {
-                        print('Position: n/a');
-                      } else {
-                        print('Position: $position');
-                      }
-                    }),
                   ],
-                ))));
+                ),
+                _previewImage(),
+                SizedBox(height: 25.0),
+                LocationTrackerInput(onPositionChanged: (position) {
+                  if (position == null) {
+                    print('Position: n/a');
+                  } else {
+                    print('Position: $position');
+                  }
+                }),
+              ],
+            )));
   }
 }
