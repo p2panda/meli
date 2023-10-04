@@ -205,7 +205,7 @@ class _ExpandingActionButton extends StatelessWidget {
         opacity: progress,
         child: GestureDetector(
             onTap: () {
-              print("hello");
+              // Do nothing
             },
             behavior: HitTestBehavior.deferToChild,
             child: child),
