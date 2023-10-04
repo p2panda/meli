@@ -3,13 +3,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:app/ui/colors.dart';
-import 'package:app/ui/widgets/fab.dart';
 
 class MeliScaffold extends StatefulWidget {
   final String? title;
   final Widget? body;
   final Color backgroundColor;
-  final List<MeliFloatingActionButton> floatingActionButtons;
+  final List<Widget> floatingActionButtons;
   final MainAxisAlignment fabAlignment;
 
   MeliScaffold(

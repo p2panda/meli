@@ -2,12 +2,13 @@
 
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
-import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
+import 'package:app/models/sightings.dart';
+import 'package:app/ui/widgets/sighting_form.dart';
+import 'package:app/ui/widgets/expandable_fab.dart';
+import 'package:app/ui/widgets/image_provider.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/location_tracker.dart';
 import 'package:app/ui/widgets/scaffold.dart';
@@ -20,194 +21,136 @@ class CreateNewScreen extends StatefulWidget {
 }
 
 class _CreateNewScreenState extends State<CreateNewScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final nameInput = TextEditingController();
-  final _imagePicker = ImagePicker();
-  String? _retrieveDataError;
-  File? _image;
+  final _formKey = GlobalKey<FormState>();
+  List<Image> images = [];
+  bool _initialImageCaptured = false;
 
-  void _setImage(XFile? image) {
-    if (image != null) {
-      setState(() {
-        _image = File(image.path);
-      });
-    }
+  void removeImageAt(int index) {
+    setState(() {
+      images.removeAt(index);
+    });
   }
 
-  Future<XFile?> _getImage(ImageSource source) async {
-    return await _imagePicker.pickImage(
-        source: source,
-        imageQuality: 50,
-        preferredCameraDevice: CameraDevice.front);
+  void addImage(File file) {
+    setState(() {
+      images.insert(0, Image.file(file));
+    });
   }
 
-  Text? _getRetrieveErrorWidget() {
-    if (_retrieveDataError != null) {
-      final Text result = Text(_retrieveDataError!);
-      _retrieveDataError = null;
-      return result;
-    }
-    return null;
-  }
+  void addAllImages(List<File> files) {
+    final newImages = files.map((file) {
+      return Image.file(file);
+    });
 
-  Future<void> _retrieveLostData() async {
-    final LostDataResponse response =
-        await this._imagePicker.retrieveLostData();
-    if (response.isEmpty) {
-      return;
-    }
-    if (response.file != null) {
-      setState(() {
-        _setImage(response.file);
-      });
-    } else {
-      _retrieveDataError = response.exception!.code;
-    }
-  }
-
-  Widget _handlePreview() {
-    final Text? retrieveError = _getRetrieveErrorWidget();
-    if (retrieveError != null) {
-      return retrieveError;
-    }
-    if (_image != null) {
-      return Container(
-        height: 300,
-        child: Image.file(
-          _image!,
-          fit: BoxFit.cover,
-        ),
-      );
-    } else {
-      return const Text(
-        'You have not yet picked an image.',
-        textAlign: TextAlign.center,
-      );
-    }
-  }
-
-  Widget _previewImage() {
-    return defaultTargetPlatform == TargetPlatform.android
-        ? FutureBuilder<void>(
-            future: _retrieveLostData(),
-            builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                case ConnectionState.waiting:
-                  return const Text(
-                    'You have not yet picked an image.',
-                    textAlign: TextAlign.center,
-                  );
-                case ConnectionState.done:
-                  return _handlePreview();
-                case ConnectionState.active:
-                  if (snapshot.hasError) {
-                    return Text(
-                      'Pick image/video error: ${snapshot.error}}',
-                      textAlign: TextAlign.center,
-                    );
-                  } else {
-                    return const Text(
-                      'You have not yet picked an image.',
-                      textAlign: TextAlign.center,
-                    );
-                  }
-              }
-            },
-          )
-        : _handlePreview();
+    setState(() {
+      images.insertAll(0, newImages);
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    this._getImage(ImageSource.camera).then((image) => this._setImage(image));
   }
 
+  // This method is called directly after `initState`. We trigger the initial
+  // image capture event here as it is safe to depend on inherited widgets (not
+  // possible in `initState`) as well as trigger navigation events (not
+  // recommended in build).
   @override
-  void dispose() {
-    nameInput.dispose();
-    super.dispose();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    MeliCameraProviderInherited.of(context).capturePhoto().then((file) {
+      if (file != null) {
+        addImage(file);
+      } else {
+        // If no file was captured navigate back to all sightings screen.
+        router.push(RoutePaths.allSightings.path);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    // If no images have been captured yet then return a spinner.
+    if (images.isEmpty && !_initialImageCaptured) {
+      return Container(
+        color: Colors.black,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            CircularProgressIndicator(
+              color: Colors.grey,
+              semanticsLabel: 'Circular progress indicator',
+            ),
+          ],
+        ),
+      );
+    }
+
+    _initialImageCaptured = true;
+
+    // If images were successfully captured return the full view.
     return MeliScaffold(
-        title: 'Create new',
-        floatingActionButtons: [
-          MeliFloatingActionButton(
-              heroTag: 'create_new',
-              icon: Icon(Icons.create),
+      title: 'Create new',
+      floatingActionButtons: [
+        ExpandableFab(
+          icon: const Icon(Icons.add_a_photo),
+          expandDirection: ExpandDirection.right,
+          distance: 80,
+          buttons: [
+            ActionButton(
               onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  // Create sighting data
-                  try {
-                    // TODO: populate all fields from form
-                    DateTime datetime = DateTime.now();
-                    await createSighting(datetime, 0.0, 0.0, [], null, null,
-                        "Some comment about this sighting");
-
-                    // Go back to sightings overview
-                    router.push(RoutePaths.allSightings.path);
-
-                    // Show notification
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: const Text('Yay! Created new sighting'),
-                    ));
-                  } catch (err) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('Something went wrong: $err'),
-                    ));
-                  }
+                List<File> newImages =
+                    await MeliCameraProviderInherited.of(context)
+                        .pickFromGallery();
+                addAllImages(newImages);
+              },
+              icon: const Icon(Icons.insert_photo_outlined),
+            ),
+            ActionButton(
+              onPressed: () async {
+                File? newImage = await MeliCameraProviderInherited.of(context)
+                    .capturePhoto();
+                if (newImage != null) {
+                  addImage(newImage);
                 }
-              }),
-        ],
-        body: Form(
-            key: _formKey,
-            child: ListView(
-              padding: EdgeInsets.only(
-                  top: 0, right: 20.0, bottom: 75.0, left: 20.0),
-              children: [
-                TextFormField(
-                  controller: nameInput,
-                  decoration: const InputDecoration(
-                    hintText: 'Local Name',
-                  ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                        icon: Icon(Icons.image),
-                        onPressed: () async {
-                          XFile? image =
-                              await this._getImage(ImageSource.gallery);
-                          this._setImage(image);
-                        }),
-                    IconButton(
-                      icon: Icon(Icons.photo_camera),
-                      onPressed: () async {
-                        XFile? image = await this._getImage(ImageSource.camera);
-                        this._setImage(image);
-                      },
-                    ),
-                  ],
-                ),
-                _previewImage(),
-                SizedBox(height: 25.0),
-                LocationTrackerInput(onPositionChanged: (position) {
-                  if (position == null) {
-                    print('Position: n/a');
-                  } else {
-                    print('Position: $position');
-                  }
-                }),
-              ],
-            )));
+              },
+              icon: const Icon(Icons.camera_alt_outlined),
+            ),
+          ],
+        ),
+        MeliFloatingActionButton(
+            heroTag: 'submit',
+            icon: Icon(Icons.check),
+            onPressed: () async {
+              if (_formKey.currentState!.validate()) {
+                // Create sighting data
+                try {
+                  // TODO: populate all fields from form
+                  DateTime datetime = DateTime.now();
+                  await createSighting(datetime, 0.0, 0.0, [], null, null,
+                      "Some comment about this sighting");
+
+                  // Go back to sightings overview
+                  router.push(RoutePaths.allSightings.path);
+
+                  // Show notification
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: const Text('Yay! Created new sighting'),
+                  ));
+                } catch (err) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Something went wrong: $err'),
+                  ));
+                }
+              }
+            }),
+      ],
+      body: CreateSightingForm(
+          formKey: this._formKey,
+          images: this.images,
+          onDeleteImage: this.removeImageAt),
+    );
   }
 }
