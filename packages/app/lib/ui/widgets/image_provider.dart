@@ -45,7 +45,6 @@ class MeliCameraProviderState extends State<MeliCameraProvider> {
   Future<File?> capturePhoto() async {
     ImageSource source = ImageSource.camera;
     if (!_imagePicker.supportsImageSource(source)) {
-      print('Camera source not supported');
       source = ImageSource.gallery;
     }
 
