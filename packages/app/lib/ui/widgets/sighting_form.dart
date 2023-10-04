@@ -61,6 +61,9 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
             onPressed: () {
               this.widget.onDeleteImage(imageIndex);
               Navigator.pop(context, 'Yes');
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(t.imageDeleted),
+              ));
             },
             child: const Text('Yes'),
           ),

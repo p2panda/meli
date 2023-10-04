@@ -1,5 +1,6 @@
 {
     "helloMeli": "Hello, Meli!",
     "deleteImageAlertTitle": "Delete Image",
-    "deleteImageAlertContent": "Are you sure you want to delete this image?"
+    "deleteImageAlertContent": "Are you sure you want to delete this image?",
+    "imageDeleted": "Image deleted."
 }
