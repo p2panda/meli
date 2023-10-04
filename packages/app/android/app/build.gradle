@@ -27,7 +27,8 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     namespace "com.p2panda.app"
-    compileSdkVersion flutter.compileSdkVersion
+    // Set to mimimum version 33 for `geolocator` package
+    compileSdkVersion Math.max(flutter.compileSdkVersion, 33)
     ndkVersion flutter.ndkVersion
 
     compileOptions {

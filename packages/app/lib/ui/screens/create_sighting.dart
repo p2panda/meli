@@ -1,17 +1,16 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-// TODO: not used at the moment.
-
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/widgets/fab.dart';
+import 'package:app/ui/widgets/location_tracker.dart';
 import 'package:app/ui/widgets/scaffold.dart';
-import 'package:app/models/sightings.dart';
 
 class CreateNewScreen extends StatefulWidget {
   CreateNewScreen({super.key});
@@ -163,46 +162,52 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                 }
               }),
         ],
-        body: Container(
-            padding: EdgeInsets.all(20.0),
-            child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        body: Form(
+            key: _formKey,
+            child: ListView(
+              padding: EdgeInsets.only(
+                  top: 0, right: 20.0, bottom: 75.0, left: 20.0),
+              children: [
+                TextFormField(
+                  controller: nameInput,
+                  decoration: const InputDecoration(
+                    hintText: 'Local Name',
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                ),
+                Row(
                   children: [
-                    TextFormField(
-                      controller: nameInput,
-                      decoration: const InputDecoration(
-                        hintText: 'Local Name',
-                      ),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
+                    IconButton(
+                        icon: Icon(Icons.image),
+                        onPressed: () async {
+                          XFile? image =
+                              await this._getImage(ImageSource.gallery);
+                          this._setImage(image);
+                        }),
+                    IconButton(
+                      icon: Icon(Icons.photo_camera),
+                      onPressed: () async {
+                        XFile? image = await this._getImage(ImageSource.camera);
+                        this._setImage(image);
                       },
                     ),
-                    Row(
-                      children: [
-                        IconButton(
-                            icon: Icon(Icons.image),
-                            onPressed: () async {
-                              XFile? image =
-                                  await this._getImage(ImageSource.gallery);
-                              this._setImage(image);
-                            }),
-                        IconButton(
-                          icon: Icon(Icons.photo_camera),
-                          onPressed: () async {
-                            XFile? image =
-                                await this._getImage(ImageSource.camera);
-                            this._setImage(image);
-                          },
-                        ),
-                      ],
-                    ),
-                    _previewImage(),
                   ],
-                ))));
+                ),
+                _previewImage(),
+                SizedBox(height: 25.0),
+                LocationTrackerInput(onPositionChanged: (position) {
+                  if (position == null) {
+                    print('Position: n/a');
+                  } else {
+                    print('Position: $position');
+                  }
+                }),
+              ],
+            )));
   }
 }
