@@ -20,6 +20,7 @@ class ImageCarousel extends StatelessWidget {
           border: Border.all(width: 3, color: Colors.black)),
       child: CarouselSlider(
         options: CarouselOptions(
+            autoPlay: true,
             height: 200.0,
             enableInfiniteScroll: false,
             viewportFraction: 1,
