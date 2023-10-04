@@ -1,6 +1,17 @@
 {
-    "helloMeli": "Hello, Meli!",
     "deleteImageAlertTitle": "Delete Image",
     "deleteImageAlertContent": "Are you sure you want to delete this image?",
-    "imageDeleted": "Image deleted."
+    "imageDeleted": "Image deleted.",
+    "locationAdd": "Do you want to add a GPS location?",
+    "locationAddAction": "Add location to image",
+    "locationErrorPermissionDenied": "Location permission was denied",
+    "locationErrorServiceDisabled": "Location service is disabled",
+    "locationErrorTimeout": "Location could not be retreived",
+    "locationErrorUnknown": "An unknown error occurred",
+    "locationHeader": "Location",
+    "locationLoading": "Retrieving location ..",
+    "locationRemoveAction": "Remove",
+    "locationSuccessful": "Location recorded\n({latitude}, {longitude})",
+    "locationTryAgain": "Adjust your device's location permissions for this app or enable the location service and try again.",
+    "locationTryAgainAction": "Try again"
 }

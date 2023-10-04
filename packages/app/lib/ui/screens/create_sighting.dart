@@ -5,12 +5,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:app/router.dart';
+import 'package:app/models/sightings.dart';
 import 'package:app/ui/widgets/sighting_form.dart';
 import 'package:app/ui/widgets/expandable_fab.dart';
 import 'package:app/ui/widgets/image_provider.dart';
 import 'package:app/ui/widgets/fab.dart';
+import 'package:app/ui/widgets/location_tracker.dart';
 import 'package:app/ui/widgets/scaffold.dart';
-import 'package:app/models/sightings.dart';
 
 class CreateNewScreen extends StatefulWidget {
   CreateNewScreen({super.key});
