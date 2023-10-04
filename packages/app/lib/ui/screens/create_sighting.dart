@@ -94,7 +94,7 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
           icon: const Icon(Icons.add_a_photo),
           expandDirection: ExpandDirection.right,
           distance: 80,
-          children: [
+          buttons: [
             ActionButton(
               onPressed: () async {
                 List<File> newImages =

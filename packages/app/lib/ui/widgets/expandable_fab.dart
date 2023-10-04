@@ -14,7 +14,7 @@ class ExpandableFab extends StatefulWidget {
       {super.key,
       this.initialOpen,
       required this.distance,
-      required this.children,
+      required this.buttons,
       required this.expandDirection,
       required this.icon});
 
@@ -22,7 +22,7 @@ class ExpandableFab extends StatefulWidget {
   final ExpandDirection expandDirection;
   final bool? initialOpen;
   final double distance;
-  final List<Widget> children;
+  final List<ActionButton> buttons;
 
   @override
   State<ExpandableFab> createState() => _ExpandableFabState();
@@ -114,7 +114,7 @@ class _ExpandableFabState extends State<ExpandableFab>
 
   List<Widget> _buildExpandingActionButtons() {
     final children = <Widget>[];
-    final count = widget.children.length;
+    final count = widget.buttons.length;
     final step = 90.0 / (count - 1);
     final degrees =
         (widget.expandDirection == ExpandDirection.left) ? 90.0 : 0.0;
@@ -126,7 +126,7 @@ class _ExpandableFabState extends State<ExpandableFab>
           directionInDegrees: angleInDegrees,
           maxDistance: widget.distance,
           progress: _expandAnimation,
-          child: widget.children[i],
+          child: _buildActionButton(widget.buttons[i], _toggle),
           expandDirection: widget.expandDirection,
         ),
       );
@@ -203,36 +203,38 @@ class _ExpandingActionButton extends StatelessWidget {
       },
       child: FadeTransition(
         opacity: progress,
-        child: child,
+        child: GestureDetector(
+            onTap: () {
+              print("hello");
+            },
+            behavior: HitTestBehavior.deferToChild,
+            child: child),
       ),
     );
   }
 }
 
-@immutable
-class ActionButton extends StatelessWidget {
-  const ActionButton({
-    super.key,
-    this.onPressed,
-    required this.icon,
-  });
+class ActionButton {
+  final Icon icon;
+  final Function onPressed;
 
-  final VoidCallback? onPressed;
-  final Widget icon;
+  ActionButton({required this.icon, required this.onPressed});
+}
 
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      shape: const CircleBorder(),
-      color: MeliColors.magnolia,
-      clipBehavior: Clip.antiAlias,
-      child: IconButton(
-        onPressed: onPressed,
-        icon: icon,
-        color: Colors.black,
-      ),
-    );
-  }
+Widget _buildActionButton(ActionButton actionButton, Function toggle) {
+  return Material(
+    shape: const CircleBorder(),
+    color: MeliColors.magnolia,
+    clipBehavior: Clip.antiAlias,
+    child: IconButton(
+      onPressed: () {
+        actionButton.onPressed();
+        toggle();
+      },
+      icon: actionButton.icon,
+      color: Colors.black,
+    ),
+  );
 }
 
 @immutable
