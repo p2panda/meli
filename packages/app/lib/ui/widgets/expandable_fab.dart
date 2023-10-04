@@ -223,6 +223,7 @@ class ActionButton {
 
 Widget _buildActionButton(ActionButton actionButton, Function toggle) {
   return Material(
+    elevation: 5,
     shape: const CircleBorder(),
     color: MeliColors.magnolia,
     clipBehavior: Clip.antiAlias,
