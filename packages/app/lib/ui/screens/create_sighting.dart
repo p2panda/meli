@@ -22,6 +22,7 @@ class CreateNewScreen extends StatefulWidget {
 class _CreateNewScreenState extends State<CreateNewScreen> {
   final _formKey = GlobalKey<FormState>();
   List<Image> images = [];
+  bool _initialImageCaptured = false;
 
   void removeImageAt(int index) {
     setState(() {
@@ -71,7 +72,7 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
   @override
   Widget build(BuildContext context) {
     // If no images have been captured yet then return a spinner.
-    if (images.isEmpty) {
+    if (images.isEmpty && !_initialImageCaptured) {
       return Container(
         color: Colors.black,
         child: Column(
@@ -85,6 +86,8 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
         ),
       );
     }
+
+    _initialImageCaptured = true;
 
     // If images were successfully captured return the full view.
     return MeliScaffold(
