@@ -32,7 +32,7 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
 
   void addImage(File file) {
     setState(() {
-      images.add(Image.file(file));
+      images.insert(0, Image.file(file));
     });
   }
 
@@ -42,7 +42,7 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
     });
 
     setState(() {
-      images.addAll(newImages);
+      images.insertAll(0, newImages);
     });
   }
 
