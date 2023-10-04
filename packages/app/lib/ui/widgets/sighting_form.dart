@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/ui/widgets/image_provider.dart';
 import 'package:app/ui/widgets/image_carousel.dart';
@@ -43,6 +44,31 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
     super.dispose();
   }
 
+  void _onDeleteImageAlert(int imageIndex) {
+    final t = AppLocalizations.of(context)!;
+
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(t.deleteImageAlertTitle),
+        content: Text(t.deleteImageAlertContent),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'No'),
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              this.widget.onDeleteImage(imageIndex);
+              Navigator.pop(context, 'Yes');
+            },
+            child: const Text('Yes'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -69,9 +95,7 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
                         ? ImageCarousel(images: [Image.asset(PLACEHOLDER_IMG)])
                         : ImageCarousel(
                             images: this.widget.images,
-                            onDelete: (int index) {
-                              this.widget.onDeleteImage(index);
-                            })
+                            onDelete: _onDeleteImageAlert)
                   ],
                 ))));
   }
