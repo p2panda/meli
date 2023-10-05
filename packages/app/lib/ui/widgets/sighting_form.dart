@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -10,7 +12,7 @@ const String PLACEHOLDER_IMG = 'assets/images/placeholder-bee.png';
 
 class CreateSightingForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
-  final List<Image> images;
+  final List<File> images;
   final Function onDeleteImage;
 
   const CreateSightingForm(
@@ -34,8 +36,9 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    MeliCameraProviderInherited.of(context).retrieveLostData().then(
-        (file) => {if (file != null) this.widget.images.add(Image.file(file))});
+    MeliCameraProviderInherited.of(context)
+        .retrieveLostData()
+        .then((file) => {if (file != null) this.widget.images.add(file)});
   }
 
   @override
@@ -97,7 +100,11 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
                     this.widget.images.isEmpty
                         ? ImageCarousel(images: [Image.asset(PLACEHOLDER_IMG)])
                         : ImageCarousel(
-                            images: this.widget.images,
+                            images: this
+                                .widget
+                                .images
+                                .map((file) => Image.file(file))
+                                .toList(),
                             onDelete: _onDeleteImageAlert)
                   ],
                 ))));
