@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:app/router.dart';
+import 'package:app/ui/widgets/image_provider.dart';
 import 'package:app/io/graphql/graphql.dart' as graphql;
 
 class MeliApp extends StatelessWidget {
@@ -16,7 +17,7 @@ class MeliApp extends StatelessWidget {
 
     return GraphQLProvider(
         client: client,
-        child: MaterialApp.router(
+        child: MeliCameraProvider(MaterialApp.router(
           // Register router for navigation
           routerDelegate: router.routerDelegate,
           routeInformationProvider: router.routeInformationProvider,
@@ -31,6 +32,6 @@ class MeliApp extends StatelessWidget {
 
           // Disable "debug" banner shown in top right corner during development
           debugShowCheckedModeBanner: false,
-        ));
+        )));
   }
 }

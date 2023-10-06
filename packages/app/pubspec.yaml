@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   camera: ^0.10.5+4
+  carousel_slider: ^4.2.1
   convert: ^3.1.1
   flutter:
     sdk: flutter
@@ -32,6 +33,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/
+    - assets/images/
   uses-material-design: true
 
   # Enable code generation for localization

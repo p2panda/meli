@@ -1,4 +1,7 @@
 {
+    "deleteImageAlertTitle": "Delete Image",
+    "deleteImageAlertContent": "Are you sure you want to delete this image?",
+    "imageDeleted": "Image deleted.",
     "locationAdd": "Do you want to add a GPS location?",
     "locationAddAction": "Add location to image",
     "locationErrorPermissionDenied": "Location permission was denied",

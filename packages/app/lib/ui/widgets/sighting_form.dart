@@ -1,149 +1,105 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:app/ui/widgets/card.dart';
+import 'package:app/ui/widgets/autocomplete.dart';
+import 'package:app/ui/widgets/image_carousel.dart';
+import 'package:app/ui/widgets/image_provider.dart';
+import 'package:app/ui/widgets/local_name_autocomplete.dart';
+import 'package:app/ui/widgets/location_tracker.dart';
+import 'package:app/ui/widgets/simple_card.dart';
+
+const String PLACEHOLDER_IMG = 'assets/images/placeholder-bee.png';
 
 class CreateSightingForm extends StatefulWidget {
-  const CreateSightingForm({super.key});
+  final GlobalKey<FormState> formKey;
+  final List<Image> images;
+  final Function onDeleteImage;
+
+  const CreateSightingForm(
+      {super.key,
+      required this.formKey,
+      this.images = const [],
+      required this.onDeleteImage});
 
   @override
   State<CreateSightingForm> createState() => _CreateSightingFormState();
 }
 
 class _CreateSightingFormState extends State<CreateSightingForm> {
-  final _formKey = GlobalKey<FormBuilderState>();
-  bool autoValidate = true;
-  bool readOnly = false;
-  bool showSegmentedControl = true;
-  bool _speciesHasError = false;
-  bool _popularNameHasError = false;
-
-  var speciesOptions = ['Melipolina', 'Melipolinio', 'Bumble Bee'];
+  final nameInput = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          FormBuilder(
-            key: _formKey,
-            // enabled: false,
-            onChanged: () {
-              _formKey.currentState!.save();
-              debugPrint(_formKey.currentState!.value.toString());
-            },
-            autovalidateMode: AutovalidateMode.disabled,
-            skipDisabled: true,
-            child: Column(
-              children: <Widget>[
-                const SizedBox(height: 15),
-                MeliCard(
-                    child: Container(
-                  margin: EdgeInsets.all(4),
-                  child: FormBuilderDropdown<String>(
-                    autovalidateMode: AutovalidateMode.always,
-                    name: 'species',
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      suffix: _speciesHasError
-                          ? const Icon(Icons.error)
-                          : const Icon(Icons.check),
-                      hintText: 'Select Species',
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                    validator: FormBuilderValidators.compose(
-                        [FormBuilderValidators.required()]),
-                    items: speciesOptions
-                        .map((species) => DropdownMenuItem(
-                              alignment: AlignmentDirectional.centerStart,
-                              value: species,
-                              child: Text(species),
-                            ))
-                        .toList(),
-                    onChanged: (val) {
-                      setState(() {
-                        _speciesHasError = !(_formKey
-                                .currentState?.fields['species']
-                                ?.validate() ??
-                            false);
-                      });
-                    },
-                    valueTransformer: (val) => val?.toString(),
-                  ),
-                )),
-                const SizedBox(height: 15),
-                MeliCard(
-                    child: Container(
-                  margin: EdgeInsets.all(4),
-                  child: FormBuilderTextField(
-                    autovalidateMode: AutovalidateMode.always,
-                    name: 'popular_name',
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      suffixIcon: _popularNameHasError
-                          ? const Icon(Icons.error, color: Colors.red)
-                          : const Icon(Icons.check, color: Colors.green),
-                    ),
-                    onChanged: (val) {
-                      setState(() {
-                        _popularNameHasError = !(_formKey
-                                .currentState?.fields['popular_name']
-                                ?.validate() ??
-                            false);
-                      });
-                    },
-                    // valueTransformer: (text) => num.tryParse(text),
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
-                      FormBuilderValidators.max(70),
-                    ]),
-                    textInputAction: TextInputAction.next,
-                  ),
-                )),
-              ],
-            ),
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    MeliCameraProviderInherited.of(context).retrieveLostData().then(
+        (file) => {if (file != null) this.widget.images.add(Image.file(file))});
+  }
+
+  @override
+  void dispose() {
+    nameInput.dispose();
+    super.dispose();
+  }
+
+  void _onDeleteImageAlert(int imageIndex) {
+    final t = AppLocalizations.of(context)!;
+
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(t.deleteImageAlertTitle),
+        content: Text(t.deleteImageAlertContent),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'No'),
+            child: const Text('No'),
           ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState?.saveAndValidate() ?? false) {
-                      debugPrint(_formKey.currentState?.value.toString());
-                    } else {
-                      debugPrint(_formKey.currentState?.value.toString());
-                      debugPrint('validation failed');
-                    }
-                  },
-                  child: const Text(
-                    'Submit',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 20),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () {
-                    _formKey.currentState?.reset();
-                  },
-                  // color: Theme.of(context).colorScheme.secondary,
-                  child: Text(
-                    'Reset',
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary),
-                  ),
-                ),
-              ),
-            ],
+          TextButton(
+            onPressed: () {
+              this.widget.onDeleteImage(imageIndex);
+              Navigator.pop(context, 'Yes');
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(t.imageDeleted),
+              ));
+            },
+            child: const Text('Yes'),
           ),
         ],
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+        child: Container(
+            padding: EdgeInsets.all(20.0),
+            child: Form(
+                key: this.widget.formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SimpleCard(title: 'Local Name', child: LocalNameAutocomplete()),
+                    this.widget.images.isEmpty
+                        ? ImageCarousel(images: [Image.asset(PLACEHOLDER_IMG)])
+                        : ImageCarousel(
+                            images: this.widget.images,
+                            onDelete: _onDeleteImageAlert),
+                    LocationTrackerInput(onPositionChanged: (position) {
+                      if (position == null) {
+                        print('Position: n/a');
+                      } else {
+                        print('Position: $position');
+                      }
+                    }),
+                  ],
+                ))));
   }
 }
