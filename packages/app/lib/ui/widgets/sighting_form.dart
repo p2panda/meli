@@ -83,16 +83,16 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
             padding: EdgeInsets.all(20.0),
             child: Form(
                 key: this.widget.formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Wrap(
+                  runSpacing: 20.0,
                   children: [
-                    SimpleCard(
-                        title: 'Local Name', child: LocalNameAutocomplete()),
                     this.widget.images.isEmpty
                         ? ImageCarousel(images: [Image.asset(PLACEHOLDER_IMG)])
                         : ImageCarousel(
                             images: this.widget.images,
                             onDelete: _onDeleteImageAlert),
+                    SimpleCard(
+                        title: 'Local Name', child: LocalNameAutocomplete()),
                     LocationTrackerInput(onPositionChanged: (position) {
                       if (position == null) {
                         print('Position: n/a');
