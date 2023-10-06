@@ -31,6 +31,9 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
   // request.
   String? _currentQuery;
 
+  // The most recent options received from the API.
+  late Iterable<String> _lastOptions = <String>[];
+
   // A network error was recieved on the most recent query.
   bool _isError = false;
 
@@ -148,22 +151,22 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
             _isLoading = true;
           });
 
-          final Iterable<String>? options =
+          final Iterable<String>? result =
               await _debouncedSearch(textEditingValue.text);
 
-          // The debounced search method did not kick in, we just show what we're
-          // currently typing
-          if (options == null) {
-            return textEditingValue.text.isNotEmpty
-                ? [textEditingValue.text]
-                : [];
-          }
+          // Show last options when the current query is being debounced
+          final options =
+              result == null ? _lastOptions : result.take(MAX_OPTIONS);
 
-          if (textEditingValue.text.isNotEmpty) {
-            return [textEditingValue.text, ...options.take(MAX_OPTIONS)];
-          } else {
-            return options;
-          }
+          // Keep track of our options to be able to show them at any point,
+          // even when we're currently querying for new ones
+          _lastOptions = options;
+
+          // Include what the user is currently typing to make this an selectable
+          // "free form" option
+          return textEditingValue.text.isNotEmpty
+              ? [textEditingValue.text, ...options]
+              : options;
         },
         onSelected: (String selection) {
           if (widget.onChanged != null) {
