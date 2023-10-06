@@ -30,6 +30,9 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
   // A network error was recieved on the most recent query.
   bool _isError = false;
 
+  // Flag indicating that we're currently waiting for an network request.
+  bool _isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -50,6 +53,10 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
       });
 
       return <String>[];
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
 
     // If another search happened after this one, throw away these options.
@@ -65,14 +72,20 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      return Autocomplete<String>(
+      return RawAutocomplete<String>(
         fieldViewBuilder: (BuildContext context,
             TextEditingController controller,
             FocusNode focusNode,
             VoidCallback onFieldSubmitted) {
           return TextFormField(
             decoration: InputDecoration(
-              suffixIcon: Icon(Icons.arrow_drop_down),
+              suffixIcon: _isLoading
+                  ? Transform.scale(
+                      scale: 0.4,
+                      child: CircularProgressIndicator(
+                        color: Colors.black,
+                      ))
+                  : Icon(Icons.arrow_drop_down, color: Colors.black),
               errorText: _isError ? 'Error, please try again.' : null,
             ),
             controller: controller,
@@ -114,18 +127,26 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
           );
         },
         optionsBuilder: (TextEditingValue textEditingValue) async {
+          setState(() {
+            _isLoading = true;
+          });
+
           final Iterable<String>? options =
               await _debouncedSearch(textEditingValue.text);
 
-          if (textEditingValue.text.isEmpty) {
-            return [];
-          }
-
+          // The debounced search method did not kick in, we just show what we're
+          // currently typing
           if (options == null) {
-            return [];
+            return textEditingValue.text.isNotEmpty
+                ? [textEditingValue.text]
+                : [];
           }
 
-          return [textEditingValue.text, ...options];
+          if (textEditingValue.text.isNotEmpty) {
+            return [textEditingValue.text, ...options];
+          } else {
+            return options;
+          }
         },
         onSelected: (String selection) {
           if (widget.onChanged != null) {
