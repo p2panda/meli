@@ -27,9 +27,6 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
   // request.
   String? _currentQuery;
 
-  // The most recent options received from the API.
-  late Iterable<String> _lastOptions = <String>[];
-
   // A network error was recieved on the most recent query.
   bool _isError = false;
 
@@ -59,6 +56,7 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
     if (_currentQuery != query) {
       return null;
     }
+
     _currentQuery = null;
 
     return options;
@@ -66,35 +64,75 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
 
   @override
   Widget build(BuildContext context) {
-    return Autocomplete<String>(
-      fieldViewBuilder: (BuildContext context, TextEditingController controller,
-          FocusNode focusNode, VoidCallback onFieldSubmitted) {
-        return TextFormField(
-          decoration: InputDecoration(
-            suffixIcon: Icon(Icons.arrow_drop_down),
-            errorText: _isError ? 'Error, please try again.' : null,
-          ),
-          controller: controller,
-          focusNode: focusNode,
-          onFieldSubmitted: (String value) {
-            onFieldSubmitted();
-          },
-        );
-      },
-      optionsBuilder: (TextEditingValue textEditingValue) async {
-        final Iterable<String>? options =
-            await _debouncedSearch(textEditingValue.text);
-        if (options == null) {
-          return _lastOptions;
-        }
-        _lastOptions = options;
-        return options;
-      },
-      onSelected: (String selection) {
-        if (widget.onChanged != null) {
-          widget.onChanged!.call(selection);
-        }
-      },
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      return Autocomplete<String>(
+        fieldViewBuilder: (BuildContext context,
+            TextEditingController controller,
+            FocusNode focusNode,
+            VoidCallback onFieldSubmitted) {
+          return TextFormField(
+            decoration: InputDecoration(
+              suffixIcon: Icon(Icons.arrow_drop_down),
+              errorText: _isError ? 'Error, please try again.' : null,
+            ),
+            controller: controller,
+            focusNode: focusNode,
+            onFieldSubmitted: (String value) {
+              onFieldSubmitted();
+            },
+          );
+        },
+        optionsViewBuilder:
+            (BuildContext context, onSelected, Iterable<String> options) {
+          return Align(
+            alignment: Alignment.topLeft,
+            child: Material(
+              shape: const RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(4.0)),
+              ),
+              child: Container(
+                height: 52.0 * options.length,
+                width: constraints.maxWidth,
+                child: ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: options.length,
+                  shrinkWrap: false,
+                  itemBuilder: (BuildContext context, int index) {
+                    final String option = options.elementAt(index);
+                    return InkWell(
+                      onTap: () => onSelected(option),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(option),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          );
+        },
+        optionsBuilder: (TextEditingValue textEditingValue) async {
+          final Iterable<String>? options =
+              await _debouncedSearch(textEditingValue.text);
+
+          if (textEditingValue.text.isEmpty) {
+            return [];
+          }
+
+          if (options == null) {
+            return [];
+          }
+
+          return [textEditingValue.text, ...options];
+        },
+        onSelected: (String selection) {
+          if (widget.onChanged != null) {
+            widget.onChanged!.call(selection);
+          }
+        },
+      );
+    });
   }
 }
