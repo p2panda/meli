@@ -86,7 +86,8 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SimpleCard(title: 'Local Name', child: LocalNameAutocomplete()),
+                    SimpleCard(
+                        title: 'Local Name', child: LocalNameAutocomplete()),
                     this.widget.images.isEmpty
                         ? ImageCarousel(images: [Image.asset(PLACEHOLDER_IMG)])
                         : ImageCarousel(
