@@ -14,7 +14,14 @@ class _LocalNameAutocompleteState extends State<LocalNameAutocomplete> {
   Widget build(BuildContext context) {
     return MeliAutocomplete(onOptionsRequest: (String value) async {
       // @TODO: Make the actual GraphQL request
-      final Iterable<String> options = ['dummy', 'data'];
+      final Iterable<String> options = [
+        'here',
+        'we',
+        'have',
+        'some',
+        'test',
+        'data'
+      ];
       return options;
     });
   }
