@@ -6,6 +6,10 @@ import 'package:app/utils/debouncable.dart';
 
 typedef OptionsRequest = Future<Iterable<String>> Function(String);
 
+/// Define maximum number of options shown in autocomplete, next to the current
+/// input value.
+const MAX_OPTIONS = 5;
+
 class MeliAutocomplete extends StatefulWidget {
   final OptionsRequest onOptionsRequest;
   final Function? onChanged;
@@ -87,6 +91,16 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
                       ))
                   : Icon(Icons.arrow_drop_down, color: Colors.black),
               errorText: _isError ? 'Error, please try again.' : null,
+              focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Colors.black,
+                      width: 2.0,
+                      style: BorderStyle.solid)),
+              enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Colors.black,
+                      width: 2.0,
+                      style: BorderStyle.solid)),
             ),
             controller: controller,
             focusNode: focusNode,
@@ -97,34 +111,37 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
         },
         optionsViewBuilder:
             (BuildContext context, onSelected, Iterable<String> options) {
-          return Align(
-            alignment: Alignment.topLeft,
-            child: Material(
-              shape: const RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(4.0)),
-              ),
-              child: Container(
-                height: 52.0 * options.length,
-                width: constraints.maxWidth,
-                child: ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemCount: options.length,
-                  shrinkWrap: false,
-                  itemBuilder: (BuildContext context, int index) {
-                    final String option = options.elementAt(index);
-                    return InkWell(
-                      onTap: () => onSelected(option),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(option),
-                      ),
-                    );
-                  },
+          return Container(
+              margin: EdgeInsets.only(top: 1.0),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Material(
+                  elevation: 3.0,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.vertical(bottom: Radius.circular(4.0)),
+                  ),
+                  child: Container(
+                    height: 52.0 * options.length,
+                    width: constraints.maxWidth,
+                    child: ListView.builder(
+                      padding: EdgeInsets.zero,
+                      itemCount: options.length,
+                      shrinkWrap: false,
+                      itemBuilder: (BuildContext context, int index) {
+                        final String option = options.elementAt(index);
+                        return InkWell(
+                          onTap: () => onSelected(option),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(option),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          );
+              ));
         },
         optionsBuilder: (TextEditingValue textEditingValue) async {
           setState(() {
@@ -143,7 +160,7 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
           }
 
           if (textEditingValue.text.isNotEmpty) {
-            return [textEditingValue.text, ...options];
+            return [textEditingValue.text, ...options.take(MAX_OPTIONS)];
           } else {
             return options;
           }
