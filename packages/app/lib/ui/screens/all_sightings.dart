@@ -51,20 +51,16 @@ class ScrollView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
         child: Column(children: [
-      Settings(),
-      Container(
-        padding: EdgeInsets.only(bottom: 30.0),
-        child: BouncyBee(),
-      ),
-      Container(
-        padding: EdgeInsets.only(bottom: 40.0),
-        child: SightingsList(),
-      )
+      TopBar(),
+      BouncyBee(),
+      SizedBox(height: 30.0),
+      SightingsList(),
+      SizedBox(height: 40.0),
     ]));
   }
 }
 
-class Settings extends StatelessWidget {
+class TopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
