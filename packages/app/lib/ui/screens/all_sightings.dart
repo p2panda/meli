@@ -102,14 +102,14 @@ class SightingListPaginator extends StatelessWidget {
   Widget build(BuildContext context) {
     return PaginationList<Sighting>(
         builder: (Sighting sighting) {
-          return GestureDetector(
-              onTap: () => {
-                    router.pushNamed(RoutePaths.sighting.name,
-                        pathParameters: {'documentId': sighting.id})
-                  },
+          return Container(
+              padding: EdgeInsets.only(bottom: 20.0),
               child: SightingCard(
-                  subtitle:
-                      '${sighting.datetime.day}.${sighting.datetime.month}.${sighting.datetime.year}',
+                  onTap: () => {
+                        router.pushNamed(RoutePaths.sighting.name,
+                            pathParameters: {'documentId': sighting.id})
+                      },
+                  date: sighting.datetime,
                   localName: sighting.local_name,
                   speciesName: sighting.species,
                   // TODO: use actual image url here
@@ -149,6 +149,9 @@ class _BouncyBeeState extends State<BouncyBee>
         _beeAnimationController.forward();
       },
       onTapUp: (details) {
+        _beeAnimationController.reverse();
+      },
+      onTapCancel: () {
         _beeAnimationController.reverse();
       },
       child: SlideTransition(
