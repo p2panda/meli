@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/pagination_list.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -89,73 +90,33 @@ class _SightingsListState extends State<SightingsList> {
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
       decoration: new MagnoliaWavesBackground(),
       child: Container(
+          width: double.infinity,
           padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
-          child: Query(
-              options: QueryOptions(document: gql(allSightingsQuery(null))),
-              builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
-                if (result.hasException) {
-                  return Text(result.exception.toString());
-                }
-
-                if (result.isLoading && result.data == null) {
-                  return const Text('Loading ...');
-                }
-
-                final data = PaginatedSightingList.fromJson(
-                    result.data?['sightings'] as Map<String, dynamic>);
-
-                FetchMoreOptions opts = FetchMoreOptions(
-                  document: gql(allSightingsQuery(data.endCursor)),
-                  updateQuery: (previousResultData, fetchMoreResultData) {
-                    // this function will be called so as to combine both the original and fetchMore results
-                    // it allows you to combine them as you would like
-                    final List<dynamic> documents = [
-                      ...previousResultData?['sightings']['documents']
-                          as List<dynamic>,
-                      ...fetchMoreResultData?['sightings']['documents']
-                          as List<dynamic>
-                    ];
-
-                    // to avoid a lot of work, lets just update the list of repos in returned
-                    // data with new data, this also ensures we have the endCursor already set
-                    // correctly
-                    fetchMoreResultData?['sightings']['documents'] = documents;
-
-                    return fetchMoreResultData;
-                  },
-                );
-
-                return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      ...data.sightings.map((sighting) => GestureDetector(
-                          onTap: () => {
-                                router.pushNamed(RoutePaths.sighting.name,
-                                    pathParameters: {'documentId': sighting.id})
-                              },
-                          child: SightingCard(
-                              subtitle:
-                                  '${sighting.datetime.day}.${sighting.datetime.month}.${sighting.datetime.year}',
-                              localName: sighting.local_name,
-                              speciesName: sighting.species,
-                              // TODO: use actual image url here
-                              image:
-                                  'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg'))),
-                      if (data.hasNextPage)
-                        TextButton(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text("Load More"),
-                            ],
-                          ),
-                          onPressed: () {
-                            fetchMore!(opts);
-                          },
-                        )
-                    ]);
-              })),
+          child: SightingListPaginator()),
     );
+  }
+}
+
+class SightingListPaginator extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return PaginationList<Sighting>(
+        builder: (Sighting sighting) {
+          return GestureDetector(
+              onTap: () => {
+                    router.pushNamed(RoutePaths.sighting.name,
+                        pathParameters: {'documentId': sighting.id})
+                  },
+              child: SightingCard(
+                  subtitle:
+                      '${sighting.datetime.day}.${sighting.datetime.month}.${sighting.datetime.year}',
+                  localName: sighting.local_name,
+                  speciesName: sighting.species,
+                  // TODO: use actual image url here
+                  image:
+                      'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg'));
+        },
+        paginator: SightingPaginator());
   }
 }
 

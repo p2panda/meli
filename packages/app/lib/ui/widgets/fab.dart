@@ -7,9 +7,7 @@ class MeliFloatingActionButton extends StatefulWidget {
   final VoidCallback onPressed;
 
   MeliFloatingActionButton(
-      {super.key,
-      required this.icon,
-      required this.onPressed});
+      {super.key, required this.icon, required this.onPressed});
 
   @override
   State<MeliFloatingActionButton> createState() =>
