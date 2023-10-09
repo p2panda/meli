@@ -14,23 +14,21 @@ class AllSightingsScreen extends StatefulWidget {
   AllSightingsScreen({super.key});
 
   @override
-  State<AllSightingsScreen> createState() => _HomeScreenState();
+  State<AllSightingsScreen> createState() => _AllSightingsScreenState();
 }
 
-class _HomeScreenState extends State<AllSightingsScreen>
+class _AllSightingsScreenState extends State<AllSightingsScreen>
     with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return MeliScaffold(
       floatingActionButtons: [
         MeliFloatingActionButton(
-            heroTag: 'all_species',
             icon: Icon(Icons.hive_outlined),
             onPressed: () {
               router.push(RoutePaths.allSpecies.path);
             }),
         MeliFloatingActionButton(
-            heroTag: 'create_new',
             icon: Icon(Icons.camera_alt_outlined),
             onPressed: () {
               router.push(RoutePaths.createSighting.path);

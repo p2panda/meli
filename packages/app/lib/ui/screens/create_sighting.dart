@@ -121,7 +121,6 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
           ],
         ),
         MeliFloatingActionButton(
-            heroTag: 'submit',
             icon: Icon(Icons.check),
             onPressed: () async {
               if (_formKey.currentState!.validate()) {

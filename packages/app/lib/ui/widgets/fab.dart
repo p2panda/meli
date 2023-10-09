@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 
 class MeliFloatingActionButton extends StatefulWidget {
   final Icon icon;
-  final String heroTag;
   final VoidCallback onPressed;
 
   MeliFloatingActionButton(
       {super.key,
-      required this.heroTag,
       required this.icon,
       required this.onPressed});
 
@@ -26,7 +24,7 @@ class _MeliFloatingActionButtonState extends State<MeliFloatingActionButton> {
       alignment: Alignment.bottomCenter,
       child: FloatingActionButton(
         foregroundColor: Colors.black,
-        heroTag: widget.heroTag,
+        heroTag: null,
         child: widget.icon,
         shape: const CircleBorder(),
         onPressed: widget.onPressed,
