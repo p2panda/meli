@@ -77,6 +77,7 @@ class _SightingCardState extends State<SightingCard> {
               alignment: AlignmentDirectional.centerStart,
               padding: const EdgeInsets.all(10),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
