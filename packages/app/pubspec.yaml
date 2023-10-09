@@ -34,6 +34,10 @@ flutter:
   assets:
     - assets/
     - assets/images/
+  fonts:
+    - family: Staatliches
+      fonts:
+        - asset: assets/fonts/Staatliches-Regular.ttf
   uses-material-design: true
 
   # Enable code generation for localization

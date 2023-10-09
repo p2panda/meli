@@ -81,7 +81,12 @@ class _SightingCardState extends State<SightingCard> {
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(flex: 4, child: Text(this._title)),
+                        Expanded(
+                            flex: 4,
+                            child: Text(this._title,
+                                style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontFamily: 'Staatliches'))),
                         Expanded(flex: 1, child: this._icon)
                       ]),
                   Text(
