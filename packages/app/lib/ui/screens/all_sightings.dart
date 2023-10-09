@@ -36,7 +36,7 @@ class _AllSightingsScreenState extends State<AllSightingsScreen>
       ],
       body: Container(
           child: Container(
-              decoration: new BackgroundDecoration(),
+              decoration: new GreenGradientBackground(),
               child: Container(
                 padding: EdgeInsets.only(
                     top: MediaQuery.of(context).viewPadding.top),
@@ -91,7 +91,7 @@ class _SightingsListState extends State<SightingsList> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-      decoration: new SightingsListDecoration(),
+      decoration: new MagnoliaWavesBackground(),
       child: Container(
           padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
           child: Query(
@@ -202,16 +202,16 @@ class _BouncyBeeState extends State<BouncyBee>
   }
 }
 
-class BackgroundDecoration extends Decoration {
-  BackgroundDecoration();
+class GreenGradientBackground extends Decoration {
+  GreenGradientBackground();
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {
-    return _BackgroundDecorationPainter();
+    return _GreenGradientPainter();
   }
 }
 
-class _BackgroundDecorationPainter extends BoxPainter {
+class _GreenGradientPainter extends BoxPainter {
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
     final Size? bounds = configuration.size;
@@ -246,16 +246,16 @@ class _BackgroundDecorationPainter extends BoxPainter {
   }
 }
 
-class SightingsListDecoration extends Decoration {
-  SightingsListDecoration();
+class MagnoliaWavesBackground extends Decoration {
+  MagnoliaWavesBackground();
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {
-    return _SightingsListDecoration();
+    return _MagnoliaWavesPainer();
   }
 }
 
-class _SightingsListDecoration extends BoxPainter {
+class _MagnoliaWavesPainer extends BoxPainter {
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
     final Size? bounds = configuration.size;
