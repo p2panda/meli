@@ -43,7 +43,6 @@ class _SightingCardState extends State<SightingCard> {
     if (this.widget.speciesName == null && this.widget.localName == null) {
       return Icon(Icons.question_mark);
     }
-    ;
 
     return Text("");
   }
@@ -82,13 +81,10 @@ class _SightingCardState extends State<SightingCard> {
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
-                            flex: 4,
-                            child: Text(this._title,
-                                style: TextStyle(
-                                    fontSize: 20.0,
-                                    fontFamily: 'Staatliches'))),
-                        Expanded(flex: 1, child: this._icon)
+                        Text(this._title,
+                            style: TextStyle(
+                                fontSize: 20.0, fontFamily: 'Staatliches')),
+                        this._icon,
                       ]),
                   Text(
                       '${this.widget.date.day}.${this.widget.date.month}.${this.widget.date.year}')
