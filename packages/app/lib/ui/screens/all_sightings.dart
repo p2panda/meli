@@ -25,11 +25,13 @@ class _AllSightingsScreenState extends State<AllSightingsScreen>
       floatingActionButtons: [
         MeliFloatingActionButton(
             icon: Icon(Icons.hive_outlined),
+            backgroundColor: MeliColors.peach,
             onPressed: () {
               router.push(RoutePaths.allSpecies.path);
             }),
         MeliFloatingActionButton(
             icon: Icon(Icons.camera_alt_outlined),
+            backgroundColor: MeliColors.magnolia,
             onPressed: () {
               router.push(RoutePaths.createSighting.path);
             }),
@@ -181,7 +183,7 @@ class _GreenGradientPainter extends BoxPainter {
         end: Alignment.bottomCenter,
         colors: [
           MeliColors.electric,
-          MeliColors.grass,
+          MeliColors.grass.withAlpha(0),
         ],
       ).createShader(Rect.fromCenter(
           center: Offset(bounds!.width / 2, 200.0),
