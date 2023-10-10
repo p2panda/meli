@@ -31,15 +31,20 @@ Future<DocumentViewId> publishBlob(File file) async {
     // Calculate the offset we want to start reading from.
     int offset = i * MAX_BLOB_PIECE_LENGTH;
 
-    // Populate a fixed length buffer from the reader starting from the offset
-    // position.
+    // Set the read position based on current offset.
     RandomAccessFile rangeReader = await reader.setPosition(offset);
-    Uint8List buffer = Uint8List(MAX_BLOB_PIECE_LENGTH);
-    await rangeReader.readInto(buffer);
 
-    // TODO: trim final blob piece bytes
+    // Populate a fixed buffer which will contain the bytes of a single blob
+    // piece. Account for the final blob piece being variable length.
+    Uint8List buffer;
+    if (blob_pieces.length == expected_pieces - 1) {
+      buffer = Uint8List(length - offset);
+    } else {
+      buffer = Uint8List(MAX_BLOB_PIECE_LENGTH);
+    }
 
     // Create and publish the blob piece and store it's id for use later.
+    await rangeReader.readInto(buffer);
     DocumentViewId id = await createBlobPiece(buffer);
     blob_pieces.add(id);
   }
