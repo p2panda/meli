@@ -144,9 +144,10 @@ class _SightingsListState extends State<SightingsList> {
                                   '${sighting.datetime.day}.${sighting.datetime.month}.${sighting.datetime.year}',
                               localName: sighting.local_name,
                               speciesName: sighting.species,
-                              // TODO: use actual image url here
-                              image:
-                                  'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg'))),
+                              image: (sighting.images.firstOrNull != null)
+                                  ? 'http://localhost:2020/blobs/${sighting.images.first}'
+                                  // TODO: remove this placeholder
+                                  : 'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg'))),
                       if (data.hasNextPage)
                         TextButton(
                           child: Row(
