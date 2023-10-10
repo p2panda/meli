@@ -60,9 +60,9 @@ class PaginationList<T> extends StatelessWidget {
     return Query(
       options: QueryOptions(document: this.paginator.nextPageQuery(null)),
       builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
-        if (this.paginator.onRefresh == null) {
+        if (this.paginator.refresh == null) {
           // Workaround to access `refetch` method from the outside
-          this.paginator.onRefresh = refetch;
+          this.paginator.refresh = refetch;
         }
 
         if (result.hasException) {

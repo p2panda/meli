@@ -57,8 +57,8 @@ class ScrollView extends StatelessWidget {
     return RefreshIndicator(
       color: MeliColors.black,
       onRefresh: () {
-        if (paginator.onRefresh != null) {
-          paginator.onRefresh!();
+        if (paginator.refresh != null) {
+          paginator.refresh!();
         }
 
         return Future.delayed(Duration(milliseconds: 150));

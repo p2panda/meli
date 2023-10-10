@@ -14,12 +14,18 @@ class PaginatedCollection<T> {
 }
 
 abstract class Paginator<T> {
-  VoidCallback? onRefresh;
+  /// Call this method to force refreshing a `PaginationList` widget using this
+  /// Paginator instance.
+  VoidCallback? refresh;
 
+  /// Should return GraphQL query for the next page.
   DocumentNode nextPageQuery(String? cursor);
 
+  /// Method to decode an incoming JSON string into structured data.
   PaginatedCollection<T> parseJSON(Map<String, dynamic> json);
 
+  /// Combine results from previous queries and new data for the UI. Needs to be
+  /// overwritten when result key is different than `results`.
   Map<String, dynamic> mergeResponses(
       Map<String, dynamic> previous, Map<String, dynamic> next) {
     final List<dynamic> documents = [
