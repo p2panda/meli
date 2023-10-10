@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/models/base.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app/models/base.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
@@ -96,7 +96,7 @@ class _SightingsListState extends State<SightingsList> {
         localName: sighting.local_name,
         speciesName: sighting.species,
         // TODO: use actual image url here
-        image:
+        imageUrl:
             'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg');
   }
 

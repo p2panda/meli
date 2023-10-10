@@ -5,11 +5,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/card.dart';
+import 'package:app/ui/widgets/image.dart';
 
 class SightingCard extends StatefulWidget {
   final String? localName;
   final DateTime date;
-  final String image;
+  final String imageUrl;
   final String? speciesName;
   final VoidCallback onTap;
 
@@ -18,7 +19,7 @@ class SightingCard extends StatefulWidget {
       this.localName,
       required this.onTap,
       required this.date,
-      required this.image,
+      required this.imageUrl,
       this.speciesName});
 
   @override
@@ -95,20 +96,18 @@ class _SightingCardState extends State<SightingCard> {
               ),
             ),
             Container(
-                child: Container(
-              height: 210,
+              child: MeliImage(url: this.widget.imageUrl),
+              clipBehavior: Clip.hardEdge,
+              height: 200.0,
+              width: double.infinity,
               decoration: ShapeDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(this.widget.image),
-                  fit: BoxFit.fill,
-                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(12.0),
                       bottomRight: Radius.circular(12.0)),
                 ),
               ),
-            )),
+            )
           ])),
     );
   }
