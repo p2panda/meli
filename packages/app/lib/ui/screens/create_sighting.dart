@@ -39,12 +39,8 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
   }
 
   void addAllImages(List<File> files) {
-    final newImages = files.map((file) {
-      return file;
-    });
-
     setState(() {
-      images.insertAll(0, newImages);
+      images.insertAll(0, files);
     });
   }
 
