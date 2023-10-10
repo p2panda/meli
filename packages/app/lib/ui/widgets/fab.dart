@@ -27,7 +27,7 @@ class _MeliFloatingActionButtonState extends State<MeliFloatingActionButton> {
       height: 120,
       alignment: Alignment.bottomCenter,
       child: FloatingActionButton(
-        foregroundColor: Colors.black,
+        foregroundColor: MeliColors.black,
         backgroundColor: widget.backgroundColor,
         heroTag: null,
         child: widget.icon,

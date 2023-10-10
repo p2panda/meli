@@ -31,7 +31,7 @@ class _AllSightingsScreenState extends State<AllSightingsScreen>
             }),
         MeliFloatingActionButton(
             icon: Icon(Icons.camera_alt_outlined),
-            backgroundColor: MeliColors.magnolia,
+            backgroundColor: MeliColors.sea,
             onPressed: () {
               router.push(RoutePaths.createSighting.path);
             }),

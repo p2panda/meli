@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 abstract final class MeliColors {
+  static const Color black = Color(0xff000000);
   static const Color electric = Color(0xff95fff2);
   static const Color flurry = Color(0xfff0ffc7);
   static const Color grass = Color(0xff95ffd9);
