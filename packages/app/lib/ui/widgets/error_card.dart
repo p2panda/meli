@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/widgets/icon_message_card.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app/ui/widgets/icon_message_card.dart';
 import 'package:app/ui/colors.dart';
 
 class ErrorCard extends StatelessWidget {
