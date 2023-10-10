@@ -18,17 +18,37 @@ class PaginationList<T> extends StatelessWidget {
 
   PaginationList({super.key, required this.builder, required this.paginator});
 
+  Widget _error(String errorMessage) {
+    return Text(errorMessage);
+  }
+
+  Widget _loading() {
+    return Text('Loading ...');
+  }
+
+  Widget _loadMore({required VoidCallback onTap}) {
+    return TextButton(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text("Load More"),
+        ],
+      ),
+      onPressed: onTap,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Query(
       options: QueryOptions(document: this.paginator.nextPageQuery(null)),
       builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (result.hasException) {
-          return Text(result.exception.toString());
+          return this._error(result.exception.toString());
         }
 
         if (result.isLoading && result.data == null) {
-          return const Text('Loading ...');
+          return this._loading();
         }
 
         final data =
@@ -48,17 +68,9 @@ class PaginationList<T> extends StatelessWidget {
             children: <Widget>[
               ...data.documents.map((document) => this.builder(document)),
               if (data.hasNextPage)
-                TextButton(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text("Load More"),
-                    ],
-                  ),
-                  onPressed: () {
-                    fetchMore!(opts);
-                  },
-                )
+                this._loadMore(onTap: () {
+                  fetchMore!(opts);
+                })
             ]);
       },
     );
