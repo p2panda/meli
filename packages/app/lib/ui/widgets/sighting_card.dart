@@ -10,7 +10,7 @@ import 'package:app/ui/widgets/image.dart';
 class SightingCard extends StatefulWidget {
   final String? localName;
   final DateTime date;
-  final String? imageUrl;
+  final String? imageDocumentId;
   final String? speciesName;
   final VoidCallback onTap;
 
@@ -19,7 +19,7 @@ class SightingCard extends StatefulWidget {
       this.localName,
       required this.onTap,
       required this.date,
-      required this.imageUrl,
+      required this.imageDocumentId,
       this.speciesName});
 
   @override
@@ -96,7 +96,7 @@ class _SightingCardState extends State<SightingCard> {
               ),
             ),
             Container(
-              child: MeliImage(url: this.widget.imageUrl),
+              child: MeliImage(documentId: this.widget.imageDocumentId),
               clipBehavior: Clip.hardEdge,
               height: 200.0,
               width: double.infinity,

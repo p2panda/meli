@@ -6,9 +6,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:app/ui/colors.dart';
 
 class MeliImage extends StatelessWidget {
-  final String? url;
+  final String? documentId;
 
-  MeliImage({super.key, required this.url});
+  MeliImage({super.key, required this.documentId});
 
   Widget _error(BuildContext context, String message) {
     return Container(
@@ -28,13 +28,13 @@ class MeliImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (this.url == null) {
+    if (this.documentId == null) {
       return this
           ._error(context, AppLocalizations.of(context)!.imageMissingError);
     }
 
     return Image.network(
-      this.url!,
+      'http://localhost:2020/blobs/${this.documentId}',
       fit: BoxFit.cover,
       filterQuality: FilterQuality.high,
       frameBuilder: (BuildContext context, Widget child, int? frame,

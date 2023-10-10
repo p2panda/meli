@@ -95,7 +95,7 @@ class _SightingsListState extends State<SightingsList> {
         date: sighting.datetime,
         localName: sighting.local_name,
         speciesName: sighting.species,
-        imageUrl: sighting.images.firstOrNull);
+        imageDocumentId: sighting.images.firstOrNull);
   }
 
   @override
