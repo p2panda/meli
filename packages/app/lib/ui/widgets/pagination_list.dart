@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gql/ast.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:app/models/base.dart';
+import 'package:app/ui/widgets/error_card.dart';
 
 typedef NextPageFunction = DocumentNode Function(String endCursor);
 
@@ -18,12 +20,18 @@ class PaginationList<T> extends StatelessWidget {
 
   PaginationList({super.key, required this.builder, required this.paginator});
 
-  Widget _error(String errorMessage) {
-    return Text(errorMessage);
+  Widget _error(BuildContext context, String errorMessage) {
+    return ErrorCard(
+        message:
+            AppLocalizations.of(context)!.paginationListError(errorMessage));
   }
 
   Widget _loading() {
     return Text('Loading ...');
+  }
+
+  Widget _emptyResult() {
+    return Text('No results ...');
   }
 
   Widget _loadMore({required VoidCallback onLoadMore}) {
@@ -44,7 +52,7 @@ class PaginationList<T> extends StatelessWidget {
       options: QueryOptions(document: this.paginator.nextPageQuery(null)),
       builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (result.hasException) {
-          return this._error(result.exception.toString());
+          return this._error(context, result.exception.toString());
         }
 
         if (result.isLoading && result.data == null) {
@@ -62,6 +70,10 @@ class PaginationList<T> extends StatelessWidget {
                 .mergeResponses(previousResultData!, fetchMoreResultData!);
           },
         );
+
+        if (data.documents.isEmpty) {
+          return this._emptyResult();
+        }
 
         return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
