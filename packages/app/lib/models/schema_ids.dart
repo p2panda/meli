@@ -4,6 +4,10 @@ import 'package:app/io/p2panda/schemas.dart';
 
 /// Schema ids used by the meli app.
 abstract final class SchemaIds {
+  /// System schema
+  static const SchemaId blob_piece = 'blob_piece_v1';
+  static const SchemaId blob = 'blob_v1';
+
   /// Sighting and species schema.
   static const SchemaId bee_sighting =
       'bee_sighting_0020df662f01bd4eed879ebb2128edd3e0b55902f179eeaf8978e58011f96b488717';

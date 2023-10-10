@@ -22,6 +22,7 @@ dependencies:
   graphql_flutter: ^5.2.0-beta.5
   image_picker: ^1.0.4
   intl: ^0.18.0
+  mime: ^1.0.4
   p2panda: ^0.1.0
   p2panda_flutter: ^0.1.0
   toml: "^0.14.0"

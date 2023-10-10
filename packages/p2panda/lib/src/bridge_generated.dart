@@ -60,7 +60,10 @@ abstract class P2Panda {
   ///
   /// Supports Android logging for logs coming from the node.
   Future<void> startNode(
-      {required KeyPair keyPair, required String databaseUrl, dynamic hint});
+      {required KeyPair keyPair,
+      required String databaseUrl,
+      required String blobsBasePath,
+      dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kStartNodeConstMeta;
 
@@ -326,15 +329,20 @@ class P2PandaImpl implements P2Panda {
       );
 
   Future<void> startNode(
-      {required KeyPair keyPair, required String databaseUrl, dynamic hint}) {
+      {required KeyPair keyPair,
+      required String databaseUrl,
+      required String blobsBasePath,
+      dynamic hint}) {
     var arg0 = _platform.api2wire_box_autoadd_key_pair(keyPair);
     var arg1 = _platform.api2wire_String(databaseUrl);
+    var arg2 = _platform.api2wire_String(blobsBasePath);
     return _platform.executeNormal(FlutterRustBridgeTask(
-      callFfi: (port_) => _platform.inner.wire_start_node(port_, arg0, arg1),
+      callFfi: (port_) =>
+          _platform.inner.wire_start_node(port_, arg0, arg1, arg2),
       parseSuccessData: _wire2api_unit,
       parseErrorData: _wire2api_FrbAnyhowException,
       constMeta: kStartNodeConstMeta,
-      argValues: [keyPair, databaseUrl],
+      argValues: [keyPair, databaseUrl, blobsBasePath],
       hint: hint,
     ));
   }
@@ -342,7 +350,7 @@ class P2PandaImpl implements P2Panda {
   FlutterRustBridgeTaskConstMeta get kStartNodeConstMeta =>
       const FlutterRustBridgeTaskConstMeta(
         debugName: "start_node",
-        argNames: ["keyPair", "databaseUrl"],
+        argNames: ["keyPair", "databaseUrl", "blobsBasePath"],
       );
 
   Future<void> shutdownNode({dynamic hint}) {
@@ -931,21 +939,26 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
     int port_,
     ffi.Pointer<wire_KeyPair> key_pair,
     ffi.Pointer<wire_uint_8_list> database_url,
+    ffi.Pointer<wire_uint_8_list> blobs_base_path,
   ) {
     return _wire_start_node(
       port_,
       key_pair,
       database_url,
+      blobs_base_path,
     );
   }
 
   late final _wire_start_nodePtr = _lookup<
       ffi.NativeFunction<
-          ffi.Void Function(ffi.Int64, ffi.Pointer<wire_KeyPair>,
+          ffi.Void Function(
+              ffi.Int64,
+              ffi.Pointer<wire_KeyPair>,
+              ffi.Pointer<wire_uint_8_list>,
               ffi.Pointer<wire_uint_8_list>)>>('wire_start_node');
   late final _wire_start_node = _wire_start_nodePtr.asFunction<
-      void Function(
-          int, ffi.Pointer<wire_KeyPair>, ffi.Pointer<wire_uint_8_list>)>();
+      void Function(int, ffi.Pointer<wire_KeyPair>,
+          ffi.Pointer<wire_uint_8_list>, ffi.Pointer<wire_uint_8_list>)>();
 
   void wire_shutdown_node(
     int port_,

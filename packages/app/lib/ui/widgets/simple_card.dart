@@ -16,7 +16,7 @@ class SimpleCard extends StatelessWidget {
       children: [
         MeliCardHeader(title: this.title),
         Container(
-            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
             child: this.child),
       ],
     );

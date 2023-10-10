@@ -95,9 +95,7 @@ class _SightingsListState extends State<SightingsList> {
         date: sighting.datetime,
         localName: sighting.local_name,
         speciesName: sighting.species,
-        // TODO: use actual image url here
-        imageUrl:
-            'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg');
+        imageUrl: sighting.images.firstOrNull);
   }
 
   @override

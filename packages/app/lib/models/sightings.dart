@@ -220,6 +220,7 @@ Future<DocumentViewId> createSighting(
     fields.add(("local_names", OperationValue.relationList([])));
   }
 
+  // @TODO: Remove this
   print(fields);
 
   return await create(SchemaIds.bee_sighting, fields);

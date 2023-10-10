@@ -112,6 +112,7 @@ fn wire_start_node_impl(
     port_: MessagePort,
     key_pair: impl Wire2Api<KeyPair> + UnwindSafe,
     database_url: impl Wire2Api<String> + UnwindSafe,
+    blobs_base_path: impl Wire2Api<String> + UnwindSafe,
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, (), _>(
         WrapInfo {
@@ -122,7 +123,8 @@ fn wire_start_node_impl(
         move || {
             let api_key_pair = key_pair.wire2api();
             let api_database_url = database_url.wire2api();
-            move |task_callback| start_node(api_key_pair, api_database_url)
+            let api_blobs_base_path = blobs_base_path.wire2api();
+            move |task_callback| start_node(api_key_pair, api_database_url, api_blobs_base_path)
         },
     )
 }
@@ -345,8 +347,9 @@ mod io {
         port_: i64,
         key_pair: *mut wire_KeyPair,
         database_url: *mut wire_uint_8_list,
+        blobs_base_path: *mut wire_uint_8_list,
     ) {
-        wire_start_node_impl(port_, key_pair, database_url)
+        wire_start_node_impl(port_, key_pair, database_url, blobs_base_path)
     }
 
     #[no_mangle]

@@ -19,7 +19,8 @@ Future<void> startNode() async {
   final _keyPair = await keyPair;
 
   // Start node in background thread
-  p2panda.startNode(keyPair: _keyPair, databaseUrl: databaseUrl);
+  p2panda.startNode(
+      keyPair: _keyPair, databaseUrl: databaseUrl, blobsBasePath: basePath);
 
   // .. since we can't `await` the FFI binding method from Rust we need to
   // poll here to find out until the node is ready

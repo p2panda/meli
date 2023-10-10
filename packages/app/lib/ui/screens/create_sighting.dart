@@ -4,6 +4,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import 'package:app/io/p2panda/blobs.dart';
+import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
@@ -22,7 +24,7 @@ class CreateNewScreen extends StatefulWidget {
 
 class _CreateNewScreenState extends State<CreateNewScreen> {
   final _formKey = GlobalKey<FormState>();
-  List<Image> images = [];
+  List<File> images = [];
   bool _initialImageCaptured = false;
 
   void removeImageAt(int index) {
@@ -33,17 +35,13 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
 
   void addImage(File file) {
     setState(() {
-      images.insert(0, Image.file(file));
+      images.insert(0, file);
     });
   }
 
   void addAllImages(List<File> files) {
-    final newImages = files.map((file) {
-      return Image.file(file);
-    });
-
     setState(() {
-      images.insertAll(0, newImages);
+      images.insertAll(0, files);
     });
   }
 
@@ -128,7 +126,21 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                 try {
                   // TODO: populate all fields from form
                   DateTime datetime = DateTime.now();
-                  await createSighting(datetime, 0.0, 0.0, [], null, null,
+
+                  // Publish each image as a blob and collect ids in a list.
+                  List<DocumentViewId> imageIds = [];
+                  try {
+                    List<DocumentViewId> response =
+                        await Future.wait(images.map((image) async {
+                      return await publishBlob(image);
+                    }));
+                    imageIds.addAll(response);
+                  } catch (e) {
+                    print('Error publishing blob: ${e}');
+                  }
+
+                  // Publish the sighting.
+                  await createSighting(datetime, 0.0, 0.0, imageIds, null, null,
                       "Some comment about this sighting");
 
                   // Go back to sightings overview

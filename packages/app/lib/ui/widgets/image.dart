@@ -6,16 +6,35 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:app/ui/colors.dart';
 
 class MeliImage extends StatelessWidget {
-  final String url;
+  final String? url;
 
   MeliImage({super.key, required this.url});
 
+  Widget _error(BuildContext context, String message) {
+    return Container(
+        color: MeliColors.peach,
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Icon(
+            Icons.warning_rounded,
+            size: 40.0,
+            color: MeliColors.black,
+          ),
+          SizedBox(height: 10.0),
+          Text(message,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge),
+        ]));
+  }
+
   @override
   Widget build(BuildContext context) {
-    String errorMessage = AppLocalizations.of(context)!.imageLoadingError;
+    if (this.url == null) {
+      return this
+          ._error(context, AppLocalizations.of(context)!.imageMissingError);
+    }
 
     return Image.network(
-      this.url,
+      this.url!,
       fit: BoxFit.cover,
       filterQuality: FilterQuality.high,
       frameBuilder: (BuildContext context, Widget child, int? frame,
@@ -39,20 +58,8 @@ class MeliImage extends StatelessWidget {
         );
       },
       errorBuilder: (context, error, stack) {
-        return Container(
-            color: MeliColors.peach,
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Icon(
-                Icons.warning_rounded,
-                size: 40.0,
-                color: MeliColors.black,
-              ),
-              SizedBox(height: 10.0),
-              Text(errorMessage,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge),
-            ]));
+        return this
+            ._error(context, AppLocalizations.of(context)!.imageLoadingError);
       },
     );
   }

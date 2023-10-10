@@ -10,7 +10,7 @@ import 'package:app/ui/widgets/image.dart';
 class SightingCard extends StatefulWidget {
   final String? localName;
   final DateTime date;
-  final String imageUrl;
+  final String? imageUrl;
   final String? speciesName;
   final VoidCallback onTap;
 
