@@ -26,7 +26,7 @@ class PaginationList<T> extends StatelessWidget {
     return Text('Loading ...');
   }
 
-  Widget _loadMore({required VoidCallback onTap}) {
+  Widget _loadMore({required VoidCallback onLoadMore}) {
     return TextButton(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -34,7 +34,7 @@ class PaginationList<T> extends StatelessWidget {
           Text("Load More"),
         ],
       ),
-      onPressed: onTap,
+      onPressed: onLoadMore,
     );
   }
 
@@ -68,7 +68,7 @@ class PaginationList<T> extends StatelessWidget {
             children: <Widget>[
               ...data.documents.map((document) => this.builder(document)),
               if (data.hasNextPage)
-                this._loadMore(onTap: () {
+                this._loadMore(onLoadMore: () {
                   fetchMore!(opts);
                 })
             ]);
