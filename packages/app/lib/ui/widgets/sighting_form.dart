@@ -5,8 +5,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:app/ui/widgets/image_provider.dart';
 import 'package:app/ui/widgets/image_carousel.dart';
+import 'package:app/ui/widgets/image_provider.dart';
+import 'package:app/ui/widgets/local_name_autocomplete.dart';
+import 'package:app/ui/widgets/location_tracker.dart';
+import 'package:app/ui/widgets/simple_card.dart';
 
 const String PLACEHOLDER_IMG = 'assets/images/placeholder-bee.png';
 
@@ -82,21 +85,9 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
             padding: EdgeInsets.all(20.0),
             child: Form(
                 key: this.widget.formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Wrap(
+                  runSpacing: 20.0,
                   children: [
-                    TextFormField(
-                      controller: nameInput,
-                      decoration: const InputDecoration(
-                        hintText: 'Local Name',
-                      ),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                    ),
                     this.widget.images.isEmpty
                         ? ImageCarousel(images: [Image.asset(PLACEHOLDER_IMG)])
                         : ImageCarousel(
@@ -105,7 +96,16 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
                                 .images
                                 .map((file) => Image.file(file))
                                 .toList(),
-                            onDelete: _onDeleteImageAlert)
+                            onDelete: _onDeleteImageAlert),
+                    SimpleCard(
+                        title: 'Local Name', child: LocalNameAutocomplete()),
+                    LocationTrackerInput(onPositionChanged: (position) {
+                      if (position == null) {
+                        print('Position: n/a');
+                      } else {
+                        print('Position: $position');
+                      }
+                    }),
                   ],
                 ))));
   }
