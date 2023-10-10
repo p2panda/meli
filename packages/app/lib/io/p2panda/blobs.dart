@@ -12,20 +12,21 @@ import 'package:app/models/schema_ids.dart';
 const MAX_BLOB_PIECE_LENGTH = 256;
 
 Future<DocumentViewId> publishBlob(File file) async {
-  final mimeType = lookupMimeType(file.path); // 'image/jpeg'
+  // Check the mimetype.
+  final mimeType = lookupMimeType(file.path);
 
   // Open a reader onto the blob file.
   final reader = await file.open(mode: FileMode.read);
 
   // Get the length and calculate the total number of pieces, based on the
-  // maximum allowed pieces size.
+  // maximum allowed piece size.
   final length = await reader.length();
   final expected_pieces = (length / MAX_BLOB_PIECE_LENGTH).ceil();
 
   // This is where we will keep ids of the created blob pieces
   List<DocumentViewId> blob_pieces = [];
 
-  // For each expected piece read each chunk of bytes into a buffer and publish
+  // For each expected piece read the chunk of bytes into a buffer and publish
   // the piece to the node.
   for (var i = 0; i < expected_pieces; i++) {
     // Calculate the offset we want to start reading from.
@@ -48,6 +49,8 @@ Future<DocumentViewId> publishBlob(File file) async {
     DocumentViewId id = await createBlobPiece(buffer);
     blob_pieces.add(id);
   }
+
+  // Close the reader.
   await reader.close();
 
   // Now create and publish the blob.

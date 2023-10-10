@@ -2,11 +2,11 @@
 
 import 'dart:io';
 
-import 'package:app/io/p2panda/blobs.rs.dart';
-import 'package:app/io/p2panda/publish.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app/router.dart';
+import 'package:app/io/p2panda/blobs.dart';
+import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/ui/widgets/sighting_form.dart';
 import 'package:app/ui/widgets/expandable_fab.dart';
