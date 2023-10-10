@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:gql/ast.dart';
 
 class PaginatedCollection<T> {

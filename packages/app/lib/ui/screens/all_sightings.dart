@@ -2,7 +2,6 @@
 
 import 'package:app/ui/widgets/pagination_list.dart';
 import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
