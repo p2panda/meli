@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'dart:ui';
+
 import 'package:gql/ast.dart';
 
 class PaginatedCollection<T> {
@@ -12,6 +14,8 @@ class PaginatedCollection<T> {
 }
 
 abstract class Paginator<T> {
+  VoidCallback? onRefresh;
+
   DocumentNode nextPageQuery(String? cursor);
 
   PaginatedCollection<T> parseJSON(Map<String, dynamic> json);

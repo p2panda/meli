@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/models/base.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app/models/sightings.dart';
@@ -49,16 +50,29 @@ class _AllSightingsScreenState extends State<AllSightingsScreen>
 }
 
 class ScrollView extends StatelessWidget {
+  final Paginator<Sighting> paginator = SightingPaginator();
+
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Column(children: [
-      TopBar(),
-      BouncyBee(),
-      SizedBox(height: 30.0),
-      SightingsList(),
-      SizedBox(height: 40.0),
-    ]));
+    return RefreshIndicator(
+      color: MeliColors.black,
+      onRefresh: () {
+        if (paginator.onRefresh != null) {
+          paginator.onRefresh!();
+        }
+
+        return Future.delayed(Duration(milliseconds: 150));
+      },
+      child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(children: [
+            TopBar(),
+            BouncyBee(),
+            SizedBox(height: 30.0),
+            SightingsList(paginator: this.paginator),
+            SizedBox(height: 40.0),
+          ])),
+    );
   }
 }
 
@@ -78,7 +92,9 @@ class TopBar extends StatelessWidget {
 }
 
 class SightingsList extends StatefulWidget {
-  SightingsList({super.key});
+  final Paginator<Sighting> paginator;
+
+  SightingsList({super.key, required this.paginator});
 
   @override
   State<SightingsList> createState() => _SightingsListState();
@@ -93,31 +109,24 @@ class _SightingsListState extends State<SightingsList> {
       child: Container(
           width: double.infinity,
           padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
-          child: SightingListPaginator()),
+          child: PaginationList<Sighting>(
+              builder: (Sighting sighting) {
+                return Container(
+                    padding: EdgeInsets.only(bottom: 20.0),
+                    child: SightingCard(
+                        onTap: () => {
+                              router.pushNamed(RoutePaths.sighting.name,
+                                  pathParameters: {'documentId': sighting.id})
+                            },
+                        date: sighting.datetime,
+                        localName: sighting.local_name,
+                        speciesName: sighting.species,
+                        // TODO: use actual image url here
+                        image:
+                            'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg'));
+              },
+              paginator: widget.paginator)),
     );
-  }
-}
-
-class SightingListPaginator extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return PaginationList<Sighting>(
-        builder: (Sighting sighting) {
-          return Container(
-              padding: EdgeInsets.only(bottom: 20.0),
-              child: SightingCard(
-                  onTap: () => {
-                        router.pushNamed(RoutePaths.sighting.name,
-                            pathParameters: {'documentId': sighting.id})
-                      },
-                  date: sighting.datetime,
-                  localName: sighting.local_name,
-                  speciesName: sighting.species,
-                  // TODO: use actual image url here
-                  image:
-                      'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg'));
-        },
-        paginator: SightingPaginator());
   }
 }
 

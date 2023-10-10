@@ -16,12 +16,17 @@ typedef PaginationListBuilder<T> = Widget Function(
   T document,
 );
 
-class PaginationList<T> extends StatelessWidget {
+class PaginationList<T> extends StatefulWidget {
   final PaginationListBuilder<T> builder;
   final Paginator<T> paginator;
 
   PaginationList({super.key, required this.builder, required this.paginator});
 
+  @override
+  State<PaginationList<T>> createState() => _PaginationListState<T>();
+}
+
+class _PaginationListState<T> extends State<PaginationList<T>> {
   Widget _error(BuildContext context, String errorMessage) {
     return ErrorCard(
         message:
@@ -42,7 +47,8 @@ class PaginationList<T> extends StatelessWidget {
         message: AppLocalizations.of(context)!.paginationListNoResults);
   }
 
-  Widget _loadMore(BuildContext context, bool isLoading, {required VoidCallback onLoadMore}) {
+  Widget _loadMore(BuildContext context, bool isLoading,
+      {required VoidCallback onLoadMore}) {
     return Column(children: [
       isLoading
           ? this._loading()
@@ -57,8 +63,14 @@ class PaginationList<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Query(
-      options: QueryOptions(document: this.paginator.nextPageQuery(null)),
+      options:
+          QueryOptions(document: this.widget.paginator.nextPageQuery(null)),
       builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
+        if (widget.paginator.onRefresh == null) {
+          // Workaround to access `refetch` method from the outside
+          widget.paginator.onRefresh = refetch;
+        }
+
         if (result.hasException) {
           return this._error(context, result.exception.toString());
         }
@@ -68,13 +80,12 @@ class PaginationList<T> extends StatelessWidget {
         }
 
         final data =
-            this.paginator.parseJSON(result.data as Map<String, dynamic>);
+            widget.paginator.parseJSON(result.data as Map<String, dynamic>);
 
         FetchMoreOptions opts = FetchMoreOptions(
-          document: this.paginator.nextPageQuery(data.endCursor),
+          document: widget.paginator.nextPageQuery(data.endCursor),
           updateQuery: (previousResultData, fetchMoreResultData) {
-            return this
-                .paginator
+            return widget.paginator
                 .mergeResponses(previousResultData!, fetchMoreResultData!);
           },
         );
@@ -86,7 +97,7 @@ class PaginationList<T> extends StatelessWidget {
         return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              ...data.documents.map((document) => this.builder(document)),
+              ...data.documents.map((document) => widget.builder(document)),
               if (data.hasNextPage)
                 this._loadMore(context, result.isLoading, onLoadMore: () {
                   fetchMore!(opts);
