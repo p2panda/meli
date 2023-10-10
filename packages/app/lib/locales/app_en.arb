@@ -15,6 +15,7 @@
     "locationTryAgain": "Adjust your device's location permissions for this app or enable the location service and try again.",
     "locationTryAgainAction": "Try again",
     "paginationListError": "Error occurred while requesting data: {errorMessage}",
+    "paginationListLoadMore": "Load More",
     "paginationListNoResults": "No entries given yet",
     "sightingUnspecified": "Unknown species"
 }

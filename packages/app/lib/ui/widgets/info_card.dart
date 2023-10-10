@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 
 import 'package:app/ui/colors.dart';
 
-class ErrorCard extends StatelessWidget {
+class InfoCard extends StatelessWidget {
   final String message;
 
-  ErrorCard({super.key, required this.message});
+  InfoCard({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
     return IconMessageCard(
-      color: MeliColors.peach,
+      color: MeliColors.white,
       message: this.message,
-      icon: Icons.warning_rounded,
+      icon: Icons.flare,
     );
   }
 }

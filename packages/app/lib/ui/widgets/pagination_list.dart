@@ -6,7 +6,9 @@ import 'package:gql/ast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:app/models/base.dart';
+import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/error_card.dart';
+import 'package:app/ui/widgets/info_card.dart';
 
 typedef NextPageFunction = DocumentNode Function(String endCursor);
 
@@ -27,23 +29,29 @@ class PaginationList<T> extends StatelessWidget {
   }
 
   Widget _loading() {
-    return Text('Loading ...');
+    return Center(
+        child: Container(
+            padding: EdgeInsets.all(30.0),
+            child: CircularProgressIndicator(
+              color: MeliColors.black,
+            )));
   }
 
-  Widget _emptyResult() {
-    return Text('No results ...');
+  Widget _emptyResult(BuildContext context) {
+    return InfoCard(
+        message: AppLocalizations.of(context)!.paginationListNoResults);
   }
 
-  Widget _loadMore({required VoidCallback onLoadMore}) {
-    return TextButton(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text("Load More"),
-        ],
-      ),
-      onPressed: onLoadMore,
-    );
+  Widget _loadMore(BuildContext context, bool isLoading, {required VoidCallback onLoadMore}) {
+    return Column(children: [
+      isLoading
+          ? this._loading()
+          : ElevatedButton(
+              child: Text(AppLocalizations.of(context)!.paginationListLoadMore,
+                  style: TextStyle(color: MeliColors.black)),
+              onPressed: onLoadMore,
+            )
+    ]);
   }
 
   @override
@@ -72,7 +80,7 @@ class PaginationList<T> extends StatelessWidget {
         );
 
         if (data.documents.isEmpty) {
-          return this._emptyResult();
+          return this._emptyResult(context);
         }
 
         return Column(
@@ -80,7 +88,7 @@ class PaginationList<T> extends StatelessWidget {
             children: <Widget>[
               ...data.documents.map((document) => this.builder(document)),
               if (data.hasNextPage)
-                this._loadMore(onLoadMore: () {
+                this._loadMore(context, result.isLoading, onLoadMore: () {
                   fetchMore!(opts);
                 })
             ]);
