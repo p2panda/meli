@@ -50,8 +50,8 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Text(t.deleteImageAlertTitle),
-        content: Text(t.deleteImageAlertContent),
+        title: Text(t.imageDeleteAlertTitle),
+        content: Text(t.imageDeleteAlertBody),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.pop(context, 'No'),
@@ -62,7 +62,7 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
               this.widget.onDeleteImage(imageIndex);
               Navigator.pop(context, 'Yes');
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(t.imageDeleted),
+                content: Text(t.imageDeleteConfirmation),
               ));
             },
             child: const Text('Yes'),

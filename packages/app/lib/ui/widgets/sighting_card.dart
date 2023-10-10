@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/card.dart';
@@ -27,24 +28,29 @@ class SightingCard extends StatefulWidget {
 class _SightingCardState extends State<SightingCard> {
   bool isSelected = false;
 
-  String get _title {
+  Widget get _title {
+    String title = AppLocalizations.of(context)!.sightingUnspecified;
+
     if (this.widget.speciesName != null) {
-      return this.widget.speciesName!;
+      title = widget.localName!;
+    } else if (widget.localName != null) {
+      title = widget.speciesName!;
     }
 
-    if (this.widget.localName != null) {
-      return this.widget.localName!;
-    }
-
-    return "unspecified";
+    return Text(title,
+        style: TextStyle(fontSize: 20.0, fontFamily: 'Staatliches'));
   }
 
   Widget get _icon {
-    if (this.widget.speciesName == null && this.widget.localName == null) {
+    if (widget.speciesName == null && widget.localName == null) {
       return Icon(Icons.question_mark);
     }
 
-    return Text("");
+    return SizedBox.shrink();
+  }
+
+  Widget get _date {
+    return Text('${widget.date.day}.${widget.date.month}.${widget.date.year}');
   }
 
   @override
@@ -70,7 +76,7 @@ class _SightingCardState extends State<SightingCard> {
           elevation: 0,
           borderWidth: 3.0,
           color: MeliColors.white,
-          borderColor: this.isSelected ? Colors.black : MeliColors.white,
+          borderColor: this.isSelected ? MeliColors.black : MeliColors.white,
           child: Column(children: [
             Container(
               alignment: AlignmentDirectional.centerStart,
@@ -81,13 +87,10 @@ class _SightingCardState extends State<SightingCard> {
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(this._title,
-                            style: TextStyle(
-                                fontSize: 20.0, fontFamily: 'Staatliches')),
+                        this._title,
                         this._icon,
                       ]),
-                  Text(
-                      '${this.widget.date.day}.${this.widget.date.month}.${this.widget.date.year}')
+                  this._date,
                 ],
               ),
             ),
