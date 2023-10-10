@@ -76,21 +76,6 @@ class ScrollView extends StatelessWidget {
   }
 }
 
-class TopBar extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-      alignment: Alignment.centerRight,
-      child: IconButton(
-          icon: Icon(Icons.settings_outlined),
-          onPressed: () {
-            router.push(RoutePaths.settings.path);
-          }),
-    );
-  }
-}
-
 class SightingsList extends StatefulWidget {
   final Paginator<Sighting> paginator;
 
@@ -101,6 +86,20 @@ class SightingsList extends StatefulWidget {
 }
 
 class _SightingsListState extends State<SightingsList> {
+  Widget _item(Sighting sighting) {
+    return SightingCard(
+        onTap: () => {
+              router.pushNamed(RoutePaths.sighting.name,
+                  pathParameters: {'documentId': sighting.id})
+            },
+        date: sighting.datetime,
+        localName: sighting.local_name,
+        speciesName: sighting.species,
+        // TODO: use actual image url here
+        image:
+            'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -113,19 +112,24 @@ class _SightingsListState extends State<SightingsList> {
               builder: (Sighting sighting) {
                 return Container(
                     padding: EdgeInsets.only(bottom: 20.0),
-                    child: SightingCard(
-                        onTap: () => {
-                              router.pushNamed(RoutePaths.sighting.name,
-                                  pathParameters: {'documentId': sighting.id})
-                            },
-                        date: sighting.datetime,
-                        localName: sighting.local_name,
-                        speciesName: sighting.species,
-                        // TODO: use actual image url here
-                        image:
-                            'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg'));
+                    child: this._item(sighting));
               },
               paginator: widget.paginator)),
+    );
+  }
+}
+
+class TopBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+      alignment: Alignment.centerRight,
+      child: IconButton(
+          icon: Icon(Icons.settings_outlined),
+          onPressed: () {
+            router.push(RoutePaths.settings.path);
+          }),
     );
   }
 }

@@ -16,17 +16,12 @@ typedef PaginationListBuilder<T> = Widget Function(
   T document,
 );
 
-class PaginationList<T> extends StatefulWidget {
+class PaginationList<T> extends StatelessWidget {
   final PaginationListBuilder<T> builder;
   final Paginator<T> paginator;
 
   PaginationList({super.key, required this.builder, required this.paginator});
 
-  @override
-  State<PaginationList<T>> createState() => _PaginationListState<T>();
-}
-
-class _PaginationListState<T> extends State<PaginationList<T>> {
   Widget _error(BuildContext context, String errorMessage) {
     return ErrorCard(
         message:
@@ -64,11 +59,11 @@ class _PaginationListState<T> extends State<PaginationList<T>> {
   Widget build(BuildContext context) {
     return Query(
       options:
-          QueryOptions(document: this.widget.paginator.nextPageQuery(null)),
+          QueryOptions(document: this.paginator.nextPageQuery(null)),
       builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
-        if (widget.paginator.onRefresh == null) {
+        if (this.paginator.onRefresh == null) {
           // Workaround to access `refetch` method from the outside
-          widget.paginator.onRefresh = refetch;
+          this.paginator.onRefresh = refetch;
         }
 
         if (result.hasException) {
@@ -80,12 +75,12 @@ class _PaginationListState<T> extends State<PaginationList<T>> {
         }
 
         final data =
-            widget.paginator.parseJSON(result.data as Map<String, dynamic>);
+            this.paginator.parseJSON(result.data as Map<String, dynamic>);
 
         FetchMoreOptions opts = FetchMoreOptions(
-          document: widget.paginator.nextPageQuery(data.endCursor),
+          document: this.paginator.nextPageQuery(data.endCursor),
           updateQuery: (previousResultData, fetchMoreResultData) {
-            return widget.paginator
+            return this.paginator
                 .mergeResponses(previousResultData!, fetchMoreResultData!);
           },
         );
@@ -97,7 +92,7 @@ class _PaginationListState<T> extends State<PaginationList<T>> {
         return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              ...data.documents.map((document) => widget.builder(document)),
+              ...data.documents.map((document) => this.builder(document)),
               if (data.hasNextPage)
                 this._loadMore(context, result.isLoading, onLoadMore: () {
                   fetchMore!(opts);
