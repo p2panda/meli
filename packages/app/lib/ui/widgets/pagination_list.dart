@@ -58,8 +58,7 @@ class PaginationList<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Query(
-      options:
-          QueryOptions(document: this.paginator.nextPageQuery(null)),
+      options: QueryOptions(document: this.paginator.nextPageQuery(null)),
       builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (this.paginator.onRefresh == null) {
           // Workaround to access `refetch` method from the outside
@@ -80,7 +79,8 @@ class PaginationList<T> extends StatelessWidget {
         FetchMoreOptions opts = FetchMoreOptions(
           document: this.paginator.nextPageQuery(data.endCursor),
           updateQuery: (previousResultData, fetchMoreResultData) {
-            return this.paginator
+            return this
+                .paginator
                 .mergeResponses(previousResultData!, fetchMoreResultData!);
           },
         );
