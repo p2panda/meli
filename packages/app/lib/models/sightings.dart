@@ -140,6 +140,23 @@ String sightingQuery(DocumentId id) {
   ''';
 }
 
+String lastSightingQuery(DocumentId speciesId) {
+  final schemaId = SchemaIds.bee_sighting;
+  return '''
+    query LastSighting() {
+      $DEFAULT_RESULTS_KEY: all_$schemaId(
+        first: 1,
+        orderBy: "datetime",
+        orderDirection: DESC
+      ) {
+        documents {
+          $sightingFields
+        }
+      }
+    }
+  ''';
+}
+
 Future<DocumentViewId> createSighting(
     DateTime datetime,
     double latitude,

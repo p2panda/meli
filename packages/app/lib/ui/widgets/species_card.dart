@@ -1,11 +1,15 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:app/io/p2panda/publish.dart';
+import 'package:app/models/base.dart';
+import 'package:app/models/sightings.dart';
 import 'package:app/models/taxonomy_species.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/card.dart';
+import 'package:app/ui/widgets/image.dart';
 
 class SpeciesCard extends StatefulWidget {
   final DocumentId id;
@@ -38,8 +42,31 @@ class _SpeciesCardState extends State<SpeciesCard> {
   }
 
   Widget get _image {
-    // @TODO: Try to get at least one image associated with this species via GraphQL
-    return Text('@TODO');
+    return Query(
+      options: QueryOptions(
+        document: gql(lastSightingQuery(widget.id)),
+      ),
+      builder: (QueryResult result,
+          {VoidCallback? refetch, FetchMore? fetchMore}) {
+        if (result.hasException) {
+          return MeliImage(
+              image: null, externalError: result.exception.toString());
+        }
+
+        if (result.isLoading) {
+          return SizedBox.shrink();
+        }
+
+        final list = result.data![DEFAULT_RESULTS_KEY]['documents'] as List;
+        if (list.isNotEmpty) {
+          Sighting sighting =
+              Sighting.fromJson(list.first as Map<String, dynamic>);
+          return MeliImage(image: sighting.images.first);
+        } else {
+          return MeliImage(image: null);
+        }
+      },
+    );
   }
 
   @override

@@ -8,8 +8,9 @@ import 'package:app/models/blobs.dart';
 
 class MeliImage extends StatelessWidget {
   final Blob? image;
+  final String? externalError;
 
-  MeliImage({super.key, required this.image});
+  MeliImage({super.key, required this.image, this.externalError});
 
   Widget _error(BuildContext context, String message) {
     return Container(
@@ -29,6 +30,10 @@ class MeliImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (this.externalError != null) {
+      return this._error(context, externalError!);
+    }
+
     if (this.image == null) {
       return this
           ._error(context, AppLocalizations.of(context)!.imageMissingError);
