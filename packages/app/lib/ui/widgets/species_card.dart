@@ -38,6 +38,7 @@ class _SpeciesCardState extends State<SpeciesCard> {
   }
 
   Widget get _image {
+    // @TODO: Try to get at least one image associated with this species via GraphQL
     return Text('@TODO');
   }
 
@@ -62,9 +63,9 @@ class _SpeciesCardState extends State<SpeciesCard> {
       onTap: this.widget.onTap,
       child: MeliCard(
           elevation: 0,
-          color: MeliColors.white,
-          borderColor: MeliColors.white,
           borderWidth: 0.0,
+          color: MeliColors.white,
+          borderColor: this.isSelected ? MeliColors.black : MeliColors.white,
           child: Column(children: [
             Container(
               child: this._image,
