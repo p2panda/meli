@@ -19,15 +19,6 @@ class AllSpeciesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MeliScaffold(
         title: AppLocalizations.of(context)!.speciesScreenTitle,
-        fabAlignment: MainAxisAlignment.end,
-        floatingActionButtons: [
-          MeliFloatingActionButton(
-              icon: Icon(Icons.add),
-              backgroundColor: MeliColors.sea,
-              onPressed: () {
-                router.push(RoutePaths.createSpecies.path);
-              }),
-        ],
         body: RefreshIndicator(
             color: MeliColors.black,
             onRefresh: () {

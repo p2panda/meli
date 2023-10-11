@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/screens/create_species.dart';
 import 'package:app/ui/screens/species.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -27,8 +26,6 @@ class RoutePaths {
   static RoutePath species = RoutePath('species', '/species/:documentId');
   static RoutePath createSighting =
       RoutePath('create_sighting', '/create/sighting');
-  static RoutePath createSpecies =
-      RoutePath('create_species', '/create/species');
 }
 
 final router = GoRouter(routes: [
@@ -48,7 +45,6 @@ final router = GoRouter(routes: [
       (state) =>
           SpeciesScreen(documentId: state.pathParameters["documentId"]!)),
   _Route(RoutePaths.createSighting, (_) => CreateSightingScreen()),
-  _Route(RoutePaths.createSpecies, (_) => CreateSpeciesScreen()),
 ]);
 
 class _Route extends GoRoute {
