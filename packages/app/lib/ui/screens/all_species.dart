@@ -37,15 +37,18 @@ class AllSpeciesScreen extends StatelessWidget {
 
               return Future.delayed(Duration(milliseconds: 150));
             },
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
-              decoration: new PeachWavesBackground(),
-              child: SingleChildScrollView(
-                padding: EdgeInsets.only(top: 80.0, bottom: 20.0),
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: SpeciesList(paginator: this.paginator),
-              ),
-            )));
+            child: LayoutBuilder(builder: (context, constraints) {
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                decoration: new PeachWavesBackground(),
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.only(top: 80.0, bottom: 20.0),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: SpeciesList(paginator: this.paginator),
+                ),
+              );
+            })));
   }
 }
 
