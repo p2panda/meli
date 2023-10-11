@@ -12,9 +12,14 @@ import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/expandable_fab.dart';
 import 'package:app/ui/widgets/fab.dart';
+import 'package:app/ui/widgets/image_carousel.dart';
 import 'package:app/ui/widgets/image_provider.dart';
+import 'package:app/ui/widgets/local_name_autocomplete.dart';
+import 'package:app/ui/widgets/location_tracker.dart';
 import 'package:app/ui/widgets/scaffold.dart';
-import 'package:app/ui/widgets/sighting_form.dart';
+import 'package:app/ui/widgets/simple_card.dart';
+
+const String PLACEHOLDER_IMG = 'assets/images/placeholder-bee.png';
 
 class CreateSightingScreen extends StatefulWidget {
   CreateSightingScreen({super.key});
@@ -24,9 +29,11 @@ class CreateSightingScreen extends StatefulWidget {
 }
 
 class _CreateSightingScreenState extends State<CreateSightingScreen> {
-  final _formKey = GlobalKey<FormState>();
-
   List<File> images = [];
+  String? localName;
+  double latitude = 0.0;
+  double longitude = 0.0;
+
   bool _initialImageCaptured = false;
 
   void _removeImageAt(int index) {
@@ -65,40 +72,59 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
     }
   }
 
+  void _onImageDelete(int imageIndex) {
+    final t = AppLocalizations.of(context)!;
+
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(t.imageDeleteAlertTitle),
+        content: Text(t.imageDeleteAlertBody),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(t.imageDeleteAlertCancel),
+          ),
+          TextButton(
+            onPressed: () {
+              this._removeImageAt(imageIndex);
+              Navigator.pop(context);
+            },
+            child: Text(t.imageDeleteAlertConfirm),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _createSighting() async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        // TODO: populate all fields from form
-        DateTime datetime = DateTime.now();
+    try {
+      DateTime datetime = DateTime.now();
 
-        // Publish each image as a blob and collect ids in a list.
-        List<DocumentViewId> imageIds = [];
-        try {
-          List<DocumentViewId> response =
-              await Future.wait(images.map((image) async {
-            return await publishBlob(image);
-          }));
-          imageIds.addAll(response);
-        } catch (e) {
-          print('Error publishing blob: ${e}');
-        }
+      // Publish each image as a blob on the node and collect ids in a list
+      List<DocumentViewId> imageIds = [];
+      List<DocumentViewId> response =
+          await Future.wait(images.map((image) async {
+        return await publishBlob(image);
+      }));
 
-        // Publish the sighting.
-        await createSighting(datetime, 0.0, 0.0,
-            'Some comment about this sighting', imageIds, null, null);
+      imageIds.addAll(response);
 
-        // Go back to sightings overview
-        router.push(RoutePaths.allSightings.path);
+      // Publish the sighting.
+      await createSighting(
+          datetime, latitude, longitude, '', imageIds, null, null);
 
-        // Show notification
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: const Text('Yay! Created new sighting'),
-        ));
-      } catch (err) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Something went wrong: $err'),
-        ));
-      }
+      // Go back to sightings overview
+      router.pop();
+
+      // Show notification
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Text('Yay! Created new sighting'),
+      ));
+    } catch (err) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Something went wrong: $err'),
+      ));
     }
   }
 
@@ -109,6 +135,10 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+    MeliCameraProviderInherited.of(context)
+        .retrieveLostData()
+        .then((file) => {if (file != null) this._addImage(file)});
 
     MeliCameraProviderInherited.of(context).capturePhoto().then((file) {
       if (file != null) {
@@ -123,6 +153,8 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     if (images.isEmpty && !_initialImageCaptured) {
       return Container(
         color: MeliColors.black,
@@ -135,7 +167,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
     }
 
     return MeliScaffold(
-      title: AppLocalizations.of(context)!.createSightingScreenTitle,
+      title: t.createSightingScreenTitle,
       backgroundColor: MeliColors.electric,
       floatingActionButtons: [
         ExpandableFab(
@@ -171,11 +203,31 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
         child: SingleChildScrollView(
           padding:
               EdgeInsets.only(top: 20.0, bottom: 75.0, left: 20.0, right: 20.0),
-          child: Container(
-            child: CreateSightingForm(
-                formKey: this._formKey,
-                images: this.images,
-                onDeleteImage: this._removeImageAt),
+          child: Wrap(
+            runSpacing: 20.0,
+            children: [
+              images.isEmpty
+                  ? ImageCarousel(imagePaths: [PLACEHOLDER_IMG])
+                  : ImageCarousel(
+                      imagePaths: images.map((file) => file.path).toList(),
+                      onDelete: _onImageDelete),
+              SimpleCard(
+                  title: t.localNameCardTitle,
+                  child: LocalNameAutocomplete(
+                    onChanged: (value) {
+                      localName = value;
+                    },
+                  )),
+              LocationTrackerInput(onPositionChanged: (position) {
+                if (position == null) {
+                  latitude = 0.0;
+                  longitude = 0.0;
+                } else {
+                  latitude = position.latitude;
+                  longitude = position.longitude;
+                }
+              }),
+            ],
           ),
         ),
       ),

@@ -7,6 +7,7 @@
     "imageDeleteConfirmation": "Image deleted.",
     "imageLoadingError": "Could not load image",
     "imageMissingError": "No image given",
+    "localNameCardTitle": "Local Name",
     "locationAdd": "Do you want to add a GPS location?",
     "locationAddAction": "Add location to image",
     "locationErrorPermissionDenied": "Location permission was denied",

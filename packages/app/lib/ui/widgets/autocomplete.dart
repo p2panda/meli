@@ -79,12 +79,17 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      return RawAutocomplete<String>(
+      return Autocomplete<String>(
         fieldViewBuilder: (BuildContext context,
             TextEditingController controller,
             FocusNode focusNode,
             VoidCallback onFieldSubmitted) {
           return TextFormField(
+            onChanged: (value) {
+              if (widget.onChanged != null) {
+                widget.onChanged!.call(value);
+              }
+            },
             decoration: InputDecoration(
               suffixIcon: _isLoading
                   ? Transform.scale(
