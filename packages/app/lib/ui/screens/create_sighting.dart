@@ -7,9 +7,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/blobs.dart';
+import 'package:app/models/local_names.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
+import 'package:app/ui/widgets/autocomplete.dart';
 import 'package:app/ui/widgets/expandable_fab.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/image_carousel.dart';
@@ -30,7 +32,7 @@ class CreateSightingScreen extends StatefulWidget {
 
 class _CreateSightingScreenState extends State<CreateSightingScreen> {
   List<File> images = [];
-  String? localName;
+  AutocompleteItem? localName;
   double latitude = 0.0;
   double longitude = 0.0;
 
@@ -107,12 +109,19 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
           await Future.wait(images.map((image) async {
         return await publishBlob(image);
       }));
-
       imageIds.addAll(response);
 
-      // Publish the sighting.
+      // Check if local name already exists, otherwise create a new one
+      DocumentId? localNameId;
+      if (localName != null && localName!.documentId != null) {
+        localNameId = localName!.documentId;
+      } else if (localName != null) {
+        localNameId = await createLocalName(localName!.value);
+      }
+
+      // Publish the sighting
       await createSighting(
-          datetime, latitude, longitude, '', imageIds, null, null);
+          datetime, latitude, longitude, '', imageIds, null, localNameId);
 
       // Go back to sightings overview
       router.pop();
@@ -214,8 +223,12 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
               SimpleCard(
                   title: t.localNameCardTitle,
                   child: LocalNameAutocomplete(
-                    onChanged: (value) {
-                      localName = value;
+                    onChanged: (AutocompleteItem result) {
+                      if (result.value.isEmpty) {
+                        localName = null;
+                      } else {
+                        localName = result;
+                      }
                     },
                   )),
               LocationTrackerInput(onPositionChanged: (position) {

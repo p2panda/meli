@@ -3,16 +3,25 @@
 import 'package:flutter/material.dart';
 
 import 'package:app/utils/debouncable.dart';
+import 'package:app/io/p2panda/publish.dart';
 
-typedef OptionsRequest = Future<Iterable<String>> Function(String);
+typedef OnOptionsRequest = Future<Iterable<AutocompleteItem>> Function(String);
+typedef OnChanged = void Function(AutocompleteItem);
 
 /// Define maximum number of options shown in autocomplete, next to the current
 /// input value.
 const MAX_OPTIONS = 5;
 
+class AutocompleteItem {
+  final String value;
+  final DocumentId? documentId;
+
+  AutocompleteItem({required this.value, this.documentId = null});
+}
+
 class MeliAutocomplete extends StatefulWidget {
-  final OptionsRequest onOptionsRequest;
-  final Function? onChanged;
+  final OnOptionsRequest onOptionsRequest;
+  final OnChanged? onChanged;
 
   MeliAutocomplete({
     super.key,
@@ -25,14 +34,14 @@ class MeliAutocomplete extends StatefulWidget {
 }
 
 class _MeliAutocompleteState extends State<MeliAutocomplete> {
-  late final Debounceable<Iterable<String>?, String> _debouncedSearch;
+  late final Debounceable<Iterable<AutocompleteItem>?, String> _debouncedSearch;
 
   // The query currently being searched for. If null, there is no pending
   // request.
   String? _currentQuery;
 
   // The most recent options received from the API.
-  late Iterable<String> _lastOptions = <String>[];
+  late Iterable<AutocompleteItem> _lastOptions = <AutocompleteItem>[];
 
   // A network error was recieved on the most recent query.
   bool _isError = false;
@@ -43,27 +52,31 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
   @override
   void initState() {
     super.initState();
-    _debouncedSearch = debounce<Iterable<String>?, String>(_search);
+    _debouncedSearch = debounce<Iterable<AutocompleteItem>?, String>(_search);
   }
 
   // Calls the "remote" API to search with the given query. Returns null when
   // the call has been made obsolete.
-  Future<Iterable<String>?> _search(String query) async {
+  Future<Iterable<AutocompleteItem>?> _search(String query) async {
     _currentQuery = query;
 
-    late final Iterable<String> options;
+    late final Iterable<AutocompleteItem> options;
     try {
       options = await widget.onOptionsRequest(query);
     } catch (error) {
-      setState(() {
-        _isError = true;
-      });
+      if (this.mounted) {
+        setState(() {
+          _isError = true;
+        });
+      }
 
-      return <String>[];
+      return <AutocompleteItem>[];
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (this.mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
 
     // If another search happened after this one, throw away these options.
@@ -79,7 +92,7 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      return Autocomplete<String>(
+      return Autocomplete<AutocompleteItem>(
         fieldViewBuilder: (BuildContext context,
             TextEditingController controller,
             FocusNode focusNode,
@@ -87,7 +100,17 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
           return TextFormField(
             onChanged: (value) {
               if (widget.onChanged != null) {
-                widget.onChanged!.call(value);
+                // Double-check if user actually typed _exactly_ the same value
+                // as one of our existing options
+                final Iterable<AutocompleteItem> duplicates =
+                    _lastOptions.where((element) =>
+                        element.value == value && element.documentId != null);
+                if (duplicates.isNotEmpty) {
+                  widget.onChanged!.call(duplicates.first);
+                } else {
+                  // .. otherwise use newly created user value
+                  widget.onChanged!.call(AutocompleteItem(value: value));
+                }
               }
             },
             decoration: InputDecoration(
@@ -117,8 +140,8 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
             },
           );
         },
-        optionsViewBuilder:
-            (BuildContext context, onSelected, Iterable<String> options) {
+        optionsViewBuilder: (BuildContext context, onSelected,
+            Iterable<AutocompleteItem> options) {
           return Container(
               margin: EdgeInsets.only(top: 1.0),
               child: Align(
@@ -137,12 +160,13 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
                       itemCount: options.length,
                       shrinkWrap: false,
                       itemBuilder: (BuildContext context, int index) {
-                        final String option = options.elementAt(index);
+                        final AutocompleteItem option =
+                            options.elementAt(index);
                         return InkWell(
                           onTap: () => onSelected(option),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
-                            child: Text(option),
+                            child: Text(option.value),
                           ),
                         );
                       },
@@ -156,7 +180,7 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
             _isLoading = true;
           });
 
-          final Iterable<String>? result =
+          final Iterable<AutocompleteItem>? result =
               await _debouncedSearch(textEditingValue.text);
 
           // Show last options when the current query is being debounced
@@ -170,13 +194,16 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
           // Include what the user is currently typing to make this an selectable
           // "free form" option
           return textEditingValue.text.isNotEmpty
-              ? [textEditingValue.text, ...options]
+              ? [AutocompleteItem(value: textEditingValue.text), ...options]
               : options;
         },
-        onSelected: (String selection) {
+        onSelected: (AutocompleteItem selection) {
           if (widget.onChanged != null) {
             widget.onChanged!.call(selection);
           }
+        },
+        displayStringForOption: (AutocompleteItem option) {
+          return option.value;
         },
       );
     });
