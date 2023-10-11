@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/blobs.dart';
@@ -56,6 +57,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
 
     MeliCameraProviderInherited.of(context).capturePhoto().then((file) {
       if (file != null) {
+        this._initialImageCaptured = true;
         this._addImage(file);
       } else {
         // If no file was captured navigate back to all sightings screen.
@@ -66,30 +68,25 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // If no images have been captured yet then return a spinner.
     if (images.isEmpty && !_initialImageCaptured) {
       return Container(
         color: MeliColors.black,
         child: Center(
-          child:
-            CircularProgressIndicator(
-              color: Colors.grey,
-              semanticsLabel: 'Circular progress indicator',
-            ),
+          child: CircularProgressIndicator(
+            color: Colors.grey,
+          ),
         ),
       );
     }
 
-    _initialImageCaptured = true;
-
-    // If images were successfully captured return the full view.
     return MeliScaffold(
-      title: 'Create new',
+      title: AppLocalizations.of(context)!.createSightingScreenTitle,
       floatingActionButtons: [
         ExpandableFab(
-          icon: const Icon(Icons.add_a_photo),
+          icon: const Icon(Icons.add_a_photo_outlined),
           expandDirection: ExpandDirection.right,
           distance: 80,
+          color: MeliColors.sea,
           buttons: [
             ActionButton(
               onPressed: () async {
@@ -98,6 +95,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
                         .pickFromGallery();
                 this._addAllImages(newImages);
               },
+              color: MeliColors.sea,
               icon: const Icon(Icons.insert_photo_outlined),
             ),
             ActionButton(
@@ -108,12 +106,14 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
                   this._addImage(newImage);
                 }
               },
+              color: MeliColors.sea,
               icon: const Icon(Icons.camera_alt_outlined),
             ),
           ],
         ),
         MeliFloatingActionButton(
             icon: Icon(Icons.check),
+            backgroundColor: MeliColors.electric,
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 // Create sighting data

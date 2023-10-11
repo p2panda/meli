@@ -1,4 +1,5 @@
 {
+    "createSightingScreenTitle": "Add Sighting",
     "imageDeleteAlertBody": "Are you sure you want to delete this image?",
     "imageDeleteAlertTitle": "Delete Image",
     "imageDeleteConfirmation": "Image deleted.",
