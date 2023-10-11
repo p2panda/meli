@@ -103,6 +103,8 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
     try {
       DateTime datetime = DateTime.now();
 
+      // @TODO: Show spinner to user?
+
       // Publish each image as a blob on the node and collect ids in a list
       List<DocumentViewId> imageIds = [];
       List<DocumentViewId> response =
@@ -128,10 +130,12 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
 
       // Show notification
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        // @TODO: Use i10n provider
         content: const Text('Yay! Created new sighting'),
       ));
     } catch (err) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        // @TODO: Use i10n provider
         content: Text('Something went wrong: $err'),
       ));
     }
