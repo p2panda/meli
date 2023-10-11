@@ -94,8 +94,7 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
                         .map((file) => Image.file(file))
                         .toList(),
                     onDelete: _onDeleteImageAlert),
-            SimpleCard(
-                title: 'Local Name', child: LocalNameAutocomplete()),
+            SimpleCard(title: 'Local Name', child: LocalNameAutocomplete()),
             LocationTrackerInput(onPositionChanged: (position) {
               if (position == null) {
                 print('Position: n/a');

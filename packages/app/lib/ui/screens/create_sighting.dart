@@ -47,6 +47,57 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
     });
   }
 
+  void _pickFromGallery() async {
+    List<File> newImages =
+        await MeliCameraProviderInherited.of(context).pickFromGallery();
+    this._addAllImages(newImages);
+  }
+
+  void _capturePhoto() async {
+    File? newImage =
+        await MeliCameraProviderInherited.of(context).capturePhoto();
+    if (newImage != null) {
+      this._addImage(newImage);
+    }
+  }
+
+  void _createSighting() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        // TODO: populate all fields from form
+        DateTime datetime = DateTime.now();
+
+        // Publish each image as a blob and collect ids in a list.
+        List<DocumentViewId> imageIds = [];
+        try {
+          List<DocumentViewId> response =
+              await Future.wait(images.map((image) async {
+            return await publishBlob(image);
+          }));
+          imageIds.addAll(response);
+        } catch (e) {
+          print('Error publishing blob: ${e}');
+        }
+
+        // Publish the sighting.
+        await createSighting(datetime, 0.0, 0.0,
+            'Some comment about this sighting', imageIds, null, null);
+
+        // Go back to sightings overview
+        router.push(RoutePaths.allSightings.path);
+
+        // Show notification
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text('Yay! Created new sighting'),
+        ));
+      } catch (err) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Something went wrong: $err'),
+        ));
+      }
+    }
+  }
+
   // This method is called directly after `initState`. We trigger the initial
   // image capture event here as it is safe to depend on inherited widgets (not
   // possible in `initState`) as well as trigger navigation events (not
@@ -60,7 +111,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
         this._initialImageCaptured = true;
         this._addImage(file);
       } else {
-        // If no file was captured navigate back to all sightings screen.
+        // If no file was captured navigate back to all sightings screen
         router.pop();
       }
     });
@@ -89,23 +140,12 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
           color: MeliColors.sea,
           buttons: [
             ActionButton(
-              onPressed: () async {
-                List<File> newImages =
-                    await MeliCameraProviderInherited.of(context)
-                        .pickFromGallery();
-                this._addAllImages(newImages);
-              },
+              onPressed: this._pickFromGallery,
               color: MeliColors.sea,
               icon: const Icon(Icons.insert_photo_outlined),
             ),
             ActionButton(
-              onPressed: () async {
-                File? newImage = await MeliCameraProviderInherited.of(context)
-                    .capturePhoto();
-                if (newImage != null) {
-                  this._addImage(newImage);
-                }
-              },
+              onPressed: this._capturePhoto,
               color: MeliColors.sea,
               icon: const Icon(Icons.camera_alt_outlined),
             ),
@@ -114,42 +154,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
         MeliFloatingActionButton(
             icon: Icon(Icons.check),
             backgroundColor: MeliColors.electric,
-            onPressed: () async {
-              if (_formKey.currentState!.validate()) {
-                try {
-                  // TODO: populate all fields from form
-                  DateTime datetime = DateTime.now();
-
-                  // Publish each image as a blob and collect ids in a list.
-                  List<DocumentViewId> imageIds = [];
-                  try {
-                    List<DocumentViewId> response =
-                        await Future.wait(images.map((image) async {
-                      return await publishBlob(image);
-                    }));
-                    imageIds.addAll(response);
-                  } catch (e) {
-                    print('Error publishing blob: ${e}');
-                  }
-
-                  // Publish the sighting.
-                  await createSighting(datetime, 0.0, 0.0,
-                      'Some comment about this sighting', imageIds, null, null);
-
-                  // Go back to sightings overview
-                  router.push(RoutePaths.allSightings.path);
-
-                  // Show notification
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: const Text('Yay! Created new sighting'),
-                  ));
-                } catch (err) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Something went wrong: $err'),
-                  ));
-                }
-              }
-            }),
+            onPressed: this._createSighting),
       ],
       body: SingleChildScrollView(
         padding: EdgeInsets.only(bottom: 75.0, left: 20.0, right: 20.0),
