@@ -16,10 +16,12 @@ import 'package:app/ui/widgets/expandable_fab.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/image_carousel.dart';
 import 'package:app/ui/widgets/image_provider.dart';
+import 'package:app/ui/widgets/loading_overlay.dart';
 import 'package:app/ui/widgets/local_name_autocomplete.dart';
 import 'package:app/ui/widgets/location_tracker.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/simple_card.dart';
+import 'package:app/utils/sleep.dart';
 
 const String PLACEHOLDER_IMG = 'assets/images/placeholder-bee.png';
 
@@ -31,6 +33,8 @@ class CreateSightingScreen extends StatefulWidget {
 }
 
 class _CreateSightingScreenState extends State<CreateSightingScreen> {
+  final GlobalKey<LoadingOverlayState> _overlayKey = GlobalKey();
+
   List<File> images = [];
   AutocompleteItem? localName;
   double latitude = 0.0;
@@ -100,10 +104,12 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
   }
 
   void _createSighting() async {
+    final t = AppLocalizations.of(context)!;
+
+    _overlayKey.currentState!.show();
+
     try {
       DateTime datetime = DateTime.now();
-
-      // @TODO: Show spinner to user?
 
       // Publish each image as a blob on the node and collect ids in a list
       List<DocumentViewId> imageIds = [];
@@ -127,21 +133,24 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
       await createSighting(
           datetime, latitude, longitude, '', imageIds, null, localNameId);
 
+      // .. wait a little bit
+      await sleep(500);
+
       // Go back to sightings overview
       router.pop();
 
       // Show notification
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        // @TODO: Use i10n provider
-        content: const Text('Yay! Created new sighting'),
+        content: Text(t.createSightingSuccess),
       ));
     } catch (error) {
       print(error);
 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        // @TODO: Use i10n provider
-        content: Text('Something went wrong: $error'),
+        content: Text(t.createSightingError(error)),
       ));
+    } finally {
+      _overlayKey.currentState!.hide();
     }
   }
 
@@ -172,6 +181,8 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
 
+    // Show spinner while user is asked to take a picture with the camera for
+    // the first time
     if (images.isEmpty && !_initialImageCaptured) {
       return Container(
         color: MeliColors.black,
@@ -183,72 +194,75 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
       );
     }
 
-    return MeliScaffold(
-      title: t.createSightingScreenTitle,
-      backgroundColor: MeliColors.electric,
-      floatingActionButtons: [
-        ExpandableFab(
-          icon: const Icon(Icons.add_a_photo_outlined),
-          expandDirection: ExpandDirection.right,
-          distance: 80,
-          color: MeliColors.sea,
-          buttons: [
-            ActionButton(
-              onPressed: this._pickFromGallery,
-              color: MeliColors.sea,
-              icon: const Icon(Icons.insert_photo_outlined),
-            ),
-            ActionButton(
-              onPressed: this._capturePhoto,
-              color: MeliColors.sea,
-              icon: const Icon(Icons.camera_alt_outlined),
-            ),
-          ],
-        ),
-        MeliFloatingActionButton(
-            icon: Icon(Icons.check),
-            disabled: this.images.isEmpty,
-            backgroundColor: MeliColors.electric,
-            onPressed: this._createSighting),
-      ],
-      body: Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [MeliColors.electric, MeliColors.magnolia])),
-        child: SingleChildScrollView(
-          padding:
-              EdgeInsets.only(top: 20.0, bottom: 75.0, left: 20.0, right: 20.0),
-          child: Wrap(
-            runSpacing: 20.0,
-            children: [
-              images.isEmpty
-                  ? ImageCarousel(imagePaths: [PLACEHOLDER_IMG])
-                  : ImageCarousel(
-                      imagePaths: images.map((file) => file.path).toList(),
-                      onDelete: _onImageDelete),
-              SimpleCard(
-                  title: t.localNameCardTitle,
-                  child: LocalNameAutocomplete(
-                    onChanged: (AutocompleteItem result) {
-                      if (result.value.isEmpty) {
-                        localName = null;
-                      } else {
-                        localName = result;
-                      }
-                    },
-                  )),
-              LocationTrackerInput(onPositionChanged: (position) {
-                if (position == null) {
-                  latitude = 0.0;
-                  longitude = 0.0;
-                } else {
-                  latitude = position.latitude;
-                  longitude = position.longitude;
-                }
-              }),
+    return LoadingOverlay(
+      key: _overlayKey,
+      child: MeliScaffold(
+        title: t.createSightingScreenTitle,
+        backgroundColor: MeliColors.electric,
+        floatingActionButtons: [
+          ExpandableFab(
+            icon: const Icon(Icons.add_a_photo_outlined),
+            expandDirection: ExpandDirection.right,
+            distance: 80,
+            color: MeliColors.sea,
+            buttons: [
+              ActionButton(
+                onPressed: this._pickFromGallery,
+                color: MeliColors.sea,
+                icon: const Icon(Icons.insert_photo_outlined),
+              ),
+              ActionButton(
+                onPressed: this._capturePhoto,
+                color: MeliColors.sea,
+                icon: const Icon(Icons.camera_alt_outlined),
+              ),
             ],
+          ),
+          MeliFloatingActionButton(
+              icon: Icon(Icons.check),
+              disabled: this.images.isEmpty,
+              backgroundColor: MeliColors.electric,
+              onPressed: this._createSighting),
+        ],
+        body: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [MeliColors.electric, MeliColors.magnolia])),
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(
+                top: 20.0, bottom: 75.0, left: 20.0, right: 20.0),
+            child: Wrap(
+              runSpacing: 20.0,
+              children: [
+                images.isEmpty
+                    ? ImageCarousel(imagePaths: [PLACEHOLDER_IMG])
+                    : ImageCarousel(
+                        imagePaths: images.map((file) => file.path).toList(),
+                        onDelete: _onImageDelete),
+                SimpleCard(
+                    title: t.localNameCardTitle,
+                    child: LocalNameAutocomplete(
+                      onChanged: (AutocompleteItem result) {
+                        if (result.value.isEmpty) {
+                          localName = null;
+                        } else {
+                          localName = result;
+                        }
+                      },
+                    )),
+                LocationTrackerInput(onPositionChanged: (position) {
+                  if (position == null) {
+                    latitude = 0.0;
+                    longitude = 0.0;
+                  } else {
+                    latitude = position.latitude;
+                    longitude = position.longitude;
+                  }
+                }),
+              ],
+            ),
           ),
         ),
       ),

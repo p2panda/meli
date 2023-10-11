@@ -1,5 +1,7 @@
 {
+    "createSightingError": "Something went wrong: {error}",
     "createSightingScreenTitle": "Add Sighting",
+    "createSightingSuccess": "Yay, you've successfully added a new sighting to the database",
     "imageDeleteAlertBody": "Are you sure you want to delete this image?",
     "imageDeleteAlertCancel": "No",
     "imageDeleteAlertConfirm": "Yes",
