@@ -10,6 +10,7 @@ import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/pagination_list.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/species_card.dart';
+import 'package:app/ui/widgets/fab.dart';
 
 class AllSpeciesScreen extends StatelessWidget {
   final Paginator<Species> paginator = SpeciesPaginator();
@@ -19,6 +20,14 @@ class AllSpeciesScreen extends StatelessWidget {
     return MeliScaffold(
         title: AppLocalizations.of(context)!.speciesScreenTitle,
         fabAlignment: MainAxisAlignment.end,
+        floatingActionButtons: [
+          MeliFloatingActionButton(
+              icon: Icon(Icons.add),
+              backgroundColor: MeliColors.sea,
+              onPressed: () {
+                router.push(RoutePaths.createSpecies.path);
+              }),
+        ],
         body: RefreshIndicator(
             color: MeliColors.black,
             onRefresh: () {
