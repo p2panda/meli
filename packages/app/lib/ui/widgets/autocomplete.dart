@@ -191,9 +191,13 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
           // even when we're currently querying for new ones
           _lastOptions = options;
 
+          // Do not show user input if it is the same value as an option
+          final duplicates = options
+              .where((element) => element.value == textEditingValue.text);
+
           // Include what the user is currently typing to make this an selectable
           // "free form" option
-          return textEditingValue.text.isNotEmpty
+          return textEditingValue.text.isNotEmpty && duplicates.isEmpty
               ? [AutocompleteItem(value: textEditingValue.text), ...options]
               : options;
         },
