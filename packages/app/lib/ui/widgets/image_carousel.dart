@@ -17,7 +17,7 @@ class ImageCarousel extends StatelessWidget {
       decoration: BoxDecoration(
           color: MeliColors.pink,
           borderRadius: BorderRadius.all(Radius.circular(12.0)),
-          border: Border.all(width: 3, color: Colors.black)),
+          border: Border.all(width: 4.0, color: Colors.black)),
       child: CarouselSlider(
         options: CarouselOptions(
             autoPlay: true,

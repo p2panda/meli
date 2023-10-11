@@ -132,6 +132,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
 
     return MeliScaffold(
       title: AppLocalizations.of(context)!.createSightingScreenTitle,
+      backgroundColor: MeliColors.electric,
       floatingActionButtons: [
         ExpandableFab(
           icon: const Icon(Icons.add_a_photo_outlined),
@@ -156,13 +157,21 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
             backgroundColor: MeliColors.electric,
             onPressed: this._createSighting),
       ],
-      body: SingleChildScrollView(
-        padding: EdgeInsets.only(bottom: 75.0, left: 20.0, right: 20.0),
-        child: Container(
-          child: CreateSightingForm(
-              formKey: this._formKey,
-              images: this.images,
-              onDeleteImage: this._removeImageAt),
+      body: Container(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [MeliColors.electric, MeliColors.magnolia])),
+        child: SingleChildScrollView(
+          padding:
+              EdgeInsets.only(top: 20.0, bottom: 75.0, left: 20.0, right: 20.0),
+          child: Container(
+            child: CreateSightingForm(
+                formKey: this._formKey,
+                images: this.images,
+                onDeleteImage: this._removeImageAt),
+          ),
         ),
       ),
     );
