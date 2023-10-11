@@ -116,7 +116,6 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
             backgroundColor: MeliColors.electric,
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
-                // Create sighting data
                 try {
                   // TODO: populate all fields from form
                   DateTime datetime = DateTime.now();
