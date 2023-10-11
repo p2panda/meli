@@ -35,8 +35,8 @@ class _SpeciesCardState extends State<SpeciesCard> {
       this.widget.taxonomySpecies.name,
       textAlign: TextAlign.center,
       style: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w400,
+        fontSize: 30.0,
+        fontFamily: 'Staatliches',
       ),
     );
   }

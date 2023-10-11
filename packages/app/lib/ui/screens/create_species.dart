@@ -9,6 +9,7 @@ class CreateSpeciesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MeliScaffold(title: 'Create Species', body: Text('Nothing here yet'));
+    return MeliScaffold(
+        title: 'Create Species', body: Text('Nothing here yet'));
   }
 }
