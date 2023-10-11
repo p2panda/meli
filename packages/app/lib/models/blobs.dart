@@ -10,7 +10,7 @@ import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/schema_ids.dart';
 import 'package:app/models/base.dart';
 
-const MAX_BLOB_PIECE_LENGTH = 256;
+const MAX_BLOB_PIECE_LENGTH = 256 * 1000; // 256kb as per specification
 
 class Blob {
   final String id;
