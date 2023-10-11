@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/models/base.dart';
 import 'package:app/models/species.dart';
@@ -14,8 +15,7 @@ class AllSpeciesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MeliScaffold(
-        // @TODO: i18n
-        title: 'Species',
+        title: AppLocalizations.of(context)!.speciesScreenTitle,
         fabAlignment: MainAxisAlignment.end,
         body: Container(
           padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
