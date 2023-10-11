@@ -2,16 +2,18 @@
 
 import 'package:flutter/material.dart';
 
+import 'package:app/ui/colors.dart';
+
 class MeliFloatingActionButton extends StatefulWidget {
   final Icon icon;
-  final String heroTag;
   final VoidCallback onPressed;
+  final Color backgroundColor;
 
   MeliFloatingActionButton(
       {super.key,
-      required this.heroTag,
       required this.icon,
-      required this.onPressed});
+      required this.onPressed,
+      this.backgroundColor = MeliColors.magnolia});
 
   @override
   State<MeliFloatingActionButton> createState() =>
@@ -25,8 +27,9 @@ class _MeliFloatingActionButtonState extends State<MeliFloatingActionButton> {
       height: 120,
       alignment: Alignment.bottomCenter,
       child: FloatingActionButton(
-        foregroundColor: Colors.black,
-        heroTag: widget.heroTag,
+        foregroundColor: MeliColors.black,
+        backgroundColor: widget.backgroundColor,
+        heroTag: null,
         child: widget.icon,
         shape: const CircleBorder(),
         onPressed: widget.onPressed,

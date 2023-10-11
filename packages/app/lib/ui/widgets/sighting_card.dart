@@ -1,80 +1,114 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/card.dart';
+import 'package:app/ui/widgets/image.dart';
 
-class SightingCard extends StatelessWidget {
+class SightingCard extends StatefulWidget {
   final String? localName;
-  final String subtitle;
-  final String image;
+  final DateTime date;
+  final String? imageDocumentId;
   final String? speciesName;
+  final VoidCallback onTap;
 
   SightingCard(
       {super.key,
       this.localName,
-      required this.subtitle,
-      required this.image,
+      required this.onTap,
+      required this.date,
+      required this.imageDocumentId,
       this.speciesName});
 
-  String get _title {
-    if (this.speciesName != null) {
-      return this.speciesName!;
+  @override
+  State<SightingCard> createState() => _SightingCardState();
+}
+
+class _SightingCardState extends State<SightingCard> {
+  bool isSelected = false;
+
+  Widget get _title {
+    String title = AppLocalizations.of(context)!.sightingUnspecified;
+
+    if (this.widget.speciesName != null) {
+      title = widget.localName!;
+    } else if (widget.localName != null) {
+      title = widget.speciesName!;
     }
 
-    if (this.localName != null) {
-      return this.localName!;
-    }
-
-    return "unspecified";
+    return Text(title,
+        style: TextStyle(fontSize: 20.0, fontFamily: 'Staatliches'));
   }
 
   Widget get _icon {
-    if (this.speciesName == null && this.localName == null) {
+    if (widget.speciesName == null && widget.localName == null) {
       return Icon(Icons.question_mark);
     }
-    ;
 
-    return Text("");
+    return SizedBox.shrink();
+  }
+
+  Widget get _date {
+    return Text('${widget.date.day}.${widget.date.month}.${widget.date.year}');
   }
 
   @override
   Widget build(BuildContext context) {
-    return MeliCard(
-        elevation: 0,
-        color: MeliColors.white,
-        child: Column(children: [
-          Container(
-            alignment: AlignmentDirectional.centerStart,
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(flex: 4, child: Text(this._title)),
-                      Expanded(flex: 1, child: this._icon)
-                    ]),
-                Text(this.subtitle)
-              ],
-            ),
-          ),
-          Container(
-              child: Container(
-            height: 210,
-            decoration: ShapeDecoration(
-              image: DecorationImage(
-                image: NetworkImage(this.image),
-                fit: BoxFit.fill,
+    return GestureDetector(
+      onTapDown: (details) {
+        setState(() {
+          isSelected = true;
+        });
+      },
+      onTapUp: (details) {
+        setState(() {
+          isSelected = false;
+        });
+      },
+      onTapCancel: () {
+        setState(() {
+          isSelected = false;
+        });
+      },
+      onTap: this.widget.onTap,
+      child: MeliCard(
+          elevation: 0,
+          borderWidth: 3.0,
+          color: MeliColors.white,
+          borderColor: this.isSelected ? MeliColors.black : MeliColors.white,
+          child: Column(children: [
+            Container(
+              alignment: AlignmentDirectional.centerStart,
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        this._title,
+                        this._icon,
+                      ]),
+                  this._date,
+                ],
               ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(12.0),
-                    bottomRight: Radius.circular(12.0)),
-              ),
             ),
-          )),
-        ]));
+            Container(
+              child: MeliImage(documentId: this.widget.imageDocumentId),
+              clipBehavior: Clip.hardEdge,
+              height: 200.0,
+              width: double.infinity,
+              decoration: ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(12.0),
+                      bottomRight: Radius.circular(12.0)),
+                ),
+              ),
+            )
+          ])),
+    );
   }
 }

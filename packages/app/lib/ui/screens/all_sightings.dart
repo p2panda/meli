@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'package:app/models/base.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/fab.dart';
+import 'package:app/ui/widgets/pagination_list.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/sighting_card.dart';
 
@@ -14,31 +15,31 @@ class AllSightingsScreen extends StatefulWidget {
   AllSightingsScreen({super.key});
 
   @override
-  State<AllSightingsScreen> createState() => _HomeScreenState();
+  State<AllSightingsScreen> createState() => _AllSightingsScreenState();
 }
 
-class _HomeScreenState extends State<AllSightingsScreen>
+class _AllSightingsScreenState extends State<AllSightingsScreen>
     with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return MeliScaffold(
       floatingActionButtons: [
         MeliFloatingActionButton(
-            heroTag: 'all_species',
             icon: Icon(Icons.hive_outlined),
+            backgroundColor: MeliColors.peach,
             onPressed: () {
               router.push(RoutePaths.allSpecies.path);
             }),
         MeliFloatingActionButton(
-            heroTag: 'create_new',
             icon: Icon(Icons.camera_alt_outlined),
+            backgroundColor: MeliColors.sea,
             onPressed: () {
               router.push(RoutePaths.createSighting.path);
             }),
       ],
       body: Container(
           child: Container(
-              decoration: new BackgroundDecoration(),
+              decoration: new GreenGradientBackground(),
               child: Container(
                 padding: EdgeInsets.only(
                     top: MediaQuery.of(context).viewPadding.top),
@@ -49,24 +50,74 @@ class _HomeScreenState extends State<AllSightingsScreen>
 }
 
 class ScrollView extends StatelessWidget {
+  final Paginator<Sighting> paginator = SightingPaginator();
+
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Column(children: [
-      Settings(),
-      Container(
-        padding: EdgeInsets.only(bottom: 30.0),
-        child: BouncyBee(),
-      ),
-      Container(
-        padding: EdgeInsets.only(bottom: 40.0),
-        child: SightingsList(),
-      )
-    ]));
+    return RefreshIndicator(
+      color: MeliColors.black,
+      onRefresh: () {
+        if (paginator.refresh != null) {
+          paginator.refresh!();
+        }
+
+        return Future.delayed(Duration(milliseconds: 150));
+      },
+      child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(children: [
+            TopBar(),
+            BouncyBee(),
+            SizedBox(height: 30.0),
+            SightingsList(paginator: this.paginator),
+            SizedBox(height: 40.0),
+          ])),
+    );
   }
 }
 
-class Settings extends StatelessWidget {
+class SightingsList extends StatefulWidget {
+  final Paginator<Sighting> paginator;
+
+  SightingsList({super.key, required this.paginator});
+
+  @override
+  State<SightingsList> createState() => _SightingsListState();
+}
+
+class _SightingsListState extends State<SightingsList> {
+  Widget _item(Sighting sighting) {
+    return SightingCard(
+        onTap: () => {
+              router.pushNamed(RoutePaths.sighting.name,
+                  pathParameters: {'documentId': sighting.id})
+            },
+        date: sighting.datetime,
+        localName: sighting.local_name,
+        speciesName: sighting.species,
+        imageDocumentId: sighting.images.firstOrNull);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+      decoration: new MagnoliaWavesBackground(),
+      child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
+          child: PaginationList<Sighting>(
+              builder: (Sighting sighting) {
+                return Container(
+                    padding: EdgeInsets.only(bottom: 20.0),
+                    child: this._item(sighting));
+              },
+              paginator: widget.paginator)),
+    );
+  }
+}
+
+class TopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -77,91 +128,6 @@ class Settings extends StatelessWidget {
           onPressed: () {
             router.push(RoutePaths.settings.path);
           }),
-    );
-  }
-}
-
-class SightingsList extends StatefulWidget {
-  SightingsList({super.key});
-
-  @override
-  State<SightingsList> createState() => _SightingsListState();
-}
-
-class _SightingsListState extends State<SightingsList> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-      decoration: new SightingsListDecoration(),
-      child: Container(
-          padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
-          child: Query(
-              options: QueryOptions(document: gql(allSightingsQuery(null))),
-              builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
-                if (result.hasException) {
-                  return Text(result.exception.toString());
-                }
-
-                if (result.isLoading && result.data == null) {
-                  return const Text('Loading ...');
-                }
-
-                final data = PaginatedSightingList.fromJson(
-                    result.data?['sightings'] as Map<String, dynamic>);
-
-                FetchMoreOptions opts = FetchMoreOptions(
-                  document: gql(allSightingsQuery(data.endCursor)),
-                  updateQuery: (previousResultData, fetchMoreResultData) {
-                    // this function will be called so as to combine both the original and fetchMore results
-                    // it allows you to combine them as you would like
-                    final List<dynamic> documents = [
-                      ...previousResultData?['sightings']['documents']
-                          as List<dynamic>,
-                      ...fetchMoreResultData?['sightings']['documents']
-                          as List<dynamic>
-                    ];
-
-                    // to avoid a lot of work, lets just update the list of repos in returned
-                    // data with new data, this also ensures we have the endCursor already set
-                    // correctly
-                    fetchMoreResultData?['sightings']['documents'] = documents;
-
-                    return fetchMoreResultData;
-                  },
-                );
-
-                return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      ...data.sightings.map((sighting) => GestureDetector(
-                          onTap: () => {
-                                router.pushNamed(RoutePaths.sighting.name,
-                                    pathParameters: {'documentId': sighting.id})
-                              },
-                          child: SightingCard(
-                              subtitle:
-                                  '${sighting.datetime.day}.${sighting.datetime.month}.${sighting.datetime.year}',
-                              localName: sighting.local_name,
-                              speciesName: sighting.species,
-                              image: (sighting.images.firstOrNull != null)
-                                  ? 'http://localhost:2020/blobs/${sighting.images.first}'
-                                  // TODO: remove this placeholder
-                                  : 'https://media.npr.org/assets/img/2018/10/30/bee1_wide-1dead2b859ef689811a962ce7aa6ace8a2a733d7-s1200.jpg'))),
-                      if (data.hasNextPage)
-                        TextButton(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text("Load More"),
-                            ],
-                          ),
-                          onPressed: () {
-                            fetchMore!(opts);
-                          },
-                        )
-                    ]);
-              })),
     );
   }
 }
@@ -197,6 +163,9 @@ class _BouncyBeeState extends State<BouncyBee>
       onTapUp: (details) {
         _beeAnimationController.reverse();
       },
+      onTapCancel: () {
+        _beeAnimationController.reverse();
+      },
       child: SlideTransition(
         position: _flyingBeeAnimation,
         child: Center(child: Text("🐝", style: TextStyle(fontSize: 50.0))),
@@ -205,16 +174,16 @@ class _BouncyBeeState extends State<BouncyBee>
   }
 }
 
-class BackgroundDecoration extends Decoration {
-  BackgroundDecoration();
+class GreenGradientBackground extends Decoration {
+  GreenGradientBackground();
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {
-    return _BackgroundDecorationPainter();
+    return _GreenGradientPainter();
   }
 }
 
-class _BackgroundDecorationPainter extends BoxPainter {
+class _GreenGradientPainter extends BoxPainter {
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
     final Size? bounds = configuration.size;
@@ -225,7 +194,7 @@ class _BackgroundDecorationPainter extends BoxPainter {
         end: Alignment.bottomCenter,
         colors: [
           MeliColors.electric,
-          MeliColors.grass,
+          MeliColors.grass.withAlpha(0),
         ],
       ).createShader(Rect.fromCenter(
           center: Offset(bounds!.width / 2, 200.0),
@@ -249,16 +218,16 @@ class _BackgroundDecorationPainter extends BoxPainter {
   }
 }
 
-class SightingsListDecoration extends Decoration {
-  SightingsListDecoration();
+class MagnoliaWavesBackground extends Decoration {
+  MagnoliaWavesBackground();
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {
-    return _SightingsListDecoration();
+    return _MagnoliaWavesPainer();
   }
 }
 
-class _SightingsListDecoration extends BoxPainter {
+class _MagnoliaWavesPainer extends BoxPainter {
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
     final Size? bounds = configuration.size;

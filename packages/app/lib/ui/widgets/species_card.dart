@@ -16,6 +16,8 @@ class SpeciesCard extends StatelessWidget {
     return MeliCard(
         elevation: 0,
         color: MeliColors.white,
+        borderColor: MeliColors.white,
+        borderWidth: 0.0,
         child: Column(children: [
           Container(
               child: Container(

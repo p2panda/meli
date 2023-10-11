@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:gql/src/ast/ast.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:p2panda_flutter/p2panda_flutter.dart';
 
 import 'package:app/io/p2panda/publish.dart';
+import 'package:app/models/base.dart';
 import 'package:app/models/schema_ids.dart';
 
 class Sighting {
@@ -68,27 +71,24 @@ class SightingList {
   }
 }
 
-class PaginatedSightingList {
-  final List<Sighting> sightings;
-  String? endCursor;
-  final bool hasNextPage;
+class SightingPaginator extends Paginator<Sighting> {
+  @override
+  DocumentNode nextPageQuery(String? cursor) {
+    return gql(allSightingsQuery(cursor));
+  }
 
-  PaginatedSightingList(
-      {required this.sightings, this.endCursor, required this.hasNextPage});
-
-  factory PaginatedSightingList.fromJson(Map<String, dynamic> json) {
-    final documents = json['documents'] as List;
-    List<Sighting> sightingsList = documents
+  @override
+  PaginatedCollection<Sighting> parseJSON(Map<String, dynamic> json) {
+    final list = json['results']['documents'] as List;
+    final documents = list
         .map((sighting) => Sighting.fromJson(sighting as Map<String, dynamic>))
         .toList();
 
-    String? endCursor = json['endCursor'] as String?;
-    bool hasNextPage = json['hasNextPage'] as bool;
+    final endCursor = json['results']['endCursor'] as String?;
+    final hasNextPage = json['results']['hasNextPage'] as bool;
 
-    return PaginatedSightingList(
-        sightings: sightingsList,
-        endCursor: endCursor,
-        hasNextPage: hasNextPage);
+    return PaginatedCollection(
+        documents: documents, hasNextPage: hasNextPage, endCursor: endCursor);
   }
 }
 
@@ -98,7 +98,7 @@ String allSightingsQuery(String? cursor) {
   final schemaId = SchemaIds.bee_sighting;
   return '''
     query AllSightings {
-      sightings: all_$schemaId(first: 3, $after orderBy: "datetime", orderDirection: DESC) {
+      results: all_$schemaId(first: 3, $after orderBy: "datetime", orderDirection: DESC) {
         hasNextPage
         endCursor
         documents {

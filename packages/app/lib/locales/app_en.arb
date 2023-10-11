@@ -1,7 +1,9 @@
 {
-    "deleteImageAlertTitle": "Delete Image",
-    "deleteImageAlertContent": "Are you sure you want to delete this image?",
-    "imageDeleted": "Image deleted.",
+    "imageDeleteAlertBody": "Are you sure you want to delete this image?",
+    "imageDeleteAlertTitle": "Delete Image",
+    "imageDeleteConfirmation": "Image deleted.",
+    "imageLoadingError": "Could not load image",
+    "imageMissingError": "No image given",
     "locationAdd": "Do you want to add a GPS location?",
     "locationAddAction": "Add location to image",
     "locationErrorPermissionDenied": "Location permission was denied",
@@ -13,5 +15,9 @@
     "locationRemoveAction": "Remove",
     "locationSuccessful": "Location recorded\n({latitude}, {longitude})",
     "locationTryAgain": "Adjust your device's location permissions for this app or enable the location service and try again.",
-    "locationTryAgainAction": "Try again"
+    "locationTryAgainAction": "Try again",
+    "paginationListError": "Error occurred while requesting data: {errorMessage}",
+    "paginationListLoadMore": "Load More",
+    "paginationListNoResults": "No entries given yet",
+    "sightingUnspecified": "Unknown species"
 }

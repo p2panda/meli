@@ -4,15 +4,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:app/router.dart';
 import 'package:app/io/p2panda/blobs.dart';
 import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/sightings.dart';
-import 'package:app/ui/widgets/sighting_form.dart';
+import 'package:app/router.dart';
+import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/expandable_fab.dart';
-import 'package:app/ui/widgets/image_provider.dart';
 import 'package:app/ui/widgets/fab.dart';
+import 'package:app/ui/widgets/image_provider.dart';
 import 'package:app/ui/widgets/scaffold.dart';
+import 'package:app/ui/widgets/sighting_form.dart';
 
 class CreateNewScreen extends StatefulWidget {
   CreateNewScreen({super.key});
@@ -72,7 +73,7 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
     // If no images have been captured yet then return a spinner.
     if (images.isEmpty && !_initialImageCaptured) {
       return Container(
-        color: Colors.black,
+        color: MeliColors.black,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -118,7 +119,6 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
           ],
         ),
         MeliFloatingActionButton(
-            heroTag: 'submit',
             icon: Icon(Icons.check),
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
