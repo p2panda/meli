@@ -59,7 +59,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
         this._addImage(file);
       } else {
         // If no file was captured navigate back to all sightings screen.
-        router.pushReplacement(RoutePaths.allSightings.path);
+        router.pop();
       }
     });
   }
