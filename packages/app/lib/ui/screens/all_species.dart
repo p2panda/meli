@@ -115,6 +115,6 @@ class _PeachWavesPainter extends BoxPainter {
     path.lineTo(0, bounds.height);
     path.close();
 
-    canvas.drawPath(path.shift(Offset(0.0, 130.0)), paint);
+    canvas.drawPath(path.shift(Offset(0.0, 150.0)), paint);
   }
 }
