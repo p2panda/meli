@@ -68,13 +68,13 @@ class SightingPaginator extends Paginator<Sighting> {
 
   @override
   PaginatedCollection<Sighting> parseJSON(Map<String, dynamic> json) {
-    final list = json['results']['documents'] as List;
+    final list = json[DEFAULT_RESULTS_KEY]['documents'] as List;
     final documents = list
         .map((sighting) => Sighting.fromJson(sighting as Map<String, dynamic>))
         .toList();
 
-    final endCursor = json['results']['endCursor'] as String?;
-    final hasNextPage = json['results']['hasNextPage'] as bool;
+    final endCursor = json[DEFAULT_RESULTS_KEY]['endCursor'] as String?;
+    final hasNextPage = json[DEFAULT_RESULTS_KEY]['hasNextPage'] as bool;
 
     return PaginatedCollection(
         documents: documents, hasNextPage: hasNextPage, endCursor: endCursor);
