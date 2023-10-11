@@ -70,14 +70,12 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
     if (images.isEmpty && !_initialImageCaptured) {
       return Container(
         color: MeliColors.black,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
+        child: Center(
+          child:
             CircularProgressIndicator(
               color: Colors.grey,
               semanticsLabel: 'Circular progress indicator',
             ),
-          ],
         ),
       );
     }
