@@ -13,10 +13,12 @@ import 'package:app/ui/widgets/simple_card.dart';
 
 const String PLACEHOLDER_IMG = 'assets/images/placeholder-bee.png';
 
+typedef DeleteFunction = void Function(int);
+
 class CreateSightingForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   final List<File> images;
-  final Function onDeleteImage;
+  final DeleteFunction onDeleteImage;
 
   const CreateSightingForm(
       {super.key,
@@ -32,11 +34,6 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
   final nameInput = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     MeliCameraProviderInherited.of(context)
@@ -44,13 +41,7 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
         .then((file) => {if (file != null) this.widget.images.add(file)});
   }
 
-  @override
-  void dispose() {
-    nameInput.dispose();
-    super.dispose();
-  }
-
-  void _onDeleteImageAlert(int imageIndex) {
+  void _onDelete(int imageIndex) {
     final t = AppLocalizations.of(context)!;
 
     showDialog<String>(
@@ -60,18 +51,15 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
         content: Text(t.imageDeleteAlertBody),
         actions: <Widget>[
           TextButton(
-            onPressed: () => Navigator.pop(context, 'No'),
-            child: const Text('No'),
+            onPressed: () => Navigator.pop(context),
+            child: Text(t.imageDeleteAlertCancel),
           ),
           TextButton(
             onPressed: () {
               this.widget.onDeleteImage(imageIndex);
-              Navigator.pop(context, 'Yes');
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(t.imageDeleteConfirmation),
-              ));
+              Navigator.pop(context);
             },
-            child: const Text('Yes'),
+            child: Text(t.imageDeleteAlertConfirm),
           ),
         ],
       ),
@@ -86,14 +74,11 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
           runSpacing: 20.0,
           children: [
             this.widget.images.isEmpty
-                ? ImageCarousel(images: [Image.asset(PLACEHOLDER_IMG)])
+                ? ImageCarousel(imagePaths: [PLACEHOLDER_IMG])
                 : ImageCarousel(
-                    images: this
-                        .widget
-                        .images
-                        .map((file) => Image.file(file))
-                        .toList(),
-                    onDelete: _onDeleteImageAlert),
+                    imagePaths:
+                        this.widget.images.map((file) => file.path).toList(),
+                    onDelete: _onDelete),
             SimpleCard(title: 'Local Name', child: LocalNameAutocomplete()),
             LocationTrackerInput(onPositionChanged: (position) {
               if (position == null) {
@@ -104,5 +89,11 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
             }),
           ],
         ));
+  }
+
+  @override
+  void dispose() {
+    nameInput.dispose();
+    super.dispose();
   }
 }

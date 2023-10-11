@@ -1,81 +1,145 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+import 'package:app/ui/widgets/card.dart';
 import 'package:app/ui/colors.dart';
 
-class ImageCarousel extends StatelessWidget {
-  final List<Image> images;
-  final Function? onDelete;
+typedef DeleteFunction = void Function(int);
 
-  ImageCarousel({super.key, required this.images, this.onDelete});
+class ImageCarousel extends StatefulWidget {
+  final List<String> imagePaths;
+  final DeleteFunction? onDelete;
+
+  ImageCarousel({super.key, required this.imagePaths, this.onDelete});
+
+  @override
+  State<ImageCarousel> createState() => _ImageCarouselState();
+}
+
+class _ImageCarouselState extends State<ImageCarousel> {
+  CarouselController _controller = CarouselController();
+  int _currentIndex = 0;
+
+  Widget _deleteButton() {
+    return Container(
+        alignment: Alignment.bottomCenter,
+        padding: EdgeInsets.only(bottom: 10.0),
+        child: CarouselButton(
+            color: Colors.red,
+            onPressed: () {
+              this.widget.onDelete!(this._currentIndex);
+            },
+            icon: Icons.delete_outline));
+  }
+
+  Widget _previousButton() {
+    return Container(
+        alignment: Alignment.centerLeft,
+        child: CarouselButton(
+            color: Colors.transparent,
+            onPressed: () {
+              this._controller.previousPage(
+                  duration: Duration(milliseconds: 300), curve: Curves.linear);
+            },
+            icon: Icons.navigate_before));
+  }
+
+  Widget _nextButton() {
+    return Container(
+        alignment: Alignment.centerRight,
+        child: CarouselButton(
+            color: Colors.transparent,
+            onPressed: () {
+              this._controller.nextPage(
+                  duration: Duration(milliseconds: 300), curve: Curves.linear);
+            },
+            icon: Icons.navigate_next));
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          color: MeliColors.pink,
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
-          border: Border.all(width: 4.0, color: Colors.black)),
-      child: CarouselSlider(
-        options: CarouselOptions(
-            autoPlay: true,
-            height: 200.0,
-            enableInfiniteScroll: false,
-            viewportFraction: 1,
-            padEnds: false,
-            enlargeCenterPage: true),
-        items: images.indexed.map((item) {
-          return Builder(
-            builder: (BuildContext context) {
-              int index = item.$1;
-              Image image = item.$2;
-              return CarouselItem(
-                  image: image, index: index, onDelete: this.onDelete);
-            },
-          );
-        }).toList(),
+    return MeliCard(
+      borderColor: MeliColors.black,
+      borderWidth: 3.0,
+      child: Container(
+        clipBehavior: Clip.hardEdge,
+        height: 200.0,
+        decoration: ShapeDecoration(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: Stack(
+          children: [
+            CarouselSlider(
+              carouselController: this._controller,
+              options: CarouselOptions(
+                  height: 200.0,
+                  onPageChanged: (value, reason) {
+                    setState(() {
+                      this._currentIndex = value;
+                    });
+                  },
+                  enableInfiniteScroll: false,
+                  viewportFraction: 1,
+                  padEnds: false,
+                  enlargeCenterPage: false),
+              items: this.widget.imagePaths.map((path) {
+                return CarouselItem(imagePath: path);
+              }).toList(),
+            ),
+            if (this.widget.onDelete != null) this._deleteButton(),
+            if (this._currentIndex > 0) this._previousButton(),
+            if (this._currentIndex < this.widget.imagePaths.length - 1)
+              this._nextButton(),
+          ],
+        ),
       ),
     );
   }
 }
 
 class CarouselItem extends StatelessWidget {
-  const CarouselItem(
-      {super.key, required this.image, required this.index, this.onDelete});
+  const CarouselItem({super.key, required this.imagePath});
 
-  final Image image;
-  final int index;
-  final Function? onDelete;
+  final String imagePath;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        width: double.infinity,
-        child: Stack(children: [
-          Container(
-            alignment: Alignment.center,
-            child: image,
-          ),
-          if (this.onDelete != null)
-            Container(
-              alignment: Alignment.bottomCenter,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red[800]!),
-                    shape: MaterialStateProperty.all<CircleBorder>(
-                        CircleBorder())),
-                onPressed: () {
-                  this.onDelete!(index);
-                },
-                child: Icon(
-                  Icons.delete_outlined,
-                  color: Colors.white,
-                ),
-              ),
-            )
-        ]));
+    BoxFit fit = BoxFit.cover;
+    double width = double.infinity;
+
+    if (this.imagePath.contains('http')) {
+      return Image.network(this.imagePath, fit: fit, width: width);
+    } else if (this.imagePath.startsWith('/')) {
+      return Image.file(File(this.imagePath), fit: fit, width: width);
+    } else {
+      return Image.asset(this.imagePath, fit: fit, width: width);
+    }
+  }
+}
+
+class CarouselButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final Color color;
+  final IconData icon;
+
+  const CarouselButton(
+      {super.key,
+      required this.onPressed,
+      required this.color,
+      required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            backgroundColor: this.color, shape: CircleBorder()),
+        onPressed: this.onPressed,
+        child: Icon(this.icon, color: Colors.white));
   }
 }

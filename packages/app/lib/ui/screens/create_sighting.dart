@@ -33,6 +33,10 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
     setState(() {
       images.removeAt(index);
     });
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(AppLocalizations.of(context)!.imageDeleteConfirmation),
+    ));
   }
 
   void _addImage(File file) {
