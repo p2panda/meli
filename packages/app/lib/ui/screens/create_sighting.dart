@@ -113,11 +113,10 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
 
       // Publish each image as a blob on the node and collect ids in a list
       List<DocumentViewId> imageIds = [];
-      List<DocumentViewId> response =
-          await Future.wait(images.map((image) async {
-        return await publishBlob(image);
-      }));
-      imageIds.addAll(response);
+      for (final image in images) {
+        final imageId = await publishBlob(image);
+        imageIds.add(imageId);
+      }
 
       // Check if local name already exists, otherwise create a new one
       DocumentId? localNameId;
