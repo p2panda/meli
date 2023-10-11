@@ -80,33 +80,30 @@ class _CreateSightingFormState extends State<CreateSightingForm> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Container(
-            padding: EdgeInsets.all(20.0),
-            child: Form(
-                key: this.widget.formKey,
-                child: Wrap(
-                  runSpacing: 20.0,
-                  children: [
-                    this.widget.images.isEmpty
-                        ? ImageCarousel(images: [Image.asset(PLACEHOLDER_IMG)])
-                        : ImageCarousel(
-                            images: this
-                                .widget
-                                .images
-                                .map((file) => Image.file(file))
-                                .toList(),
-                            onDelete: _onDeleteImageAlert),
-                    SimpleCard(
-                        title: 'Local Name', child: LocalNameAutocomplete()),
-                    LocationTrackerInput(onPositionChanged: (position) {
-                      if (position == null) {
-                        print('Position: n/a');
-                      } else {
-                        print('Position: $position');
-                      }
-                    }),
-                  ],
-                ))));
+    return Form(
+        key: this.widget.formKey,
+        child: Wrap(
+          runSpacing: 20.0,
+          children: [
+            this.widget.images.isEmpty
+                ? ImageCarousel(images: [Image.asset(PLACEHOLDER_IMG)])
+                : ImageCarousel(
+                    images: this
+                        .widget
+                        .images
+                        .map((file) => Image.file(file))
+                        .toList(),
+                    onDelete: _onDeleteImageAlert),
+            SimpleCard(
+                title: 'Local Name', child: LocalNameAutocomplete()),
+            LocationTrackerInput(onPositionChanged: (position) {
+              if (position == null) {
+                print('Position: n/a');
+              } else {
+                print('Position: $position');
+              }
+            }),
+          ],
+        ));
   }
 }

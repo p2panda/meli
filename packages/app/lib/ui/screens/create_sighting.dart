@@ -151,10 +151,15 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
               }
             }),
       ],
-      body: CreateSightingForm(
-          formKey: this._formKey,
-          images: this.images,
-          onDeleteImage: this._removeImageAt),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.only(bottom: 75.0, left: 20.0, right: 20.0),
+        child: Container(
+          child: CreateSightingForm(
+              formKey: this._formKey,
+              images: this.images,
+              onDeleteImage: this._removeImageAt),
+        ),
+      ),
     );
   }
 }
