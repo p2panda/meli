@@ -19,5 +19,6 @@
     "paginationListError": "Error occurred while requesting data: {errorMessage}",
     "paginationListLoadMore": "Load More",
     "paginationListNoResults": "No entries given yet",
-    "sightingUnspecified": "Unknown species"
+    "sightingUnspecified": "Unknown species",
+    "speciesScreenTitle": "Species"
 }

@@ -4,8 +4,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:app/io/p2panda/blobs.dart';
 import 'package:app/io/p2panda/publish.dart';
+import 'package:app/models/blobs.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
@@ -15,14 +15,14 @@ import 'package:app/ui/widgets/image_provider.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/sighting_form.dart';
 
-class CreateNewScreen extends StatefulWidget {
-  CreateNewScreen({super.key});
+class CreateSightingScreen extends StatefulWidget {
+  CreateSightingScreen({super.key});
 
   @override
-  State<CreateNewScreen> createState() => _CreateNewScreenState();
+  State<CreateSightingScreen> createState() => _CreateSightingScreenState();
 }
 
-class _CreateNewScreenState extends State<CreateNewScreen> {
+class _CreateSightingScreenState extends State<CreateSightingScreen> {
   final _formKey = GlobalKey<FormState>();
   List<File> images = [];
   bool _initialImageCaptured = false;
@@ -140,8 +140,8 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                   }
 
                   // Publish the sighting.
-                  await createSighting(datetime, 0.0, 0.0, imageIds, null, null,
-                      "Some comment about this sighting");
+                  await createSighting(datetime, 0.0, 0.0,
+                      'Some comment about this sighting', imageIds, null, null);
 
                   // Go back to sightings overview
                   router.push(RoutePaths.allSightings.path);

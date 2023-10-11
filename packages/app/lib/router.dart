@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/screens/create_species.dart';
+import 'package:app/ui/screens/species.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,11 +21,14 @@ class RoutePath {
 class RoutePaths {
   static RoutePath splash = RoutePath('splash', '/');
   static RoutePath settings = RoutePath('settings', '/settings');
-  static RoutePath sighting = RoutePath('sighting', '/sighting/:documentId');
   static RoutePath allSightings = RoutePath('all_sightings', '/sightings');
+  static RoutePath allSpecies = RoutePath('all_species', '/species');
+  static RoutePath sighting = RoutePath('sighting', '/sighting/:documentId');
+  static RoutePath species = RoutePath('species', '/species/:documentId');
   static RoutePath createSighting =
       RoutePath('create_sighting', '/create/sighting');
-  static RoutePath allSpecies = RoutePath('all_species', '/species');
+  static RoutePath createSpecies =
+      RoutePath('create_species', '/create/species');
 }
 
 final router = GoRouter(routes: [
@@ -31,14 +36,19 @@ final router = GoRouter(routes: [
   // the native splash screen is shown. We have this in place to not have any
   // app logic running yet while everything else is bootstrapping.
   _Route(RoutePaths.splash, (_) => Container(color: Colors.white)),
+  _Route(RoutePaths.settings, (_) => SettingsScreen()),
   _Route(RoutePaths.allSightings, (_) => AllSightingsScreen()),
+  _Route(RoutePaths.allSpecies, (_) => AllSpeciesScreen()),
   _Route(
       RoutePaths.sighting,
       (state) =>
           SightingScreen(documentId: state.pathParameters["documentId"]!)),
-  _Route(RoutePaths.settings, (_) => SettingsScreen()),
-  _Route(RoutePaths.createSighting, (_) => CreateNewScreen()),
-  _Route(RoutePaths.allSpecies, (_) => AllSpeciesScreen()),
+  _Route(
+      RoutePaths.species,
+      (state) =>
+          SpeciesScreen(documentId: state.pathParameters["documentId"]!)),
+  _Route(RoutePaths.createSighting, (_) => CreateSightingScreen()),
+  _Route(RoutePaths.createSpecies, (_) => CreateSpeciesScreen()),
 ]);
 
 class _Route extends GoRoute {

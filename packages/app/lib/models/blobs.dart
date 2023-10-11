@@ -8,8 +8,25 @@ import 'package:p2panda/p2panda.dart';
 
 import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/schema_ids.dart';
+import 'package:app/models/base.dart';
 
-const MAX_BLOB_PIECE_LENGTH = 256;
+const MAX_BLOB_PIECE_LENGTH = 256 * 1000; // 256kb as per specification
+
+class Blob {
+  final String id;
+
+  Blob({required this.id});
+
+  factory Blob.fromJson(Map<String, dynamic> result) {
+    return Blob(id: result['meta']['documentId'] as String);
+  }
+}
+
+String get blobFields {
+  return '''
+    $metaFields
+  ''';
+}
 
 Future<DocumentViewId> publishBlob(File file) async {
   // Check the mimetype.
