@@ -12,39 +12,31 @@ import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/species_card.dart';
 
 class AllSpeciesScreen extends StatelessWidget {
+  final Paginator<Species> paginator = SpeciesPaginator();
+
   @override
   Widget build(BuildContext context) {
     return MeliScaffold(
         title: AppLocalizations.of(context)!.speciesScreenTitle,
         fabAlignment: MainAxisAlignment.end,
-        body: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
-          decoration: new PeachWavesBackground(),
-          child: SingleChildScrollView(
-              padding: EdgeInsets.only(top: 80.0, bottom: 20.0),
-              child: ScrollView()),
-        ));
-  }
-}
+        body: RefreshIndicator(
+            color: MeliColors.black,
+            onRefresh: () {
+              if (paginator.refresh != null) {
+                paginator.refresh!();
+              }
 
-class ScrollView extends StatelessWidget {
-  final Paginator<Species> paginator = SpeciesPaginator();
-
-  @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(
-      color: MeliColors.black,
-      onRefresh: () {
-        if (paginator.refresh != null) {
-          paginator.refresh!();
-        }
-
-        return Future.delayed(Duration(milliseconds: 150));
-      },
-      child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: SpeciesList(paginator: this.paginator)),
-    );
+              return Future.delayed(Duration(milliseconds: 150));
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+              decoration: new PeachWavesBackground(),
+              child: SingleChildScrollView(
+                padding: EdgeInsets.only(top: 80.0, bottom: 20.0),
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: SpeciesList(paginator: this.paginator),
+              ),
+            )));
   }
 }
 
