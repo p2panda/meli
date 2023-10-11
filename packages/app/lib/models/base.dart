@@ -4,6 +4,27 @@ import 'dart:ui';
 
 import 'package:gql/ast.dart';
 
+const DEFAULT_PAGE_SIZE = 10;
+
+const DEFAULT_RESULTS_KEY = 'collection';
+
+String get paginationFields {
+  return '''
+    endCursor
+    hasNextPage
+  ''';
+}
+
+String get metaFields {
+  return '''
+    meta {
+      owner
+      documentId
+      viewId
+    }
+  ''';
+}
+
 class PaginatedCollection<T> {
   final List<T> documents;
   final bool hasNextPage;
@@ -25,14 +46,14 @@ abstract class Paginator<T> {
   PaginatedCollection<T> parseJSON(Map<String, dynamic> json);
 
   /// Combine results from previous queries and new data for the UI. Needs to be
-  /// overwritten when result key is different than `results`.
+  /// overwritten when result key is different than the default result key.
   Map<String, dynamic> mergeResponses(
       Map<String, dynamic> previous, Map<String, dynamic> next) {
     final List<dynamic> documents = [
-      ...previous['results']['documents'] as List<dynamic>,
-      ...next['results']['documents'] as List<dynamic>
+      ...previous[DEFAULT_RESULTS_KEY]['documents'] as List<dynamic>,
+      ...next[DEFAULT_RESULTS_KEY]['documents'] as List<dynamic>
     ];
-    next['results']['documents'] = documents;
+    next[DEFAULT_RESULTS_KEY]['documents'] = documents;
     return next;
   }
 }

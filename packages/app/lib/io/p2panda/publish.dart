@@ -17,6 +17,9 @@ typedef OperationFields = List<(FieldName, OperationValue)>;
 /// Document view id represented as a string.
 typedef DocumentViewId = String;
 
+/// Document id represented as a string.
+typedef DocumentId = String;
+
 /// Generates and publishes a CREATE operation on the p2panda node.
 Future<DocumentViewId> create(SchemaId schemaId, OperationFields fields) async {
   return await _publish(OperationAction.Create, schemaId, fields, null);

@@ -6,16 +6,19 @@ import 'package:p2panda_flutter/p2panda_flutter.dart';
 
 import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/base.dart';
+import 'package:app/models/images.dart';
+import 'package:app/models/local_names.dart';
 import 'package:app/models/schema_ids.dart';
+import 'package:app/models/species.dart';
 
 class Sighting {
-  final String id;
+  final DocumentId id;
   final DateTime datetime;
   final double latitude;
   final double longitude;
-  final List<String> images;
-  final String? species;
-  final String? local_name;
+  final List<Image> images;
+  final Species? species;
+  final LocalName? localName;
   final String comment;
 
   Sighting(
@@ -25,49 +28,35 @@ class Sighting {
       required this.longitude,
       required this.images,
       this.species,
-      this.local_name,
+      this.localName,
       required this.comment});
 
   factory Sighting.fromJson(Map<String, dynamic> result) {
     final imageDocuments = result['fields']['images']['documents'] as List;
-    List<String> imageIds = imageDocuments
-        .map((item) => item['meta']['documentId'] as String)
+    List<Image> images = imageDocuments
+        .map((item) => Image.fromJson(item as Map<String, dynamic>))
         .toList();
 
     final speciesDocuments = result['fields']['species']['documents'] as List;
-    List<String> speciesNames = speciesDocuments
-        .map((item) => item['fields']['name'] as String)
+    List<Species> species = speciesDocuments
+        .map((item) => Species.fromJson(item as Map<String, dynamic>))
         .toList();
 
     final localNameDocuments =
         result['fields']['local_names']['documents'] as List;
-    List<String> localNames = localNameDocuments
-        .map((item) => item['fields']['name'] as String)
+    List<LocalName> localNames = localNameDocuments
+        .map((item) => LocalName.fromJson(item as Map<String, dynamic>))
         .toList();
 
     return Sighting(
-        id: result['meta']['documentId'] as String,
+        id: result['meta']['documentId'] as DocumentId,
         datetime: DateTime.parse(result['fields']['datetime'] as String),
         latitude: result['fields']['latitude'] as double,
         longitude: result['fields']['latitude'] as double,
-        images: imageIds,
-        species: speciesNames.firstOrNull,
-        local_name: localNames.firstOrNull,
-        comment: result['fields']['comment'] as String);
-  }
-}
-
-class SightingList {
-  final List<Sighting> sightings;
-
-  SightingList({required this.sightings});
-
-  factory SightingList.fromJson(List<dynamic> json) {
-    return SightingList(
-        sightings: (json)
-            .map((sightingJson) =>
-                Sighting.fromJson(sightingJson as Map<String, dynamic>))
-            .toList());
+        comment: result['fields']['comment'] as String,
+        images: images,
+        species: species.firstOrNull,
+        localName: localNames.firstOrNull);
   }
 }
 
@@ -92,101 +81,60 @@ class SightingPaginator extends Paginator<Sighting> {
   }
 }
 
-String allSightingsQuery(String? cursor) {
-  String after = (cursor != null) ? '''after: "$cursor",''' : "";
-
-  final schemaId = SchemaIds.bee_sighting;
+String get sightingFields {
   return '''
-    query AllSightings {
-      results: all_$schemaId(first: 3, $after orderBy: "datetime", orderDirection: DESC) {
-        hasNextPage
-        endCursor
+    $metaFields
+    fields {
+      datetime
+      latitude
+      longitude
+      comment
+      images {
         documents {
-          meta {
-            owner
-            documentId
-            viewId
-          }
-          fields {
-            datetime
-            latitude
-            longitude
-            images {
-              documents {
-                meta {
-                  documentId
-                }
-              }
-            }
-            species {
-              documents {
-                fields {
-                  description
-                  species {
-                    fields {
-                      name
-                    }
-                  }
-                }
-              }
-            }
-            local_names {
-              documents {
-                fields {
-                  name
-                }
-              }
-            }
-            comment
-          }
+          $imageFields
+        }
+      }
+      species {
+        documents {
+          $speciesFields
+        }
+      }
+      local_names {
+        documents {
+          $localNameFields
         }
       }
     }
   ''';
 }
 
-String sightingQuery(String id) {
+String allSightingsQuery(String? cursor) {
+  final after = (cursor != null) ? '''after: "$cursor",''' : '';
+  final schemaId = SchemaIds.bee_sighting;
+
+  return '''
+    query AllSightings {
+      $DEFAULT_RESULTS_KEY: all_$schemaId(
+        first: $DEFAULT_PAGE_SIZE,
+        $after
+        orderBy: "datetime",
+        orderDirection: DESC
+      ) {
+        $paginationFields
+        documents {
+          $sightingFields
+        }
+      }
+    }
+  ''';
+}
+
+String sightingQuery(DocumentId id) {
   final schemaId = SchemaIds.bee_sighting;
   return '''
-    query GetSighting() {
+    query Sighting() {
       sighting: $schemaId(id: "$id") {
-        meta {
-          owner
-          documentId
-          viewId
-        }
-        fields {
-          datetime
-          latitude
-          longitude
-          images {
-            documents {
-              meta {
-                documentId
-              }
-            }
-          }
-          species {
-            documents {
-              fields {
-                description
-                species {
-                  fields {
-                    name
-                  }
-                }
-              }
-            }
-          }
-          local_names {
-            documents {
-              fields {
-                name
-              }
-            }
-          }
-          comment
-        }
+        $sightingFields
       }
     }
   ''';
@@ -196,32 +144,29 @@ Future<DocumentViewId> createSighting(
     DateTime datetime,
     double latitude,
     double longitude,
-    List<String> images,
-    String? species,
-    String? local_name,
-    String comment) async {
+    String comment,
+    List<DocumentId> imageIds,
+    DocumentId? speciesId,
+    DocumentId? localNameId) async {
   List<(String, OperationValue)> fields = [
     ("datetime", OperationValue.string(datetime.toString())),
     ("latitude", OperationValue.float(latitude)),
     ("longitude", OperationValue.float(longitude)),
-    ("images", OperationValue.relationList(images)),
+    ("images", OperationValue.relationList(imageIds)),
     ("comment", OperationValue.string(comment))
   ];
 
-  if (species != null) {
-    fields.add(("species", OperationValue.relationList([species])));
+  if (speciesId != null) {
+    fields.add(("species", OperationValue.relationList([speciesId])));
   } else {
     fields.add(("species", OperationValue.relationList([])));
   }
 
-  if (local_name != null) {
-    fields.add(("local_names", OperationValue.relationList([local_name])));
+  if (localNameId != null) {
+    fields.add(("local_names", OperationValue.relationList([localNameId])));
   } else {
     fields.add(("local_names", OperationValue.relationList([])));
   }
-
-  // @TODO: Remove this
-  print(fields);
 
   return await create(SchemaIds.bee_sighting, fields);
 }
@@ -231,10 +176,10 @@ Future<DocumentViewId> updateSighting(
     DateTime? datetime,
     double? latitude,
     double? longitude,
-    List<String>? images,
-    String? species,
-    String? local_names,
-    String? comment) async {
+    String? comment,
+    List<DocumentId>? imageIds,
+    DocumentId? speciesId,
+    DocumentId? localNameId) async {
   List<(String, OperationValue)> fields = [];
 
   if (datetime != null) {
@@ -249,16 +194,16 @@ Future<DocumentViewId> updateSighting(
     fields.add(("longitude", OperationValue.float(longitude)));
   }
 
-  if (images != null) {
-    fields.add(("images", OperationValue.relationList(images)));
+  if (imageIds != null) {
+    fields.add(("images", OperationValue.relationList(imageIds)));
   }
 
-  if (species != null) {
-    fields.add(("species", OperationValue.relationList([species])));
+  if (speciesId != null) {
+    fields.add(("species", OperationValue.relationList([speciesId])));
   }
 
-  if (local_names != null) {
-    fields.add(("local_names", OperationValue.relationList([local_names])));
+  if (localNameId != null) {
+    fields.add(("local_names", OperationValue.relationList([localNameId])));
   }
 
   if (comment != null) {
