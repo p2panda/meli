@@ -47,7 +47,7 @@ class _SightingCardState extends State<SightingCard> {
   }
 
   Widget get _icon {
-    if (widget.species == null && widget.localName == null) {
+    if (widget.species == null) {
       return Icon(Icons.question_mark);
     }
 
