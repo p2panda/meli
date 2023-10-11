@@ -158,6 +158,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
         ),
         MeliFloatingActionButton(
             icon: Icon(Icons.check),
+            disabled: this.images.isEmpty,
             backgroundColor: MeliColors.electric,
             onPressed: this._createSighting),
       ],
