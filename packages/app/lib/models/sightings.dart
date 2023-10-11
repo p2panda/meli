@@ -6,7 +6,7 @@ import 'package:p2panda_flutter/p2panda_flutter.dart';
 
 import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/base.dart';
-import 'package:app/models/images.dart';
+import 'package:app/models/blobs.dart';
 import 'package:app/models/local_names.dart';
 import 'package:app/models/schema_ids.dart';
 import 'package:app/models/species.dart';
@@ -16,7 +16,7 @@ class Sighting {
   final DateTime datetime;
   final double latitude;
   final double longitude;
-  final List<Image> images;
+  final List<Blob> images;
   final Species? species;
   final LocalName? localName;
   final String comment;
@@ -33,8 +33,8 @@ class Sighting {
 
   factory Sighting.fromJson(Map<String, dynamic> result) {
     final imageDocuments = result['fields']['images']['documents'] as List;
-    List<Image> images = imageDocuments
-        .map((item) => Image.fromJson(item as Map<String, dynamic>))
+    List<Blob> images = imageDocuments
+        .map((item) => Blob.fromJson(item as Map<String, dynamic>))
         .toList();
 
     final speciesDocuments = result['fields']['species']['documents'] as List;
@@ -91,7 +91,7 @@ String get sightingFields {
       comment
       images {
         documents {
-          $imageFields
+          $blobFields
         }
       }
       species {
