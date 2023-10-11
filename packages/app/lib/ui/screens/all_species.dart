@@ -2,70 +2,97 @@
 
 import 'package:flutter/material.dart';
 
+import 'package:app/models/base.dart';
+import 'package:app/models/species.dart';
+import 'package:app/router.dart';
+import 'package:app/ui/colors.dart';
+import 'package:app/ui/widgets/pagination_list.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/species_card.dart';
-import 'package:app/ui/colors.dart';
-import 'package:app/data.dart';
 
-class AllSpeciesScreen extends StatefulWidget {
-  AllSpeciesScreen({super.key});
-
-  @override
-  State<AllSpeciesScreen> createState() => _AllSpeciesScreenState();
-}
-
-class _AllSpeciesScreenState extends State<AllSpeciesScreen> {
+class AllSpeciesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MeliScaffold(
+        // @TODO: i18n
         title: 'Species',
         fabAlignment: MainAxisAlignment.end,
-        body: SpeciesList());
+        body: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+          decoration: new PeachWavesBackground(),
+          child: SingleChildScrollView(
+              padding: EdgeInsets.only(top: 80.0, bottom: 20.0),
+              child: ScrollView()),
+        ));
+  }
+}
+
+class ScrollView extends StatelessWidget {
+  final Paginator<Species> paginator = SpeciesPaginator();
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      color: MeliColors.black,
+      onRefresh: () {
+        if (paginator.refresh != null) {
+          paginator.refresh!();
+        }
+
+        return Future.delayed(Duration(milliseconds: 150));
+      },
+      child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SpeciesList(paginator: this.paginator)),
+    );
   }
 }
 
 class SpeciesList extends StatefulWidget {
-  final List<Map<String, String>> data = species;
+  final Paginator<Species> paginator;
 
-  SpeciesList({super.key});
+  SpeciesList({super.key, required this.paginator});
 
   @override
   State<SpeciesList> createState() => _SpeciesListState();
 }
 
 class _SpeciesListState extends State<SpeciesList> {
+  Widget _item(Species species) {
+    return SpeciesCard(
+        onTap: () => {
+              router.pushNamed(RoutePaths.species.name,
+                  pathParameters: {'documentId': species.id})
+            },
+        taxonomySpecies: species.species,
+        id: species.id);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
-      decoration: new BackgroundDecoration(),
-      child: SingleChildScrollView(
-          padding: EdgeInsets.only(top: 80.0, bottom: 20.0),
-          child:
-              Wrap(spacing: 0.0, runSpacing: 20.0, children: _speciesCards())),
-    );
-  }
-
-  List<SpeciesCard> _speciesCards() {
-    return this
-        .widget
-        .data
-        .map((species) =>
-            SpeciesCard(title: species['name']!, image: species['img']!))
-        .toList();
+        width: double.infinity,
+        padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
+        child: PaginationList<Species>(
+            builder: (Species species) {
+              return Container(
+                  padding: EdgeInsets.only(bottom: 20.0),
+                  child: this._item(species));
+            },
+            paginator: widget.paginator));
   }
 }
 
-class BackgroundDecoration extends Decoration {
-  BackgroundDecoration();
+class PeachWavesBackground extends Decoration {
+  PeachWavesBackground();
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {
-    return _BackgroundDecorationPainter();
+    return _PeachWavesPainter();
   }
 }
 
-class _BackgroundDecorationPainter extends BoxPainter {
+class _PeachWavesPainter extends BoxPainter {
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
     final Size? bounds = configuration.size;

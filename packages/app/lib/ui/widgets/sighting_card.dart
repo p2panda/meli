@@ -3,15 +3,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:app/models/local_names.dart';
+import 'package:app/models/species.dart';
+import 'package:app/models/blobs.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/card.dart';
 import 'package:app/ui/widgets/image.dart';
 
 class SightingCard extends StatefulWidget {
-  final String? localName;
+  final Blob? image;
   final DateTime date;
-  final String? imageDocumentId;
-  final String? speciesName;
+  final LocalName? localName;
+  final Species? species;
+
   final VoidCallback onTap;
 
   SightingCard(
@@ -19,8 +23,8 @@ class SightingCard extends StatefulWidget {
       this.localName,
       required this.onTap,
       required this.date,
-      required this.imageDocumentId,
-      this.speciesName});
+      this.image,
+      this.species});
 
   @override
   State<SightingCard> createState() => _SightingCardState();
@@ -32,10 +36,10 @@ class _SightingCardState extends State<SightingCard> {
   Widget get _title {
     String title = AppLocalizations.of(context)!.sightingUnspecified;
 
-    if (this.widget.speciesName != null) {
-      title = widget.localName!;
+    if (widget.species != null) {
+      title = widget.species!.species.name;
     } else if (widget.localName != null) {
-      title = widget.speciesName!;
+      title = widget.localName!.name;
     }
 
     return Text(title,
@@ -43,7 +47,7 @@ class _SightingCardState extends State<SightingCard> {
   }
 
   Widget get _icon {
-    if (widget.speciesName == null && widget.localName == null) {
+    if (widget.species == null && widget.localName == null) {
       return Icon(Icons.question_mark);
     }
 
@@ -96,7 +100,7 @@ class _SightingCardState extends State<SightingCard> {
               ),
             ),
             Container(
-              child: MeliImage(documentId: this.widget.imageDocumentId),
+              child: MeliImage(image: widget.image),
               clipBehavior: Clip.hardEdge,
               height: 200.0,
               width: double.infinity,

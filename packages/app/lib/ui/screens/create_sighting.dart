@@ -4,8 +4,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:app/io/p2panda/blobs.dart';
 import 'package:app/io/p2panda/publish.dart';
+import 'package:app/models/blobs.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
@@ -140,8 +140,8 @@ class _CreateNewScreenState extends State<CreateNewScreen> {
                   }
 
                   // Publish the sighting.
-                  await createSighting(datetime, 0.0, 0.0, imageIds, null, null,
-                      "Some comment about this sighting");
+                  await createSighting(datetime, 0.0, 0.0,
+                      'Some comment about this sighting', imageIds, null, null);
 
                   // Go back to sightings overview
                   router.push(RoutePaths.allSightings.path);

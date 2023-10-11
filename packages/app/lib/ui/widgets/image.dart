@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/ui/colors.dart';
+import 'package:app/models/blobs.dart';
 
 class MeliImage extends StatelessWidget {
-  final String? documentId;
+  final Blob? image;
 
-  MeliImage({super.key, required this.documentId});
+  MeliImage({super.key, required this.image});
 
   Widget _error(BuildContext context, String message) {
     return Container(
@@ -28,13 +29,13 @@ class MeliImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (this.documentId == null) {
+    if (this.image == null) {
       return this
           ._error(context, AppLocalizations.of(context)!.imageMissingError);
     }
 
     return Image.network(
-      'http://localhost:2020/blobs/${this.documentId}',
+      'http://localhost:2020/blobs/${this.image!.id}',
       fit: BoxFit.cover,
       filterQuality: FilterQuality.high,
       frameBuilder: (BuildContext context, Widget child, int? frame,

@@ -11,15 +11,7 @@ import 'package:app/ui/widgets/pagination_list.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/sighting_card.dart';
 
-class AllSightingsScreen extends StatefulWidget {
-  AllSightingsScreen({super.key});
-
-  @override
-  State<AllSightingsScreen> createState() => _AllSightingsScreenState();
-}
-
-class _AllSightingsScreenState extends State<AllSightingsScreen>
-    with SingleTickerProviderStateMixin {
+class AllSightingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MeliScaffold(
@@ -88,14 +80,12 @@ class SightingsList extends StatefulWidget {
 class _SightingsListState extends State<SightingsList> {
   Widget _item(Sighting sighting) {
     return SightingCard(
-        onTap: () => {
-              router.pushNamed(RoutePaths.sighting.name,
-                  pathParameters: {'documentId': sighting.id})
-            },
+        onTap: () => router.pushNamed(RoutePaths.sighting.name,
+            pathParameters: {'documentId': sighting.id}),
         date: sighting.datetime,
-        localName: sighting.local_name,
-        speciesName: sighting.species,
-        imageDocumentId: sighting.images.firstOrNull);
+        localName: sighting.localName,
+        species: sighting.species,
+        image: sighting.images.firstOrNull);
   }
 
   @override

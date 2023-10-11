@@ -19,11 +19,14 @@ class RoutePath {
 class RoutePaths {
   static RoutePath splash = RoutePath('splash', '/');
   static RoutePath settings = RoutePath('settings', '/settings');
-  static RoutePath sighting = RoutePath('sighting', '/sighting/:documentId');
   static RoutePath allSightings = RoutePath('all_sightings', '/sightings');
+  static RoutePath allSpecies = RoutePath('all_species', '/species');
+  static RoutePath sighting = RoutePath('sighting', '/sighting/:documentId');
+  static RoutePath species = RoutePath('species', '/species/:documentId');
   static RoutePath createSighting =
       RoutePath('create_sighting', '/create/sighting');
-  static RoutePath allSpecies = RoutePath('all_species', '/species');
+  static RoutePath createSpecies =
+      RoutePath('create_species', '/create/species');
 }
 
 final router = GoRouter(routes: [
