@@ -115,10 +115,12 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
 
       // Check if local name already exists, otherwise create a new one
       DocumentId? localNameId;
-      if (localName != null && localName!.documentId != null) {
-        localNameId = localName!.documentId;
-      } else if (localName != null) {
-        localNameId = await createLocalName(localName!.value);
+      if (localName != null) {
+        if (localName!.documentId != null) {
+          localNameId = localName!.documentId;
+        } else {
+          localNameId = await createLocalName(localName!.value);
+        }
       }
 
       // Publish the sighting
@@ -133,10 +135,12 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
         // @TODO: Use i10n provider
         content: const Text('Yay! Created new sighting'),
       ));
-    } catch (err) {
+    } catch (error) {
+      print(error);
+
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         // @TODO: Use i10n provider
-        content: Text('Something went wrong: $err'),
+        content: Text('Something went wrong: $error'),
       ));
     }
   }
