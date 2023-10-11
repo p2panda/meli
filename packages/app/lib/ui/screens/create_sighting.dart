@@ -24,30 +24,26 @@ class CreateSightingScreen extends StatefulWidget {
 
 class _CreateSightingScreenState extends State<CreateSightingScreen> {
   final _formKey = GlobalKey<FormState>();
+
   List<File> images = [];
   bool _initialImageCaptured = false;
 
-  void removeImageAt(int index) {
+  void _removeImageAt(int index) {
     setState(() {
       images.removeAt(index);
     });
   }
 
-  void addImage(File file) {
+  void _addImage(File file) {
     setState(() {
       images.insert(0, file);
     });
   }
 
-  void addAllImages(List<File> files) {
+  void _addAllImages(List<File> files) {
     setState(() {
       images.insertAll(0, files);
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   // This method is called directly after `initState`. We trigger the initial
@@ -60,10 +56,10 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
 
     MeliCameraProviderInherited.of(context).capturePhoto().then((file) {
       if (file != null) {
-        addImage(file);
+        this._addImage(file);
       } else {
         // If no file was captured navigate back to all sightings screen.
-        router.push(RoutePaths.allSightings.path);
+        router.pushReplacement(RoutePaths.allSightings.path);
       }
     });
   }
@@ -102,7 +98,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
                 List<File> newImages =
                     await MeliCameraProviderInherited.of(context)
                         .pickFromGallery();
-                addAllImages(newImages);
+                this._addAllImages(newImages);
               },
               icon: const Icon(Icons.insert_photo_outlined),
             ),
@@ -111,7 +107,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
                 File? newImage = await MeliCameraProviderInherited.of(context)
                     .capturePhoto();
                 if (newImage != null) {
-                  addImage(newImage);
+                  this._addImage(newImage);
                 }
               },
               icon: const Icon(Icons.camera_alt_outlined),
@@ -161,7 +157,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
       body: CreateSightingForm(
           formKey: this._formKey,
           images: this.images,
-          onDeleteImage: this.removeImageAt),
+          onDeleteImage: this._removeImageAt),
     );
   }
 }
