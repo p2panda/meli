@@ -12,37 +12,20 @@ class MeliImage extends StatelessWidget {
 
   MeliImage({super.key, required this.image, this.externalError});
 
-  Widget _error(BuildContext context, String message) {
-    return Container(
-        color: MeliColors.peach,
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Icon(
-            Icons.warning_rounded,
-            size: 40.0,
-            color: MeliColors.black,
-          ),
-          SizedBox(height: 10.0),
-          Text(message,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge),
-        ]));
-  }
-
   @override
   Widget build(BuildContext context) {
     if (this.externalError != null) {
-      return this._error(context, externalError!);
+      return ImageError(this.externalError!);
     }
 
     if (this.image == null) {
-      return this
-          ._error(context, AppLocalizations.of(context)!.imageMissingError);
+      return ImageError(AppLocalizations.of(context)!.imageMissingError);
     }
 
     return Image.network(
       'http://localhost:2020/blobs/${this.image!.id}',
       fit: BoxFit.cover,
-      filterQuality: FilterQuality.high,
+      filterQuality: FilterQuality.low,
       frameBuilder: (BuildContext context, Widget child, int? frame,
           bool wasSynchronouslyLoaded) {
         if (wasSynchronouslyLoaded) {
@@ -59,14 +42,36 @@ class MeliImage extends StatelessWidget {
       loadingBuilder: (BuildContext context, Widget child,
           ImageChunkEvent? loadingProgress) {
         if (loadingProgress == null) return child;
-        return Center(
+        return const Center(
           child: CircularProgressIndicator(color: MeliColors.black),
         );
       },
       errorBuilder: (context, error, stack) {
-        return this
-            ._error(context, AppLocalizations.of(context)!.imageLoadingError);
+        return ImageError(AppLocalizations.of(context)!.imageLoadingError);
       },
     );
+  }
+}
+
+class ImageError extends StatelessWidget {
+  final String message;
+
+  ImageError(this.message, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        color: MeliColors.peach,
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          const Icon(
+            Icons.warning_rounded,
+            size: 40.0,
+            color: MeliColors.black,
+          ),
+          const SizedBox(height: 10.0),
+          Text(message,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge),
+        ]));
   }
 }

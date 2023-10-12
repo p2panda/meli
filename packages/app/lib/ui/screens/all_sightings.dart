@@ -17,13 +17,13 @@ class AllSightingsScreen extends StatelessWidget {
     return MeliScaffold(
       floatingActionButtons: [
         MeliFloatingActionButton(
-            icon: Icon(Icons.hive_outlined),
+            icon: const Icon(Icons.hive_outlined),
             backgroundColor: MeliColors.peach,
             onPressed: () {
               router.push(RoutePaths.allSpecies.path);
             }),
         MeliFloatingActionButton(
-            icon: Icon(Icons.camera_alt_outlined),
+            icon: const Icon(Icons.camera_alt_outlined),
             backgroundColor: MeliColors.sea,
             onPressed: () {
               router.push(RoutePaths.createSighting.path);
@@ -31,7 +31,7 @@ class AllSightingsScreen extends StatelessWidget {
       ],
       body: Container(
           child: Container(
-              decoration: new GreenGradientBackground(),
+              decoration: const GreenGradientBackground(),
               child: Container(
                 padding: EdgeInsets.only(
                     top: MediaQuery.of(context).viewPadding.top),
@@ -60,9 +60,9 @@ class ScrollView extends StatelessWidget {
           child: Column(children: [
             TopBar(),
             BouncyBee(),
-            SizedBox(height: 30.0),
+            const SizedBox(height: 30.0),
             SightingsList(paginator: this.paginator),
-            SizedBox(height: 40.0),
+            const SizedBox(height: 40.0),
           ])),
     );
   }
@@ -91,15 +91,15 @@ class _SightingsListState extends State<SightingsList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-      decoration: new MagnoliaWavesBackground(),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+      decoration: const MagnoliaWavesBackground(),
       child: Container(
           width: double.infinity,
-          padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
+          padding: const EdgeInsets.only(top: 30.0, bottom: 20.0),
           child: PaginationList<Sighting>(
               builder: (Sighting sighting) {
                 return Container(
-                    padding: EdgeInsets.only(bottom: 20.0),
+                    padding: const EdgeInsets.only(bottom: 20.0),
                     child: this._item(sighting));
               },
               paginator: widget.paginator)),
@@ -111,10 +111,10 @@ class TopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
       alignment: Alignment.centerRight,
       child: IconButton(
-          icon: Icon(Icons.settings_outlined),
+          icon: const Icon(Icons.settings_outlined),
           onPressed: () {
             router.push(RoutePaths.settings.path);
           }),
@@ -158,14 +158,15 @@ class _BouncyBeeState extends State<BouncyBee>
       },
       child: SlideTransition(
         position: _flyingBeeAnimation,
-        child: Center(child: Text("🐝", style: TextStyle(fontSize: 50.0))),
+        child:
+            const Center(child: Text("🐝", style: TextStyle(fontSize: 50.0))),
       ),
     );
   }
 }
 
 class GreenGradientBackground extends Decoration {
-  GreenGradientBackground();
+  const GreenGradientBackground();
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {
@@ -209,7 +210,7 @@ class _GreenGradientPainter extends BoxPainter {
 }
 
 class MagnoliaWavesBackground extends Decoration {
-  MagnoliaWavesBackground();
+  const MagnoliaWavesBackground();
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {

@@ -35,13 +35,13 @@ class _MeliScaffoldState extends State<MeliScaffold> {
         backgroundColor: widget.backgroundColor,
         title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           IconButton(
-              icon: Icon(Icons.arrow_back_rounded),
+              icon: const Icon(Icons.arrow_back_rounded),
               onPressed: () {
                 Navigator.of(context).pop();
               }),
-          SizedBox(width: 7.0),
+          const SizedBox(width: 7.0),
           Text(widget.title!),
-          SizedBox(width: 35.0),
+          const SizedBox(width: 35.0),
         ]),
       );
     }

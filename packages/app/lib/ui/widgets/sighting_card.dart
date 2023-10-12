@@ -33,31 +33,6 @@ class SightingCard extends StatefulWidget {
 class _SightingCardState extends State<SightingCard> {
   bool isSelected = false;
 
-  Widget get _title {
-    String title = AppLocalizations.of(context)!.sightingUnspecified;
-
-    if (widget.species != null) {
-      title = widget.species!.species.name;
-    } else if (widget.localName != null) {
-      title = widget.localName!.name;
-    }
-
-    return Text(title,
-        style: TextStyle(fontSize: 20.0, fontFamily: 'Staatliches'));
-  }
-
-  Widget get _icon {
-    if (widget.species == null) {
-      return Icon(Icons.question_mark);
-    }
-
-    return SizedBox.shrink();
-  }
-
-  Widget get _date {
-    return Text('${widget.date.day}.${widget.date.month}.${widget.date.year}');
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -83,28 +58,16 @@ class _SightingCardState extends State<SightingCard> {
           color: MeliColors.white,
           borderColor: this.isSelected ? MeliColors.black : MeliColors.white,
           child: Column(children: [
-            Container(
-              alignment: AlignmentDirectional.centerStart,
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        this._title,
-                        this._icon,
-                      ]),
-                  this._date,
-                ],
-              ),
-            ),
+            SightingCardHeader(
+                localName: widget.localName,
+                species: widget.species,
+                date: widget.date),
             Container(
               child: MeliImage(image: widget.image),
               clipBehavior: Clip.hardEdge,
               height: 200.0,
               width: double.infinity,
-              decoration: ShapeDecoration(
+              decoration: const ShapeDecoration(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(12.0),
@@ -113,6 +76,46 @@ class _SightingCardState extends State<SightingCard> {
               ),
             )
           ])),
+    );
+  }
+}
+
+class SightingCardHeader extends StatelessWidget {
+  final LocalName? localName;
+  final Species? species;
+  final DateTime date;
+
+  const SightingCardHeader(
+      {super.key, this.localName, this.species, required this.date});
+
+  @override
+  Widget build(BuildContext context) {
+    String title = AppLocalizations.of(context)!.sightingUnspecified;
+
+    if (this.species != null) {
+      title = this.species!.species.name;
+    } else if (this.localName != null) {
+      title = this.localName!.name;
+    }
+
+    bool showQuestionMark = this.species == null;
+
+    String date = '${this.date.day}.${this.date.month}.${this.date.year}';
+
+    return Container(
+      alignment: AlignmentDirectional.centerStart,
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Text(title,
+                style: TextStyle(fontSize: 20.0, fontFamily: 'Staatliches')),
+            if (showQuestionMark) Icon(Icons.question_mark),
+          ]),
+          Text(date),
+        ],
+      ),
     );
   }
 }
