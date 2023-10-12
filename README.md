@@ -35,12 +35,13 @@ providing all p2panda functionality via FFI bindings.
 ### Requirements
 
 > Listed versions are the ones we used successfully in our developer
-> environments, other versions might work well too.
+> environments, other versions might work well too, the exact NDK version is
+> _required_ though.
 
-* [Rust](https://www.rust-lang.org/tools/install) `1.70.0`
+* [Rust](https://www.rust-lang.org/tools/install) `1.73.0`
 * [Android SDK](https://developer.android.com/tools) `34.0.0`
 * [Android NDK](https://developer.android.com/ndk/) `25.2.9519653`
-* [Flutter SDK](https://docs.flutter.dev/get-started/install) `3.10.5` and Dart SDK `3.0.5`
+* [Flutter SDK](https://docs.flutter.dev/get-started/install) `3.13.7` and Dart SDK `3.1.3`
 * [Melos](https://melos.invertase.dev/getting-started)
 
 ### Setup
@@ -122,9 +123,6 @@ correct ipv4 address and port number via an environment variable or the command 
 ```bash
 flutter run --dart-define=RELAY_ADDRESS=203.0.113.0:2022
 ```
-
-As of the time of writing this functionality is not supported by emulated devices. We recommend only
-enabling when running on hardware devices.
 
 ### Schema
 
