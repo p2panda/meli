@@ -35,7 +35,8 @@ providing all p2panda functionality via FFI bindings.
 ### Requirements
 
 > Listed versions are the ones we used successfully in our developer
-> environments, other versions might work well too.
+> environments, other versions might work well too, the exact NDK version is
+> _required_ though.
 
 * [Rust](https://www.rust-lang.org/tools/install) `1.73.0`
 * [Android SDK](https://developer.android.com/tools) `34.0.0`

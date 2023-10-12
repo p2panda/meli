@@ -29,7 +29,9 @@ android {
     namespace "com.p2panda.app"
     // Set to mimimum version 33 for `geolocator` package
     compileSdkVersion Math.max(flutter.compileSdkVersion, 33)
-    ndkVersion flutter.ndkVersion
+    // Pin NDK version to assure compatibility with cargo-ndk build (see
+    // "packages/p2panda/native/build.rs" file for details)
+    ndkVersion "25.2.9519653"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
