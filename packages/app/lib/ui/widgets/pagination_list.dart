@@ -31,8 +31,8 @@ class PaginationList<T> extends StatelessWidget {
   Widget _loading() {
     return Center(
         child: Container(
-            padding: EdgeInsets.all(30.0),
-            child: CircularProgressIndicator(
+            padding: const EdgeInsets.all(30.0),
+            child: const CircularProgressIndicator(
               color: MeliColors.black,
             )));
   }
@@ -49,7 +49,7 @@ class PaginationList<T> extends StatelessWidget {
           ? this._loading()
           : ElevatedButton(
               child: Text(AppLocalizations.of(context)!.paginationListLoadMore,
-                  style: TextStyle(color: MeliColors.black)),
+                  style: const TextStyle(color: MeliColors.black)),
               onPressed: onLoadMore,
             )
     ]);
@@ -58,11 +58,11 @@ class PaginationList<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Query(
-      options: QueryOptions(document: this.paginator.nextPageQuery(null)),
+      options: QueryOptions(document: paginator.nextPageQuery(null)),
       builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
-        if (this.paginator.refresh == null) {
+        if (paginator.refresh == null) {
           // Workaround to access `refetch` method from the outside
-          this.paginator.refresh = refetch;
+          paginator.refresh = refetch;
         }
 
         if (result.hasException) {

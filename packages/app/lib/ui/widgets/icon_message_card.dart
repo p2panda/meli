@@ -25,14 +25,14 @@ class IconMessageCard extends StatelessWidget {
         child: SizedBox(
           width: double.infinity,
           child: Container(
-              padding: EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(20.0),
               child: Column(children: [
                 Icon(
                   this.icon,
                   size: 40.0,
                   color: MeliColors.black,
                 ),
-                SizedBox(height: 10.0),
+                const SizedBox(height: 10.0),
                 Text(this.message,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyLarge),

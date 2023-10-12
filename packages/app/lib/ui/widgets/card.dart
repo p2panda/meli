@@ -31,7 +31,7 @@ class MeliCard extends StatelessWidget {
             strokeAlign: BorderSide.strokeAlignCenter,
             color: this.borderColor,
           ),
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(12.0)),
         ),
         child: this.child);
   }

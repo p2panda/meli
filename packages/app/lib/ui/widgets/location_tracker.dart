@@ -138,7 +138,7 @@ class _LocationTrackerInputState extends State<LocationTrackerInput> {
               size: 40.0,
               color: Colors.black,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(text,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyLarge),
@@ -153,7 +153,7 @@ class _LocationTrackerInputState extends State<LocationTrackerInput> {
       _header(Icons.location_searching, t.locationAdd),
       MeliIconButton(
           child: Text(t.locationAddAction),
-          icon: Icon(Icons.add),
+          icon: const Icon(Icons.add),
           onPressed: () {
             setState(() {
               _hasUserGivenConsent = true;
@@ -169,12 +169,12 @@ class _LocationTrackerInputState extends State<LocationTrackerInput> {
 
     return Column(
       children: [
-        SizedBox(
+        const SizedBox(
             width: 30.0,
             height: 30.0,
             child: CircularProgressIndicator(
                 color: Colors.black, strokeWidth: 3.0)),
-        SizedBox(height: 15),
+        const SizedBox(height: 15),
         Text(t.locationLoading, style: Theme.of(context).textTheme.bodyLarge),
       ],
     );
@@ -191,7 +191,7 @@ class _LocationTrackerInputState extends State<LocationTrackerInput> {
           t.locationSuccessful(latitude, longitude)),
       MeliIconButton(
           child: Text(t.locationRemoveAction),
-          icon: Icon(Icons.remove),
+          icon: const Icon(Icons.remove),
           onPressed: () {
             setState(() {
               _hasUserGivenConsent = false;
@@ -210,7 +210,7 @@ class _LocationTrackerInputState extends State<LocationTrackerInput> {
       Text(t.locationTryAgain, style: Theme.of(context).textTheme.bodyLarge),
       MeliIconButton(
           child: Text(t.locationTryAgainAction),
-          icon: Icon(Icons.loop),
+          icon: const Icon(Icons.loop),
           onPressed: addLocation),
     ]);
   }
@@ -222,7 +222,7 @@ class _LocationTrackerInputState extends State<LocationTrackerInput> {
     return SimpleCard(
         title: t.locationHeader,
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 30.0),
+          padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 30.0),
           child: LocationTracker(
               key: this._trackerKey,
               builder: (Position? position, LocationTrackerStatus status,
