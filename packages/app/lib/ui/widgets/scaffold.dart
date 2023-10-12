@@ -28,7 +28,11 @@ class _MeliScaffoldState extends State<MeliScaffold> {
     if (widget.title != null) {
       return AppBar(
         automaticallyImplyLeading: false,
-        forceMaterialTransparency: true,
+        scrolledUnderElevation: 3.0,
+        surfaceTintColor: Colors.transparent,
+        shadowColor: Colors.black54,
+        forceMaterialTransparency: false,
+        backgroundColor: widget.backgroundColor,
         title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           IconButton(
               icon: Icon(Icons.arrow_back_rounded),

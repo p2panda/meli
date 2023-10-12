@@ -10,19 +10,19 @@ enum ExpandDirection { left, right }
 
 @immutable
 class ExpandableFab extends StatefulWidget {
-  const ExpandableFab(
-      {super.key,
-      this.initialOpen,
-      required this.distance,
-      required this.buttons,
-      required this.expandDirection,
-      required this.icon});
-
   final Icon icon;
   final ExpandDirection expandDirection;
-  final bool? initialOpen;
   final double distance;
+  final Color color;
   final List<ActionButton> buttons;
+
+  const ExpandableFab(
+      {super.key,
+      required this.distance,
+      required this.buttons,
+      required this.color,
+      required this.expandDirection,
+      required this.icon});
 
   @override
   State<ExpandableFab> createState() => _ExpandableFabState();
@@ -37,7 +37,6 @@ class _ExpandableFabState extends State<ExpandableFab>
   @override
   void initState() {
     super.initState();
-    _open = widget.initialOpen ?? false;
     _controller = AnimationController(
       value: _open ? 1.0 : 0.0,
       duration: const Duration(milliseconds: 250),
@@ -96,6 +95,7 @@ class _ExpandableFabState extends State<ExpandableFab>
         child: Material(
           shape: const CircleBorder(),
           clipBehavior: Clip.antiAlias,
+          color: MeliColors.white,
           elevation: 4,
           child: InkWell(
             onTap: _toggle,
@@ -103,7 +103,7 @@ class _ExpandableFabState extends State<ExpandableFab>
               padding: const EdgeInsets.all(8),
               child: Icon(
                 Icons.close,
-                color: Theme.of(context).primaryColor,
+                color: MeliColors.black,
               ),
             ),
           ),
@@ -152,6 +152,7 @@ class _ExpandableFabState extends State<ExpandableFab>
           duration: const Duration(milliseconds: 250),
           child: FloatingActionButton(
             foregroundColor: Colors.black,
+            backgroundColor: this.widget.color,
             shape: const CircleBorder(),
             onPressed: _toggle,
             child: this.widget.icon,
@@ -217,15 +218,17 @@ class _ExpandingActionButton extends StatelessWidget {
 class ActionButton {
   final Icon icon;
   final Function onPressed;
+  final Color color;
 
-  ActionButton({required this.icon, required this.onPressed});
+  ActionButton(
+      {required this.icon, required this.onPressed, required this.color});
 }
 
 Widget _buildActionButton(ActionButton actionButton, Function toggle) {
   return Material(
     elevation: 5,
     shape: const CircleBorder(),
-    color: MeliColors.magnolia,
+    color: actionButton.color,
     clipBehavior: Clip.antiAlias,
     child: IconButton(
       onPressed: () {

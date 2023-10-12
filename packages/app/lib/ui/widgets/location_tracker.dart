@@ -221,30 +221,33 @@ class _LocationTrackerInputState extends State<LocationTrackerInput> {
 
     return SimpleCard(
         title: t.locationHeader,
-        child: LocationTracker(
-            key: this._trackerKey,
-            builder: (Position? position, LocationTrackerStatus status,
-                {String? errorMessage,
-                VoidCallback? addLocation,
-                VoidCallback? removeLocation}) {
-              if (!this._hasUserGivenConsent) {
-                return this._standby(addLocation);
-              }
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 30.0),
+          child: LocationTracker(
+              key: this._trackerKey,
+              builder: (Position? position, LocationTrackerStatus status,
+                  {String? errorMessage,
+                  VoidCallback? addLocation,
+                  VoidCallback? removeLocation}) {
+                if (!this._hasUserGivenConsent) {
+                  return this._standby(addLocation);
+                }
 
-              switch (status) {
-                case LocationTrackerStatus.Standby:
-                case LocationTrackerStatus.Waiting:
-                  return this._waiting();
-                case LocationTrackerStatus.Active:
-                  return this._success(position!, removeLocation);
-                case LocationTrackerStatus.Failure:
-                  return this._failed(errorMessage!, addLocation);
-              }
-            },
-            onPositionChanged: (Position? value) {
-              if (widget.onPositionChanged != null) {
-                widget.onPositionChanged!.call(value);
-              }
-            }));
+                switch (status) {
+                  case LocationTrackerStatus.Standby:
+                  case LocationTrackerStatus.Waiting:
+                    return this._waiting();
+                  case LocationTrackerStatus.Active:
+                    return this._success(position!, removeLocation);
+                  case LocationTrackerStatus.Failure:
+                    return this._failed(errorMessage!, addLocation);
+                }
+              },
+              onPositionChanged: (Position? value) {
+                if (widget.onPositionChanged != null) {
+                  widget.onPositionChanged!.call(value);
+                }
+              }),
+        ));
   }
 }

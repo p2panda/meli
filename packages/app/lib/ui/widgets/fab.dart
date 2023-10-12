@@ -8,11 +8,13 @@ class MeliFloatingActionButton extends StatefulWidget {
   final Icon icon;
   final VoidCallback onPressed;
   final Color backgroundColor;
+  final bool disabled;
 
   MeliFloatingActionButton(
       {super.key,
       required this.icon,
       required this.onPressed,
+      this.disabled = false,
       this.backgroundColor = MeliColors.magnolia});
 
   @override
@@ -28,11 +30,12 @@ class _MeliFloatingActionButtonState extends State<MeliFloatingActionButton> {
       alignment: Alignment.bottomCenter,
       child: FloatingActionButton(
         foregroundColor: MeliColors.black,
-        backgroundColor: widget.backgroundColor,
+        backgroundColor:
+            widget.disabled ? Colors.grey[400] : widget.backgroundColor,
         heroTag: null,
         child: widget.icon,
         shape: const CircleBorder(),
-        onPressed: widget.onPressed,
+        onPressed: widget.disabled ? null : widget.onPressed,
       ),
     );
   }
