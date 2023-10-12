@@ -114,6 +114,18 @@ flutter devices
 flutter run --device-id <id>
 ```
 
+### Relay Node
+
+To configure your app to connect to a relay node you will need to set `RELAY_ADDRESS` with the 
+correct ipv4 address and port number via an environment variable or the command line like so.
+
+```bash
+flutter run --dart-define=RELAY_ADDRESS=203.0.113.0:2022
+```
+
+As of the time of writing this functionality is not supported by emulated devices. We recommend only
+enabling when running on hardware devices.
+
 ### Schema
 
 The p2panda schemas and migrations are managed in the `schemas` folder with the
@@ -136,8 +148,13 @@ research and innovation programme within the framework of the NGI-POINTER
 Project funded under grant agreement No 871528*
 
 [`aquadoggo`]: https://github.com/p2panda/aquadoggo
+
 [`fishy`]: https://github.com/p2panda/fishy
+
 [`flutter-cli`]: https://docs.flutter.dev/reference/flutter-cli
+
 [`flutter_rust_bridge`]: https://github.com/fzyzcjy/flutter_rust_bridge
+
 [`p2panda-rs`]: https://github.com/p2panda/p2panda
+
 [`p2panda`]: https://p2panda.org

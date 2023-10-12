@@ -122,20 +122,22 @@ class _$OperationValueCopyWithImpl<$Res, $Val extends OperationValue>
 }
 
 /// @nodoc
-abstract class _$$OperationValue_BooleanCopyWith<$Res> {
-  factory _$$OperationValue_BooleanCopyWith(_$OperationValue_Boolean value,
-          $Res Function(_$OperationValue_Boolean) then) =
-      __$$OperationValue_BooleanCopyWithImpl<$Res>;
+abstract class _$$OperationValue_BooleanImplCopyWith<$Res> {
+  factory _$$OperationValue_BooleanImplCopyWith(
+          _$OperationValue_BooleanImpl value,
+          $Res Function(_$OperationValue_BooleanImpl) then) =
+      __$$OperationValue_BooleanImplCopyWithImpl<$Res>;
   @useResult
   $Res call({bool field0});
 }
 
 /// @nodoc
-class __$$OperationValue_BooleanCopyWithImpl<$Res>
-    extends _$OperationValueCopyWithImpl<$Res, _$OperationValue_Boolean>
-    implements _$$OperationValue_BooleanCopyWith<$Res> {
-  __$$OperationValue_BooleanCopyWithImpl(_$OperationValue_Boolean _value,
-      $Res Function(_$OperationValue_Boolean) _then)
+class __$$OperationValue_BooleanImplCopyWithImpl<$Res>
+    extends _$OperationValueCopyWithImpl<$Res, _$OperationValue_BooleanImpl>
+    implements _$$OperationValue_BooleanImplCopyWith<$Res> {
+  __$$OperationValue_BooleanImplCopyWithImpl(
+      _$OperationValue_BooleanImpl _value,
+      $Res Function(_$OperationValue_BooleanImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -143,7 +145,7 @@ class __$$OperationValue_BooleanCopyWithImpl<$Res>
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$OperationValue_Boolean(
+    return _then(_$OperationValue_BooleanImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
@@ -154,8 +156,8 @@ class __$$OperationValue_BooleanCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$OperationValue_Boolean implements OperationValue_Boolean {
-  const _$OperationValue_Boolean(this.field0);
+class _$OperationValue_BooleanImpl implements OperationValue_Boolean {
+  const _$OperationValue_BooleanImpl(this.field0);
 
   @override
   final bool field0;
@@ -169,7 +171,7 @@ class _$OperationValue_Boolean implements OperationValue_Boolean {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$OperationValue_Boolean &&
+            other is _$OperationValue_BooleanImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
@@ -179,9 +181,9 @@ class _$OperationValue_Boolean implements OperationValue_Boolean {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$OperationValue_BooleanCopyWith<_$OperationValue_Boolean> get copyWith =>
-      __$$OperationValue_BooleanCopyWithImpl<_$OperationValue_Boolean>(
-          this, _$identity);
+  _$$OperationValue_BooleanImplCopyWith<_$OperationValue_BooleanImpl>
+      get copyWith => __$$OperationValue_BooleanImplCopyWithImpl<
+          _$OperationValue_BooleanImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -294,30 +296,30 @@ class _$OperationValue_Boolean implements OperationValue_Boolean {
 
 abstract class OperationValue_Boolean implements OperationValue {
   const factory OperationValue_Boolean(final bool field0) =
-      _$OperationValue_Boolean;
+      _$OperationValue_BooleanImpl;
 
   @override
   bool get field0;
   @JsonKey(ignore: true)
-  _$$OperationValue_BooleanCopyWith<_$OperationValue_Boolean> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$OperationValue_BooleanImplCopyWith<_$OperationValue_BooleanImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$OperationValue_FloatCopyWith<$Res> {
-  factory _$$OperationValue_FloatCopyWith(_$OperationValue_Float value,
-          $Res Function(_$OperationValue_Float) then) =
-      __$$OperationValue_FloatCopyWithImpl<$Res>;
+abstract class _$$OperationValue_FloatImplCopyWith<$Res> {
+  factory _$$OperationValue_FloatImplCopyWith(_$OperationValue_FloatImpl value,
+          $Res Function(_$OperationValue_FloatImpl) then) =
+      __$$OperationValue_FloatImplCopyWithImpl<$Res>;
   @useResult
   $Res call({double field0});
 }
 
 /// @nodoc
-class __$$OperationValue_FloatCopyWithImpl<$Res>
-    extends _$OperationValueCopyWithImpl<$Res, _$OperationValue_Float>
-    implements _$$OperationValue_FloatCopyWith<$Res> {
-  __$$OperationValue_FloatCopyWithImpl(_$OperationValue_Float _value,
-      $Res Function(_$OperationValue_Float) _then)
+class __$$OperationValue_FloatImplCopyWithImpl<$Res>
+    extends _$OperationValueCopyWithImpl<$Res, _$OperationValue_FloatImpl>
+    implements _$$OperationValue_FloatImplCopyWith<$Res> {
+  __$$OperationValue_FloatImplCopyWithImpl(_$OperationValue_FloatImpl _value,
+      $Res Function(_$OperationValue_FloatImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -325,7 +327,7 @@ class __$$OperationValue_FloatCopyWithImpl<$Res>
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$OperationValue_Float(
+    return _then(_$OperationValue_FloatImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
@@ -336,8 +338,8 @@ class __$$OperationValue_FloatCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$OperationValue_Float implements OperationValue_Float {
-  const _$OperationValue_Float(this.field0);
+class _$OperationValue_FloatImpl implements OperationValue_Float {
+  const _$OperationValue_FloatImpl(this.field0);
 
   @override
   final double field0;
@@ -351,7 +353,7 @@ class _$OperationValue_Float implements OperationValue_Float {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$OperationValue_Float &&
+            other is _$OperationValue_FloatImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
@@ -361,9 +363,10 @@ class _$OperationValue_Float implements OperationValue_Float {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$OperationValue_FloatCopyWith<_$OperationValue_Float> get copyWith =>
-      __$$OperationValue_FloatCopyWithImpl<_$OperationValue_Float>(
-          this, _$identity);
+  _$$OperationValue_FloatImplCopyWith<_$OperationValue_FloatImpl>
+      get copyWith =>
+          __$$OperationValue_FloatImplCopyWithImpl<_$OperationValue_FloatImpl>(
+              this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -476,30 +479,32 @@ class _$OperationValue_Float implements OperationValue_Float {
 
 abstract class OperationValue_Float implements OperationValue {
   const factory OperationValue_Float(final double field0) =
-      _$OperationValue_Float;
+      _$OperationValue_FloatImpl;
 
   @override
   double get field0;
   @JsonKey(ignore: true)
-  _$$OperationValue_FloatCopyWith<_$OperationValue_Float> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$OperationValue_FloatImplCopyWith<_$OperationValue_FloatImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$OperationValue_IntegerCopyWith<$Res> {
-  factory _$$OperationValue_IntegerCopyWith(_$OperationValue_Integer value,
-          $Res Function(_$OperationValue_Integer) then) =
-      __$$OperationValue_IntegerCopyWithImpl<$Res>;
+abstract class _$$OperationValue_IntegerImplCopyWith<$Res> {
+  factory _$$OperationValue_IntegerImplCopyWith(
+          _$OperationValue_IntegerImpl value,
+          $Res Function(_$OperationValue_IntegerImpl) then) =
+      __$$OperationValue_IntegerImplCopyWithImpl<$Res>;
   @useResult
   $Res call({int field0});
 }
 
 /// @nodoc
-class __$$OperationValue_IntegerCopyWithImpl<$Res>
-    extends _$OperationValueCopyWithImpl<$Res, _$OperationValue_Integer>
-    implements _$$OperationValue_IntegerCopyWith<$Res> {
-  __$$OperationValue_IntegerCopyWithImpl(_$OperationValue_Integer _value,
-      $Res Function(_$OperationValue_Integer) _then)
+class __$$OperationValue_IntegerImplCopyWithImpl<$Res>
+    extends _$OperationValueCopyWithImpl<$Res, _$OperationValue_IntegerImpl>
+    implements _$$OperationValue_IntegerImplCopyWith<$Res> {
+  __$$OperationValue_IntegerImplCopyWithImpl(
+      _$OperationValue_IntegerImpl _value,
+      $Res Function(_$OperationValue_IntegerImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -507,7 +512,7 @@ class __$$OperationValue_IntegerCopyWithImpl<$Res>
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$OperationValue_Integer(
+    return _then(_$OperationValue_IntegerImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
@@ -518,8 +523,8 @@ class __$$OperationValue_IntegerCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$OperationValue_Integer implements OperationValue_Integer {
-  const _$OperationValue_Integer(this.field0);
+class _$OperationValue_IntegerImpl implements OperationValue_Integer {
+  const _$OperationValue_IntegerImpl(this.field0);
 
   @override
   final int field0;
@@ -533,7 +538,7 @@ class _$OperationValue_Integer implements OperationValue_Integer {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$OperationValue_Integer &&
+            other is _$OperationValue_IntegerImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
@@ -543,9 +548,9 @@ class _$OperationValue_Integer implements OperationValue_Integer {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$OperationValue_IntegerCopyWith<_$OperationValue_Integer> get copyWith =>
-      __$$OperationValue_IntegerCopyWithImpl<_$OperationValue_Integer>(
-          this, _$identity);
+  _$$OperationValue_IntegerImplCopyWith<_$OperationValue_IntegerImpl>
+      get copyWith => __$$OperationValue_IntegerImplCopyWithImpl<
+          _$OperationValue_IntegerImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -658,30 +663,31 @@ class _$OperationValue_Integer implements OperationValue_Integer {
 
 abstract class OperationValue_Integer implements OperationValue {
   const factory OperationValue_Integer(final int field0) =
-      _$OperationValue_Integer;
+      _$OperationValue_IntegerImpl;
 
   @override
   int get field0;
   @JsonKey(ignore: true)
-  _$$OperationValue_IntegerCopyWith<_$OperationValue_Integer> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$OperationValue_IntegerImplCopyWith<_$OperationValue_IntegerImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$OperationValue_StringCopyWith<$Res> {
-  factory _$$OperationValue_StringCopyWith(_$OperationValue_String value,
-          $Res Function(_$OperationValue_String) then) =
-      __$$OperationValue_StringCopyWithImpl<$Res>;
+abstract class _$$OperationValue_StringImplCopyWith<$Res> {
+  factory _$$OperationValue_StringImplCopyWith(
+          _$OperationValue_StringImpl value,
+          $Res Function(_$OperationValue_StringImpl) then) =
+      __$$OperationValue_StringImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String field0});
 }
 
 /// @nodoc
-class __$$OperationValue_StringCopyWithImpl<$Res>
-    extends _$OperationValueCopyWithImpl<$Res, _$OperationValue_String>
-    implements _$$OperationValue_StringCopyWith<$Res> {
-  __$$OperationValue_StringCopyWithImpl(_$OperationValue_String _value,
-      $Res Function(_$OperationValue_String) _then)
+class __$$OperationValue_StringImplCopyWithImpl<$Res>
+    extends _$OperationValueCopyWithImpl<$Res, _$OperationValue_StringImpl>
+    implements _$$OperationValue_StringImplCopyWith<$Res> {
+  __$$OperationValue_StringImplCopyWithImpl(_$OperationValue_StringImpl _value,
+      $Res Function(_$OperationValue_StringImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -689,7 +695,7 @@ class __$$OperationValue_StringCopyWithImpl<$Res>
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$OperationValue_String(
+    return _then(_$OperationValue_StringImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
@@ -700,8 +706,8 @@ class __$$OperationValue_StringCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$OperationValue_String implements OperationValue_String {
-  const _$OperationValue_String(this.field0);
+class _$OperationValue_StringImpl implements OperationValue_String {
+  const _$OperationValue_StringImpl(this.field0);
 
   @override
   final String field0;
@@ -715,7 +721,7 @@ class _$OperationValue_String implements OperationValue_String {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$OperationValue_String &&
+            other is _$OperationValue_StringImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
@@ -725,9 +731,9 @@ class _$OperationValue_String implements OperationValue_String {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$OperationValue_StringCopyWith<_$OperationValue_String> get copyWith =>
-      __$$OperationValue_StringCopyWithImpl<_$OperationValue_String>(
-          this, _$identity);
+  _$$OperationValue_StringImplCopyWith<_$OperationValue_StringImpl>
+      get copyWith => __$$OperationValue_StringImplCopyWithImpl<
+          _$OperationValue_StringImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -840,30 +846,30 @@ class _$OperationValue_String implements OperationValue_String {
 
 abstract class OperationValue_String implements OperationValue {
   const factory OperationValue_String(final String field0) =
-      _$OperationValue_String;
+      _$OperationValue_StringImpl;
 
   @override
   String get field0;
   @JsonKey(ignore: true)
-  _$$OperationValue_StringCopyWith<_$OperationValue_String> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$OperationValue_StringImplCopyWith<_$OperationValue_StringImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$OperationValue_BytesCopyWith<$Res> {
-  factory _$$OperationValue_BytesCopyWith(_$OperationValue_Bytes value,
-          $Res Function(_$OperationValue_Bytes) then) =
-      __$$OperationValue_BytesCopyWithImpl<$Res>;
+abstract class _$$OperationValue_BytesImplCopyWith<$Res> {
+  factory _$$OperationValue_BytesImplCopyWith(_$OperationValue_BytesImpl value,
+          $Res Function(_$OperationValue_BytesImpl) then) =
+      __$$OperationValue_BytesImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Uint8List field0});
 }
 
 /// @nodoc
-class __$$OperationValue_BytesCopyWithImpl<$Res>
-    extends _$OperationValueCopyWithImpl<$Res, _$OperationValue_Bytes>
-    implements _$$OperationValue_BytesCopyWith<$Res> {
-  __$$OperationValue_BytesCopyWithImpl(_$OperationValue_Bytes _value,
-      $Res Function(_$OperationValue_Bytes) _then)
+class __$$OperationValue_BytesImplCopyWithImpl<$Res>
+    extends _$OperationValueCopyWithImpl<$Res, _$OperationValue_BytesImpl>
+    implements _$$OperationValue_BytesImplCopyWith<$Res> {
+  __$$OperationValue_BytesImplCopyWithImpl(_$OperationValue_BytesImpl _value,
+      $Res Function(_$OperationValue_BytesImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -871,7 +877,7 @@ class __$$OperationValue_BytesCopyWithImpl<$Res>
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$OperationValue_Bytes(
+    return _then(_$OperationValue_BytesImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
@@ -882,8 +888,8 @@ class __$$OperationValue_BytesCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$OperationValue_Bytes implements OperationValue_Bytes {
-  const _$OperationValue_Bytes(this.field0);
+class _$OperationValue_BytesImpl implements OperationValue_Bytes {
+  const _$OperationValue_BytesImpl(this.field0);
 
   @override
   final Uint8List field0;
@@ -897,7 +903,7 @@ class _$OperationValue_Bytes implements OperationValue_Bytes {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$OperationValue_Bytes &&
+            other is _$OperationValue_BytesImpl &&
             const DeepCollectionEquality().equals(other.field0, field0));
   }
 
@@ -908,9 +914,10 @@ class _$OperationValue_Bytes implements OperationValue_Bytes {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$OperationValue_BytesCopyWith<_$OperationValue_Bytes> get copyWith =>
-      __$$OperationValue_BytesCopyWithImpl<_$OperationValue_Bytes>(
-          this, _$identity);
+  _$$OperationValue_BytesImplCopyWith<_$OperationValue_BytesImpl>
+      get copyWith =>
+          __$$OperationValue_BytesImplCopyWithImpl<_$OperationValue_BytesImpl>(
+              this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1023,30 +1030,32 @@ class _$OperationValue_Bytes implements OperationValue_Bytes {
 
 abstract class OperationValue_Bytes implements OperationValue {
   const factory OperationValue_Bytes(final Uint8List field0) =
-      _$OperationValue_Bytes;
+      _$OperationValue_BytesImpl;
 
   @override
   Uint8List get field0;
   @JsonKey(ignore: true)
-  _$$OperationValue_BytesCopyWith<_$OperationValue_Bytes> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$OperationValue_BytesImplCopyWith<_$OperationValue_BytesImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$OperationValue_RelationCopyWith<$Res> {
-  factory _$$OperationValue_RelationCopyWith(_$OperationValue_Relation value,
-          $Res Function(_$OperationValue_Relation) then) =
-      __$$OperationValue_RelationCopyWithImpl<$Res>;
+abstract class _$$OperationValue_RelationImplCopyWith<$Res> {
+  factory _$$OperationValue_RelationImplCopyWith(
+          _$OperationValue_RelationImpl value,
+          $Res Function(_$OperationValue_RelationImpl) then) =
+      __$$OperationValue_RelationImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String field0});
 }
 
 /// @nodoc
-class __$$OperationValue_RelationCopyWithImpl<$Res>
-    extends _$OperationValueCopyWithImpl<$Res, _$OperationValue_Relation>
-    implements _$$OperationValue_RelationCopyWith<$Res> {
-  __$$OperationValue_RelationCopyWithImpl(_$OperationValue_Relation _value,
-      $Res Function(_$OperationValue_Relation) _then)
+class __$$OperationValue_RelationImplCopyWithImpl<$Res>
+    extends _$OperationValueCopyWithImpl<$Res, _$OperationValue_RelationImpl>
+    implements _$$OperationValue_RelationImplCopyWith<$Res> {
+  __$$OperationValue_RelationImplCopyWithImpl(
+      _$OperationValue_RelationImpl _value,
+      $Res Function(_$OperationValue_RelationImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1054,7 +1063,7 @@ class __$$OperationValue_RelationCopyWithImpl<$Res>
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$OperationValue_Relation(
+    return _then(_$OperationValue_RelationImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
@@ -1065,8 +1074,8 @@ class __$$OperationValue_RelationCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$OperationValue_Relation implements OperationValue_Relation {
-  const _$OperationValue_Relation(this.field0);
+class _$OperationValue_RelationImpl implements OperationValue_Relation {
+  const _$OperationValue_RelationImpl(this.field0);
 
   @override
   final String field0;
@@ -1080,7 +1089,7 @@ class _$OperationValue_Relation implements OperationValue_Relation {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$OperationValue_Relation &&
+            other is _$OperationValue_RelationImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
@@ -1090,9 +1099,9 @@ class _$OperationValue_Relation implements OperationValue_Relation {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$OperationValue_RelationCopyWith<_$OperationValue_Relation> get copyWith =>
-      __$$OperationValue_RelationCopyWithImpl<_$OperationValue_Relation>(
-          this, _$identity);
+  _$$OperationValue_RelationImplCopyWith<_$OperationValue_RelationImpl>
+      get copyWith => __$$OperationValue_RelationImplCopyWithImpl<
+          _$OperationValue_RelationImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1205,32 +1214,33 @@ class _$OperationValue_Relation implements OperationValue_Relation {
 
 abstract class OperationValue_Relation implements OperationValue {
   const factory OperationValue_Relation(final String field0) =
-      _$OperationValue_Relation;
+      _$OperationValue_RelationImpl;
 
   @override
   String get field0;
   @JsonKey(ignore: true)
-  _$$OperationValue_RelationCopyWith<_$OperationValue_Relation> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$OperationValue_RelationImplCopyWith<_$OperationValue_RelationImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$OperationValue_RelationListCopyWith<$Res> {
-  factory _$$OperationValue_RelationListCopyWith(
-          _$OperationValue_RelationList value,
-          $Res Function(_$OperationValue_RelationList) then) =
-      __$$OperationValue_RelationListCopyWithImpl<$Res>;
+abstract class _$$OperationValue_RelationListImplCopyWith<$Res> {
+  factory _$$OperationValue_RelationListImplCopyWith(
+          _$OperationValue_RelationListImpl value,
+          $Res Function(_$OperationValue_RelationListImpl) then) =
+      __$$OperationValue_RelationListImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<String> field0});
 }
 
 /// @nodoc
-class __$$OperationValue_RelationListCopyWithImpl<$Res>
-    extends _$OperationValueCopyWithImpl<$Res, _$OperationValue_RelationList>
-    implements _$$OperationValue_RelationListCopyWith<$Res> {
-  __$$OperationValue_RelationListCopyWithImpl(
-      _$OperationValue_RelationList _value,
-      $Res Function(_$OperationValue_RelationList) _then)
+class __$$OperationValue_RelationListImplCopyWithImpl<$Res>
+    extends _$OperationValueCopyWithImpl<$Res,
+        _$OperationValue_RelationListImpl>
+    implements _$$OperationValue_RelationListImplCopyWith<$Res> {
+  __$$OperationValue_RelationListImplCopyWithImpl(
+      _$OperationValue_RelationListImpl _value,
+      $Res Function(_$OperationValue_RelationListImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1238,7 +1248,7 @@ class __$$OperationValue_RelationListCopyWithImpl<$Res>
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$OperationValue_RelationList(
+    return _then(_$OperationValue_RelationListImpl(
       null == field0
           ? _value._field0
           : field0 // ignore: cast_nullable_to_non_nullable
@@ -1249,8 +1259,8 @@ class __$$OperationValue_RelationListCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$OperationValue_RelationList implements OperationValue_RelationList {
-  const _$OperationValue_RelationList(final List<String> field0)
+class _$OperationValue_RelationListImpl implements OperationValue_RelationList {
+  const _$OperationValue_RelationListImpl(final List<String> field0)
       : _field0 = field0;
 
   final List<String> _field0;
@@ -1270,7 +1280,7 @@ class _$OperationValue_RelationList implements OperationValue_RelationList {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$OperationValue_RelationList &&
+            other is _$OperationValue_RelationListImpl &&
             const DeepCollectionEquality().equals(other._field0, _field0));
   }
 
@@ -1281,9 +1291,9 @@ class _$OperationValue_RelationList implements OperationValue_RelationList {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$OperationValue_RelationListCopyWith<_$OperationValue_RelationList>
-      get copyWith => __$$OperationValue_RelationListCopyWithImpl<
-          _$OperationValue_RelationList>(this, _$identity);
+  _$$OperationValue_RelationListImplCopyWith<_$OperationValue_RelationListImpl>
+      get copyWith => __$$OperationValue_RelationListImplCopyWithImpl<
+          _$OperationValue_RelationListImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1396,32 +1406,33 @@ class _$OperationValue_RelationList implements OperationValue_RelationList {
 
 abstract class OperationValue_RelationList implements OperationValue {
   const factory OperationValue_RelationList(final List<String> field0) =
-      _$OperationValue_RelationList;
+      _$OperationValue_RelationListImpl;
 
   @override
   List<String> get field0;
   @JsonKey(ignore: true)
-  _$$OperationValue_RelationListCopyWith<_$OperationValue_RelationList>
+  _$$OperationValue_RelationListImplCopyWith<_$OperationValue_RelationListImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$OperationValue_PinnedRelationCopyWith<$Res> {
-  factory _$$OperationValue_PinnedRelationCopyWith(
-          _$OperationValue_PinnedRelation value,
-          $Res Function(_$OperationValue_PinnedRelation) then) =
-      __$$OperationValue_PinnedRelationCopyWithImpl<$Res>;
+abstract class _$$OperationValue_PinnedRelationImplCopyWith<$Res> {
+  factory _$$OperationValue_PinnedRelationImplCopyWith(
+          _$OperationValue_PinnedRelationImpl value,
+          $Res Function(_$OperationValue_PinnedRelationImpl) then) =
+      __$$OperationValue_PinnedRelationImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String field0});
 }
 
 /// @nodoc
-class __$$OperationValue_PinnedRelationCopyWithImpl<$Res>
-    extends _$OperationValueCopyWithImpl<$Res, _$OperationValue_PinnedRelation>
-    implements _$$OperationValue_PinnedRelationCopyWith<$Res> {
-  __$$OperationValue_PinnedRelationCopyWithImpl(
-      _$OperationValue_PinnedRelation _value,
-      $Res Function(_$OperationValue_PinnedRelation) _then)
+class __$$OperationValue_PinnedRelationImplCopyWithImpl<$Res>
+    extends _$OperationValueCopyWithImpl<$Res,
+        _$OperationValue_PinnedRelationImpl>
+    implements _$$OperationValue_PinnedRelationImplCopyWith<$Res> {
+  __$$OperationValue_PinnedRelationImplCopyWithImpl(
+      _$OperationValue_PinnedRelationImpl _value,
+      $Res Function(_$OperationValue_PinnedRelationImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1429,7 +1440,7 @@ class __$$OperationValue_PinnedRelationCopyWithImpl<$Res>
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$OperationValue_PinnedRelation(
+    return _then(_$OperationValue_PinnedRelationImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
@@ -1440,8 +1451,9 @@ class __$$OperationValue_PinnedRelationCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$OperationValue_PinnedRelation implements OperationValue_PinnedRelation {
-  const _$OperationValue_PinnedRelation(this.field0);
+class _$OperationValue_PinnedRelationImpl
+    implements OperationValue_PinnedRelation {
+  const _$OperationValue_PinnedRelationImpl(this.field0);
 
   @override
   final String field0;
@@ -1455,7 +1467,7 @@ class _$OperationValue_PinnedRelation implements OperationValue_PinnedRelation {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$OperationValue_PinnedRelation &&
+            other is _$OperationValue_PinnedRelationImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
@@ -1465,9 +1477,10 @@ class _$OperationValue_PinnedRelation implements OperationValue_PinnedRelation {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$OperationValue_PinnedRelationCopyWith<_$OperationValue_PinnedRelation>
-      get copyWith => __$$OperationValue_PinnedRelationCopyWithImpl<
-          _$OperationValue_PinnedRelation>(this, _$identity);
+  _$$OperationValue_PinnedRelationImplCopyWith<
+          _$OperationValue_PinnedRelationImpl>
+      get copyWith => __$$OperationValue_PinnedRelationImplCopyWithImpl<
+          _$OperationValue_PinnedRelationImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1580,33 +1593,34 @@ class _$OperationValue_PinnedRelation implements OperationValue_PinnedRelation {
 
 abstract class OperationValue_PinnedRelation implements OperationValue {
   const factory OperationValue_PinnedRelation(final String field0) =
-      _$OperationValue_PinnedRelation;
+      _$OperationValue_PinnedRelationImpl;
 
   @override
   String get field0;
   @JsonKey(ignore: true)
-  _$$OperationValue_PinnedRelationCopyWith<_$OperationValue_PinnedRelation>
+  _$$OperationValue_PinnedRelationImplCopyWith<
+          _$OperationValue_PinnedRelationImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$OperationValue_PinnedRelationListCopyWith<$Res> {
-  factory _$$OperationValue_PinnedRelationListCopyWith(
-          _$OperationValue_PinnedRelationList value,
-          $Res Function(_$OperationValue_PinnedRelationList) then) =
-      __$$OperationValue_PinnedRelationListCopyWithImpl<$Res>;
+abstract class _$$OperationValue_PinnedRelationListImplCopyWith<$Res> {
+  factory _$$OperationValue_PinnedRelationListImplCopyWith(
+          _$OperationValue_PinnedRelationListImpl value,
+          $Res Function(_$OperationValue_PinnedRelationListImpl) then) =
+      __$$OperationValue_PinnedRelationListImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<String> field0});
 }
 
 /// @nodoc
-class __$$OperationValue_PinnedRelationListCopyWithImpl<$Res>
+class __$$OperationValue_PinnedRelationListImplCopyWithImpl<$Res>
     extends _$OperationValueCopyWithImpl<$Res,
-        _$OperationValue_PinnedRelationList>
-    implements _$$OperationValue_PinnedRelationListCopyWith<$Res> {
-  __$$OperationValue_PinnedRelationListCopyWithImpl(
-      _$OperationValue_PinnedRelationList _value,
-      $Res Function(_$OperationValue_PinnedRelationList) _then)
+        _$OperationValue_PinnedRelationListImpl>
+    implements _$$OperationValue_PinnedRelationListImplCopyWith<$Res> {
+  __$$OperationValue_PinnedRelationListImplCopyWithImpl(
+      _$OperationValue_PinnedRelationListImpl _value,
+      $Res Function(_$OperationValue_PinnedRelationListImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1614,7 +1628,7 @@ class __$$OperationValue_PinnedRelationListCopyWithImpl<$Res>
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$OperationValue_PinnedRelationList(
+    return _then(_$OperationValue_PinnedRelationListImpl(
       null == field0
           ? _value._field0
           : field0 // ignore: cast_nullable_to_non_nullable
@@ -1625,9 +1639,9 @@ class __$$OperationValue_PinnedRelationListCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$OperationValue_PinnedRelationList
+class _$OperationValue_PinnedRelationListImpl
     implements OperationValue_PinnedRelationList {
-  const _$OperationValue_PinnedRelationList(final List<String> field0)
+  const _$OperationValue_PinnedRelationListImpl(final List<String> field0)
       : _field0 = field0;
 
   final List<String> _field0;
@@ -1647,7 +1661,7 @@ class _$OperationValue_PinnedRelationList
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$OperationValue_PinnedRelationList &&
+            other is _$OperationValue_PinnedRelationListImpl &&
             const DeepCollectionEquality().equals(other._field0, _field0));
   }
 
@@ -1658,10 +1672,10 @@ class _$OperationValue_PinnedRelationList
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$OperationValue_PinnedRelationListCopyWith<
-          _$OperationValue_PinnedRelationList>
-      get copyWith => __$$OperationValue_PinnedRelationListCopyWithImpl<
-          _$OperationValue_PinnedRelationList>(this, _$identity);
+  _$$OperationValue_PinnedRelationListImplCopyWith<
+          _$OperationValue_PinnedRelationListImpl>
+      get copyWith => __$$OperationValue_PinnedRelationListImplCopyWithImpl<
+          _$OperationValue_PinnedRelationListImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1774,12 +1788,12 @@ class _$OperationValue_PinnedRelationList
 
 abstract class OperationValue_PinnedRelationList implements OperationValue {
   const factory OperationValue_PinnedRelationList(final List<String> field0) =
-      _$OperationValue_PinnedRelationList;
+      _$OperationValue_PinnedRelationListImpl;
 
   @override
   List<String> get field0;
   @JsonKey(ignore: true)
-  _$$OperationValue_PinnedRelationListCopyWith<
-          _$OperationValue_PinnedRelationList>
+  _$$OperationValue_PinnedRelationListImplCopyWith<
+          _$OperationValue_PinnedRelationListImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

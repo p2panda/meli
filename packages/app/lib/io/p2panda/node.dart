@@ -6,6 +6,10 @@ import 'package:app/io/p2panda/key_pair.dart';
 import 'package:app/io/p2panda/p2panda.dart';
 import 'package:app/utils/sleep.dart';
 
+const List<String> relayAddresses = bool.hasEnvironment("RELAY_ADDRESS")
+    ? [String.fromEnvironment("RELAY_ADDRESS")]
+    : [];
+
 /// Start a p2panda node in the background.
 Future<void> startNode() async {
   // Determine folder where we can persist data
@@ -18,9 +22,13 @@ Future<void> startNode() async {
   // peer id will be a hashed version of the public key and it will not leak
   final _keyPair = await keyPair;
 
+  print(relayAddresses);
   // Start node in background thread
   p2panda.startNode(
-      keyPair: _keyPair, databaseUrl: databaseUrl, blobsBasePath: basePath);
+      keyPair: _keyPair,
+      databaseUrl: databaseUrl,
+      blobsBasePath: basePath,
+      relayAddresses: relayAddresses);
 
   // .. since we can't `await` the FFI binding method from Rust we need to
   // poll here to find out until the node is ready
