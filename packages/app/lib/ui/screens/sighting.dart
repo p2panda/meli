@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/local_names.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/ui/colors.dart';
@@ -107,7 +106,6 @@ class _SightingProfileState extends State<SightingProfile> {
         SightingProfileTitle(sighting),
         ImageCarousel(imagePaths: imagePaths),
         LocalNameField(
-          sighting.viewId,
           sighting.localName,
           onCreate: _addLocalName,
           onUpdate: _updateLocalName,
@@ -122,12 +120,11 @@ typedef OnUpdate = void Function(AutocompleteItem);
 typedef OnCreate = void Function(String);
 
 class LocalNameField extends StatefulWidget {
-  final DocumentViewId viewId;
   final LocalName? current;
   final OnUpdate onUpdate;
   final OnCreate onCreate;
 
-  LocalNameField(this.viewId, this.current,
+  LocalNameField(this.current,
       {super.key, required this.onUpdate, required this.onCreate});
 
   @override
