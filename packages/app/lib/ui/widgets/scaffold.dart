@@ -8,6 +8,7 @@ class MeliScaffold extends StatefulWidget {
   final String? title;
   final Widget? body;
   final Color backgroundColor;
+  final Color appBarColor;
   final List<Widget> floatingActionButtons;
   final MainAxisAlignment fabAlignment;
 
@@ -17,6 +18,7 @@ class MeliScaffold extends StatefulWidget {
       this.title,
       this.floatingActionButtons = const [],
       this.fabAlignment = MainAxisAlignment.spaceBetween,
+      this.appBarColor = MeliColors.flurry,
       this.backgroundColor = MeliColors.flurry});
 
   @override
@@ -32,7 +34,7 @@ class _MeliScaffoldState extends State<MeliScaffold> {
         surfaceTintColor: Colors.transparent,
         shadowColor: Colors.black54,
         forceMaterialTransparency: false,
-        backgroundColor: widget.backgroundColor,
+        backgroundColor: widget.appBarColor,
         title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           IconButton(
               icon: Icon(Icons.arrow_back_rounded),

@@ -197,7 +197,8 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
       key: _overlayKey,
       child: MeliScaffold(
         title: t.createSightingScreenTitle,
-        backgroundColor: MeliColors.electric,
+        backgroundColor: MeliColors.magnolia,
+        appBarColor: MeliColors.electric,
         floatingActionButtons: [
           ExpandableFab(
             icon: const Icon(Icons.add_a_photo_outlined),
