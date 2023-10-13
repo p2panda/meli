@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/local_names.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/ui/colors.dart';
@@ -24,19 +25,14 @@ class SightingScreen extends StatefulWidget {
 }
 
 class _SightingScreenState extends State<SightingScreen> {
-  final _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     return MeliScaffold(
         title: AppLocalizations.of(context)!.sightingScreenTitle,
         backgroundColor: MeliColors.electric,
         appBarColor: MeliColors.electric,
-        body: SingleChildScrollView(
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 80.0),
-            decoration: const SeaWavesBackground(),
+        body: Container(
+          child: SingleChildScrollView(
             child: Query(
                 options: QueryOptions(
                     document: gql(sightingQuery(widget.documentId))),
@@ -66,31 +62,73 @@ class _SightingScreenState extends State<SightingScreen> {
   }
 }
 
-class SightingProfile extends StatelessWidget {
+class SightingProfile extends StatefulWidget {
   final Sighting sighting;
 
   SightingProfile(this.sighting, {super.key});
 
   @override
+  State<SightingProfile> createState() => _SightingProfileState();
+}
+
+class _SightingProfileState extends State<SightingProfile> {
+  late Sighting sighting;
+
+  @override
+  void initState() {
+    sighting = widget.sighting;
+    super.initState();
+  }
+
+  void _addLocalName(String name) async {
+    final localName = await LocalName.create(name: name);
+    await sighting.update(localName: localName);
+    setState(() {});
+  }
+
+  void _updateLocalName(AutocompleteItem item) async {
+    await sighting.update(
+        localName: LocalName(
+            id: item.documentId!, viewId: item.viewId!, name: item.value));
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Wrap(
-      runSpacing: 20.0,
-      children: [
+    final imagePaths = sighting.images
+        .map((image) => 'http://localhost:2020/blobs/${image.id}')
+        .toList();
+
+    return Container(
+      padding: const EdgeInsets.only(
+          left: 20.0, right: 20.0, top: 80.0, bottom: 20.0),
+      decoration: const SeaWavesBackground(),
+      child: Wrap(runSpacing: 20.0, children: [
         SightingProfileTitle(sighting),
-        ImageCarousel(
-            imagePaths: sighting.images
-                .map((image) => 'http://localhost:2020/blobs/${image.id}')
-                .toList()),
-        LocalNameField(sighting.localName),
-      ],
+        ImageCarousel(imagePaths: imagePaths),
+        LocalNameField(
+          sighting.viewId,
+          sighting.localName,
+          onCreate: _addLocalName,
+          onUpdate: _updateLocalName,
+        )
+      ]),
     );
   }
 }
 
-class LocalNameField extends StatefulWidget {
-  final LocalName? value;
+typedef OnUpdate = void Function(AutocompleteItem);
 
-  LocalNameField(this.value, {super.key});
+typedef OnCreate = void Function(String);
+
+class LocalNameField extends StatefulWidget {
+  final DocumentViewId viewId;
+  final LocalName? current;
+  final OnUpdate onUpdate;
+  final OnCreate onCreate;
+
+  LocalNameField(this.viewId, this.current,
+      {super.key, required this.onUpdate, required this.onCreate});
 
   @override
   State<LocalNameField> createState() => _LocalNameFieldState();
@@ -98,16 +136,41 @@ class LocalNameField extends StatefulWidget {
 
 class _LocalNameFieldState extends State<LocalNameField> {
   bool isEditMode = false;
+  AutocompleteItem? _dirty;
+
+  void _update() async {
+    if (_dirty == null) {
+      return;
+    }
+
+    if (_dirty!.documentId != null) {
+      widget.onUpdate.call(_dirty!);
+    } else {
+      widget.onCreate.call(_dirty!.value);
+    }
+  }
 
   Widget _editable() {
-    return LocalNameAutocomplete(onChanged: (AutocompleteItem value) {});
+    return LocalNameAutocomplete(
+        initialValue: widget.current != null
+            ? AutocompleteItem(
+                value: widget.current!.name, documentId: widget.current!.id)
+            : null,
+        onChanged: (AutocompleteItem newValue) {
+          if (widget.current == null) {
+            _dirty = newValue;
+          } else if (widget.current!.name != newValue.value &&
+              widget.current!.id != newValue.documentId) {
+            _dirty = newValue;
+          }
+        });
   }
 
   Widget _readOnly() {
     return Container(
-      alignment: Alignment.centerLeft,
+      alignment: Alignment.center,
       height: 48.0,
-      child: Text(widget.value != null ? widget.value!.name : '',
+      child: Text(widget.current != null ? widget.current!.name : '',
           textAlign: TextAlign.left, style: const TextStyle(fontSize: 16.0)),
     );
   }
@@ -120,6 +183,10 @@ class _LocalNameFieldState extends State<LocalNameField> {
         onChanged: (bool value) {
           setState(() {
             isEditMode = value;
+
+            if (!isEditMode) {
+              _update();
+            }
           });
         });
   }
@@ -188,13 +255,13 @@ class _SeaWavesPainer extends BoxPainter {
     path.lineTo((bounds.width / 4) * 4, 0.0);
     path.lineTo(bounds.width, bounds.height);
     path.lineTo(0, bounds.height);
-    path.lineTo((bounds!.width / 4) * 1, bounds.height + 50.0);
+    path.lineTo((bounds.width / 4) * 1, bounds.height + 50.0);
     path.lineTo((bounds.width / 4) * 2, bounds.height);
     path.lineTo((bounds.width / 4) * 3, bounds.height + 50.0);
     path.lineTo((bounds.width / 4) * 4, bounds.height);
     path.lineTo(0, bounds.height);
     path.close();
 
-    canvas.drawPath(path.shift(Offset(0.0, 50.0)), paint);
+    canvas.drawPath(path.shift(offset).shift(Offset(0, 50.0)), paint);
   }
 }

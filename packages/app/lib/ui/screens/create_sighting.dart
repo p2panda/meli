@@ -124,13 +124,17 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
         if (localName!.documentId != null) {
           localNameId = localName!.documentId;
         } else {
-          localNameId = await createLocalName(localName!.value);
+          localNameId = await createLocalName(name: localName!.value);
         }
       }
 
       // Publish the sighting
       await createSighting(
-          datetime, latitude, longitude, '', imageIds, null, localNameId);
+          datetime: datetime,
+          latitude: latitude,
+          longitude: longitude,
+          imageIds: imageIds,
+          localNameId: localNameId);
 
       // .. wait a little bit
       await sleep(500);

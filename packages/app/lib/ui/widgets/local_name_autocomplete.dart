@@ -12,8 +12,10 @@ typedef OnChanged = void Function(AutocompleteItem);
 
 class LocalNameAutocomplete extends StatefulWidget {
   final OnChanged onChanged;
+  final AutocompleteItem? initialValue;
 
-  LocalNameAutocomplete({super.key, required this.onChanged});
+  LocalNameAutocomplete(
+      {super.key, required this.onChanged, this.initialValue});
 
   @override
   State<LocalNameAutocomplete> createState() => _LocalNameAutocompleteState();
@@ -24,6 +26,7 @@ class _LocalNameAutocompleteState extends State<LocalNameAutocomplete> {
   Widget build(BuildContext context) {
     return MeliAutocomplete(
         onChanged: widget.onChanged,
+        initialValue: widget.initialValue,
         onOptionsRequest: (String value) async {
           try {
             final QueryResult result = await client.query(
@@ -40,7 +43,9 @@ class _LocalNameAutocompleteState extends State<LocalNameAutocomplete> {
               final localName =
                   LocalName.fromJson(document as Map<String, dynamic>);
               return AutocompleteItem(
-                  value: localName.name, documentId: localName.id);
+                  value: localName.name,
+                  documentId: localName.id,
+                  viewId: localName.viewId);
             }).toList();
 
             return options;

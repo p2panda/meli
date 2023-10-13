@@ -15,17 +15,20 @@ const MAX_OPTIONS = 5;
 class AutocompleteItem {
   final String value;
   final DocumentId? documentId;
+  final DocumentViewId? viewId;
 
-  AutocompleteItem({required this.value, this.documentId = null});
+  AutocompleteItem({required this.value, this.documentId, this.viewId});
 }
 
 class MeliAutocomplete extends StatefulWidget {
   final OnOptionsRequest onOptionsRequest;
   final OnChanged? onChanged;
+  final AutocompleteItem? initialValue;
 
   MeliAutocomplete({
     super.key,
     required this.onOptionsRequest,
+    this.initialValue,
     this.onChanged,
   });
 
@@ -93,6 +96,9 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return Autocomplete<AutocompleteItem>(
+        initialValue: widget.initialValue != null
+            ? TextEditingValue(text: widget.initialValue!.value)
+            : TextEditingValue.empty,
         fieldViewBuilder: (BuildContext context,
             TextEditingController controller,
             FocusNode focusNode,
