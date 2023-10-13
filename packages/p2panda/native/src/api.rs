@@ -231,6 +231,8 @@ pub fn start_node(
     let mut config = Configuration::default();
     config.database_url = database_url;
     config.blobs_base_path = blobs_base_path.into();
+    config.worker_pool_size = 2;
+    config.database_max_connections = 16;
     config.network.mdns = true;
     config.network.relay_addresses = relay_addresses
         .iter()
