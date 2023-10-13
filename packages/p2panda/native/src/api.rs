@@ -222,7 +222,7 @@ pub fn start_node(
             .with_max_level(LevelFilter::Trace)
             .with_filter(
                 FilterBuilder::new()
-                    .filter(Some("aquadoggo"), LevelFilter::Info)
+                    .filter(Some("aquadoggo"), LevelFilter::Debug)
                     .build(),
             ),
     );
@@ -230,8 +230,8 @@ pub fn start_node(
     // Set node configuration
     let mut config = Configuration::default();
     config.database_url = database_url;
-    config.network.mdns = true;
     config.blobs_base_path = blobs_base_path.into();
+    config.network.mdns = true;
     config.network.relay_addresses = relay_addresses
         .iter()
         .map(|address_str| address_str.parse())
