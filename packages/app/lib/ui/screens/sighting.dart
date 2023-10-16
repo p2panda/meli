@@ -33,6 +33,9 @@ class _SightingScreenState extends State<SightingScreen> {
         appBarColor: MeliColors.electric,
         body: Container(
           child: SingleChildScrollView(
+            // True for keeping the editable text fields with auto suggestions
+            // in view when the keyboard shows up
+            reverse: true,
             child: Query(
                 options: QueryOptions(
                     document: gql(sightingQuery(widget.documentId))),
@@ -95,9 +98,8 @@ class _SightingProfileState extends State<SightingProfile> {
           id: item.documentId!, viewId: item.viewId!, name: item.value));
     }
 
-    setState(() async {
-      await sighting.update(localNames: localNames);
-    });
+    await sighting.update(localNames: localNames);
+    setState(() {});
   }
 
   @override
@@ -116,7 +118,9 @@ class _SightingProfileState extends State<SightingProfile> {
         LocalNameField(
           sighting.localName,
           onUpdate: _updateLocalName,
-        )
+        ),
+        // @TODO: Remove this as soon as there are more elements
+        SizedBox(height: 250.0),
       ]),
     );
   }
