@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/io/files.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -40,7 +41,7 @@ class MeliImage extends StatelessWidget {
     }
 
     return Image.network(
-      'http://localhost:2020/blobs/${this.image!.id}',
+      '${BLOBS_BASE_PATH}/${this.image!.id}',
       fit: BoxFit.cover,
       filterQuality: FilterQuality.high,
       frameBuilder: (BuildContext context, Widget child, int? frame,

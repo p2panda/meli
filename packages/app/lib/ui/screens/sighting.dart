@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'package:app/io/files.dart';
 import 'package:app/models/local_names.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/ui/colors.dart';
@@ -62,53 +63,47 @@ class _SightingScreenState extends State<SightingScreen> {
 }
 
 class SightingProfile extends StatefulWidget {
-  final Sighting sighting;
+  final Sighting initialValue;
 
-  SightingProfile(this.sighting, {super.key});
+  SightingProfile(this.initialValue, {super.key});
 
   @override
   State<SightingProfile> createState() => _SightingProfileState();
 }
 
 class _SightingProfileState extends State<SightingProfile> {
+  /// Mutable sighting instance. Can be changed by this stateful widget.
   late Sighting sighting;
 
   @override
   void initState() {
-    sighting = widget.sighting;
+    sighting = widget.initialValue;
     super.initState();
   }
 
-  void _addLocalName(String name) async {
-    print('on create ${name}');
-
-    // Create new local name to assign it then to sighting
-    final localName = await LocalName.create(name: name);
-    await sighting.update(localNames: [localName]);
-
-    setState(() {});
-  }
-
   void _updateLocalName(AutocompleteItem? item) async {
-    print('on update ${item}');
+    List<LocalName> localNames = [];
 
     if (item == null) {
       // Remove local name from sighting
-      await sighting.update(localNames: []);
-    } else {
+    } else if (item!.documentId == null) {
+      // Create new local name to assign it then to sighting
+      localNames.add(await LocalName.create(name: item.value));
+    } else if (item!.documentId != null) {
       // Assign existing local name to sighting
-      final localName = LocalName(
-          id: item.documentId!, viewId: item.viewId!, name: item.value);
-      await sighting.update(localNames: [localName]);
+      localNames.add(LocalName(
+          id: item.documentId!, viewId: item.viewId!, name: item.value));
     }
 
-    setState(() {});
+    setState(() async {
+      await sighting.update(localNames: localNames);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final imagePaths = sighting.images
-        .map((image) => 'http://localhost:2020/blobs/${image.id}')
+        .map((image) => '${BLOBS_BASE_PATH}/${image.id}')
         .toList();
 
     return Container(
@@ -120,104 +115,9 @@ class _SightingProfileState extends State<SightingProfile> {
         ImageCarousel(imagePaths: imagePaths),
         LocalNameField(
           sighting.localName,
-          onCreate: _addLocalName,
           onUpdate: _updateLocalName,
         )
       ]),
-    );
-  }
-}
-
-typedef OnUpdate = void Function(AutocompleteItem?);
-
-typedef OnCreate = void Function(String);
-
-class LocalNameField extends StatefulWidget {
-  final LocalName? current;
-  final OnUpdate onUpdate;
-  final OnCreate onCreate;
-
-  LocalNameField(this.current,
-      {super.key, required this.onUpdate, required this.onCreate});
-
-  @override
-  State<LocalNameField> createState() => _LocalNameFieldState();
-}
-
-class _LocalNameFieldState extends State<LocalNameField> {
-  bool isEditMode = false;
-  AutocompleteItem? _dirty;
-
-  void _update() async {
-    if (_dirty == null) {
-      // Nothing has changed
-      return;
-    } else if (_dirty!.value == '' && widget.current != null) {
-      // Value was removed
-      widget.onUpdate.call(null);
-    } else if (_dirty!.documentId != null) {
-      if (_dirty!.value == '') {
-        // Invalid value given, do nothing
-        return;
-      }
-
-      // Value gets updated with existing item from database
-      widget.onUpdate.call(_dirty!);
-    } else {
-      // Value gets updated with completly new item
-      widget.onCreate.call(_dirty!.value);
-    }
-  }
-
-  void _setDirty(AutocompleteItem newValue) async {
-    if (widget.current == null) {
-      _dirty = newValue;
-    } else if (widget.current!.name != newValue.value &&
-        widget.current!.id != newValue.documentId) {
-      _dirty = newValue;
-    }
-  }
-
-  Widget _editable() {
-    return LocalNameAutocomplete(
-        initialValue: widget.current != null
-            ? AutocompleteItem(
-                value: widget.current!.name, documentId: widget.current!.id)
-            : null,
-        onChanged: _setDirty);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return EditableCard(
-        title: AppLocalizations.of(context)!.localNameCardTitle,
-        child: isEditMode
-            ? _editable()
-            : ReadOnlyValue(
-                widget.current == null ? null : widget.current!.name),
-        onChanged: (bool value) {
-          setState(() {
-            isEditMode = value;
-            if (!isEditMode) {
-              _update();
-            }
-          });
-        });
-  }
-}
-
-class ReadOnlyValue extends StatelessWidget {
-  final String? value;
-
-  const ReadOnlyValue(this.value, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      height: 48.0,
-      child: Text(value == null ? '' : value!,
-          textAlign: TextAlign.left, style: const TextStyle(fontSize: 16.0)),
     );
   }
 }
@@ -297,5 +197,114 @@ class _SeaWavesPainer extends BoxPainter {
     path.close();
 
     canvas.drawPath(path.shift(offset).shift(Offset(0, 50.0)), paint);
+  }
+}
+
+typedef OnUpdate = void Function(AutocompleteItem?);
+
+class LocalNameField extends StatefulWidget {
+  final LocalName? current;
+  final OnUpdate onUpdate;
+
+  LocalNameField(this.current, {super.key, required this.onUpdate});
+
+  @override
+  State<LocalNameField> createState() => _LocalNameFieldState();
+}
+
+class _LocalNameFieldState extends State<LocalNameField> {
+  /// Flag indicating if we're currently editing the field or not.
+  bool isEditMode = false;
+
+  /// Contains changed value when user adjusted the field.
+  AutocompleteItem? _dirty;
+
+  void _submit() async {
+    if (_dirty == null) {
+      // Nothing has changed
+      return;
+    }
+
+    if (_dirty!.value == '' && widget.current != null) {
+      // Value is empty, we consider the user wants to remove it
+      widget.onUpdate.call(null);
+    }
+
+    if (_dirty!.documentId != null) {
+      // Value gets updated (either with item from database or something new)
+      widget.onUpdate.call(_dirty!);
+    }
+  }
+
+  void _changeValue(AutocompleteItem newValue) async {
+    if (widget.current == null) {
+      // User selected an item when none was selected before
+      _dirty = newValue;
+    } else if (widget.current!.name != newValue.value) {
+      // User selected a different item than before
+      _dirty = newValue;
+    } else {
+      // User selected the same item or still no item as before .. do nothing!
+    }
+  }
+
+  void _toggleEditMode() {
+    setState(() {
+      isEditMode = !isEditMode;
+
+      // If we flip from edit mode to read-only mode we interpret this as a
+      // "submit" action by the user
+      if (!isEditMode) {
+        _submit();
+      }
+    });
+  }
+
+  Widget _editableValue() {
+    // Convert existing LocalName for autocomplete widget. This will then also
+    // contain the id and view id of that document
+    AutocompleteItem? initialValue = widget.current != null
+        ? AutocompleteItem(
+            value: widget.current!.name, // Display value
+            documentId: widget.current!.id,
+            viewId: widget.current!.viewId)
+        : null;
+
+    return LocalNameAutocomplete(
+        initialValue: initialValue,
+        // Make sure that we focus the text field and show the keyboard as soon
+        // as we've entered "edit mode"
+        autofocus: true,
+        // Flip "edit mode" to false as soon as user hit the "submit" button on
+        // the keyboard
+        onSubmit: _toggleEditMode,
+        onChanged: _changeValue);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String? displayValue = widget.current == null ? null : widget.current!.name;
+
+    return EditableCard(
+        title: AppLocalizations.of(context)!.localNameCardTitle,
+        isEditMode: isEditMode,
+        child: isEditMode ? _editableValue() : ReadOnlyValue(displayValue),
+        onChanged: _toggleEditMode);
+  }
+}
+
+class ReadOnlyValue extends StatelessWidget {
+  final String? value;
+
+  const ReadOnlyValue(this.value, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      height: 48.0,
+      child: Text(value == null ? '' : value!,
+          textAlign: TextAlign.left, style: const TextStyle(fontSize: 16.0)),
+    );
   }
 }

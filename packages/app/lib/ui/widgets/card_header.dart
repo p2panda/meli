@@ -5,8 +5,13 @@ import 'package:app/ui/colors.dart';
 class MeliCardHeader extends StatelessWidget {
   final String title;
   final Widget? icon;
+  final Color color;
 
-  MeliCardHeader({super.key, required this.title, this.icon});
+  MeliCardHeader(
+      {super.key,
+      required this.title,
+      this.color = MeliColors.pink,
+      this.icon});
 
   Widget _title() {
     return Text(
@@ -30,7 +35,7 @@ class MeliCardHeader extends StatelessWidget {
           border: Border.fromBorderSide(BorderSide(
             width: 6.0,
             strokeAlign: BorderSide.strokeAlignCenter,
-            color: MeliColors.pink,
+            color: this.color,
           )),
           borderRadius: BorderRadius.all(Radius.circular(12.0))),
       child: Container(

@@ -2,56 +2,50 @@
 
 import 'package:flutter/material.dart';
 
+import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/card.dart';
 import 'package:app/ui/widgets/card_action_button.dart';
 import 'package:app/ui/widgets/card_header.dart';
 
-typedef OnChanged = void Function(bool);
-
-class EditableCard extends StatefulWidget {
+class EditableCard extends StatelessWidget {
   final String title;
   final Widget child;
-  final OnChanged onChanged;
+  final VoidCallback onChanged;
+  final bool isDirty;
+  final bool isEditMode;
 
   const EditableCard(
       {super.key,
+      this.isDirty = false,
+      this.isEditMode = false,
       required this.title,
       required this.child,
       required this.onChanged});
 
-  @override
-  State<EditableCard> createState() => _EditableCardState();
-}
-
-class _EditableCardState extends State<EditableCard> {
-  bool isEditMode = false;
-
   Widget _icon() {
-    final icon =
-        this.isEditMode ? Icon(Icons.check) : Icon(Icons.edit_outlined);
+    final icon = isEditMode ? Icon(Icons.check) : Icon(Icons.edit_outlined);
     return CardActionButton(
         icon: icon,
         onPressed: () {
-          setState(() {
-            this.isEditMode = !this.isEditMode;
-            widget.onChanged.call(this.isEditMode);
-          });
+          onChanged.call();
         });
   }
 
-  Widget _content() {
+  Widget _content(Color color) {
     return Column(
       children: [
-        MeliCardHeader(title: widget.title, icon: this._icon()),
+        MeliCardHeader(color: color, title: title, icon: _icon()),
         Container(
             padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
-            child: widget.child),
+            child: child),
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return MeliCard(child: this._content());
+    Color color = isDirty ? MeliColors.electric : MeliColors.pink;
+    return MeliCard(
+        color: color, borderColor: color, child: this._content(color));
   }
 }
