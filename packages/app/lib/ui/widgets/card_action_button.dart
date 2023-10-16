@@ -21,6 +21,7 @@ class CardActionButton extends StatelessWidget {
         heroTag: null,
         child: this.icon,
         onPressed: this.onPressed,
+        foregroundColor: MeliColors.black,
         backgroundColor: MeliColors.pink);
   }
 }
