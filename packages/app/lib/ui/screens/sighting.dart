@@ -302,11 +302,17 @@ class ReadOnlyValue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final noValueGivenSymbol =
+        (['🤷', '🤷🏻', '🤷🏼', '🤷🏽', '🤷🏾', '🤷🏿']..shuffle()).first;
+
     return Container(
       alignment: Alignment.center,
       height: 48.0,
-      child: Text(value == null ? '' : value!,
-          textAlign: TextAlign.left, style: const TextStyle(fontSize: 16.0)),
+      child: Text(value == null ? noValueGivenSymbol : value!,
+          textAlign: TextAlign.left,
+          style: TextStyle(
+              fontSize: value == null ? 35.0 : 16.0,
+              shadows: value == null ? [Shadow(blurRadius: 1.0)] : null)),
     );
   }
 }
