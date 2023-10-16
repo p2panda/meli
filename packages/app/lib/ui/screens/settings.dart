@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:app/app.dart';
 import 'package:app/ui/widgets/simple_card.dart';
 import 'package:flutter/material.dart';
@@ -36,16 +38,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context);
+    final t = AppLocalizations.of(context)!;
 
     return MeliScaffold(
-        title: 'Settings',
+        title: t.settings,
         body: Container(
           padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
           child: SingleChildScrollView(
               padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
               child: Wrap(spacing: 0.0, runSpacing: 20.0, children: [
                 SimpleCard(
-                  title: 'Language',
+                  title: t.settingsLanguages,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -60,16 +63,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           },
                           dropdownMenuEntries: [
                             DropdownMenuEntry<Locale>(
-                                value: Locale('en'), label: 'English'),
+                                value: Locale('en'), label: t.settingsEnglish),
                             DropdownMenuEntry<Locale>(
-                                value: Locale('pt'), label: 'Portuguese')
+                                value: Locale('pt'),
+                                label: t.settingsPortuguese)
                           ],
                         ),
                       ]),
                 ),
                 if (_deviceData != null)
                   SimpleCard(
-                    title: 'System Information',
+                    title: t.settingsSystemInformation,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

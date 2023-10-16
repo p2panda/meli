@@ -1,7 +1,7 @@
 {
     "createSightingError": "Algo deu errado: {error}",
     "createSightingScreenTitle": "Adicionar Avistamento",
-    "createSightingSuccess": "Uau, você adicionou com sucesso um novo avistamento ao banco de dados",
+    "createSightingSuccess": "Eba, você adicionou com sucesso um novo avistamento ao banco de dados",
     "imageDeleteAlertBody": "Tem certeza de que deseja excluir esta imagem?",
     "imageDeleteAlertCancel": "Não",
     "imageDeleteAlertConfirm": "Sim",
@@ -14,7 +14,7 @@
     "locationAddAction": "Adicionar localização à imagem",
     "locationErrorPermissionDenied": "Permissão de localização negada",
     "locationErrorServiceDisabled": "O serviço de localização está desativado",
-    "locationErrorTimeout": "Localização não pôde ser recuperada",
+    "locationErrorTimeout": "Não foi possível recuperar a localização",
     "locationErrorUnknown": "Ocorreu um erro desconhecido",
     "locationHeader": "Localização",
     "locationLoading": "Recuperando localização...",
@@ -26,5 +26,10 @@
     "paginationListLoadMore": "Carregar Mais",
     "paginationListNoResults": "Nenhuma entrada fornecida ainda",
     "sightingUnspecified": "Espécie desconhecida",
+    "settings": "Configurações",
+    "settingsLanguages": "Idiomas",
+    "settingsSystemInformation": "Informações do Sistema",
+    "settingsEnglish": "Inglês",
+    "settingsPortuguese": "Português",
     "speciesScreenTitle": "Espécies"
 }

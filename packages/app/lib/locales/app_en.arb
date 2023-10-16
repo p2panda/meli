@@ -26,5 +26,10 @@
     "paginationListLoadMore": "Load More",
     "paginationListNoResults": "No entries given yet",
     "sightingUnspecified": "Unknown species",
+    "settings": "Settings",
+    "settingsLanguages": "Languages",
+    "settingsSystemInformation": "System Information",
+    "settingsEnglish": "English",
+    "settingsPortuguese": "Portuguese",
     "speciesScreenTitle": "Species"
 }
