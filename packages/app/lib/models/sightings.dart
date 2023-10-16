@@ -223,7 +223,7 @@ Future<DocumentViewId> createSighting(
     List<DocumentId> speciesIds = const [],
     List<DocumentId> localNameIds = const []}) async {
   List<(String, OperationValue)> fields = [
-    ("datetime", OperationValue.string(datetime.toString())),
+    ("datetime", OperationValue.string(datetime.toIso8601String())),
     ("latitude", OperationValue.float(latitude)),
     ("longitude", OperationValue.float(longitude)),
     ("images", OperationValue.relationList(imageIds)),
