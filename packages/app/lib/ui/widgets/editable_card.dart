@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/card.dart';
 import 'package:app/ui/widgets/card_action_button.dart';
 import 'package:app/ui/widgets/card_header.dart';

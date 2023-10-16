@@ -86,10 +86,10 @@ class _SightingProfileState extends State<SightingProfile> {
 
     if (item == null) {
       // Remove local name from sighting
-    } else if (item!.documentId == null) {
+    } else if (item.documentId == null) {
       // Create new local name to assign it then to sighting
       localNames.add(await LocalName.create(name: item.value));
-    } else if (item!.documentId != null) {
+    } else if (item.documentId != null) {
       // Assign existing local name to sighting
       localNames.add(LocalName(
           id: item.documentId!, viewId: item.viewId!, name: item.value));
