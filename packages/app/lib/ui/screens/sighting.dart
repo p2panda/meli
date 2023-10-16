@@ -229,12 +229,10 @@ class _LocalNameFieldState extends State<LocalNameField> {
       return;
     }
 
-    if (_dirty!.value == '' && widget.current != null) {
+    if (_dirty!.value == '') {
       // Value is empty, we consider the user wants to remove it
       widget.onUpdate.call(null);
-    }
-
-    if (_dirty!.documentId != null) {
+    } else {
       // Value gets updated (either with item from database or something new)
       widget.onUpdate.call(_dirty!);
     }
