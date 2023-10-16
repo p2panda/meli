@@ -46,36 +46,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
           padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
           child: SingleChildScrollView(
               padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
-              child: Wrap(spacing: 0.0, runSpacing: 20.0, children: [
+              child: Column(children: [
                 SimpleCard(
                   title: t.settingsLanguages,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        DropdownMenu<Locale>(
-                          initialSelection: locale,
-                          onSelected: (Locale? value) {
-                            print(value);
-                            // This is called when the user selects an item.
-                            final app = context
-                                .findAncestorStateOfType<MeliAppState>()!;
-                            app.changeLocale(value!);
-                          },
-                          dropdownMenuEntries: [
-                            DropdownMenuEntry<Locale>(
-                                value: Locale('en'), label: t.settingsEnglish),
-                            DropdownMenuEntry<Locale>(
-                                value: Locale('pt'),
-                                label: t.settingsPortuguese)
-                          ],
-                        ),
-                      ]),
+                  child: DropdownMenu<Locale>(
+                    initialSelection: locale,
+                    onSelected: (Locale? value) {
+                      // This is called when the user selects an item.
+                      final app =
+                          context.findAncestorStateOfType<MeliAppState>()!;
+                      app.changeLocale(value!);
+                    },
+                    dropdownMenuEntries: [
+                      DropdownMenuEntry<Locale>(
+                          value: Locale('en'), label: t.settingsEnglish),
+                      DropdownMenuEntry<Locale>(
+                          value: Locale('pt'), label: t.settingsPortuguese)
+                    ],
+                  ),
                 ),
                 if (_deviceData != null)
                   SimpleCard(
                     title: t.settingsSystemInformation,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text('Device: ${_deviceData!.device}'),
                         Text(
