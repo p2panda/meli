@@ -43,18 +43,23 @@ class LocaleSettings extends StatelessWidget {
 
     return ExpandableCard(
         title: t.settingsLanguages,
-        child: DropdownMenu<Locale>(
-            initialSelection: currentLocale,
-            onSelected: (Locale? value) {
-              final app = context.findAncestorStateOfType<MeliAppState>()!;
-              app.changeLocale(value!);
-            },
-            dropdownMenuEntries: [
-              DropdownMenuEntry<Locale>(
-                  value: Locale('en'), label: t.settingsEnglish),
-              DropdownMenuEntry<Locale>(
-                  value: Locale('pt'), label: t.settingsPortuguese)
-            ]));
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return DropdownMenu<Locale>(
+                width: constraints.maxWidth,
+                initialSelection: currentLocale,
+                onSelected: (Locale? value) {
+                  final app = context.findAncestorStateOfType<MeliAppState>()!;
+                  app.changeLocale(value!);
+                },
+                dropdownMenuEntries: [
+                  DropdownMenuEntry<Locale>(
+                      value: Locale('en'), label: t.settingsEnglish),
+                  DropdownMenuEntry<Locale>(
+                      value: Locale('pt'), label: t.settingsPortuguese)
+                ]);
+          },
+        ));
   }
 }
 
