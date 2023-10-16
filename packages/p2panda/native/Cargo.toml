@@ -12,7 +12,7 @@ flutter_rust_bridge_codegen = "1.82.1"
 [dependencies]
 android_logger = "0.13.1"
 anyhow = "1.0.75"
-aquadoggo = { git = "https://github.com/p2panda/aquadoggo", rev = "0aa8d5c606afe9f0ec18d57ff0c46a40d3439c92" }
+aquadoggo = { git = "https://github.com/p2panda/aquadoggo", rev = "4809fab19382629237c109f4074b9b44312d0d12" }
 ed25519-dalek = "1.0.1"
 flutter_rust_bridge = "1.82.1"
 log = "0.4.19"
