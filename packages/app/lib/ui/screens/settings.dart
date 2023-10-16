@@ -57,10 +57,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Text('Don\'t click here either!')
                       ]),
                 ),
-                ExpandableCard(
-                  title: 'System Information',
-                  child: Text(_deviceData.toString()),
-                ),
+                if (_deviceData != null)
+                  ExpandableCard(
+                    title: 'System Information',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Device: ${_deviceData!.device}'),
+                        Text(
+                            'Android SDK Version: ${_deviceData!.version.sdkInt}'),
+                        Text(
+                            'Android Build Version: ${_deviceData!.version.release}'),
+                      ],
+                    ),
+                  ),
               ])),
         ));
   }
