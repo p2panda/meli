@@ -80,15 +80,28 @@ class _SightingProfileState extends State<SightingProfile> {
   }
 
   void _addLocalName(String name) async {
+    print('on create ${name}');
+
+    // Create new local name to assign it then to sighting
     final localName = await LocalName.create(name: name);
-    await sighting.update(localName: localName);
+    await sighting.update(localNames: [localName]);
+
     setState(() {});
   }
 
-  void _updateLocalName(AutocompleteItem item) async {
-    await sighting.update(
-        localName: LocalName(
-            id: item.documentId!, viewId: item.viewId!, name: item.value));
+  void _updateLocalName(AutocompleteItem? item) async {
+    print('on update ${item}');
+
+    if (item == null) {
+      // Remove local name from sighting
+      await sighting.update(localNames: []);
+    } else {
+      // Assign existing local name to sighting
+      final localName = LocalName(
+          id: item.documentId!, viewId: item.viewId!, name: item.value);
+      await sighting.update(localNames: [localName]);
+    }
+
     setState(() {});
   }
 
@@ -115,7 +128,7 @@ class _SightingProfileState extends State<SightingProfile> {
   }
 }
 
-typedef OnUpdate = void Function(AutocompleteItem);
+typedef OnUpdate = void Function(AutocompleteItem?);
 
 typedef OnCreate = void Function(String);
 
@@ -137,13 +150,31 @@ class _LocalNameFieldState extends State<LocalNameField> {
 
   void _update() async {
     if (_dirty == null) {
+      // Nothing has changed
       return;
-    }
+    } else if (_dirty!.value == '' && widget.current != null) {
+      // Value was removed
+      widget.onUpdate.call(null);
+    } else if (_dirty!.documentId != null) {
+      if (_dirty!.value == '') {
+        // Invalid value given, do nothing
+        return;
+      }
 
-    if (_dirty!.documentId != null) {
+      // Value gets updated with existing item from database
       widget.onUpdate.call(_dirty!);
     } else {
+      // Value gets updated with completly new item
       widget.onCreate.call(_dirty!.value);
+    }
+  }
+
+  void _setDirty(AutocompleteItem newValue) async {
+    if (widget.current == null) {
+      _dirty = newValue;
+    } else if (widget.current!.name != newValue.value &&
+        widget.current!.id != newValue.documentId) {
+      _dirty = newValue;
     }
   }
 
@@ -153,39 +184,41 @@ class _LocalNameFieldState extends State<LocalNameField> {
             ? AutocompleteItem(
                 value: widget.current!.name, documentId: widget.current!.id)
             : null,
-        onChanged: (AutocompleteItem newValue) {
-          if (widget.current == null) {
-            _dirty = newValue;
-          } else if (widget.current!.name != newValue.value &&
-              widget.current!.id != newValue.documentId) {
-            _dirty = newValue;
-          }
-        });
-  }
-
-  Widget _readOnly() {
-    return Container(
-      alignment: Alignment.center,
-      height: 48.0,
-      child: Text(widget.current != null ? widget.current!.name : '',
-          textAlign: TextAlign.left, style: const TextStyle(fontSize: 16.0)),
-    );
+        onChanged: _setDirty);
   }
 
   @override
   Widget build(BuildContext context) {
     return EditableCard(
         title: AppLocalizations.of(context)!.localNameCardTitle,
-        child: isEditMode ? _editable() : _readOnly(),
+        child: isEditMode
+            ? _editable()
+            : ReadOnlyValue(
+                widget.current == null ? null : widget.current!.name),
         onChanged: (bool value) {
           setState(() {
             isEditMode = value;
-
             if (!isEditMode) {
               _update();
             }
           });
         });
+  }
+}
+
+class ReadOnlyValue extends StatelessWidget {
+  final String? value;
+
+  const ReadOnlyValue(this.value, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      height: 48.0,
+      child: Text(value == null ? '' : value!,
+          textAlign: TextAlign.left, style: const TextStyle(fontSize: 16.0)),
+    );
   }
 }
 
@@ -204,6 +237,10 @@ class SightingProfileTitle extends StatelessWidget {
 
     if (sighting.localName != null) {
       title.add('"${sighting.localName!.name}"');
+    }
+
+    if (title.isEmpty) {
+      title.add(AppLocalizations.of(context)!.sightingUnspecified);
     }
 
     final id = sighting.id.substring(sighting.id.length - 4);
