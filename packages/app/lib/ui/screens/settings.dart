@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:app/app.dart';
+import 'package:app/ui/widgets/simple_card.dart';
 import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-
-import 'package:app/ui/widgets/expandable_card.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -45,7 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: SingleChildScrollView(
               padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
               child: Wrap(spacing: 0.0, runSpacing: 20.0, children: [
-                ExpandableCard(
+                SimpleCard(
                   title: 'Language',
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,17 +67,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ]),
                 ),
-                ExpandableCard(
-                  title: 'Advanced Settings',
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Don\'t click here'),
-                        Text('Don\'t click here either!')
-                      ]),
-                ),
                 if (_deviceData != null)
-                  ExpandableCard(
+                  SimpleCard(
                     title: 'System Information',
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
