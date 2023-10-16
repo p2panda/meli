@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/io/files.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:app/ui/colors.dart';
+import 'package:app/io/files.dart';
 import 'package:app/models/blobs.dart';
+import 'package:app/ui/colors.dart';
 
 class MeliImage extends StatelessWidget {
   final Blob? image;

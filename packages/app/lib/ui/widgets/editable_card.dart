@@ -11,12 +11,10 @@ class EditableCard extends StatelessWidget {
   final String title;
   final Widget child;
   final VoidCallback onChanged;
-  final bool isDirty;
   final bool isEditMode;
 
   const EditableCard(
       {super.key,
-      this.isDirty = false,
       this.isEditMode = false,
       required this.title,
       required this.child,
@@ -31,10 +29,10 @@ class EditableCard extends StatelessWidget {
         });
   }
 
-  Widget _content(Color color) {
+  Widget _content() {
     return Column(
       children: [
-        MeliCardHeader(color: color, title: title, icon: _icon()),
+        MeliCardHeader(title: title, icon: _icon()),
         Container(
             padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
             child: child),
@@ -44,8 +42,6 @@ class EditableCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color color = isDirty ? MeliColors.electric : MeliColors.pink;
-    return MeliCard(
-        color: color, borderColor: color, child: this._content(color));
+    return MeliCard(child: this._content());
   }
 }
