@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/app.dart';
 import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
@@ -35,6 +36,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = Localizations.localeOf(context);
+
     return MeliScaffold(
         title: 'Settings',
         body: Container(
@@ -46,7 +49,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   title: 'Language',
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [Text('portuguese'), Text('english')]),
+                      children: [
+                        DropdownMenu<Locale>(
+                          initialSelection: locale,
+                          onSelected: (Locale? value) {
+                            print(value);
+                            // This is called when the user selects an item.
+                            final app = context
+                                .findAncestorStateOfType<MeliAppState>()!;
+                            app.changeLocale(value!);
+                          },
+                          dropdownMenuEntries: [
+                            DropdownMenuEntry<Locale>(
+                                value: Locale('en'), label: 'English'),
+                            DropdownMenuEntry<Locale>(
+                                value: Locale('pt'), label: 'Portuguese')
+                          ],
+                        ),
+                      ]),
                 ),
                 ExpandableCard(
                   title: 'Advanced Settings',

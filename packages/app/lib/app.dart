@@ -8,8 +8,21 @@ import 'package:app/router.dart';
 import 'package:app/ui/widgets/image_provider.dart';
 import 'package:app/io/graphql/graphql.dart' as graphql;
 
-class MeliApp extends StatelessWidget {
+class MeliApp extends StatefulWidget {
   MeliApp({super.key});
+
+  @override
+  State<MeliApp> createState() => MeliAppState();
+}
+
+class MeliAppState extends State<MeliApp> {
+  Locale? _locale;
+
+  void changeLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +37,17 @@ class MeliApp extends StatelessWidget {
           routeInformationParser: router.routeInformationParser,
 
           // Setup localization
+          locale: _locale,
+          localeResolutionCallback: (locale, supportedLocales) {
+            if (supportedLocales.contains(locale)) {
+              return locale;
+            }
+
+            if (locale?.languageCode == 'en') {
+              return Locale('en');
+            }
+            return Locale('pt');
+          },
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
 
