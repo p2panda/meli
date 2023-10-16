@@ -33,9 +33,6 @@ class _SightingScreenState extends State<SightingScreen> {
         appBarColor: MeliColors.electric,
         body: Container(
           child: SingleChildScrollView(
-            // True for keeping the editable text fields with auto suggestions
-            // in view when the keyboard shows up
-            reverse: true,
             child: Query(
                 options: QueryOptions(
                     document: gql(sightingQuery(widget.documentId))),
