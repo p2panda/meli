@@ -63,7 +63,7 @@ String get usedForFields {
   return '''
     $metaFields
     fields {
-      usedFor
+      used_for
       sighting {
         meta {
           documentId
