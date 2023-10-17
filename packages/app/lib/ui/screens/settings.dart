@@ -46,6 +46,30 @@ class HelloPanda extends StatelessWidget {
 }
 
 class LocaleSettings extends StatelessWidget {
+  Future<void> _onLanguageChange(BuildContext context, Locale? locale) async {
+    final app = context.findAncestorStateOfType<MeliAppState>()!;
+    final t = AppLocalizations.of(context)!;
+
+    bool _success = await app.changeLocale(locale!);
+
+    if (_success) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          // Override the current context localization so the success message
+          // is shown in the new language.
+          content: Localizations.override(
+              context: context,
+              locale: locale,
+              child: Builder(builder: (context) {
+                return Text(AppLocalizations.of(context)!
+                    .settingsLanguageChangeSuccess(locale.languageCode));
+              }))));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(t.settingsLanguageChangeError),
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentLocale = Localizations.localeOf(context);
@@ -58,9 +82,8 @@ class LocaleSettings extends StatelessWidget {
             return DropdownMenu<Locale>(
                 width: constraints.maxWidth,
                 initialSelection: currentLocale,
-                onSelected: (Locale? value) {
-                  final app = context.findAncestorStateOfType<MeliAppState>()!;
-                  app.changeLocale(value!);
+                onSelected: (Locale? locale) async {
+                  await _onLanguageChange(context, locale);
                 },
                 dropdownMenuEntries: [
                   DropdownMenuEntry<Locale>(

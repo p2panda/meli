@@ -26,6 +26,7 @@ dependencies:
   mime: ^1.0.4
   p2panda: ^0.1.0
   p2panda_flutter: ^0.1.0
+  shared_preferences: ^2.2.2
   toml: "^0.14.0"
 
 dev_dependencies:

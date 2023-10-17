@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:app/router.dart';
 import 'package:app/ui/widgets/image_provider.dart';
@@ -16,12 +17,31 @@ class MeliApp extends StatefulWidget {
 }
 
 class MeliAppState extends State<MeliApp> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   Locale? _locale;
 
-  void changeLocale(Locale locale) {
-    setState(() {
-      _locale = locale;
+  @override
+  void initState() {
+    super.initState();
+    _prefs.then((SharedPreferences prefs) {
+      final String localString = prefs.getString('locale') ?? 'pt';
+      setState(() {
+        _locale = Locale(localString);
+      });
     });
+  }
+
+  Future<bool> changeLocale(Locale locale) async {
+    final SharedPreferences prefs = await _prefs;
+    bool _success = await prefs.setString('locale', locale.toString());
+
+    if (_success) {
+      setState(() {
+        _locale = locale;
+      });
+    }
+
+    return _success;
   }
 
   @override
@@ -43,9 +63,6 @@ class MeliAppState extends State<MeliApp> {
               return locale;
             }
 
-            if (locale?.languageCode == 'en') {
-              return Locale('en');
-            }
             return Locale('pt');
           },
           localizationsDelegates: AppLocalizations.localizationsDelegates,
