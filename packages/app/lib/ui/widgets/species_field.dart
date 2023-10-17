@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:app/models/species.dart';
+import 'package:app/ui/widgets/autocomplete.dart';
 
 typedef OnUpdate = void Function(AutocompleteItem?);
 
