@@ -101,7 +101,7 @@ String usedForQuery(DocumentId id) {
 
   return '''
     query usedForQuery {
-      $DEFAULT_RESULTS_KEY: $schemaId(id: "$id") {
+      document: $schemaId(id: "$id") {
         $usedForFields
       }
     }
@@ -135,8 +135,9 @@ class UsedForPaginator extends Paginator<UsedFor> {
 
 String allUsesQuery(DocumentId? sighting, String? cursor) {
   final after = (cursor != null) ? '''after: "$cursor",''' : '';
-  final filter =
-      (sighting != null) ? '''filter: { sighting: { eq: "$sighting" } },''' : '';
+  final filter = (sighting != null)
+      ? '''filter: { sighting: { eq: "$sighting" } },'''
+      : '';
   final schemaId = SchemaIds.bee_attributes_used_for;
 
   return '''
@@ -178,9 +179,9 @@ Future<DocumentViewId> updateUsedFor(DocumentViewId viewId,
     fields.add(("used_for", OperationValue.string(usedFor)));
   }
 
-  return await update(viewId, SchemaIds.bee_attributes_used_for, fields);
+  return await update(SchemaIds.bee_attributes_used_for, viewId, fields);
 }
 
 Future<DocumentViewId> deleteUsedFor(DocumentViewId viewId) async {
-  return await delete(viewId, SchemaIds.bee_attributes_used_for);
+  return await delete(SchemaIds.bee_attributes_used_for, viewId);
 }

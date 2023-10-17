@@ -46,6 +46,30 @@ class _UsedForFieldState extends State<UsedForField> {
   /// Contains changed value when user adjusted the field.
   AutocompleteItem? _dirty;
 
+  void _delete(UsedFor usedFor) async {
+    // Show the overlay spinner
+    _overlayKey.currentState!.show();
+
+    await deleteUsedFor(usedFor.viewId);
+
+    // We want to wait until the delete is materialized and then refresh the
+    // paginated query
+    bool isDeleted = false;
+    while (!isDeleted) {
+      final options = QueryOptions(document: gql(usedForQuery(usedFor.id)));
+      final result = await client.query(options);
+      print(result.data);
+      isDeleted = (result.data?['document'] == null);
+      sleep(Duration(milliseconds: 150));
+    }
+
+    // Refresh the paginator
+    this.paginator.refresh!();
+
+    // Hide the overlay
+    _overlayKey.currentState!.hide();
+  }
+
   void _submit() async {
     if (_dirty == null) {
       // Nothing has changed
@@ -71,8 +95,8 @@ class _UsedForFieldState extends State<UsedForField> {
     while (!isReady) {
       final options = QueryOptions(document: gql(usedForQuery(newUsedFor!)));
       final result = await client.query(options);
-      isReady = (result.data != null);
-      sleep(Duration(milliseconds: 150));
+      isReady = (result.data?['document'] != null);
+      sleep(Duration(milliseconds: 100));
     }
 
     // Refresh the paginator
@@ -141,7 +165,9 @@ class _UsedForFieldState extends State<UsedForField> {
                                 Expanded(child: Text(usedFor.usedFor)),
                                 isEditMode
                                     ? IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          _delete(usedFor);
+                                        },
                                         icon: Icon(Icons.delete))
                                     : SizedBox()
                               ]),
