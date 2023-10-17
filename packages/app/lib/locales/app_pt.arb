@@ -28,7 +28,7 @@
     "sightingUnspecified": "Espécie desconhecida",
     "settings": "Configurações",
     "settingsLanguages": "Idiomas",
-    "settingsLanguageChangeSuccess": "Idioma alterado para {language}",
+    "settingsLanguageChangeSuccess": "Idioma alterado para \"{language}\"",
     "settingsLanguageChangeError": "Erro: não foi possível alterar o idioma",
     "settingsSystemInformation": "Informações do Sistema",
     "settingsEnglish": "Inglês",

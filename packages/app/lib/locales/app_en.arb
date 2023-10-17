@@ -28,7 +28,7 @@
     "sightingUnspecified": "Unknown species",
     "settings": "Settings",
     "settingsLanguages": "Languages",
-    "settingsLanguageChangeSuccess": "Language changed to {language}",
+    "settingsLanguageChangeSuccess": "Language changed to \"{language}\"",
     "settingsLanguageChangeError": "Error: could not change language",
     "settingsSystemInformation": "System Information",
     "settingsEnglish": "English",
