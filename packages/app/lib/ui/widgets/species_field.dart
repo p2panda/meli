@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/models/species.dart';
+import 'package:app/models/taxonomy_species.dart';
 import 'package:app/ui/widgets/autocomplete.dart';
 import 'package:app/ui/widgets/editable_card.dart';
+import 'package:app/ui/widgets/local_name_autocomplete.dart';
 import 'package:app/ui/widgets/read_only_value.dart';
 
 typedef OnUpdate = void Function(AutocompleteItem?);
@@ -41,7 +43,9 @@ class _SpeciesFieldState extends State<SpeciesField> {
   }
 
   Widget _editableValue() {
-    return Text('@TODO');
+    return Column(children: [
+      Rank<TaxonomySpecies>(widget.current?.species),
+    ]);
   }
 
   @override
@@ -54,5 +58,36 @@ class _SpeciesFieldState extends State<SpeciesField> {
         isEditMode: isEditMode,
         child: isEditMode ? _editableValue() : ReadOnlyValue(displayValue),
         onChanged: _toggleEditMode);
+  }
+}
+
+class Rank<T extends BaseTaxonomy> extends StatefulWidget {
+  final T? current;
+
+  Rank(this.current, {super.key});
+
+  @override
+  State<Rank<T>> createState() => _RankState<T>();
+}
+
+class _RankState<T extends BaseTaxonomy> extends State<Rank<T>> {
+  @override
+  Widget build(BuildContext context) {
+    AutocompleteItem? initialValue = widget.current != null
+        ? AutocompleteItem(
+            value: widget.current!.name, // Display value
+            documentId: widget.current!.id,
+            viewId: widget.current!.viewId)
+        : null;
+
+    return LocalNameAutocomplete(
+        initialValue: initialValue,
+        autofocus: true,
+        onSubmit: () {
+          // @TODO
+        },
+        onChanged: (AutocompleteItem value) {
+          // @TODO
+        });
   }
 }
