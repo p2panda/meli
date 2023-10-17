@@ -6,36 +6,35 @@ import 'package:app/ui/widgets/card.dart';
 import 'package:app/ui/widgets/card_action_button.dart';
 import 'package:app/ui/widgets/card_header.dart';
 
-class EditableCard extends StatefulWidget {
+class EditableCard extends StatelessWidget {
   final String title;
   final Widget child;
+  final VoidCallback onChanged;
+  final bool isEditMode;
 
-  const EditableCard({super.key, required this.title, required this.child});
-
-  @override
-  State<EditableCard> createState() => _EditableCardState();
-}
-
-class _EditableCardState extends State<EditableCard> {
-  bool isEditMode = false;
+  const EditableCard(
+      {super.key,
+      this.isEditMode = false,
+      required this.title,
+      required this.child,
+      required this.onChanged});
 
   Widget _icon() {
-    final icon =
-        this.isEditMode ? Icon(Icons.check) : Icon(Icons.edit_outlined);
+    final icon = isEditMode ? Icon(Icons.check) : Icon(Icons.edit_outlined);
     return CardActionButton(
         icon: icon,
         onPressed: () {
-          setState(() {
-            this.isEditMode = !this.isEditMode;
-          });
+          onChanged.call();
         });
   }
 
   Widget _content() {
     return Column(
       children: [
-        MeliCardHeader(title: widget.title, icon: this._icon()),
-        widget.child,
+        MeliCardHeader(title: title, icon: _icon()),
+        Container(
+            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
+            child: child),
       ],
     );
   }

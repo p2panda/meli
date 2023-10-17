@@ -13,16 +13,19 @@ import 'package:app/models/species.dart';
 
 class Sighting {
   final DocumentId id;
-  final DateTime datetime;
-  final double latitude;
-  final double longitude;
-  final List<Blob> images;
-  final Species? species;
-  final LocalName? localName;
-  final String comment;
+  DocumentViewId viewId;
+
+  DateTime datetime;
+  double latitude;
+  double longitude;
+  List<Blob> images;
+  Species? species;
+  LocalName? localName;
+  String comment;
 
   Sighting(
       {required this.id,
+      required this.viewId,
       required this.datetime,
       required this.latitude,
       required this.longitude,
@@ -50,6 +53,7 @@ class Sighting {
 
     return Sighting(
         id: result['meta']['documentId'] as DocumentId,
+        viewId: result['meta']['viewId'] as DocumentViewId,
         datetime: DateTime.parse(result['fields']['datetime'] as String),
         latitude: result['fields']['latitude'] as double,
         longitude: result['fields']['latitude'] as double,
@@ -57,6 +61,59 @@ class Sighting {
         images: images,
         species: species.firstOrNull,
         localName: localNames.firstOrNull);
+  }
+
+  Future<DocumentViewId> update(
+      {DateTime? datetime,
+      double? latitude,
+      double? longitude,
+      String? comment,
+      List<Species>? species,
+      List<LocalName>? localNames}) async {
+    if (datetime != null) {
+      this.datetime = datetime;
+    }
+
+    if (latitude != null) {
+      this.latitude = latitude;
+    }
+
+    if (longitude != null) {
+      this.longitude = longitude;
+    }
+
+    List<DocumentId>? speciesIds;
+    if (species != null && species.isEmpty) {
+      this.species = null;
+      speciesIds = [];
+    } else if (species != null) {
+      this.species = species.first;
+      speciesIds = [species.first.id];
+    }
+
+    List<DocumentId>? localNameIds;
+    if (localNames != null && localNames.isEmpty) {
+      this.localName = null;
+      localNameIds = [];
+    } else if (localNames != null) {
+      this.localName = localNames.first;
+      localNameIds = [localNames.first.id];
+    }
+
+    this.viewId = await updateSighting(this.viewId,
+        datetime: datetime,
+        latitude: latitude,
+        longitude: longitude,
+        comment: comment,
+        speciesIds: speciesIds,
+        localNameIds: localNameIds);
+
+    return this.viewId;
+  }
+
+  Future<DocumentViewId> delete() async {
+    this.viewId = await deleteSighting(this.viewId);
+    return this.viewId;
   }
 }
 
@@ -158,45 +215,34 @@ String lastSightingQuery(DocumentId speciesId) {
 }
 
 Future<DocumentViewId> createSighting(
-    DateTime datetime,
-    double latitude,
-    double longitude,
-    String comment,
-    List<DocumentId> imageIds,
-    DocumentId? speciesId,
-    DocumentId? localNameId) async {
+    {required DateTime datetime,
+    double latitude = 0.0,
+    double longitude = 0.0,
+    String comment = '',
+    List<DocumentId> imageIds = const [],
+    List<DocumentId> speciesIds = const [],
+    List<DocumentId> localNameIds = const []}) async {
   List<(String, OperationValue)> fields = [
-    ("datetime", OperationValue.string(datetime.toString())),
+    ("datetime", OperationValue.string(datetime.toIso8601String())),
     ("latitude", OperationValue.float(latitude)),
     ("longitude", OperationValue.float(longitude)),
     ("images", OperationValue.relationList(imageIds)),
+    ("species", OperationValue.relationList(speciesIds)),
+    ("local_names", OperationValue.relationList(localNameIds)),
     ("comment", OperationValue.string(comment))
   ];
-
-  if (speciesId != null) {
-    fields.add(("species", OperationValue.relationList([speciesId])));
-  } else {
-    fields.add(("species", OperationValue.relationList([])));
-  }
-
-  if (localNameId != null) {
-    fields.add(("local_names", OperationValue.relationList([localNameId])));
-  } else {
-    fields.add(("local_names", OperationValue.relationList([])));
-  }
 
   return await create(SchemaIds.bee_sighting, fields);
 }
 
-Future<DocumentViewId> updateSighting(
-    DocumentViewId viewId,
-    DateTime? datetime,
+Future<DocumentViewId> updateSighting(DocumentViewId viewId,
+    {DateTime? datetime,
     double? latitude,
     double? longitude,
     String? comment,
     List<DocumentId>? imageIds,
-    DocumentId? speciesId,
-    DocumentId? localNameId) async {
+    List<DocumentId>? speciesIds,
+    List<DocumentId>? localNameIds}) async {
   List<(String, OperationValue)> fields = [];
 
   if (datetime != null) {
@@ -215,12 +261,12 @@ Future<DocumentViewId> updateSighting(
     fields.add(("images", OperationValue.relationList(imageIds)));
   }
 
-  if (speciesId != null) {
-    fields.add(("species", OperationValue.relationList([speciesId])));
+  if (speciesIds != null) {
+    fields.add(("species", OperationValue.relationList(speciesIds)));
   }
 
-  if (localNameId != null) {
-    fields.add(("local_names", OperationValue.relationList([localNameId])));
+  if (localNameIds != null) {
+    fields.add(("local_names", OperationValue.relationList(localNameIds)));
   }
 
   if (comment != null) {
@@ -230,6 +276,6 @@ Future<DocumentViewId> updateSighting(
   return await update(SchemaIds.bee_sighting, viewId, fields);
 }
 
-Future<void> deleteSighting(DocumentViewId viewId) async {
-  await delete(SchemaIds.bee_sighting, viewId);
+Future<DocumentViewId> deleteSighting(DocumentViewId viewId) async {
+  return await delete(SchemaIds.bee_sighting, viewId);
 }

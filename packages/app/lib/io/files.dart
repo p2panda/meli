@@ -2,6 +2,9 @@
 
 import 'package:path_provider/path_provider.dart' as provider;
 
+/// Blobs base path.
+const String BLOBS_BASE_PATH = 'http://localhost:2020/blobs';
+
 Future<String> get applicationSupportDirectory async {
   final directory = await provider.getApplicationSupportDirectory();
   return directory.path;

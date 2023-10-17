@@ -6,6 +6,7 @@ import 'package:app/utils/debouncable.dart';
 import 'package:app/io/p2panda/publish.dart';
 
 typedef OnOptionsRequest = Future<Iterable<AutocompleteItem>> Function(String);
+
 typedef OnChanged = void Function(AutocompleteItem);
 
 /// Define maximum number of options shown in autocomplete, next to the current
@@ -15,18 +16,25 @@ const MAX_OPTIONS = 5;
 class AutocompleteItem {
   final String value;
   final DocumentId? documentId;
+  final DocumentViewId? viewId;
 
-  AutocompleteItem({required this.value, this.documentId = null});
+  AutocompleteItem({required this.value, this.documentId, this.viewId});
 }
 
 class MeliAutocomplete extends StatefulWidget {
   final OnOptionsRequest onOptionsRequest;
   final OnChanged? onChanged;
+  final VoidCallback? onSubmit;
+  final AutocompleteItem? initialValue;
+  final bool autofocus;
 
   MeliAutocomplete({
     super.key,
     required this.onOptionsRequest,
+    this.autofocus = false,
+    this.initialValue,
     this.onChanged,
+    this.onSubmit,
   });
 
   @override
@@ -89,30 +97,42 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
     return options;
   }
 
+  void _onChanged(String value) {
+    if (widget.onChanged != null) {
+      // Double-check if user actually typed _exactly_ the same value
+      // as one of our existing options
+      final Iterable<AutocompleteItem> duplicates = _lastOptions.where(
+          (element) => element.value == value && element.documentId != null);
+      if (duplicates.isNotEmpty) {
+        widget.onChanged!.call(duplicates.first);
+      } else {
+        // .. otherwise use newly created user value
+        widget.onChanged!.call(AutocompleteItem(value: value));
+      }
+    }
+  }
+
+  void _onSubmit() {
+    if (widget.onSubmit != null) {
+      widget.onSubmit!.call();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return Autocomplete<AutocompleteItem>(
+        initialValue: widget.initialValue != null
+            ? TextEditingValue(text: widget.initialValue!.value)
+            : TextEditingValue.empty,
         fieldViewBuilder: (BuildContext context,
             TextEditingController controller,
             FocusNode focusNode,
             VoidCallback onFieldSubmitted) {
           return TextFormField(
-            onChanged: (value) {
-              if (widget.onChanged != null) {
-                // Double-check if user actually typed _exactly_ the same value
-                // as one of our existing options
-                final Iterable<AutocompleteItem> duplicates =
-                    _lastOptions.where((element) =>
-                        element.value == value && element.documentId != null);
-                if (duplicates.isNotEmpty) {
-                  widget.onChanged!.call(duplicates.first);
-                } else {
-                  // .. otherwise use newly created user value
-                  widget.onChanged!.call(AutocompleteItem(value: value));
-                }
-              }
-            },
+            autofocus: widget.autofocus,
+            onChanged: _onChanged,
+            onEditingComplete: _onSubmit,
             decoration: InputDecoration(
               suffixIcon: _isLoading
                   ? Transform.scale(

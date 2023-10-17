@@ -7,15 +7,38 @@ import 'package:app/models/base.dart';
 import 'package:app/models/schema_ids.dart';
 
 class LocalName {
-  final String id;
-  final String name;
+  final DocumentId id;
+  DocumentViewId viewId;
 
-  LocalName({required this.id, required this.name});
+  String name;
+
+  LocalName({required this.id, required this.viewId, required this.name});
 
   factory LocalName.fromJson(Map<String, dynamic> result) {
     return LocalName(
-        id: result['meta']['documentId'] as String,
+        id: result['meta']['documentId'] as DocumentId,
+        viewId: result['meta']['viewId'] as DocumentViewId,
         name: result['fields']['name'] as String);
+  }
+
+  static Future<LocalName> create({required String name}) async {
+    DocumentViewId viewId = await createLocalName(name: name);
+    return LocalName(
+      id: viewId,
+      viewId: viewId,
+      name: name,
+    );
+  }
+
+  Future<DocumentViewId> update({required String name}) async {
+    this.viewId = await updateLocalName(this.viewId, name: name);
+    this.name = name;
+    return this.viewId;
+  }
+
+  Future<DocumentViewId> delete() async {
+    this.viewId = await deleteLocalName(this.viewId);
+    return this.viewId;
   }
 }
 
@@ -49,9 +72,21 @@ String searchLocalNamesQuery(String query) {
   ''';
 }
 
-Future<DocumentViewId> createLocalName(String name) async {
+Future<DocumentViewId> createLocalName({required String name}) async {
   List<(String, OperationValue)> fields = [
     ("name", OperationValue.string(name)),
   ];
   return await create(SchemaIds.bee_local_name, fields);
+}
+
+Future<DocumentViewId> updateLocalName(DocumentViewId viewId,
+    {required String name}) async {
+  List<(String, OperationValue)> fields = [
+    ("name", OperationValue.string(name)),
+  ];
+  return await update(viewId, SchemaIds.bee_local_name, fields);
+}
+
+Future<DocumentViewId> deleteLocalName(DocumentViewId viewId) async {
+  return await delete(viewId, SchemaIds.bee_local_name);
 }

@@ -3,8 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:app/ui/colors.dart';
+import 'package:app/io/files.dart';
 import 'package:app/models/blobs.dart';
+import 'package:app/ui/colors.dart';
 
 class MeliImage extends StatelessWidget {
   final Blob? image;
@@ -40,7 +41,7 @@ class MeliImage extends StatelessWidget {
     }
 
     return Image.network(
-      'http://localhost:2020/blobs/${this.image!.id}',
+      '${BLOBS_BASE_PATH}/${this.image!.id}',
       fit: BoxFit.cover,
       filterQuality: FilterQuality.high,
       frameBuilder: (BuildContext context, Widget child, int? frame,

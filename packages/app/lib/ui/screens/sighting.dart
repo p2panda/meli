@@ -1,10 +1,18 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'package:app/io/files.dart';
+import 'package:app/models/local_names.dart';
 import 'package:app/models/sightings.dart';
+import 'package:app/ui/colors.dart';
+import 'package:app/ui/widgets/autocomplete.dart';
 import 'package:app/ui/widgets/editable_card.dart';
+import 'package:app/ui/widgets/error_card.dart';
+import 'package:app/ui/widgets/image_carousel.dart';
+import 'package:app/ui/widgets/local_name_autocomplete.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 
 class SightingScreen extends StatefulWidget {
@@ -17,43 +25,291 @@ class SightingScreen extends StatefulWidget {
 }
 
 class _SightingScreenState extends State<SightingScreen> {
-  final _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     return MeliScaffold(
-        title: 'Sighting',
-        body: SingleChildScrollView(
+        title: AppLocalizations.of(context)!.sightingScreenTitle,
+        backgroundColor: MeliColors.electric,
+        appBarColor: MeliColors.electric,
+        body: Container(
+          child: SingleChildScrollView(
             child: Query(
                 options: QueryOptions(
-                    document: gql(sightingQuery(this.widget.documentId)),
-                    pollInterval: const Duration(seconds: 1)),
+                    document: gql(sightingQuery(widget.documentId))),
                 builder: (result,
                     {VoidCallback? refetch, FetchMore? fetchMore}) {
                   if (result.hasException) {
-                    return Text(result.exception.toString());
+                    return ErrorCard(message: result.exception.toString());
                   }
 
                   if (result.isLoading) {
-                    return const Text('Loading ...');
+                    return const Center(
+                      child: SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: CircularProgressIndicator(
+                              color: MeliColors.black)),
+                    );
                   }
 
                   final sighting = Sighting.fromJson(
                       result.data?['sighting'] as Map<String, dynamic>);
 
-                  return Form(
-                    key: _formKey,
-                    child: Column(
-                      children: <Widget>[
-                        EditableCard(
-                          title: 'Name',
-                          child: Text(sighting.datetime.toString()),
-                        ),
-                        EditableCard(
-                            title: 'Comment', child: Text(sighting.comment)),
-                      ],
-                    ),
-                  );
-                })));
+                  return SightingProfile(sighting);
+                }),
+          ),
+        ));
+  }
+}
+
+class SightingProfile extends StatefulWidget {
+  final Sighting initialValue;
+
+  SightingProfile(this.initialValue, {super.key});
+
+  @override
+  State<SightingProfile> createState() => _SightingProfileState();
+}
+
+class _SightingProfileState extends State<SightingProfile> {
+  /// Mutable sighting instance. Can be changed by this stateful widget.
+  late Sighting sighting;
+
+  @override
+  void initState() {
+    sighting = widget.initialValue;
+    super.initState();
+  }
+
+  void _updateLocalName(AutocompleteItem? item) async {
+    List<LocalName> localNames = [];
+
+    if (item == null) {
+      // Remove local name from sighting
+    } else if (item.documentId == null) {
+      // Create new local name to assign it then to sighting
+      localNames.add(await LocalName.create(name: item.value));
+    } else if (item.documentId != null) {
+      // Assign existing local name to sighting
+      localNames.add(LocalName(
+          id: item.documentId!, viewId: item.viewId!, name: item.value));
+    }
+
+    await sighting.update(localNames: localNames);
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final imagePaths = sighting.images
+        .map((image) => '${BLOBS_BASE_PATH}/${image.id}')
+        .toList();
+
+    return Container(
+      padding: const EdgeInsets.only(
+          left: 20.0, right: 20.0, top: 80.0, bottom: 20.0),
+      decoration: const SeaWavesBackground(),
+      child: Wrap(runSpacing: 20.0, children: [
+        SightingProfileTitle(sighting),
+        ImageCarousel(imagePaths: imagePaths),
+        LocalNameField(
+          sighting.localName,
+          onUpdate: _updateLocalName,
+        ),
+        // @TODO: Remove this as soon as there are more elements
+        SizedBox(height: 250.0),
+      ]),
+    );
+  }
+}
+
+class SightingProfileTitle extends StatelessWidget {
+  final Sighting sighting;
+
+  SightingProfileTitle(this.sighting, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    List<String> title = [];
+
+    if (sighting.species != null) {
+      title.add(sighting.species!.species.name);
+    }
+
+    if (sighting.localName != null) {
+      title.add('"${sighting.localName!.name}"');
+    }
+
+    if (title.isEmpty) {
+      title.add(AppLocalizations.of(context)!.sightingUnspecified);
+    }
+
+    final id = sighting.id.substring(sighting.id.length - 4);
+
+    final datetime = sighting.datetime;
+    final date = '${datetime.day}.${datetime.month}.${datetime.year}';
+    final time = '${datetime.hour}:${datetime.minute} ${datetime.timeZoneName}';
+
+    return Center(
+        child: Column(children: [
+      Text(title.join(' '),
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 2,
+          style: const TextStyle(
+              height: 1.1, fontFamily: 'Staatliches', fontSize: 24.0)),
+      const SizedBox(height: 10.0),
+      Text('${date} | ${time} | #${id}', style: const TextStyle(fontSize: 16.0))
+    ]));
+  }
+}
+
+class SeaWavesBackground extends Decoration {
+  const SeaWavesBackground();
+
+  @override
+  BoxPainter createBoxPainter([VoidCallback? onChanged]) {
+    return _SeaWavesPainer();
+  }
+}
+
+class _SeaWavesPainer extends BoxPainter {
+  @override
+  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+    final Size? bounds = configuration.size;
+
+    final paint = Paint()
+      ..color = MeliColors.sea
+      ..style = PaintingStyle.fill;
+
+    final path = Path();
+    path.moveTo(0, 0);
+    path.lineTo((bounds!.width / 4) * 1, -50.0);
+    path.lineTo((bounds.width / 4) * 2, 0.0);
+    path.lineTo((bounds.width / 4) * 3, -50.0);
+    path.lineTo((bounds.width / 4) * 4, 0.0);
+    path.lineTo(bounds.width, bounds.height);
+    path.lineTo(0, bounds.height);
+    path.lineTo((bounds.width / 4) * 1, bounds.height + 50.0);
+    path.lineTo((bounds.width / 4) * 2, bounds.height);
+    path.lineTo((bounds.width / 4) * 3, bounds.height + 50.0);
+    path.lineTo((bounds.width / 4) * 4, bounds.height);
+    path.lineTo(0, bounds.height);
+    path.close();
+
+    canvas.drawPath(path.shift(offset).shift(Offset(0, 50.0)), paint);
+  }
+}
+
+typedef OnUpdate = void Function(AutocompleteItem?);
+
+class LocalNameField extends StatefulWidget {
+  final LocalName? current;
+  final OnUpdate onUpdate;
+
+  LocalNameField(this.current, {super.key, required this.onUpdate});
+
+  @override
+  State<LocalNameField> createState() => _LocalNameFieldState();
+}
+
+class _LocalNameFieldState extends State<LocalNameField> {
+  /// Flag indicating if we're currently editing the field or not.
+  bool isEditMode = false;
+
+  /// Contains changed value when user adjusted the field.
+  AutocompleteItem? _dirty;
+
+  void _submit() async {
+    if (_dirty == null) {
+      // Nothing has changed
+      return;
+    }
+
+    if (_dirty!.value == '') {
+      // Value is empty, we consider the user wants to remove it
+      widget.onUpdate.call(null);
+    } else {
+      // Value gets updated (either with item from database or something new)
+      widget.onUpdate.call(_dirty!);
+    }
+  }
+
+  void _changeValue(AutocompleteItem newValue) async {
+    if (widget.current == null) {
+      // User selected an item when none was selected before
+      _dirty = newValue;
+    } else if (widget.current!.name != newValue.value) {
+      // User selected a different item than before
+      _dirty = newValue;
+    } else {
+      // User selected the same item or still no item as before .. do nothing!
+    }
+  }
+
+  void _toggleEditMode() {
+    setState(() {
+      isEditMode = !isEditMode;
+
+      // If we flip from edit mode to read-only mode we interpret this as a
+      // "submit" action by the user
+      if (!isEditMode) {
+        _submit();
+      }
+    });
+  }
+
+  Widget _editableValue() {
+    // Convert existing LocalName for autocomplete widget. This will then also
+    // contain the id and view id of that document
+    AutocompleteItem? initialValue = widget.current != null
+        ? AutocompleteItem(
+            value: widget.current!.name, // Display value
+            documentId: widget.current!.id,
+            viewId: widget.current!.viewId)
+        : null;
+
+    return LocalNameAutocomplete(
+        initialValue: initialValue,
+        // Make sure that we focus the text field and show the keyboard as soon
+        // as we've entered "edit mode"
+        autofocus: true,
+        // Flip "edit mode" to false as soon as user hit the "submit" button on
+        // the keyboard
+        onSubmit: _toggleEditMode,
+        onChanged: _changeValue);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String? displayValue = widget.current == null ? null : widget.current!.name;
+
+    return EditableCard(
+        title: AppLocalizations.of(context)!.localNameCardTitle,
+        isEditMode: isEditMode,
+        child: isEditMode ? _editableValue() : ReadOnlyValue(displayValue),
+        onChanged: _toggleEditMode);
+  }
+}
+
+class ReadOnlyValue extends StatelessWidget {
+  final String? value;
+
+  const ReadOnlyValue(this.value, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final noValueGivenSymbol =
+        (['🤷', '🤷🏻', '🤷🏼', '🤷🏽', '🤷🏾', '🤷🏿']..shuffle()).first;
+
+    return Container(
+      alignment: Alignment.center,
+      height: 48.0,
+      child: Text(value == null ? noValueGivenSymbol : value!,
+          textAlign: TextAlign.left,
+          style: TextStyle(
+              fontSize: value == null ? 35.0 : 16.0,
+              shadows: value == null ? [Shadow(blurRadius: 1.0)] : null)),
+    );
   }
 }

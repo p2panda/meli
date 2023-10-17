@@ -119,18 +119,22 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
       }
 
       // Check if local name already exists, otherwise create a new one
-      DocumentId? localNameId;
+      List<DocumentId> localNameIds = [];
       if (localName != null) {
         if (localName!.documentId != null) {
-          localNameId = localName!.documentId;
+          localNameIds = [localName!.documentId!];
         } else {
-          localNameId = await createLocalName(localName!.value);
+          localNameIds = [await createLocalName(name: localName!.value)];
         }
       }
 
       // Publish the sighting
       await createSighting(
-          datetime, latitude, longitude, '', imageIds, null, localNameId);
+          datetime: datetime,
+          latitude: latitude,
+          longitude: longitude,
+          imageIds: imageIds,
+          localNameIds: localNameIds);
 
       // .. wait a little bit
       await sleep(500);
