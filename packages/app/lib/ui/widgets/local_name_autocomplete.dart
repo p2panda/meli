@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/models/base.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:app/io/graphql/graphql.dart';
+import 'package:app/models/base.dart';
 import 'package:app/models/local_names.dart';
 import 'package:app/ui/widgets/autocomplete.dart';
 
