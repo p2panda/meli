@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:gql/src/ast/ast.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:p2panda/p2panda.dart';
 
 import 'package:app/io/p2panda/publish.dart';
@@ -86,6 +88,67 @@ String searchUsedForQuery(String query) {
         orderBy: "used_for",
         orderDirection: ASC,
       ) {
+        documents {
+          $usedForFields
+        }
+      }
+    }
+  ''';
+}
+
+String usedForQuery(DocumentId id) {
+  final schemaId = SchemaIds.bee_attributes_used_for;
+
+  return '''
+    query usedForQuery {
+      $DEFAULT_RESULTS_KEY: $schemaId(id: "$id") {
+        $usedForFields
+      }
+    }
+  ''';
+}
+
+class UsedForPaginator extends Paginator<UsedFor> {
+  final DocumentId species;
+
+  UsedForPaginator(this.species);
+
+  @override
+  DocumentNode nextPageQuery(String? cursor) {
+    return gql(allUsesQuery(this.species, cursor));
+  }
+
+  @override
+  PaginatedCollection<UsedFor> parseJSON(Map<String, dynamic> json) {
+    final list = json[DEFAULT_RESULTS_KEY]['documents'] as List;
+    final documents = list
+        .map((sighting) => UsedFor.fromJson(sighting as Map<String, dynamic>))
+        .toList();
+
+    final endCursor = json[DEFAULT_RESULTS_KEY]['endCursor'] as String?;
+    final hasNextPage = json[DEFAULT_RESULTS_KEY]['hasNextPage'] as bool;
+
+    return PaginatedCollection(
+        documents: documents, hasNextPage: hasNextPage, endCursor: endCursor);
+  }
+}
+
+String allUsesQuery(DocumentId? sighting, String? cursor) {
+  final after = (cursor != null) ? '''after: "$cursor",''' : '';
+  final filter =
+      (sighting != null) ? '''filter: { sighting: { eq: "$sighting" } },''' : '';
+  final schemaId = SchemaIds.bee_attributes_used_for;
+
+  return '''
+    query AllUses {
+      $DEFAULT_RESULTS_KEY: all_$schemaId(
+        $filter
+        first: $DEFAULT_PAGE_SIZE,
+        $after
+        orderBy: "used_for",
+        orderDirection: ASC
+      ) {
+        $paginationFields
         documents {
           $usedForFields
         }
