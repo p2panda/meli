@@ -48,6 +48,8 @@
     "settingsSystemInformation": "System Information",
     "sightingScreenTitle": "Sighting",
     "sightingUnspecified": "Unknown species",
+    "speciesScreenTitle": "Species",
+    "usedForCardTitle": "Used For"
     "speciesCardTitle": "Species",
     "speciesDescription": "Description",
     "speciesScreenTitle": "Species",
