@@ -34,6 +34,10 @@ class BaseTaxonomy {
     this.viewId = await deleteTaxon(this.schemaId, this.viewId);
     return this.viewId;
   }
+
+  Future<String> search(String value) async {
+    return '';
+  }
 }
 
 class TaxonomySpecies extends BaseTaxonomy {
@@ -53,11 +57,30 @@ class TaxonomySpecies extends BaseTaxonomy {
   }
 }
 
-String get taxonomySpeciesFields {
+String get taxonomyFields {
   return '''
     $metaFields
     fields {
       name
+    }
+  ''';
+}
+
+String searchTaxonomy(SchemaId schemaId, String query) {
+  return '''
+    query SearchTaxonomy {
+      $DEFAULT_RESULTS_KEY: all_$schemaId(
+        first: 5,
+        filter: {
+          name: { contains: "$query" },
+        },
+        orderBy: "name",
+        orderDirection: ASC,
+      ) {
+        documents {
+          $taxonomyFields
+        }
+      }
     }
   ''';
 }

@@ -28,5 +28,14 @@
     "sightingScreenTitle": "Sighting",
     "sightingUnspecified": "Unknown species",
     "speciesCardTitle": "Species",
+    "taxonomyClass": "Class",
+    "taxonomyFamily": "Family",
+    "taxonomyGenus": "Genus",
+    "taxonomyKingdom": "Kingdom",
+    "taxonomyOrder": "Order",
+    "taxonomyPhylum": "Phylum",
+    "taxonomySpecies": "Species",
+    "taxonomySubfamily": "Subfamily",
+    "taxonomyTribe": "Tribe",
     "speciesScreenTitle": "Species"
 }

@@ -52,7 +52,7 @@ String get speciesFields {
     fields {
       description
       species {
-        $taxonomySpeciesFields
+        $taxonomyFields
       }
     }
   ''';
