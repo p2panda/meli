@@ -3,15 +3,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:app/models/base.dart';
+import 'package:app/io/graphql/queries.dart';
 import 'package:app/io/p2panda/schemas.dart';
 import 'package:app/models/schema_ids.dart';
 import 'package:app/models/species.dart';
+import 'package:app/models/taxonomy_species.dart';
 import 'package:app/ui/widgets/autocomplete.dart';
 import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/read_only_value.dart';
 import 'package:app/ui/widgets/taxonomy_autocomplete.dart';
 
-typedef OnUpdate = void Function(AutocompleteItem?);
+typedef OnUpdate = void Function(List<AutocompleteItem?>);
 
 class SpeciesField extends StatefulWidget {
   final Species? current;
@@ -32,12 +35,124 @@ class _SpeciesFieldState extends State<SpeciesField> {
   /// Which ranks are shown to the user.
   int _showUpToRank = 1;
 
+  @override
+  void initState() {
+    if (widget.current != null) {
+      try {
+        query(query: getTaxonomy(0, widget.current!.species.id))
+            .then((Map<String, dynamic> json) {
+          _populateTaxonomy(json);
+        });
+      } catch (error) {
+        print('Taxonomy data could not be parsed: ${error}');
+      }
+    }
+
+    super.initState();
+  }
+
+  void _populateTaxonomy(Map<String, dynamic> json) async {
+    var document = json[DEFAULT_RESULTS_KEY]! as Map<String, dynamic>;
+    BaseTaxonomy species = BaseTaxonomy.fromJson(
+      SchemaIds.taxonomy_species,
+      document,
+    );
+
+    document = document['fields']!['genus']! as Map<String, dynamic>;
+    BaseTaxonomy genus =
+        BaseTaxonomy.fromJson(SchemaIds.taxonomy_genus, document);
+
+    document = document['fields']!['tribe']! as Map<String, dynamic>;
+    BaseTaxonomy tribe =
+        BaseTaxonomy.fromJson(SchemaIds.taxonomy_tribe, document);
+
+    document = document['fields']!['subfamily']! as Map<String, dynamic>;
+    BaseTaxonomy subfamily =
+        BaseTaxonomy.fromJson(SchemaIds.taxonomy_subfamily, document);
+
+    document = document['fields']!['family']! as Map<String, dynamic>;
+    BaseTaxonomy family =
+        BaseTaxonomy.fromJson(SchemaIds.taxonomy_family, document);
+
+    document = document['fields']!['order']! as Map<String, dynamic>;
+    BaseTaxonomy order =
+        BaseTaxonomy.fromJson(SchemaIds.taxonomy_order, document);
+
+    document = document['fields']!['class']! as Map<String, dynamic>;
+    BaseTaxonomy classs =
+        BaseTaxonomy.fromJson(SchemaIds.taxonomy_class, document);
+
+    document = document['fields']!['phylum']! as Map<String, dynamic>;
+    BaseTaxonomy phylum =
+        BaseTaxonomy.fromJson(SchemaIds.taxonomy_phylum, document);
+
+    document = document['fields']!['kingdom']! as Map<String, dynamic>;
+    BaseTaxonomy kingdom =
+        BaseTaxonomy.fromJson(SchemaIds.taxonomy_kingdom, document);
+
+    _taxonomy[0] = AutocompleteItem(
+        value: species.name, documentId: species.id, viewId: species.viewId);
+    _taxonomy[1] = AutocompleteItem(
+        value: genus.name, documentId: genus.id, viewId: genus.viewId);
+    _taxonomy[2] = AutocompleteItem(
+        value: tribe.name, documentId: tribe.id, viewId: tribe.viewId);
+    _taxonomy[3] = AutocompleteItem(
+        value: subfamily.name,
+        documentId: subfamily.id,
+        viewId: subfamily.viewId);
+    _taxonomy[4] = AutocompleteItem(
+        value: family.name, documentId: family.id, viewId: family.viewId);
+    _taxonomy[5] = AutocompleteItem(
+        value: order.name, documentId: order.id, viewId: order.viewId);
+    _taxonomy[6] = AutocompleteItem(
+        value: classs.name, documentId: classs.id, viewId: classs.viewId);
+    _taxonomy[7] = AutocompleteItem(
+        value: phylum.name, documentId: phylum.id, viewId: phylum.viewId);
+    _taxonomy[8] = AutocompleteItem(
+        value: kingdom.name, documentId: kingdom.id, viewId: kingdom.viewId);
+  }
+
   void _submit() async {
     // @TODO
+    print('submit');
+    widget.onUpdate.call(_taxonomy);
+  }
+
+  bool _validate() {
+    if (_taxonomy[0] == null) {
+      // Nothing was changed, all good
+      return true;
+    }
+
+    // Make sure that new taxons can only be followed by _only_ existing or
+    // _only_ new ones. Null fields are not allowed ever.
+    bool isInNewRange = _taxonomy[0]!.documentId == null;
+
+    for (final rank in _taxonomy) {
+      if (rank == null) {
+        return false;
+      }
+
+      if (rank!.documentId != null) {
+        isInNewRange = false;
+      }
+
+      if (!isInNewRange && rank!.documentId == null) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   void _toggleEditMode() {
     setState(() {
+      if (!_validate()) {
+        // @TODO
+        print('Invalid');
+        return;
+      }
+
       _isEditMode = !_isEditMode;
 
       // If we flip from edit mode to read-only mode we interpret this as a

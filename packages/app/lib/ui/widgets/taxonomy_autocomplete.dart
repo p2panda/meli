@@ -39,7 +39,7 @@ class _TaxonomyAutocompleteState extends State<TaxonomyAutocomplete> {
         onOptionsRequest: (String value) async {
           try {
             final QueryResult result = await client.query(QueryOptions(
-                document: gql(searchTaxonomy(widget.schemaId, value))));
+                document: gql(searchTaxon(widget.schemaId, value))));
 
             if (result.hasException) {
               throw result.exception!;

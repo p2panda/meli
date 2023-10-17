@@ -66,9 +66,139 @@ String get taxonomyFields {
   ''';
 }
 
-String searchTaxonomy(SchemaId schemaId, String query) {
+String get speciesFields {
   return '''
-    query SearchTaxonomy {
+    $metaFields
+    fields {
+      name
+      genus {
+        $genusFields
+      }
+    }
+  ''';
+}
+
+String get genusFields {
+  return '''
+    $metaFields
+    fields {
+      name
+      tribe {
+        $tribeFields
+      }
+    }
+  ''';
+}
+
+String get tribeFields {
+  return '''
+    $metaFields
+    fields {
+      name
+      subfamily {
+        $subfamilyFields
+      }
+    }
+  ''';
+}
+
+String get subfamilyFields {
+  return '''
+    $metaFields
+    fields {
+      name
+      family {
+        $familyFields
+      }
+    }
+  ''';
+}
+
+String get familyFields {
+  return '''
+    $metaFields
+    fields {
+      name
+      order {
+        $orderFields
+      }
+    }
+  ''';
+}
+
+String get orderFields {
+  return '''
+    $metaFields
+    fields {
+      name
+      class {
+        $classFields
+      }
+    }
+  ''';
+}
+
+String get classFields {
+  return '''
+    $metaFields
+    fields {
+      name
+      phylum {
+        $phylumFields
+      }
+    }
+  ''';
+}
+
+String get phylumFields {
+  return '''
+    $metaFields
+    fields {
+      name
+      kingdom {
+        $kingdomFields
+      }
+    }
+  ''';
+}
+
+String get kingdomFields {
+  return '''
+    $metaFields
+    fields {
+      name
+    }
+  ''';
+}
+
+final RANKS = [
+  {'fields': speciesFields, 'schemaId': SchemaIds.taxonomy_species},
+  {'fields': genusFields, 'schemaId': SchemaIds.taxonomy_genus},
+  {'fields': tribeFields, 'schemaId': SchemaIds.taxonomy_tribe},
+  {'fields': subfamilyFields, 'schemaId': SchemaIds.taxonomy_subfamily},
+  {'fields': familyFields, 'schemaId': SchemaIds.taxonomy_family},
+  {'fields': orderFields, 'schemaId': SchemaIds.taxonomy_order},
+  {'fields': classFields, 'schemaId': SchemaIds.taxonomy_class},
+  {'fields': phylumFields, 'schemaId': SchemaIds.taxonomy_phylum},
+  {'fields': kingdomFields, 'schemaId': SchemaIds.taxonomy_kingdom},
+];
+
+String getTaxonomy(int rank, publish.DocumentId documentId) {
+  final schemaId = RANKS[rank]['schemaId'];
+  final fields = RANKS[rank]['fields'];
+
+  return '''
+    query GetTaxonomy {
+      $DEFAULT_RESULTS_KEY: $schemaId(id: $documentId) {
+        $fields
+      }
+    }
+  ''';
+}
+
+String searchTaxon(SchemaId schemaId, String query) {
+  return '''
+    query SearchTaxon {
       $DEFAULT_RESULTS_KEY: all_$schemaId(
         first: 5,
         filter: {

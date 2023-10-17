@@ -99,7 +99,7 @@ class _SightingProfileState extends State<SightingProfile> {
     setState(() {});
   }
 
-  void _updateSpecies(AutocompleteItem? item) async {
+  void _updateSpecies(List<AutocompleteItem?> taxonomyItems) async {
     // @TODO
   }
 
