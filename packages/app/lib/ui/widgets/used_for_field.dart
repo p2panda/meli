@@ -1,18 +1,22 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/io/p2panda/publish.dart';
-import 'package:app/models/used_for.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:app/io/p2panda/publish.dart';
+import 'package:app/models/base.dart';
+import 'package:app/models/used_for.dart';
+import 'package:app/ui/widgets/loading_overlay.dart';
+import 'package:app/ui/widgets/pagination_list.dart';
 import 'package:app/ui/widgets/autocomplete.dart';
 import 'package:app/ui/widgets/editable_card.dart';
-import 'package:app/ui/widgets/read_only_value.dart';
-
 import 'package:app/ui/widgets/used_for_autocomplete.dart';
+import 'package:app/io/graphql/graphql.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
-typedef OnUpdate = void Function(AutocompleteItem?);
-typedef OnCreate = void Function(AutocompleteItem?);
+typedef OnUpdate = Future<DocumentViewId?> Function(AutocompleteItem?);
 
 class UsedForField extends StatefulWidget {
   final UsedFor? current;
@@ -27,6 +31,15 @@ class UsedForField extends StatefulWidget {
 }
 
 class _UsedForFieldState extends State<UsedForField> {
+  late Paginator<UsedFor> paginator;
+  final GlobalKey<LoadingOverlayState> _overlayKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    paginator = UsedForPaginator(this.widget.sighting);
+  }
+
   /// Flag indicating if we're currently editing the field or not.
   bool isEditMode = false;
 
@@ -40,12 +53,33 @@ class _UsedForFieldState extends State<UsedForField> {
     }
 
     if (_dirty!.value == '') {
-      // Value is empty, we consider the user wants to remove it
-      widget.onUpdate.call(null);
-    } else {
-      // Value gets updated (either with item from database or something new)
-      widget.onUpdate.call(_dirty!);
+      // We consider that the user changed their mind and actually doesn't
+      // want to create a UsedFor.
+      _dirty = null;
+      return;
     }
+
+    // Show the overlay spinner
+    _overlayKey.currentState!.show();
+
+    // Create the new UsedFor document
+    DocumentViewId? newUsedFor = await widget.onUpdate.call(_dirty!);
+
+    // We want to wait until it is materialized and then refresh the
+    // paginated query
+    bool isReady = false;
+    while (!isReady) {
+      final options = QueryOptions(document: gql(usedForQuery(newUsedFor!)));
+      final result = await client.query(options);
+      isReady = (result.data != null);
+      sleep(Duration(milliseconds: 150));
+    }
+
+    // Refresh the paginator
+    this.paginator.refresh!();
+
+    // Hide the overlay
+    _overlayKey.currentState!.hide();
   }
 
   void _changeValue(AutocompleteItem newValue) async {
@@ -73,17 +107,9 @@ class _UsedForFieldState extends State<UsedForField> {
   }
 
   Widget _editableValue() {
-    // Convert existing UsedFor for autocomplete widget. This will then also
-    // contain the id and view id of that document
-    AutocompleteItem? initialValue = widget.current != null
-        ? AutocompleteItem(
-            value: widget.current!.usedFor, // Display value
-            documentId: widget.current!.id,
-            viewId: widget.current!.viewId)
-        : null;
-
     return UsedForAutocomplete(
-        initialValue: initialValue,
+        // Initial value is always null.
+        initialValue: null,
         // Make sure that we focus the text field and show the keyboard as soon
         // as we've entered "edit mode"
         autofocus: true,
@@ -95,13 +121,34 @@ class _UsedForFieldState extends State<UsedForField> {
 
   @override
   Widget build(BuildContext context) {
-    String? displayValue =
-        widget.current == null ? null : widget.current!.usedFor;
-
-    return EditableCard(
-        title: AppLocalizations.of(context)!.usedForCardTitle,
-        isEditMode: isEditMode,
-        child: isEditMode ? _editableValue() : ReadOnlyValue(displayValue),
-        onChanged: _toggleEditMode);
+    return Container(
+      height: 200,
+      child: LoadingOverlay(
+        key: _overlayKey,
+        child: EditableCard(
+            title: AppLocalizations.of(context)!.usedForCardTitle,
+            isEditMode: isEditMode,
+            child: Container(
+              height: 100,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: PaginationList<UsedFor>(
+                          builder: (UsedFor usedFor) {
+                            return isEditMode
+                                ? Text('${usedFor.usedFor} X')
+                                : Text(usedFor.usedFor);
+                          },
+                          paginator: paginator),
+                    ),
+                  ),
+                  isEditMode ? _editableValue() : SizedBox(),
+                ],
+              ),
+            ),
+            onChanged: _toggleEditMode),
+      ),
+    );
   }
 }

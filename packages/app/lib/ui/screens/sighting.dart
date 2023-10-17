@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/used_for.dart';
 import 'package:app/ui/widgets/used_for_field.dart';
 import 'package:flutter/material.dart';
@@ -101,6 +102,7 @@ class _SightingProfileState extends State<SightingProfile> {
     setState(() {});
   }
 
+<<<<<<< HEAD
   void _updateSpecies(TaxonomySpecies? taxon) async {
     if (sighting.species?.species.id == taxon?.id) {
       // Nothing has changed
@@ -128,17 +130,22 @@ class _SightingProfileState extends State<SightingProfile> {
     await sighting.update(comment: comment);
 
   void _updateUsedFor(AutocompleteItem? item) async {
+=======
+  Future<DocumentViewId?> _updateUsedFor(AutocompleteItem? item) async {
+>>>>>>> Paginated UsedFor list with onsubmit refresh
     if (item == null) {
       // Do nothing
     } else if (item.viewId == null) {
       // Create new used for assigned to this sighting
-      await UsedFor.create(sighting: sighting.id, usedFor: item.value);
+      final newUsedFor = await UsedFor.create(sighting: sighting.id, usedFor: item.value);
+      return newUsedFor.viewId;
     } else if (item.viewId != null) {
       // Assign existing local name to sighting
-      await updateUsedFor(item.viewId!, usedFor: item.value);
+      return await updateUsedFor(item.viewId!, usedFor: item.value);
     }
 
     setState(() {});
+    return null;
   }
 
   @override
