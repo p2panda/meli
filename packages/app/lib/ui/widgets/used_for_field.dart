@@ -110,9 +110,8 @@ class _UsedForFieldState extends State<UsedForField> {
     return UsedForAutocomplete(
         // Initial value is always null.
         initialValue: null,
-        // Make sure that we focus the text field and show the keyboard as soon
-        // as we've entered "edit mode"
-        autofocus: true,
+        // Don't show keyboard or focus on text field when edit mode clicked
+        autofocus: false,
         // Flip "edit mode" to false as soon as user hit the "submit" button on
         // the keyboard
         onSubmit: _toggleEditMode,
@@ -122,23 +121,31 @@ class _UsedForFieldState extends State<UsedForField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200,
+      height: 250,
       child: LoadingOverlay(
         key: _overlayKey,
         child: EditableCard(
             title: AppLocalizations.of(context)!.usedForCardTitle,
             isEditMode: isEditMode,
             child: Container(
-              height: 100,
+              height: 150,
               child: Column(
                 children: [
                   Expanded(
                     child: SingleChildScrollView(
                       child: PaginationList<UsedFor>(
                           builder: (UsedFor usedFor) {
-                            return isEditMode
-                                ? Text('${usedFor.usedFor} X')
-                                : Text(usedFor.usedFor);
+                            return SizedBox(
+                              height: 30,
+                              child: Row(children: [
+                                Expanded(child: Text(usedFor.usedFor)),
+                                isEditMode
+                                    ? IconButton(
+                                        onPressed: () {},
+                                        icon: Icon(Icons.delete))
+                                    : SizedBox()
+                              ]),
+                            );
                           },
                           paginator: paginator),
                     ),
