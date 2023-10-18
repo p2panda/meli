@@ -153,30 +153,43 @@ class _UsedForFieldState extends State<UsedForField> {
               child: Column(
                 children: [
                   Expanded(
-                    flex: 2,
-                    child: PaginationUsedForList(
-                      paginator: this.paginator,
-                      builder: (List<UsedFor> uses) {
-                        return UsedForList(
-                            uses: uses,
-                            isEditMode: this.isEditMode,
-                            onDelete: this._delete);
-                      },
+                    flex: 1,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 5),
+                      child: PaginationUsedForList(
+                        paginator: this.paginator,
+                        builder: (List<UsedFor> uses) {
+                          return UsedForList(
+                              uses: uses,
+                              isEditMode: this.isEditMode,
+                              onDelete: this._delete);
+                        },
+                      ),
                     ),
                   ),
                   isEditMode
                       ? Expanded(
                           flex: 1,
-                          child: PaginationUsedForTagList(
-                              paginator: this.usedForTagPaginator,
-                              itemsBuilder: (List<UsedFor> uses) {
-                                return uses
-                                    .map((usedFor) => UsedForTagItem(usedFor))
-                                    .toList();
-                              }),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  child: PaginationUsedForTagList(
+                                      paginator: this.usedForTagPaginator,
+                                      itemsBuilder: (List<UsedFor> uses) {
+                                        return uses
+                                            .map((usedFor) =>
+                                                UsedForTagItem(usedFor))
+                                            .toList();
+                                      }),
+                                ),
+                                _editableValue()
+                              ],
+                            ),
+                          ),
                         )
                       : SizedBox(),
-                  isEditMode ? _editableValue() : SizedBox(),
                 ],
               ),
             ),

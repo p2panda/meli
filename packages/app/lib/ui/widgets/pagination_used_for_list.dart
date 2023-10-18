@@ -118,14 +118,25 @@ class _PaginationUsedForListState extends State<PaginationUsedForList> {
           return this._emptyResult(context);
         }
 
-        return SingleChildScrollView(
-            controller: scrollController,
-            child: Column(
-              children: [
-                this.widget.builder(data.documents),
-                if (data.hasNextPage) this._loadMore(context, result.isLoading)
-              ],
-            ));
+        return Material(
+          color: MeliColors.white,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(4.0)),
+          ),
+          child: Container(
+            width: double.infinity,
+            margin: EdgeInsets.all(5),
+            child: SingleChildScrollView(
+                controller: scrollController,
+                child: Column(
+                  children: [
+                    this.widget.builder(data.documents),
+                    if (data.hasNextPage)
+                      this._loadMore(context, result.isLoading)
+                  ],
+                )),
+          ),
+        );
       },
     );
   }
