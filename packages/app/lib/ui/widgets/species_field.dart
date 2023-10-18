@@ -8,17 +8,16 @@ import 'package:app/io/p2panda/publish.dart';
 import 'package:app/io/p2panda/schemas.dart';
 import 'package:app/models/base.dart';
 import 'package:app/models/schema_ids.dart';
-import 'package:app/models/species.dart';
 import 'package:app/models/taxonomy_species.dart';
 import 'package:app/ui/widgets/autocomplete.dart';
 import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/read_only_value.dart';
 import 'package:app/ui/widgets/taxonomy_autocomplete.dart';
 
-typedef OnUpdate = void Function(List<AutocompleteItem?>);
+typedef OnUpdate = void Function(TaxonomySpecies?);
 
 class SpeciesField extends StatefulWidget {
-  final Species? current;
+  final TaxonomySpecies? current;
   final OnUpdate onUpdate;
 
   SpeciesField(this.current, {super.key, required this.onUpdate});
@@ -96,7 +95,7 @@ class _SpeciesFieldState extends State<SpeciesField> {
   void initState() {
     if (widget.current != null) {
       // Populate current state with full taxonomy when a species was defined
-      _requestTaxonomy(0, widget.current!.species.id);
+      _requestTaxonomy(0, widget.current!.id);
     }
 
     super.initState();
@@ -129,9 +128,26 @@ class _SpeciesFieldState extends State<SpeciesField> {
   }
 
   void _submit() async {
-    // @TODO
-    print('submit');
-    widget.onUpdate.call(_taxonomy);
+    if (widget.current == null) {
+      if (_taxonomy[0] == null || _taxonomy[0]!.value == '') {
+        // Nothing has changed, therefore do nothing
+        return;
+      }
+    }
+
+    if (widget.current != null) {
+      if (_taxonomy[0] == null || _taxonomy[0]!.value == '') {
+        // Species got removed by user
+        widget.onUpdate.call(null);
+      }
+    }
+
+    // @TODO: Create all taxons which do not exist yet
+    // widget.onUpdate.call(TaxonomySpecies(BaseTaxonomy(
+    //     SchemaIds.taxonomy_species,
+    //     id: _taxonomy[0]!.documentId!,
+    //     viewId: _taxonomy[0]!.viewId!,
+    //     name: _taxonomy[0]!.value)));
   }
 
   void _validate() {
@@ -241,8 +257,7 @@ class _SpeciesFieldState extends State<SpeciesField> {
 
   @override
   Widget build(BuildContext context) {
-    String? displayValue =
-        widget.current == null ? null : widget.current!.species.name;
+    String? displayValue = widget.current == null ? null : widget.current!.name;
 
     return EditableCard(
         title: AppLocalizations.of(context)!.speciesCardTitle,

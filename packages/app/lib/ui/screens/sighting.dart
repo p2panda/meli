@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/models/taxonomy_species.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -99,7 +100,7 @@ class _SightingProfileState extends State<SightingProfile> {
     setState(() {});
   }
 
-  void _updateSpecies(List<AutocompleteItem?> taxonomyItems) async {
+  void _updateSpecies(TaxonomySpecies? species) async {
     // @TODO
   }
 
@@ -121,7 +122,7 @@ class _SightingProfileState extends State<SightingProfile> {
           onUpdate: _updateLocalName,
         ),
         SpeciesField(
-          sighting.species,
+          sighting.species?.species,
           onUpdate: _updateSpecies,
         ),
         // @TODO: Remove this as soon as there are more elements
