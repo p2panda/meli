@@ -30,9 +30,17 @@
     "paginationListError": "Error occurred while requesting data: {errorMessage}",
     "paginationListLoadMore": "Load More",
     "paginationListNoResults": "No entries given yet",
+    "settings": "Settings",
+    "settingsEnglish": "English",
+    "settingsLanguageChangeError": "Error: could not change language",
+    "settingsLanguageChangeSuccess": "Language changed to \"{language}\"",
+    "settingsLanguages": "Languages",
+    "settingsPortuguese": "Portuguese",
+    "settingsSystemInformation": "System Information",
     "sightingScreenTitle": "Sighting",
     "sightingUnspecified": "Unknown species",
     "speciesCardTitle": "Species",
+    "speciesScreenTitle": "Species",
     "taxonomyClass": "Class",
     "taxonomyFamily": "Family",
     "taxonomyGenus": "Genus",
@@ -41,6 +49,5 @@
     "taxonomyPhylum": "Phylum",
     "taxonomySpecies": "Species",
     "taxonomySubfamily": "Subfamily",
-    "taxonomyTribe": "Tribe",
-    "speciesScreenTitle": "Species"
+    "taxonomyTribe": "Tribe"
 }

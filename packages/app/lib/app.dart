@@ -3,13 +3,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:app/router.dart';
 import 'package:app/ui/widgets/image_provider.dart';
 import 'package:app/io/graphql/graphql.dart' as graphql;
 
-class MeliApp extends StatelessWidget {
+class MeliApp extends StatefulWidget {
   MeliApp({super.key});
+
+  @override
+  State<MeliApp> createState() => MeliAppState();
+}
+
+class MeliAppState extends State<MeliApp> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  Locale? _locale;
+
+  @override
+  void initState() {
+    super.initState();
+    _prefs.then((SharedPreferences prefs) {
+      final String localString = prefs.getString('locale') ?? 'pt';
+      setState(() {
+        _locale = Locale(localString);
+      });
+    });
+  }
+
+  Future<bool> changeLocale(Locale locale) async {
+    final SharedPreferences prefs = await _prefs;
+    bool _success = await prefs.setString('locale', locale.toString());
+
+    if (_success) {
+      setState(() {
+        _locale = locale;
+      });
+    }
+
+    return _success;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +57,14 @@ class MeliApp extends StatelessWidget {
           routeInformationParser: router.routeInformationParser,
 
           // Setup localization
+          locale: _locale,
+          localeResolutionCallback: (locale, supportedLocales) {
+            if (supportedLocales.contains(locale)) {
+              return locale;
+            }
+
+            return Locale('pt');
+          },
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
 
