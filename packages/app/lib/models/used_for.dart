@@ -109,13 +109,13 @@ String usedForQuery(DocumentId id) {
 }
 
 class UsedForPaginator extends Paginator<UsedFor> {
-  final DocumentId species;
+  final DocumentId? sighting;
 
-  UsedForPaginator(this.species);
+  UsedForPaginator({this.sighting});
 
   @override
   DocumentNode nextPageQuery(String? cursor) {
-    return gql(allUsesQuery(this.species, cursor));
+    return gql(allUsesQuery(this.sighting, cursor));
   }
 
   @override
