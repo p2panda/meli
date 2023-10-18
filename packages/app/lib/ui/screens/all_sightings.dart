@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/models/base.dart';
 import 'package:app/models/sightings.dart';
@@ -100,10 +101,22 @@ class _SightingsListState extends State<SightingsList> {
           width: double.infinity,
           padding: const EdgeInsets.only(top: 30.0, bottom: 20.0),
           child: PaginationList<Sighting>(
-              builder: (Sighting sighting) {
-                return Container(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    child: _item(sighting));
+              listBuilder: (List<Sighting> sightings) {
+                return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      ...sightings.map((sighting) => Container(
+                          padding: EdgeInsets.only(bottom: 20.0),
+                          child: this._item(sighting)))
+                    ]);
+              },
+              loadMoreBuilder: (BuildContext context, VoidCallback onLoadMore) {
+                return ElevatedButton(
+                  child: Text(
+                      AppLocalizations.of(context)!.paginationListLoadMore,
+                      style: TextStyle(color: MeliColors.black)),
+                  onPressed: onLoadMore,
+                );
               },
               paginator: widget.paginator)),
     );
@@ -163,7 +176,8 @@ class _BouncyBeeState extends State<BouncyBee>
       },
       child: SlideTransition(
         position: _flyingBeeAnimation,
-        child: const Center(child: Text("🐝", style: TextStyle(fontSize: 50.0))),
+        child:
+            const Center(child: Text("🐝", style: TextStyle(fontSize: 50.0))),
       ),
     );
   }

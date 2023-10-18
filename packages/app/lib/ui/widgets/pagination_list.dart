@@ -13,14 +13,29 @@ import 'package:app/ui/widgets/info_card.dart';
 typedef NextPageFunction = DocumentNode Function(String endCursor);
 
 typedef PaginationListBuilder<T> = Widget Function(
-  T document,
+  List<T> documents,
 );
 
-class PaginationList<T> extends StatelessWidget {
-  final PaginationListBuilder<T> builder;
+typedef LoadMoreBuilder = Widget? Function(
+    BuildContext context, VoidCallback onLoadMore);
+
+class PaginationList<T> extends StatefulWidget {
+  final PaginationListBuilder<T> listBuilder;
+  final LoadMoreBuilder loadMoreBuilder;
   final Paginator<T> paginator;
 
-  const PaginationList({super.key, required this.builder, required this.paginator});
+  PaginationList(
+      {super.key,
+      required this.listBuilder,
+      required this.paginator,
+      required this.loadMoreBuilder});
+
+  @override
+  State<PaginationList<T>> createState() => _PaginationListState<T>();
+}
+
+class _PaginationListState<T> extends State<PaginationList<T>> {
+  VoidCallback? fetchMore;
 
   Widget _error(BuildContext context, String errorMessage) {
     return ErrorCard(
@@ -42,27 +57,24 @@ class PaginationList<T> extends StatelessWidget {
         message: AppLocalizations.of(context)!.paginationListNoResults);
   }
 
-  Widget _loadMore(BuildContext context, bool isLoading,
-      {required VoidCallback onLoadMore}) {
+  Widget _loadMore(BuildContext context, bool isLoading) {
     return Column(children: [
       isLoading
           ? this._loading()
-          : ElevatedButton(
-              onPressed: onLoadMore,
-              child: Text(AppLocalizations.of(context)!.paginationListLoadMore,
-                  style: const TextStyle(color: MeliColors.black)),
-            )
+          : this.widget.loadMoreBuilder(context, this.fetchMore!) ?? SizedBox()
     ]);
   }
 
+  //
   @override
   Widget build(BuildContext context) {
     return Query(
-      options: QueryOptions(document: this.paginator.nextPageQuery(null)),
+      options:
+          QueryOptions(document: this.widget.paginator.nextPageQuery(null)),
       builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
-        if (this.paginator.refresh == null) {
+        if (this.widget.paginator.refresh == null) {
           // Workaround to access `refetch` method from the outside
-          this.paginator.refresh = refetch;
+          this.widget.paginator.refresh = refetch;
         }
 
         if (result.hasException) {
@@ -73,13 +85,16 @@ class PaginationList<T> extends StatelessWidget {
           return this._loading();
         }
 
-        final data =
-            this.paginator.parseJSON(result.data as Map<String, dynamic>);
+        final data = this
+            .widget
+            .paginator
+            .parseJSON(result.data as Map<String, dynamic>);
 
         FetchMoreOptions opts = FetchMoreOptions(
-          document: this.paginator.nextPageQuery(data.endCursor),
+          document: this.widget.paginator.nextPageQuery(data.endCursor),
           updateQuery: (previousResultData, fetchMoreResultData) {
             return this
+                .widget
                 .paginator
                 .mergeResponses(previousResultData!, fetchMoreResultData!);
           },
@@ -89,14 +104,15 @@ class PaginationList<T> extends StatelessWidget {
           return this._emptyResult(context);
         }
 
+        this.fetchMore = () {
+          fetchMore!(opts);
+        };
+
         return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              ...data.documents.map((document) => this.builder(document)),
-              if (data.hasNextPage)
-                this._loadMore(context, result.isLoading, onLoadMore: () {
-                  fetchMore!(opts);
-                })
+              this.widget.listBuilder(data.documents),
+              if (data.hasNextPage) this._loadMore(context, result.isLoading)
             ]);
       },
     );

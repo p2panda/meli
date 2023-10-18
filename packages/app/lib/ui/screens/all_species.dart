@@ -31,7 +31,8 @@ class AllSpeciesScreen extends StatelessWidget {
             },
             child: LayoutBuilder(builder: (context, constraints) {
               return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 decoration: const PeachWavesBackground(),
                 child: SingleChildScrollView(
@@ -70,10 +71,22 @@ class _SpeciesListState extends State<SpeciesList> {
         width: double.infinity,
         padding: const EdgeInsets.only(top: 30.0, bottom: 20.0),
         child: PaginationList<Species>(
-            builder: (Species species) {
-              return Container(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: _item(species));
+            listBuilder: (List<Species> species) {
+              return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ...species.map((species) => Container(
+                        padding: EdgeInsets.only(bottom: 20.0),
+                        child: this._item(species)))
+                  ]);
+            },
+            loadMoreBuilder: (BuildContext context, VoidCallback onLoadMore) {
+              return ElevatedButton(
+                child: Text(
+                    AppLocalizations.of(context)!.paginationListLoadMore,
+                    style: TextStyle(color: MeliColors.black)),
+                onPressed: onLoadMore,
+              );
             },
             paginator: widget.paginator));
   }
