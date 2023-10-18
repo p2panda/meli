@@ -23,8 +23,10 @@ typedef OnUpdate = void Function(TaxonomySpecies?);
 class SpeciesField extends StatefulWidget {
   final TaxonomySpecies? current;
   final OnUpdate onUpdate;
+  final bool allowNull;
 
-  SpeciesField(this.current, {super.key, required this.onUpdate});
+  SpeciesField(this.current,
+      {super.key, required this.onUpdate, this.allowNull = true});
 
   @override
   State<SpeciesField> createState() => _SpeciesFieldState();
@@ -160,15 +162,15 @@ class _SpeciesFieldState extends State<SpeciesField> {
   }
 
   void _validate() {
+    final t = AppLocalizations.of(context)!;
+
     if (_taxonomy[0] == null) {
       // Nothing was changed, all good
-      return;
-    }
-
-    if (_taxonomy[0] != null && _taxonomy[0]!.value == '') {
-      // Species field is empty which indicates that user wants to remove it.
-      // All good here as well!
-      return;
+      if (widget.allowNull) {
+        return; // All good here as well!
+      } else {
+        throw t.editSpeciesErrorCantRemove;
+      }
     }
 
     // Make sure that new taxons can only be followed by _only_ existing or
@@ -193,7 +195,6 @@ class _SpeciesFieldState extends State<SpeciesField> {
     // * Tribe: <new value> ! We can't change the tribe of an existing genus !
     bool isInNewRange = _taxonomy[0]!.documentId == null;
 
-    final t = AppLocalizations.of(context)!;
     for (final (index, rank) in _taxonomy.indexed) {
       if (rank == null) {
         // Every rank needs to be defined, either by a new value or an already

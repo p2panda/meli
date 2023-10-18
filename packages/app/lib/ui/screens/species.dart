@@ -102,6 +102,7 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
       child: Wrap(runSpacing: 20.0, children: [
         SpeciesField(
           species.species,
+          allowNull: false,
           onUpdate: _updateSpecies,
         ),
         // @TODO: Remove this as soon as there are more elements
