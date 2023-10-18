@@ -118,15 +118,16 @@ class _SpeciesFieldState extends State<SpeciesField> {
     widget.onUpdate.call(_taxonomy);
   }
 
-  bool _validate() {
+  void _validate() {
     if (_taxonomy[0] == null) {
       // Nothing was changed, all good
-      return true;
+      return;
     }
 
     if (_taxonomy[0] != null && _taxonomy[0]!.value == '') {
-      // Species field is empty which indicates that user wants to remove it
-      return true;
+      // Species field is empty which indicates that user wants to remove it.
+      // All good here as well!
+      return;
     }
 
     // Make sure that new taxons can only be followed by _only_ existing or
@@ -150,7 +151,7 @@ class _SpeciesFieldState extends State<SpeciesField> {
       if (rank == null) {
         // Every rank needs to be defined, either by a new value or an already
         // existing one!
-        return false;
+        throw '@TODO';
       }
 
       if (rank.documentId != null) {
@@ -160,18 +161,18 @@ class _SpeciesFieldState extends State<SpeciesField> {
       if (!isInNewRange && rank.documentId == null) {
         // We do not allow defining new items _after_ existing ones, the parents
         // of existing ranks are unchangeable!
-        return false;
+        throw '@TODO';
       }
     }
-
-    return true;
   }
 
   void _toggleEditMode() {
     setState(() {
-      if (!_validate()) {
-        // @TODO
-        print('Invalid');
+      try {
+        _validate();
+      } catch (error) {
+        // @TODO: Show message here to user
+        print('Invalid: ${error}');
         return;
       }
 
