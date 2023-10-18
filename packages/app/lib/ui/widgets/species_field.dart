@@ -133,11 +133,11 @@ class _SpeciesFieldState extends State<SpeciesField> {
         return false;
       }
 
-      if (rank!.documentId != null) {
+      if (rank.documentId != null) {
         isInNewRange = false;
       }
 
-      if (!isInNewRange && rank!.documentId == null) {
+      if (!isInNewRange && rank.documentId == null) {
         return false;
       }
     }
