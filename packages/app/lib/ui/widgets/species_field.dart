@@ -68,21 +68,14 @@ class _SpeciesFieldState extends State<SpeciesField> {
 
   @override
   void initState() {
-    _init();
+    _reset();
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant SpeciesField oldWidget) {
-    _init();
+    _reset();
     super.didUpdateWidget(oldWidget);
-  }
-
-  void _init() {
-    if (widget.current != null) {
-      // Populate current state with full taxonomy when a species was defined
-      _requestTaxonomy(0, widget.current!.id);
-    }
   }
 
   void _requestTaxonomy(int fromRank, DocumentId id) async {
@@ -211,8 +204,12 @@ class _SpeciesFieldState extends State<SpeciesField> {
     setState(() {
       _taxonomy = List.filled(9, null, growable: false);
       _showUpToRank = 1;
-      _init();
     });
+
+    if (widget.current != null) {
+      // Populate current state with full taxonomy when a species was defined
+      _requestTaxonomy(0, widget.current!.id);
+    }
   }
 
   void _showErrorAlert(String error) {
