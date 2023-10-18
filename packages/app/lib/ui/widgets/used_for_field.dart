@@ -211,7 +211,7 @@ class _UsedForListState extends State<UsedForList> {
     return SingleChildScrollView(
       controller: scrollController,
       child: PaginationList<UsedFor>(
-          listBuilder: (List<UsedFor> uses) {
+          listBuilder: (List<UsedFor> uses, Widget? loadMoreWidget) {
             return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -229,7 +229,8 @@ class _UsedForListState extends State<UsedForList> {
                                   icon: Icon(Icons.delete))
                               : SizedBox()
                         ]),
-                      )))
+                      ))),
+                  (loadMoreWidget != null) ? loadMoreWidget : SizedBox()
                 ]);
           },
           loadMoreBuilder: (BuildContext context, VoidCallback onLoadMore) {
@@ -274,7 +275,7 @@ class _UsedForTagsState extends State<UsedForTags> {
   @override
   Widget build(BuildContext context) {
     return PaginationList<UsedFor>(
-        listBuilder: (List<UsedFor> uses) {
+        listBuilder: (List<UsedFor> uses, Widget? loadMoreWidget) {
           return SingleChildScrollView(
               controller: scrollController,
               child: Wrap(children: [
@@ -288,7 +289,8 @@ class _UsedForTagsState extends State<UsedForTags> {
                           margin: EdgeInsets.all(5),
                         ),
                       ),
-                    ))
+                    )),
+                (loadMoreWidget != null) ? loadMoreWidget : SizedBox()
               ]));
         },
         loadMoreBuilder: (BuildContext context, VoidCallback onLoadMore) {
