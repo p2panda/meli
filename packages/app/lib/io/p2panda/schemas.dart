@@ -29,23 +29,26 @@ typedef SchemaId = String;
 /// needs to just check update this file with `fishy`, this method will do the
 /// rest.
 Future<bool> migrateSchemas() async {
-  // Flag to indicate if any migrations took place
-  bool didMigrate = false;
-
   // Load .toml file holding the migration data which was generated with
   // p2panda `fishy` tool
   final toml = await loadAsset(MIGRATION_FILE_PATH);
   final migration = await TomlDocument.parse(toml).toMap();
   final commits = migration['commits'] as List<dynamic>;
+  return await publishCommits(commits);
+}
+
+Future<bool> publishCommits(List<dynamic> commits) async {
+  // Flag to indicate if any publishing took place
+  bool didPublish = false;
 
   // Iterate over all commits which are required to migrate to the latest
-  // schemas. This loop automatically checks if the commit already took place
+  // version. This loop automatically checks if the commit already took place
   // and ignores them if so
   for (var commit in commits) {
     // Decode entry from commit to retrieve public key, sequence number and log
     // id from it
     final Uint8List entryBytes =
-        hex.decode(commit['entry'] as String) as Uint8List;
+    hex.decode(commit['entry'] as String) as Uint8List;
     final entry = await p2panda.decodeEntry(entry: entryBytes);
     String publicKey = entry.$1;
     BigInt logId = BigInt.parse(entry.$2);
@@ -54,7 +57,7 @@ Future<bool> migrateSchemas() async {
     try {
       // Check if node already knows about this entry
       final nextArgs =
-          await queries.nextArgs(publicKey, commit['entry_hash'] as String);
+      await queries.nextArgs(publicKey, commit['entry_hash'] as String);
 
       if (logId != nextArgs.logId) {
         throw Exception('Critical log id mismatch during migration');
@@ -73,10 +76,10 @@ Future<bool> migrateSchemas() async {
     // the node and give us a new GraphQL API
     await queries.publish(
         commit['entry'] as String, commit['operation'] as String);
-    didMigrate = true;
+    didPublish = true;
   }
 
-  return didMigrate;
+  return didPublish;
 }
 
 /// Returns true if schema is materialized and ready on node.
