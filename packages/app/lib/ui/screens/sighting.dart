@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/models/species.dart';
 import 'package:app/models/taxonomy_species.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -100,8 +101,17 @@ class _SightingProfileState extends State<SightingProfile> {
     setState(() {});
   }
 
-  void _updateSpecies(TaxonomySpecies? species) async {
-    // @TODO
+  void _updateSpecies(TaxonomySpecies? taxon) async {
+    if (taxon == null) {
+      // Remove species assignment
+      await sighting.update(species: []);
+    } else {
+      // Assign species, create it before if it doesn't exist yet
+      final species = await Species.upsert(taxon);
+      await sighting.update(species: [species]);
+    }
+
+    setState(() {});
   }
 
   @override
