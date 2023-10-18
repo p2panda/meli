@@ -75,24 +75,14 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
     super.initState();
   }
 
-  void _updateSpecies(TaxonomySpecies? taxon) async {
+  void _updateTaxon(TaxonomySpecies? taxon) async {
     if (species.species.id == taxon?.id) {
       // Nothing has changed
       return;
+    } else if (taxon != null) {
+      await species.update(species: taxon);
+      setState(() {});
     }
-
-    if (taxon == null) {
-      // Remove species assignment
-      // @TODO
-      // await species.update(species: []);
-    } else {
-      // Assign species, create it before if it doesn't exist yet
-      final species = await Species.upsert(taxon);
-      // @TODO
-      // await species.update(species: [species]);
-    }
-
-    setState(() {});
   }
 
   @override
@@ -103,7 +93,7 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
         SpeciesField(
           species.species,
           allowNull: false,
-          onUpdate: _updateSpecies,
+          onUpdate: _updateTaxon,
         ),
         // @TODO: Remove this as soon as there are more elements
         SizedBox(height: 550.0),

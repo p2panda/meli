@@ -12,14 +12,21 @@ import 'package:app/models/taxonomy_species.dart';
 
 class Species {
   final DocumentId id;
-  final TaxonomySpecies species;
-  final String description;
+  DocumentViewId viewId;
 
-  Species({required this.id, required this.species, required this.description});
+  TaxonomySpecies species;
+  String description;
+
+  Species(
+      {required this.id,
+      required this.viewId,
+      required this.species,
+      required this.description});
 
   factory Species.fromJson(Map<String, dynamic> result) {
     return Species(
         id: result['meta']['documentId'] as DocumentId,
+        viewId: result['meta']['viewId'] as DocumentViewId,
         species: TaxonomySpecies.fromJson(
             result['fields']['species'] as Map<String, dynamic>),
         description: result['fields']['description'] as String);
@@ -36,8 +43,28 @@ class Species {
     } else {
       // Create new species and then return it
       final id = await createSpecies(taxonomySpeciesId: taxon.id);
-      return Species(id: id, species: taxon, description: '');
+      return Species(id: id, viewId: id, species: taxon, description: '');
     }
+  }
+
+  Future<DocumentViewId> update({
+    TaxonomySpecies? species,
+    String? description,
+  }) async {
+    DocumentId? taxonomySpeciesId;
+    if (species != null) {
+      this.species = species;
+      taxonomySpeciesId = species.id;
+    }
+
+    if (description != null) {
+      this.description = description;
+    }
+
+    this.viewId = await updateSpecies(this.viewId,
+        description: description, taxonomySpeciesId: taxonomySpeciesId);
+
+    return this.viewId;
   }
 }
 
