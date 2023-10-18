@@ -135,15 +135,25 @@ class _PaginationUsedForTagListState extends State<PaginationUsedForTagList> {
           return this._emptyResult(context);
         }
 
-        return SingleChildScrollView(
-            controller: scrollController,
-            child: Wrap(children: [
-              ...this.widget.itemsBuilder(data.documents),
-              if (data.hasNextPage)
-                this._loadMore(context, result.isLoading, onLoadMore: () {
-                  fetchMore!(opts);
-                })
-            ]));
+        return Material(
+          color: MeliColors.white,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(4.0)),
+          ),
+          child: Container(
+            width: double.infinity,
+            margin: EdgeInsets.all(5),
+            child: SingleChildScrollView(
+                controller: scrollController,
+                child: Wrap(children: [
+                  ...this.widget.itemsBuilder(data.documents),
+                  if (data.hasNextPage)
+                    this._loadMore(context, result.isLoading, onLoadMore: () {
+                      fetchMore!(opts);
+                    })
+                ])),
+          ),
+        );
       },
     );
   }
