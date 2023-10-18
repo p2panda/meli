@@ -2,6 +2,8 @@
 
 import 'dart:io';
 
+import 'package:app/ui/widgets/pagination_used_for_list.dart';
+import 'package:app/ui/widgets/pagination_used_for_tags_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -9,7 +11,6 @@ import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/base.dart';
 import 'package:app/models/used_for.dart';
 import 'package:app/ui/widgets/loading_overlay.dart';
-import 'package:app/ui/widgets/pagination_list.dart';
 import 'package:app/ui/widgets/autocomplete.dart';
 import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/used_for_autocomplete.dart';
@@ -153,12 +154,13 @@ class _UsedForFieldState extends State<UsedForField> {
                 children: [
                   Expanded(
                     flex: 1,
-                    child: UsedForList(
+                    child: PaginationUsedForList(
                         paginator: this.paginator, onDelete: this._delete),
                   ),
                   Expanded(
                     flex: 2,
-                    child: UsedForTags(paginator: this.usedForTagPaginator),
+                    child: PaginationUsedForTagList(
+                        paginator: this.usedForTagPaginator),
                   ),
                   isEditMode ? _editableValue() : SizedBox(),
                 ],
@@ -167,148 +169,5 @@ class _UsedForFieldState extends State<UsedForField> {
             onChanged: _toggleEditMode),
       ),
     );
-  }
-}
-
-class UsedForList extends StatefulWidget {
-  final void Function(UsedFor usedFor) onDelete;
-  final Paginator<UsedFor> paginator;
-  final bool isEditMode;
-
-  UsedForList(
-      {super.key,
-      this.isEditMode = false,
-      required this.paginator,
-      required this.onDelete});
-
-  @override
-  State<UsedForList> createState() => _UsedForListState();
-}
-
-class _UsedForListState extends State<UsedForList> {
-  ScrollController scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    this._initScrollController();
-  }
-
-  void _initScrollController() {
-    scrollController.addListener(() {
-      final _scrollOffset = scrollController.offset;
-      final _maxOffset = scrollController.position.maxScrollExtent;
-      if (_scrollOffset >= _maxOffset) {
-        if (this.widget.paginator.fetchMore != null) {
-          this.widget.paginator.fetchMore!();
-        }
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: scrollController,
-      child: PaginationList<UsedFor>(
-          listBuilder: (List<UsedFor> uses, Widget? loadMoreWidget) {
-            return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ...uses.map((usedFor) => Container(
-                      padding: EdgeInsets.only(bottom: 20.0),
-                      child: SizedBox(
-                        height: 30,
-                        child: Row(children: [
-                          Expanded(child: Text(usedFor.usedFor)),
-                          this.widget.isEditMode
-                              ? IconButton(
-                                  onPressed: () {
-                                    this.widget.onDelete(usedFor);
-                                  },
-                                  icon: Icon(Icons.delete))
-                              : SizedBox()
-                        ]),
-                      ))),
-                  (loadMoreWidget != null) ? loadMoreWidget : SizedBox()
-                ]);
-          },
-          loadMoreBuilder: (BuildContext context, VoidCallback onLoadMore) {
-            return Text("...");
-          },
-          paginator: this.widget.paginator),
-    );
-  }
-}
-
-class UsedForTags extends StatefulWidget {
-  final Paginator<UsedFor> paginator;
-  final bool isEditMode;
-
-  UsedForTags({super.key, this.isEditMode = false, required this.paginator});
-
-  @override
-  State<UsedForTags> createState() => _UsedForTagsState();
-}
-
-class _UsedForTagsState extends State<UsedForTags> {
-  ScrollController scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    this._initScrollController();
-  }
-
-  void _initScrollController() {
-    scrollController.addListener(() {
-      final _scrollOffset = scrollController.offset;
-      final _maxOffset = scrollController.position.maxScrollExtent;
-      if (_scrollOffset >= _maxOffset) {
-        if (this.widget.paginator.fetchMore != null) {
-          this.widget.paginator.fetchMore!();
-        }
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return PaginationList<UsedFor>(
-        listBuilder: (List<UsedFor> uses, Widget? loadMoreWidget) {
-          return SingleChildScrollView(
-              controller: scrollController,
-              child: Wrap(children: [
-                ...uses.map((usedFor) => Container(
-                      padding: EdgeInsets.all(5),
-                      child: Material(
-                        elevation: 5,
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                        child: Container(
-                          child: Text(usedFor.usedFor),
-                          margin: EdgeInsets.all(5),
-                        ),
-                      ),
-                    )),
-                (loadMoreWidget != null) ? loadMoreWidget : SizedBox()
-              ]));
-        },
-        loadMoreBuilder: (BuildContext context, VoidCallback onLoadMore) {
-          return Container(
-            padding: EdgeInsets.all(5),
-            child: GestureDetector(
-              onTap: onLoadMore,
-              child: Material(
-                elevation: 5,
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                child: Container(
-                  child: Text("more..."),
-                  margin: EdgeInsets.all(5),
-                ),
-              ),
-            ),
-          );
-        },
-        paginator: this.widget.paginator);
   }
 }
