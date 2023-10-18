@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -66,12 +68,15 @@ class _SpeciesFieldState extends State<SpeciesField> {
 
   @override
   void initState() {
+    _init();
+    super.initState();
+  }
+
+  void _init() {
     if (widget.current != null) {
       // Populate current state with full taxonomy when a species was defined
       _requestTaxonomy(0, widget.current!.id);
     }
-
-    super.initState();
   }
 
   void _requestTaxonomy(int fromRank, DocumentId id) async {
@@ -103,6 +108,7 @@ class _SpeciesFieldState extends State<SpeciesField> {
     if (widget.current == null) {
       if (_taxonomy[0] == null || _taxonomy[0]!.value == '') {
         // Nothing has changed, therefore do nothing
+        _reset();
         return;
       }
     }
@@ -111,13 +117,15 @@ class _SpeciesFieldState extends State<SpeciesField> {
       if (_taxonomy[0] == null || _taxonomy[0]!.value == '') {
         // Species got removed by user
         widget.onUpdate.call(null);
+        _reset();
+        return;
       }
     }
 
+    // Create all taxons which do not exist yet
     AutocompleteItem? parent;
     for (final (index, item) in _taxonomy.reversed.indexed) {
       final rank = _taxonomySettings[_taxonomy.length - index - 1];
-
       if (item!.documentId == null) {
         final id = await createTaxon(rank['schemaId']!,
             name: item.value, parentId: parent?.documentId);
@@ -128,11 +136,14 @@ class _SpeciesFieldState extends State<SpeciesField> {
       }
     }
 
+    // Taxon for species (new or existing) got added by user
     widget.onUpdate.call(TaxonomySpecies(BaseTaxonomy(
         SchemaIds.taxonomy_species,
         id: parent!.documentId!,
         viewId: parent.viewId!,
         name: parent.value)));
+
+    _reset();
   }
 
   void _validate() {
@@ -190,6 +201,16 @@ class _SpeciesFieldState extends State<SpeciesField> {
     }
   }
 
+  void _reset() {
+    print('RESET');
+
+    setState(() {
+      _taxonomy = List.filled(9, null, growable: false);
+      _showUpToRank = 1;
+      _init();
+    });
+  }
+
   void _showErrorAlert(String error) {
     final t = AppLocalizations.of(context)!;
 
@@ -237,27 +258,33 @@ class _SpeciesFieldState extends State<SpeciesField> {
         _taxonomy[index],
         onChanged: (AutocompleteItem value) {
           // Set current state to the edited value
-          _taxonomy[index] = value;
+          if (value.value == '') {
+            _taxonomy[index] = null;
+          } else {
+            _taxonomy[index] = value;
+          }
 
           if (index == settings.length - 1) {
             return;
           }
 
           if (value.documentId == null && value.value != '') {
-            // Reset all ranks coming after
-            for (var i = index; i < _taxonomy.length; i += 1) {
-              _taxonomy[i] = null;
-            }
-
-            // Show next editable rank when new taxon was given by user
+            // Show next editable rank when _new_ taxon was given by user
             setState(() {
-              _showUpToRank = index + 2;
+              _showUpToRank = max(_showUpToRank, index + 2);
             });
-          } else {
-            // Populate taxonomy with parent taxons
+          } else if (value.value == '') {
+            // Hide next ranks when field is empty
+            if (_showUpToRank - 2 == index) {
+              setState(() {
+                _showUpToRank = index + 1;
+              });
+            }
+          } else if (value.documentId != null) {
+            // Populate taxonomy with parent taxons when user selected existing
             _requestTaxonomy(index, value.documentId!);
 
-            // Hide next editable rank
+            // Hide next ranks
             setState(() {
               _showUpToRank = index + 1;
             });
