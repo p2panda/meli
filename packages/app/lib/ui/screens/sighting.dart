@@ -136,7 +136,7 @@ class _SightingProfileState extends State<SightingProfile> {
           onUpdate: _updateSpecies,
         ),
         // @TODO: Remove this as soon as there are more elements
-        SizedBox(height: 250.0),
+        SizedBox(height: 550.0),
       ]),
     );
   }

@@ -52,8 +52,8 @@ class _SpeciesFieldState extends State<SpeciesField> {
       final label = item.$2;
       return {
         'label': label,
-        'parent': RANKS[index]!['parent'],
-        'schemaId': RANKS[index]!['schemaId']!,
+        'parent': RANKS[index]['parent'],
+        'schemaId': RANKS[index]['schemaId']!,
       };
     }).toList(growable: false);
   }
@@ -131,8 +131,8 @@ class _SpeciesFieldState extends State<SpeciesField> {
     widget.onUpdate.call(TaxonomySpecies(BaseTaxonomy(
         SchemaIds.taxonomy_species,
         id: parent!.documentId!,
-        viewId: parent!.viewId!,
-        name: parent!.value)));
+        viewId: parent.viewId!,
+        name: parent.value)));
   }
 
   void _validate() {
@@ -244,18 +244,23 @@ class _SpeciesFieldState extends State<SpeciesField> {
           }
 
           if (value.documentId == null && value.value != '') {
+            // Reset all ranks coming after
+            for (var i = index; i < _taxonomy.length; i += 1) {
+              _taxonomy[i] = null;
+            }
+
             // Show next editable rank when new taxon was given by user
             setState(() {
               _showUpToRank = index + 2;
             });
           } else {
-            // .. otherwise hide next editable rank
+            // Populate taxonomy with parent taxons
+            _requestTaxonomy(index, value.documentId!);
+
+            // Hide next editable rank
             setState(() {
               _showUpToRank = index + 1;
             });
-
-            // Populate taxonomy with parent taxons
-            _requestTaxonomy(index, value.documentId!);
           }
         },
       );
