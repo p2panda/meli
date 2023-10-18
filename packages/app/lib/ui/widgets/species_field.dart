@@ -34,56 +34,28 @@ class _SpeciesFieldState extends State<SpeciesField> {
 
   /// Human-readable labels and assigned p2panda schema ids for each of the 9
   /// ranks in the taxonomy.
-  List<Map<String, String>> get _taxonomySettings {
+  List<Map<String, String?>> get _taxonomySettings {
     final t = AppLocalizations.of(context)!;
 
     return [
-      {
-        'label': t.taxonomySpecies,
-        'field': 'species',
-        'schemaId': SchemaIds.taxonomy_species
-      },
-      {
-        'label': t.taxonomyGenus,
-        'field': 'genus',
-        'schemaId': SchemaIds.taxonomy_genus
-      },
-      {
-        'label': t.taxonomyTribe,
-        'field': 'tribe',
-        'schemaId': SchemaIds.taxonomy_tribe
-      },
-      {
-        'label': t.taxonomySubfamily,
-        'field': 'subfamily',
-        'schemaId': SchemaIds.taxonomy_subfamily
-      },
-      {
-        'label': t.taxonomyFamily,
-        'field': 'family',
-        'schemaId': SchemaIds.taxonomy_family
-      },
-      {
-        'label': t.taxonomyOrder,
-        'field': 'order',
-        'schemaId': SchemaIds.taxonomy_order
-      },
-      {
-        'label': t.taxonomyClass,
-        'field': 'class',
-        'schemaId': SchemaIds.taxonomy_class
-      },
-      {
-        'label': t.taxonomyPhylum,
-        'field': 'phylum',
-        'schemaId': SchemaIds.taxonomy_phylum
-      },
-      {
-        'label': t.taxonomyKingdom,
-        'field': 'kingdom',
-        'schemaId': SchemaIds.taxonomy_kingdom
-      },
-    ];
+      t.taxonomySpecies,
+      t.taxonomyGenus,
+      t.taxonomyTribe,
+      t.taxonomySubfamily,
+      t.taxonomyFamily,
+      t.taxonomyOrder,
+      t.taxonomyClass,
+      t.taxonomyPhylum,
+      t.taxonomyKingdom,
+    ].indexed.map((item) {
+      final index = item.$1;
+      final label = item.$2;
+      return {
+        'label': label,
+        'parent': RANKS[index]!['parent'],
+        'schemaId': RANKS[index]!['schemaId']!,
+      };
+    }).toList(growable: false);
   }
 
   /// Flag indicating if we're currently editing or not.
@@ -105,26 +77,32 @@ class _SpeciesFieldState extends State<SpeciesField> {
   void _requestTaxonomy(int fromRank, DocumentId id) async {
     try {
       final json = await query(query: getTaxonomy(fromRank, id));
-      _populateTaxonomy(json);
+      _populateTaxonomy(fromRank, json);
     } catch (error) {
       print('Taxonomy data could not be parsed: ${error}');
     }
   }
 
-  void _populateTaxonomy(Map<String, dynamic> json) async {
-    // Start with the root of the GraphQL response which is the "Species" rank
+  void _populateTaxonomy(int fromRank, Map<String, dynamic> json) async {
+    // Start with the root of the GraphQL response
     var document = json[DEFAULT_RESULTS_KEY]! as Map<String, dynamic>;
 
     // Iterate through all ranks and fill in the values into our current state
     // by converting the GraphQL response into autocomplete items.
-    for (final (index, rank) in _taxonomySettings.indexed) {
+    for (final (index, rank) in _taxonomySettings.sublist(fromRank).indexed) {
       // Parse and set the current state for this rank
       final parsed = BaseTaxonomy.fromJson(rank['schemaId']!, document);
-      _taxonomy[index] = AutocompleteItem(
+      _taxonomy[fromRank + index] = AutocompleteItem(
           value: parsed.name, documentId: parsed.id, viewId: parsed.viewId);
 
+      // @TODO: Remove this
+      print("${index}: ${rank['label']} ${parsed.name}");
+
       // Prepare data for the following rank
-      document = document['fields']![rank['field']!]! as Map<String, dynamic>;
+      if (rank['parent'] != null) {
+        document =
+            document['fields']![rank['parent']!]! as Map<String, dynamic>;
+      }
     }
   }
 
@@ -143,12 +121,27 @@ class _SpeciesFieldState extends State<SpeciesField> {
       }
     }
 
-    // @TODO: Create all taxons which do not exist yet
-    // widget.onUpdate.call(TaxonomySpecies(BaseTaxonomy(
-    //     SchemaIds.taxonomy_species,
-    //     id: _taxonomy[0]!.documentId!,
-    //     viewId: _taxonomy[0]!.viewId!,
-    //     name: _taxonomy[0]!.value)));
+    AutocompleteItem? parent;
+    for (final (index, item) in _taxonomy.reversed.indexed) {
+      final rank = _taxonomySettings[_taxonomy.length - index - 1];
+
+      if (item!.documentId == null) {
+        // @TODO: Remove print
+        print('Create taxon ${rank['label']!}');
+        final id = await createTaxon(rank['schemaId']!,
+            name: item.value, parentId: parent?.documentId);
+        parent =
+            AutocompleteItem(value: item.value, documentId: id, viewId: id);
+      } else {
+        parent = item;
+      }
+    }
+
+    widget.onUpdate.call(TaxonomySpecies(BaseTaxonomy(
+        SchemaIds.taxonomy_species,
+        id: parent!.documentId!,
+        viewId: parent!.viewId!,
+        name: parent!.value)));
   }
 
   void _validate() {
@@ -269,6 +262,9 @@ class _SpeciesFieldState extends State<SpeciesField> {
             setState(() {
               _showUpToRank = index + 1;
             });
+
+            // Populate taxonomy with parent taxons
+            _requestTaxonomy(index, value.documentId!);
           }
         },
       );
@@ -315,6 +311,7 @@ class _RankState extends State<Rank> {
           initialValue: widget.current,
           onSubmit: () {
             // @TODO
+            return;
           },
           onChanged: (AutocompleteItem value) {
             widget.onChanged.call(value);

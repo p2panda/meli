@@ -24,8 +24,10 @@ class BaseTaxonomy {
         name: json['fields']['name'] as String);
   }
 
-  Future<publish.DocumentViewId> update({required String name}) async {
-    this.viewId = await updateTaxon(this.schemaId, this.viewId, name: name);
+  Future<publish.DocumentViewId> update(
+      {required String name, publish.DocumentId? parentId}) async {
+    this.viewId = await updateTaxon(this.schemaId, this.viewId,
+        name: name, parentId: parentId);
     this.name = name;
     return this.viewId;
   }
@@ -50,8 +52,9 @@ class TaxonomySpecies extends BaseTaxonomy {
     return TaxonomySpecies(BaseTaxonomy.fromJson(SCHEMA_ID, json));
   }
 
-  static Future<BaseTaxonomy> create({required String name}) async {
-    final id = await createTaxon(SCHEMA_ID, name: name);
+  static Future<BaseTaxonomy> create(
+      {required String name, publish.DocumentId? parentId}) async {
+    final id = await createTaxon(SCHEMA_ID, name: name, parentId: parentId);
     return TaxonomySpecies(
         BaseTaxonomy(SCHEMA_ID, id: id, viewId: id, name: name));
   }
@@ -172,15 +175,51 @@ String get kingdomFields {
 }
 
 final RANKS = [
-  {'fields': speciesFields, 'schemaId': SchemaIds.taxonomy_species},
-  {'fields': genusFields, 'schemaId': SchemaIds.taxonomy_genus},
-  {'fields': tribeFields, 'schemaId': SchemaIds.taxonomy_tribe},
-  {'fields': subfamilyFields, 'schemaId': SchemaIds.taxonomy_subfamily},
-  {'fields': familyFields, 'schemaId': SchemaIds.taxonomy_family},
-  {'fields': orderFields, 'schemaId': SchemaIds.taxonomy_order},
-  {'fields': classFields, 'schemaId': SchemaIds.taxonomy_class},
-  {'fields': phylumFields, 'schemaId': SchemaIds.taxonomy_phylum},
-  {'fields': kingdomFields, 'schemaId': SchemaIds.taxonomy_kingdom},
+  {
+    'fields': speciesFields,
+    'parent': 'genus',
+    'schemaId': SchemaIds.taxonomy_species
+  },
+  {
+    'fields': genusFields,
+    'parent': 'tribe',
+    'schemaId': SchemaIds.taxonomy_genus
+  },
+  {
+    'fields': tribeFields,
+    'parent': 'subfamily',
+    'schemaId': SchemaIds.taxonomy_tribe
+  },
+  {
+    'fields': subfamilyFields,
+    'parent': 'family',
+    'schemaId': SchemaIds.taxonomy_subfamily
+  },
+  {
+    'fields': familyFields,
+    'parent': 'order',
+    'schemaId': SchemaIds.taxonomy_family
+  },
+  {
+    'fields': orderFields,
+    'parent': 'class',
+    'schemaId': SchemaIds.taxonomy_order
+  },
+  {
+    'fields': classFields,
+    'parent': 'phylum',
+    'schemaId': SchemaIds.taxonomy_class
+  },
+  {
+    'fields': phylumFields,
+    'parent': 'kingdom',
+    'schemaId': SchemaIds.taxonomy_phylum
+  },
+  {
+    'fields': kingdomFields,
+    'parent': null,
+    'schemaId': SchemaIds.taxonomy_kingdom
+  },
 ];
 
 String getTaxonomy(int rank, publish.DocumentId documentId) {
@@ -189,7 +228,7 @@ String getTaxonomy(int rank, publish.DocumentId documentId) {
 
   return '''
     query GetTaxonomy {
-      $DEFAULT_RESULTS_KEY: $schemaId(id: $documentId) {
+      $DEFAULT_RESULTS_KEY: $schemaId(id: "$documentId") {
         $fields
       }
     }
@@ -216,19 +255,35 @@ String searchTaxon(SchemaId schemaId, String query) {
 }
 
 Future<publish.DocumentViewId> createTaxon(SchemaId schemaId,
-    {required String name}) async {
+    {required String name, publish.DocumentId? parentId}) async {
   List<(String, OperationValue)> fields = [
     ("name", OperationValue.string(name)),
   ];
+
+  if (parentId != null) {
+    final rank = RANKS.firstWhere((element) => element['schemaId'] == schemaId);
+    if (rank['parent'] != null) {
+      fields.add((rank['parent']!, OperationValue.relation(parentId)));
+    }
+  }
+
   return await publish.create(schemaId, fields);
 }
 
 Future<publish.DocumentViewId> updateTaxon(
     SchemaId schemaId, publish.DocumentViewId viewId,
-    {required String name}) async {
+    {required String name, publish.DocumentId? parentId}) async {
   List<(String, OperationValue)> fields = [
     ("name", OperationValue.string(name)),
   ];
+
+  if (parentId != null) {
+    final rank = RANKS.firstWhere((element) => element['schemaId'] == schemaId);
+    if (rank['parent'] != null) {
+      fields.add((rank['parent']!, OperationValue.relation(parentId)));
+    }
+  }
+
   return await publish.update(schemaId, viewId, fields);
 }
 
