@@ -2,7 +2,6 @@
 
 import 'dart:io';
 
-import 'package:app/ui/widgets/confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -13,6 +12,7 @@ import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/autocomplete.dart';
+import 'package:app/ui/widgets/confirm_dialog.dart';
 import 'package:app/ui/widgets/expandable_fab.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/image_carousel.dart';

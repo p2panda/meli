@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/models/species.dart';
-import 'package:app/models/taxonomy_species.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -9,6 +7,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:app/io/files.dart';
 import 'package:app/models/local_names.dart';
 import 'package:app/models/sightings.dart';
+import 'package:app/models/species.dart';
+import 'package:app/models/taxonomy_species.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/autocomplete.dart';
 import 'package:app/ui/widgets/error_card.dart';

@@ -164,7 +164,7 @@ class _PandaPainter extends BoxPainter {
     final path = Path();
     path.moveTo(0, 0);
     path.lineTo(bounds!.width, 0);
-    path.lineTo(bounds!.width / 2, 75.0);
+    path.lineTo(bounds.width / 2, 75.0);
     path.lineTo(0, 0);
     path.close();
 
