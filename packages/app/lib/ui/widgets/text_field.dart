@@ -86,7 +86,7 @@ class _TextFieldState extends State<EditableTextField> {
   }
 
   Widget _readOnlyValue() {
-    if (widget.current == null) {
+    if (widget.current == '') {
       return ReadOnlyValue(null);
     } else {
       return Container(
