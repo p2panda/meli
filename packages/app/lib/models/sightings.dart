@@ -126,7 +126,7 @@ class Sighting {
 class SightingPaginator extends Paginator<Sighting> {
   @override
   DocumentNode nextPageQuery(String? cursor) {
-    return gql(allSightingsQuery(cursor));
+    return gql(allSightingsQuery(cursor, null));
   }
 
   @override
@@ -141,6 +141,17 @@ class SightingPaginator extends Paginator<Sighting> {
 
     return PaginatedCollection(
         documents: documents, hasNextPage: hasNextPage, endCursor: endCursor);
+  }
+}
+
+class SpeciesSightingsPaginator extends SightingPaginator {
+  final DocumentId speciesId;
+
+  SpeciesSightingsPaginator(this.speciesId);
+
+  @override
+  DocumentNode nextPageQuery(String? cursor) {
+    return gql(allSightingsQuery(cursor, speciesId));
   }
 }
 
@@ -171,15 +182,19 @@ String get sightingFields {
   ''';
 }
 
-String allSightingsQuery(String? cursor) {
-  final after = (cursor != null) ? '''after: "$cursor",''' : '';
+String allSightingsQuery(String? cursor, DocumentId? speciesId) {
   const schemaId = SchemaIds.bee_sighting;
+  final after = (cursor != null) ? '''after: "$cursor",''' : '';
+  final filter = (speciesId != null)
+      ? '''filter: { species: { in: ["$speciesId"] } },'''
+      : '';
 
   return '''
     query AllSightings {
       $DEFAULT_RESULTS_KEY: all_$schemaId(
         first: $DEFAULT_PAGE_SIZE,
         $after
+        $filter
         orderBy: "datetime",
         orderDirection: DESC
       ) {

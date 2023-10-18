@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'package:app/io/p2panda/publish.dart';
+import 'package:app/models/base.dart';
+import 'package:app/models/sightings.dart';
 import 'package:app/models/species.dart';
 import 'package:app/models/taxonomy_species.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/error_card.dart';
 import 'package:app/ui/widgets/scaffold.dart';
+import 'package:app/ui/widgets/sightings_tiles.dart';
 import 'package:app/ui/widgets/species_field.dart';
 import 'package:app/ui/widgets/text_field.dart';
 
@@ -107,8 +111,23 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
         EditableTextField(species.description,
             title: AppLocalizations.of(context)!.speciesDescription,
             onUpdate: _updateDescription),
+        RelatedSightings(id: species.id),
       ]),
     );
+  }
+}
+
+class RelatedSightings extends StatelessWidget {
+  final DocumentId id;
+
+  const RelatedSightings({super.key, required this.id});
+
+  @override
+  Widget build(BuildContext context) {
+    final Paginator<Sighting> paginator =
+        SpeciesSightingsPaginator(id);
+
+    return SightingsTiles(paginator: paginator);
   }
 }
 
