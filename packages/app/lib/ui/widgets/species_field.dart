@@ -75,12 +75,8 @@ class _SpeciesFieldState extends State<SpeciesField> {
   }
 
   void _requestTaxonomy(int fromRank, DocumentId id) async {
-    try {
-      final json = await query(query: getTaxonomy(fromRank, id));
-      _populateTaxonomy(fromRank, json);
-    } catch (error) {
-      print('Taxonomy data could not be parsed: ${error}');
-    }
+    final json = await query(query: getTaxonomy(fromRank, id));
+    _populateTaxonomy(fromRank, json);
   }
 
   void _populateTaxonomy(int fromRank, Map<String, dynamic> json) async {
@@ -94,9 +90,6 @@ class _SpeciesFieldState extends State<SpeciesField> {
       final parsed = BaseTaxonomy.fromJson(rank['schemaId']!, document);
       _taxonomy[fromRank + index] = AutocompleteItem(
           value: parsed.name, documentId: parsed.id, viewId: parsed.viewId);
-
-      // @TODO: Remove this
-      print("${index}: ${rank['label']} ${parsed.name}");
 
       // Prepare data for the following rank
       if (rank['parent'] != null) {
@@ -126,8 +119,6 @@ class _SpeciesFieldState extends State<SpeciesField> {
       final rank = _taxonomySettings[_taxonomy.length - index - 1];
 
       if (item!.documentId == null) {
-        // @TODO: Remove print
-        print('Create taxon ${rank['label']!}');
         final id = await createTaxon(rank['schemaId']!,
             name: item.value, parentId: parent?.documentId);
         parent =
@@ -309,10 +300,6 @@ class _RankState extends State<Rank> {
       TaxonomyAutocomplete(
           schemaId: widget.schemaId,
           initialValue: widget.current,
-          onSubmit: () {
-            // @TODO
-            return;
-          },
           onChanged: (AutocompleteItem value) {
             widget.onChanged.call(value);
           }),
