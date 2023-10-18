@@ -31,28 +31,8 @@ class UsedForField extends StatefulWidget {
 }
 
 class _UsedForFieldState extends State<UsedForField> {
-  late Paginator<UsedFor> paginator;
+  late Paginator<UsedFor> paginator = UsedForPaginator(this.widget.sighting);
   final GlobalKey<LoadingOverlayState> _overlayKey = GlobalKey();
-  ScrollController scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    this._initScrollController();
-  }
-
-  void _initScrollController() {
-    paginator = UsedForPaginator(this.widget.sighting);
-    scrollController.addListener(() {
-      final _scrollOffset = scrollController.offset;
-      final _maxOffset = scrollController.position.maxScrollExtent;
-      if (_scrollOffset >= _maxOffset) {
-        if (this.paginator.fetchMore != null) {
-          this.paginator.fetchMore!();
-        }
-      }
-    });
-  }
 
   /// Flag indicating if we're currently editing the field or not.
   bool isEditMode = false;
@@ -156,42 +136,6 @@ class _UsedForFieldState extends State<UsedForField> {
         onChanged: _changeValue);
   }
 
-  SingleChildScrollView _usedForList() {
-    return SingleChildScrollView(
-      controller: scrollController,
-      child: PaginationList<UsedFor>(
-          listBuilder: (List<UsedFor> uses) {
-            return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ...uses.map((usedFor) => Container(
-                      padding: EdgeInsets.only(bottom: 20.0),
-                      child: this._item(usedFor)))
-                ]);
-          },
-          loadMoreBuilder: (BuildContext context, VoidCallback onLoadMore) {
-            return Text("...");
-          },
-          paginator: paginator),
-    );
-  }
-
-  Widget _item(UsedFor usedFor) {
-    return SizedBox(
-      height: 30,
-      child: Row(children: [
-        Expanded(child: Text(usedFor.usedFor)),
-        isEditMode
-            ? IconButton(
-                onPressed: () {
-                  _delete(usedFor);
-                },
-                icon: Icon(Icons.delete))
-            : SizedBox()
-      ]),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -206,7 +150,8 @@ class _UsedForFieldState extends State<UsedForField> {
               child: Column(
                 children: [
                   Expanded(
-                    child: _usedForList(),
+                    child: UsedForList(
+                        paginator: this.paginator, onDelete: this._delete),
                   ),
                   isEditMode ? _editableValue() : SizedBox(),
                 ],
@@ -214,6 +159,76 @@ class _UsedForFieldState extends State<UsedForField> {
             ),
             onChanged: _toggleEditMode),
       ),
+    );
+  }
+}
+
+class UsedForList extends StatefulWidget {
+  final void Function(UsedFor usedFor) onDelete;
+  final Paginator<UsedFor> paginator;
+  final bool isEditMode;
+
+  UsedForList(
+      {super.key,
+      this.isEditMode = false,
+      required this.paginator,
+      required this.onDelete});
+
+  @override
+  State<UsedForList> createState() => _UsedForListState();
+}
+
+class _UsedForListState extends State<UsedForList> {
+  ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    this._initScrollController();
+  }
+
+  void _initScrollController() {
+    scrollController.addListener(() {
+      final _scrollOffset = scrollController.offset;
+      final _maxOffset = scrollController.position.maxScrollExtent;
+      if (_scrollOffset >= _maxOffset) {
+        if (this.widget.paginator.fetchMore != null) {
+          this.widget.paginator.fetchMore!();
+        }
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      controller: scrollController,
+      child: PaginationList<UsedFor>(
+          listBuilder: (List<UsedFor> uses) {
+            return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ...uses.map((usedFor) => Container(
+                      padding: EdgeInsets.only(bottom: 20.0),
+                      child: SizedBox(
+                        height: 30,
+                        child: Row(children: [
+                          Expanded(child: Text(usedFor.usedFor)),
+                          this.widget.isEditMode
+                              ? IconButton(
+                                  onPressed: () {
+                                    this.widget.onDelete(usedFor);
+                                  },
+                                  icon: Icon(Icons.delete))
+                              : SizedBox()
+                        ]),
+                      )))
+                ]);
+          },
+          loadMoreBuilder: (BuildContext context, VoidCallback onLoadMore) {
+            return Text("...");
+          },
+          paginator: this.widget.paginator),
     );
   }
 }
