@@ -3,9 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:app/models/base.dart';
 import 'package:app/io/graphql/queries.dart';
+import 'package:app/io/p2panda/publish.dart';
 import 'package:app/io/p2panda/schemas.dart';
+import 'package:app/models/base.dart';
 import 'package:app/models/schema_ids.dart';
 import 'package:app/models/species.dart';
 import 'package:app/models/taxonomy_species.dart';
@@ -94,17 +95,20 @@ class _SpeciesFieldState extends State<SpeciesField> {
   @override
   void initState() {
     if (widget.current != null) {
-      try {
-        query(query: getTaxonomy(0, widget.current!.species.id))
-            .then((Map<String, dynamic> json) {
-          _populateTaxonomy(json);
-        });
-      } catch (error) {
-        print('Taxonomy data could not be parsed: ${error}');
-      }
+      // Populate current state with full taxonomy when a species was defined
+      _requestTaxonomy(0, widget.current!.species.id);
     }
 
     super.initState();
+  }
+
+  void _requestTaxonomy(int fromRank, DocumentId id) async {
+    try {
+      final json = await query(query: getTaxonomy(fromRank, id));
+      _populateTaxonomy(json);
+    } catch (error) {
+      print('Taxonomy data could not be parsed: ${error}');
+    }
   }
 
   void _populateTaxonomy(Map<String, dynamic> json) async {
@@ -209,6 +213,7 @@ class _SpeciesFieldState extends State<SpeciesField> {
         rank['schemaId']!,
         _taxonomy[index],
         onChanged: (AutocompleteItem value) {
+          // Set current state to the edited value
           _taxonomy[index] = value;
 
           if (index == settings.length - 1) {
@@ -216,10 +221,12 @@ class _SpeciesFieldState extends State<SpeciesField> {
           }
 
           if (value.documentId == null && value.value != '') {
+            // Show next editable rank when new taxon was given by user
             setState(() {
               _showUpToRank = index + 2;
             });
           } else {
+            // .. otherwise hide next editable rank
             setState(() {
               _showUpToRank = index + 1;
             });
