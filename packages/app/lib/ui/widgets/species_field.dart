@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:app/ui/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -63,6 +64,9 @@ class _SpeciesFieldState extends State<SpeciesField> {
   /// Flag indicating if we're currently editing or not.
   bool _isEditMode = false;
 
+  /// Flag indicating that we're currently loading taxonomy data.
+  bool _isLoading = false;
+
   /// Which ranks are shown to the user.
   int _showUpToRank = 1;
 
@@ -79,8 +83,16 @@ class _SpeciesFieldState extends State<SpeciesField> {
   }
 
   void _requestTaxonomy(int fromRank, DocumentId id) async {
+    setState(() {
+      _isLoading = true;
+    });
+
     final json = await query(query: getTaxonomy(fromRank, id));
     _populateTaxonomy(fromRank, json);
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void _populateTaxonomy(int fromRank, Map<String, dynamic> json) async {
@@ -101,6 +113,8 @@ class _SpeciesFieldState extends State<SpeciesField> {
             document['fields']![rank['parent']!]! as Map<String, dynamic>;
       }
     }
+
+    setState(() {});
   }
 
   void _submit() async {
@@ -298,14 +312,43 @@ class _SpeciesFieldState extends State<SpeciesField> {
         runSpacing: 20.0, children: ranks.toList().sublist(0, _showUpToRank));
   }
 
+  Widget _readOnlyValue() {
+    if (_isLoading) {
+      return Container(
+          padding: const EdgeInsets.all(20.0),
+          child: CircularProgressIndicator(color: MeliColors.black));
+    }
+
+    if (_taxonomy[0] == null) {
+      // Show "no value given" when nothing was set
+      return ReadOnlyValue(null);
+    }
+
+    // Show only defined taxa until "Tribe"
+    final taxa = _taxonomy.sublist(0, 3);
+
+    return Wrap(
+        runSpacing: 10.0,
+        children: taxa.indexed.map((item) {
+          final index = item.$1;
+          final taxon = item.$2!;
+          final rank = _taxonomySettings[index];
+
+          return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(rank['label']!),
+                Text(taxon.value),
+              ]);
+        }).toList());
+  }
+
   @override
   Widget build(BuildContext context) {
-    String? displayValue = widget.current == null ? null : widget.current!.name;
-
     return EditableCard(
         title: AppLocalizations.of(context)!.speciesCardTitle,
         isEditMode: _isEditMode,
-        child: _isEditMode ? _editableValue() : ReadOnlyValue(displayValue),
+        child: _isEditMode ? _editableValue() : _readOnlyValue(),
         onChanged: _toggleEditMode);
   }
 }
