@@ -173,6 +173,11 @@ class _SpeciesFieldState extends State<SpeciesField> {
     // * Tribe: <existing value>
     // * .. followed by many more existing values until end
     //
+    // Another valid input:
+    //
+    // * Species: <existing value>
+    // * .. followed by many more existing values until end
+    //
     // This would be an _invalid_ input:
     //
     // * Species: <new value>
@@ -204,7 +209,7 @@ class _SpeciesFieldState extends State<SpeciesField> {
   void _showErrorAlert(String error) {
     final t = AppLocalizations.of(context)!;
 
-    showDialog(
+    showDialog<String>(
       context: context,
       builder: (context) {
         return MeliAlertDialog(
