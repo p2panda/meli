@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:app/models/used_for.dart';
+import 'package:app/ui/widgets/used_for_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:gql/ast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:app/models/base.dart';
@@ -11,12 +11,16 @@ import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/error_card.dart';
 import 'package:app/ui/widgets/info_card.dart';
 
-typedef NextPageFunction = DocumentNode Function(String endCursor);
+typedef PaginationListBuilder = List<UsedForTagItem> Function(
+  List<UsedFor> documents,
+);
 
 class PaginationUsedForTagList extends StatefulWidget {
   final Paginator<UsedFor> paginator;
+  final PaginationListBuilder itemsBuilder;
 
-  PaginationUsedForTagList({super.key, required this.paginator});
+  PaginationUsedForTagList(
+      {super.key, required this.paginator, required this.itemsBuilder});
 
   @override
   State<PaginationUsedForTagList> createState() =>
@@ -134,17 +138,7 @@ class _PaginationUsedForTagListState extends State<PaginationUsedForTagList> {
         return SingleChildScrollView(
             controller: scrollController,
             child: Wrap(children: [
-              ...data.documents.map((usedFor) => Container(
-                    padding: EdgeInsets.all(5),
-                    child: Material(
-                      elevation: 5,
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      child: Container(
-                        child: Text(usedFor.usedFor),
-                        margin: EdgeInsets.all(5),
-                      ),
-                    ),
-                  )),
+              ...this.widget.itemsBuilder(data.documents),
               if (data.hasNextPage)
                 this._loadMore(context, result.isLoading, onLoadMore: () {
                   fetchMore!(opts);
