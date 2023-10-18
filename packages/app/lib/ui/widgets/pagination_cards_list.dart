@@ -12,27 +12,20 @@ import 'package:app/ui/widgets/info_card.dart';
 
 typedef NextPageFunction = DocumentNode Function(String endCursor);
 
-typedef PaginationListBuilder<T> = Widget Function(
-    List<T> documents, Widget? loadMoreWidget);
+typedef PaginationCardsListBuilder<T> = Widget Function(
+    T document,
+    );
 
-typedef LoadMoreBuilder = Widget? Function(
-    BuildContext context, VoidCallback onLoadMore);
-
-class PaginationList<T> extends StatelessWidget {
-  final PaginationListBuilder<T> listBuilder;
-  final LoadMoreBuilder loadMoreBuilder;
+class PaginationCardsList<T> extends StatelessWidget {
+  final PaginationCardsListBuilder<T> builder;
   final Paginator<T> paginator;
 
-  PaginationList(
-      {super.key,
-      required this.listBuilder,
-      required this.paginator,
-      required this.loadMoreBuilder});
+  PaginationCardsList({super.key, required this.builder, required this.paginator});
 
   Widget _error(BuildContext context, String errorMessage) {
     return ErrorCard(
         message:
-            AppLocalizations.of(context)!.paginationListError(errorMessage));
+        AppLocalizations.of(context)!.paginationListError(errorMessage));
   }
 
   Widget _loading() {
@@ -49,13 +42,19 @@ class PaginationList<T> extends StatelessWidget {
         message: AppLocalizations.of(context)!.paginationListNoResults);
   }
 
-  Widget? _loadMore(BuildContext context, bool isLoading) {
-    return isLoading
-        ? this._loading()
-        : this.loadMoreBuilder(context, this.paginator.fetchMore!);
+  Widget _loadMore(BuildContext context, bool isLoading,
+      {required VoidCallback onLoadMore}) {
+    return Column(children: [
+      isLoading
+          ? this._loading()
+          : ElevatedButton(
+        child: Text(AppLocalizations.of(context)!.paginationListLoadMore,
+            style: TextStyle(color: MeliColors.black)),
+        onPressed: onLoadMore,
+      )
+    ]);
   }
 
-  //
   @override
   Widget build(BuildContext context) {
     return Query(
@@ -75,7 +74,7 @@ class PaginationList<T> extends StatelessWidget {
         }
 
         final data =
-            this.paginator.parseJSON(result.data as Map<String, dynamic>);
+        this.paginator.parseJSON(result.data as Map<String, dynamic>);
 
         FetchMoreOptions opts = FetchMoreOptions(
           document: this.paginator.nextPageQuery(data.endCursor),
@@ -90,22 +89,14 @@ class PaginationList<T> extends StatelessWidget {
           return this._emptyResult(context);
         }
 
-        // Get to access `fetchMore` method from the outside
-        this.paginator.fetchMore = () {
-          if (data.hasNextPage) {
-            fetchMore!(opts);
-          }
-        };
-
-        Widget? loadMoreWidget;
-        if (data.hasNextPage) {
-          loadMoreWidget = this._loadMore(context, result.isLoading);
-        }
-
         return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              this.listBuilder(data.documents, loadMoreWidget),
+              ...data.documents.map((document) => this.builder(document)),
+              if (data.hasNextPage)
+                this._loadMore(context, result.isLoading, onLoadMore: () {
+                  fetchMore!(opts);
+                })
             ]);
       },
     );

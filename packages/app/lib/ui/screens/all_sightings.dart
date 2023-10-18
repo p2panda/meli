@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/pagination_cards_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/models/base.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/fab.dart';
-import 'package:app/ui/widgets/pagination_list.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/sighting_card.dart';
 
@@ -99,25 +98,12 @@ class _SightingsListState extends State<SightingsList> {
       decoration: const MagnoliaWavesBackground(),
       child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.only(top: 30.0, bottom: 20.0),
-          child: PaginationList<Sighting>(
-              listBuilder: (List<Sighting> sightings, Widget? loadMoreWidget) {
-                return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      ...sightings.map((sighting) => Container(
-                          padding: EdgeInsets.only(bottom: 20.0),
-                          child: this._item(sighting))),
-                      (loadMoreWidget != null) ? loadMoreWidget : SizedBox()
-                    ]);
-              },
-              loadMoreBuilder: (BuildContext context, VoidCallback onLoadMore) {
-                return ElevatedButton(
-                  child: Text(
-                      AppLocalizations.of(context)!.paginationListLoadMore,
-                      style: TextStyle(color: MeliColors.black)),
-                  onPressed: onLoadMore,
-                );
+          padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
+          child: PaginationCardsList<Sighting>(
+              builder: (Sighting sighting) {
+                return Container(
+                    padding: EdgeInsets.only(bottom: 20.0),
+                    child: this._item(sighting));
               },
               paginator: widget.paginator)),
     );
