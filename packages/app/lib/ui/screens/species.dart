@@ -10,6 +10,7 @@ import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/error_card.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/species_field.dart';
+import 'package:app/ui/widgets/text_field.dart';
 
 class SpeciesScreen extends StatefulWidget {
   final String documentId;
@@ -85,6 +86,11 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
     }
   }
 
+  void _updateDescription(String value) async {
+    await species.update(description: value);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -95,8 +101,9 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
           allowNull: false,
           onUpdate: _updateTaxon,
         ),
-        // @TODO: Remove this as soon as there are more elements
-        SizedBox(height: 550.0),
+        EditableTextField(species.description,
+            title: AppLocalizations.of(context)!.speciesDescription,
+            onUpdate: _updateDescription),
       ]),
     );
   }

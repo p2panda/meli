@@ -142,12 +142,12 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
                       ))
                   : Icon(Icons.arrow_drop_down, color: Colors.black),
               errorText: _isError ? 'Error, please try again.' : null,
-              focusedBorder: UnderlineInputBorder(
+              focusedBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(
                       color: Colors.black,
                       width: 2.0,
                       style: BorderStyle.solid)),
-              enabledBorder: UnderlineInputBorder(
+              enabledBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(
                       color: Colors.black,
                       width: 2.0,
