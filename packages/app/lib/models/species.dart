@@ -74,6 +74,17 @@ String get speciesFields {
   ''';
 }
 
+String speciesQuery(DocumentId id) {
+  final schemaId = SchemaIds.bee_species;
+  return '''
+    query Species() {
+      species: $schemaId(id: "$id") {
+        $speciesFields
+      }
+    }
+  ''';
+}
+
 String firstSpeciesWithTaxon(DocumentId taxonomySpeciesId) {
   final schemaId = SchemaIds.bee_species;
 

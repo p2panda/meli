@@ -1,4 +1,5 @@
 {
+    "allSpeciesScreenTitle": "All Species",
     "createSightingError": "Something went wrong: {error}",
     "createSightingScreenTitle": "Add Sighting",
     "createSightingSuccess": "Yay, you've successfully added a new sighting to the database",
