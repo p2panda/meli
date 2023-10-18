@@ -216,14 +216,16 @@ class _SpeciesFieldState extends State<SpeciesField> {
   }
 
   void _toggleEditMode() {
-    setState(() {
+    if (_isEditMode) {
       try {
         _validate();
       } catch (error) {
         _showErrorAlert(error.toString());
         return;
       }
+    }
 
+    setState(() {
       _isEditMode = !_isEditMode;
 
       // If we flip from edit mode to read-only mode we interpret this as a
