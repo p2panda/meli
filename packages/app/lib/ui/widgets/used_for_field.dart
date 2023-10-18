@@ -98,6 +98,7 @@ class _UsedForFieldState extends State<UsedForField> {
 
     // Refresh the paginator
     this.paginator.refresh!();
+    this.usedForTagPaginator.refresh!();
 
     // Hide the overlay
     _overlayKey.currentState!.hide();
@@ -137,6 +138,32 @@ class _UsedForFieldState extends State<UsedForField> {
         // the keyboard
         onSubmit: _toggleEditMode,
         onChanged: _changeValue);
+  }
+
+  void _createUsedFor(UsedFor usedFor) async {
+    // Show the overlay spinner
+    _overlayKey.currentState!.show();
+
+    // Create the new UsedFor document
+    DocumentViewId? newUsedFor = await createUsedFor(
+        sighting: this.widget.sighting, usedFor: usedFor.usedFor);
+
+    // We want to wait until it is materialized and then refresh the
+    // paginated query
+    bool isReady = false;
+    while (!isReady) {
+      final options = QueryOptions(document: gql(usedForQuery(newUsedFor)));
+      final result = await client.query(options);
+      isReady = (result.data?['document'] != null);
+      sleep(Duration(milliseconds: 100));
+    }
+
+    // Refresh the paginator
+    this.paginator.refresh!();
+    this.usedForTagPaginator.refresh!();
+
+    // Hide the overlay
+    _overlayKey.currentState!.hide();
   }
 
   @override
@@ -179,8 +206,9 @@ class _UsedForFieldState extends State<UsedForField> {
                                       paginator: this.usedForTagPaginator,
                                       itemsBuilder: (List<UsedFor> uses) {
                                         return uses
-                                            .map((usedFor) =>
-                                                UsedForTagItem(usedFor))
+                                            .map((usedFor) => UsedForTagItem(
+                                                usedFor: usedFor,
+                                                createUsedFor: _createUsedFor))
                                             .toList();
                                       }),
                                 ),
@@ -234,22 +262,26 @@ class UsedForList extends StatelessWidget {
 
 class UsedForTagItem extends StatelessWidget {
   final UsedFor usedFor;
+  final void Function(UsedFor) createUsedFor;
 
   const UsedForTagItem(
-    this.usedFor, {
-    super.key,
-  });
+      {super.key, required this.usedFor, required this.createUsedFor});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(5),
-      child: Material(
-        elevation: 5,
-        borderRadius: BorderRadius.all(Radius.circular(12)),
-        child: Container(
-          child: Text(usedFor.usedFor),
-          margin: EdgeInsets.all(5),
+      child: GestureDetector(
+        onTap: () {
+          this.createUsedFor(this.usedFor);
+        },
+        child: Material(
+          elevation: 5,
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          child: Container(
+            child: Text(usedFor.usedFor),
+            margin: EdgeInsets.all(5),
+          ),
         ),
       ),
     );
