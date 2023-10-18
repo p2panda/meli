@@ -68,10 +68,22 @@ class _SpeciesListState extends State<SpeciesList> {
         width: double.infinity,
         padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
         child: PaginationList<Species>(
-            builder: (Species species) {
-              return Container(
-                  padding: EdgeInsets.only(bottom: 20.0),
-                  child: this._item(species));
+            listBuilder: (List<Species> species) {
+              return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ...species.map((species) => Container(
+                        padding: EdgeInsets.only(bottom: 20.0),
+                        child: this._item(species)))
+                  ]);
+            },
+            loadMoreBuilder: (BuildContext context, VoidCallback onLoadMore) {
+              return ElevatedButton(
+                child: Text(
+                    AppLocalizations.of(context)!.paginationListLoadMore,
+                    style: TextStyle(color: MeliColors.black)),
+                onPressed: onLoadMore,
+              );
             },
             paginator: widget.paginator));
   }

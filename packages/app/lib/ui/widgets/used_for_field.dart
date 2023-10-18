@@ -142,6 +142,22 @@ class _UsedForFieldState extends State<UsedForField> {
         onChanged: _changeValue);
   }
 
+  Widget _item(UsedFor usedFor) {
+    return SizedBox(
+      height: 30,
+      child: Row(children: [
+        Expanded(child: Text(usedFor.usedFor)),
+        isEditMode
+            ? IconButton(
+                onPressed: () {
+                  _delete(usedFor);
+                },
+                icon: Icon(Icons.delete))
+            : SizedBox()
+      ]),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -158,20 +174,18 @@ class _UsedForFieldState extends State<UsedForField> {
                   Expanded(
                     child: SingleChildScrollView(
                       child: PaginationList<UsedFor>(
-                          builder: (UsedFor usedFor) {
-                            return SizedBox(
-                              height: 30,
-                              child: Row(children: [
-                                Expanded(child: Text(usedFor.usedFor)),
-                                isEditMode
-                                    ? IconButton(
-                                        onPressed: () {
-                                          _delete(usedFor);
-                                        },
-                                        icon: Icon(Icons.delete))
-                                    : SizedBox()
-                              ]),
-                            );
+                          listBuilder: (List<UsedFor> uses) {
+                            return Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  ...uses.map((usedFor) => Container(
+                                      padding: EdgeInsets.only(bottom: 20.0),
+                                      child: this._item(usedFor)))
+                                ]);
+                          },
+                          loadMoreBuilder:
+                              (BuildContext context, VoidCallback onLoadMore) {
+                            return null;
                           },
                           paginator: paginator),
                     ),
