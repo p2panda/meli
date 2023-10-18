@@ -13,8 +13,7 @@ import 'package:app/ui/widgets/info_card.dart';
 typedef NextPageFunction = DocumentNode Function(String endCursor);
 
 typedef PaginationListBuilder<T> = Widget Function(
-  List<T> documents,
-);
+    List<T> documents, Widget? loadMoreWidget);
 
 typedef LoadMoreBuilder = Widget? Function(
     BuildContext context, VoidCallback onLoadMore);
@@ -50,13 +49,10 @@ class PaginationList<T> extends StatelessWidget {
         message: AppLocalizations.of(context)!.paginationListNoResults);
   }
 
-  Widget _loadMore(BuildContext context, bool isLoading) {
-    return Column(children: [
-      isLoading
-          ? this._loading()
-          : this.loadMoreBuilder(context, this.paginator.fetchMore!) ??
-              SizedBox()
-    ]);
+  Widget? _loadMore(BuildContext context, bool isLoading) {
+    return isLoading
+        ? this._loading()
+        : this.loadMoreBuilder(context, this.paginator.fetchMore!);
   }
 
   //
@@ -101,11 +97,15 @@ class PaginationList<T> extends StatelessWidget {
           }
         };
 
+        Widget? loadMoreWidget;
+        if (data.hasNextPage) {
+          loadMoreWidget = this._loadMore(context, result.isLoading);
+        }
+
         return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              this.listBuilder(data.documents),
-              if (data.hasNextPage) this._loadMore(context, result.isLoading)
+              this.listBuilder(data.documents, loadMoreWidget),
             ]);
       },
     );

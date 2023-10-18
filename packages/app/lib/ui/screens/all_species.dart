@@ -71,13 +71,14 @@ class _SpeciesListState extends State<SpeciesList> {
         width: double.infinity,
         padding: const EdgeInsets.only(top: 30.0, bottom: 20.0),
         child: PaginationList<Species>(
-            listBuilder: (List<Species> species) {
+            listBuilder: (List<Species> species, Widget? loadMoreWidget) {
               return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     ...species.map((species) => Container(
                         padding: EdgeInsets.only(bottom: 20.0),
-                        child: this._item(species)))
+                        child: this._item(species))),
+                    (loadMoreWidget != null) ? loadMoreWidget : SizedBox()
                   ]);
             },
             loadMoreBuilder: (BuildContext context, VoidCallback onLoadMore) {

@@ -101,13 +101,14 @@ class _SightingsListState extends State<SightingsList> {
           width: double.infinity,
           padding: const EdgeInsets.only(top: 30.0, bottom: 20.0),
           child: PaginationList<Sighting>(
-              listBuilder: (List<Sighting> sightings) {
+              listBuilder: (List<Sighting> sightings, Widget? loadMoreWidget) {
                 return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       ...sightings.map((sighting) => Container(
                           padding: EdgeInsets.only(bottom: 20.0),
-                          child: this._item(sighting)))
+                          child: this._item(sighting))),
+                      (loadMoreWidget != null) ? loadMoreWidget : SizedBox()
                     ]);
               },
               loadMoreBuilder: (BuildContext context, VoidCallback onLoadMore) {
