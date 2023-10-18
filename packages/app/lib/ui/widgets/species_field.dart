@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -10,6 +9,7 @@ import 'package:app/io/p2panda/schemas.dart';
 import 'package:app/models/base.dart';
 import 'package:app/models/schema_ids.dart';
 import 'package:app/models/taxonomy_species.dart';
+import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/autocomplete.dart';
 import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/read_only_value.dart';
