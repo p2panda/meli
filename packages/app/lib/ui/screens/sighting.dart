@@ -84,11 +84,6 @@ class _SightingProfileState extends State<SightingProfile> {
   }
 
   void _updateLocalName(AutocompleteItem? item) async {
-    if (sighting.localName?.id == item?.documentId) {
-      // Nothing has changed
-      return;
-    }
-
     List<LocalName> localNames = [];
     if (item == null) {
       // Remove local name from sighting
