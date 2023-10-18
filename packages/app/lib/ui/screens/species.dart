@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'package:app/io/p2panda/publish.dart';
+import 'package:app/models/base.dart';
+import 'package:app/models/sightings.dart';
 import 'package:app/models/species.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/error_card.dart';
+import 'package:app/ui/widgets/image.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 
 class SpeciesScreen extends StatefulWidget {
