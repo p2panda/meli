@@ -124,12 +124,32 @@ class _SpeciesFieldState extends State<SpeciesField> {
       return true;
     }
 
+    if (_taxonomy[0] != null && _taxonomy[0]!.value == '') {
+      // Species field is empty which indicates that user wants to remove it
+      return true;
+    }
+
     // Make sure that new taxons can only be followed by _only_ existing or
-    // _only_ new ones. Null fields are not allowed ever.
+    // _only_ new ones. Null fields are not allowed _ever_.
+    //
+    // For example this is a valid input:
+    //
+    // * Species: <new value>
+    // * Genus: <new value>
+    // * Tribe: <existing value>
+    // * .. followed by many more existing values until end
+    //
+    // This would be an _invalid_ input:
+    //
+    // * Species: <new value>
+    // * Genus: <existing value>
+    // * Tribe: <new value> ! We can't change the tribe of an existing genus !
     bool isInNewRange = _taxonomy[0]!.documentId == null;
 
     for (final rank in _taxonomy) {
       if (rank == null) {
+        // Every rank needs to be defined, either by a new value or an already
+        // existing one!
         return false;
       }
 
@@ -138,6 +158,8 @@ class _SpeciesFieldState extends State<SpeciesField> {
       }
 
       if (!isInNewRange && rank.documentId == null) {
+        // We do not allow defining new items _after_ existing ones, the parents
+        // of existing ranks are unchangeable!
         return false;
       }
     }
@@ -193,7 +215,7 @@ class _SpeciesFieldState extends State<SpeciesField> {
             return;
           }
 
-          if (value.documentId == null) {
+          if (value.documentId == null && value.value != '') {
             setState(() {
               _showUpToRank = index + 2;
             });
