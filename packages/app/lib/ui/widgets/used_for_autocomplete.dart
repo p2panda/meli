@@ -36,10 +36,11 @@ class _UsedForAutocompleteState extends State<UsedForAutocomplete> {
         onSubmit: widget.onSubmit,
         initialValue: widget.initialValue,
         autofocus: widget.autofocus,
+        dedup: false,
         onOptionsRequest: (String value) async {
           try {
-            final QueryResult result = await client.query(
-                QueryOptions(document: gql(searchUsedForQuery(value))));
+            final QueryResult result = await client
+                .query(QueryOptions(document: gql(searchUsedForQuery(value))));
 
             if (result.hasException) {
               throw result.exception!;
