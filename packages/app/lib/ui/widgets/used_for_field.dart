@@ -33,11 +33,25 @@ class UsedForField extends StatefulWidget {
 class _UsedForFieldState extends State<UsedForField> {
   late Paginator<UsedFor> paginator;
   final GlobalKey<LoadingOverlayState> _overlayKey = GlobalKey();
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+    this._initScrollController();
+  }
+
+  void _initScrollController() {
     paginator = UsedForPaginator(this.widget.sighting);
+    scrollController.addListener(() {
+      final _scrollOffset = scrollController.offset;
+      final _maxOffset = scrollController.position.maxScrollExtent;
+      if (_scrollOffset >= _maxOffset) {
+        if (this.paginator.fetchMore != null) {
+          this.paginator.fetchMore!();
+        }
+      }
+    });
   }
 
   /// Flag indicating if we're currently editing the field or not.
@@ -132,7 +146,7 @@ class _UsedForFieldState extends State<UsedForField> {
 
   Widget _editableValue() {
     return UsedForAutocomplete(
-        // Initial value is always null.
+      // Initial value is always null.
         initialValue: null,
         // Don't show keyboard or focus on text field when edit mode clicked
         autofocus: false,
@@ -149,10 +163,10 @@ class _UsedForFieldState extends State<UsedForField> {
         Expanded(child: Text(usedFor.usedFor)),
         isEditMode
             ? IconButton(
-                onPressed: () {
-                  _delete(usedFor);
-                },
-                icon: Icon(Icons.delete))
+            onPressed: () {
+              _delete(usedFor);
+            },
+            icon: Icon(Icons.delete))
             : SizedBox()
       ]),
     );
@@ -173,19 +187,22 @@ class _UsedForFieldState extends State<UsedForField> {
                 children: [
                   Expanded(
                     child: SingleChildScrollView(
+                      controller: scrollController,
                       child: PaginationList<UsedFor>(
                           listBuilder: (List<UsedFor> uses) {
                             return Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
-                                  ...uses.map((usedFor) => Container(
-                                      padding: EdgeInsets.only(bottom: 20.0),
-                                      child: this._item(usedFor)))
+                                  ...uses.map((usedFor) =>
+                                      Container(
+                                          padding: EdgeInsets.only(
+                                              bottom: 20.0),
+                                          child: this._item(usedFor)))
                                 ]);
                           },
                           loadMoreBuilder:
                               (BuildContext context, VoidCallback onLoadMore) {
-                            return null;
+                            return Text("...");
                           },
                           paginator: paginator),
                     ),

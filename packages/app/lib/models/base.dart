@@ -4,7 +4,7 @@ import 'dart:ui';
 
 import 'package:gql/ast.dart';
 
-const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_SIZE = 3;
 
 const DEFAULT_RESULTS_KEY = 'collection';
 
@@ -38,6 +38,8 @@ abstract class Paginator<T> {
   /// Call this method to force refreshing a `PaginationList` widget using this
   /// Paginator instance.
   VoidCallback? refresh;
+
+  VoidCallback? fetchMore;
 
   /// Should return GraphQL query for the next page.
   DocumentNode nextPageQuery(String? cursor);
