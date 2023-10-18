@@ -142,31 +142,102 @@ class _UsedForFieldState extends State<UsedForField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 350,
+      height: isEditMode ? 500 : 250,
       child: LoadingOverlay(
         key: _overlayKey,
         child: EditableCard(
             title: AppLocalizations.of(context)!.usedForCardTitle,
             isEditMode: isEditMode,
             child: Container(
-              height: 250,
+              height: isEditMode ? 400 : 150,
               child: Column(
                 children: [
                   Expanded(
-                    flex: 1,
-                    child: PaginationUsedForList(
-                        paginator: this.paginator, onDelete: this._delete),
-                  ),
-                  Expanded(
                     flex: 2,
-                    child: PaginationUsedForTagList(
-                        paginator: this.usedForTagPaginator),
+                    child: PaginationUsedForList(
+                      paginator: this.paginator,
+                      builder: (List<UsedFor> uses) {
+                        return UsedForList(
+                            uses: uses,
+                            isEditMode: this.isEditMode,
+                            onDelete: this._delete);
+                      },
+                    ),
                   ),
+                  isEditMode
+                      ? Expanded(
+                          flex: 1,
+                          child: PaginationUsedForTagList(
+                              paginator: this.usedForTagPaginator,
+                              itemsBuilder: (List<UsedFor> uses) {
+                                return uses
+                                    .map((usedFor) => UsedForTagItem(usedFor))
+                                    .toList();
+                              }),
+                        )
+                      : SizedBox(),
                   isEditMode ? _editableValue() : SizedBox(),
                 ],
               ),
             ),
             onChanged: _toggleEditMode),
+      ),
+    );
+  }
+}
+
+class UsedForList extends StatelessWidget {
+  final List<UsedFor> uses;
+  final void Function(UsedFor usedFor) onDelete;
+  final bool isEditMode;
+
+  UsedForList(
+      {super.key,
+      required this.uses,
+      this.isEditMode = false,
+      required this.onDelete});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      ...uses.map((usedFor) => Container(
+          padding: EdgeInsets.only(bottom: 20.0),
+          child: SizedBox(
+            height: 20,
+            child: Row(children: [
+              Expanded(child: Text(usedFor.usedFor)),
+              this.isEditMode
+                  ? IconButton(
+                      onPressed: () {
+                        this.onDelete(usedFor);
+                      },
+                      icon: Icon(Icons.delete))
+                  : SizedBox()
+            ]),
+          ))),
+    ]);
+  }
+}
+
+class UsedForTagItem extends StatelessWidget {
+  final UsedFor usedFor;
+
+  const UsedForTagItem(
+    this.usedFor, {
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(5),
+      child: Material(
+        elevation: 5,
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+        child: Container(
+          child: Text(usedFor.usedFor),
+          margin: EdgeInsets.all(5),
+        ),
       ),
     );
   }

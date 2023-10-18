@@ -13,12 +13,16 @@ import 'package:app/ui/widgets/info_card.dart';
 
 typedef NextPageFunction = DocumentNode Function(String endCursor);
 
+typedef PaginationListBuilder = Widget Function(
+  List<UsedFor> documents,
+);
+
 class PaginationUsedForList extends StatefulWidget {
   final Paginator<UsedFor> paginator;
-  final void Function(UsedFor) onDelete;
+  final PaginationListBuilder builder;
 
   PaginationUsedForList(
-      {super.key, required this.paginator, required this.onDelete});
+      {super.key, required this.paginator, required this.builder});
 
   @override
   State<PaginationUsedForList> createState() => _PaginationUsedForListState();
@@ -118,45 +122,11 @@ class _PaginationUsedForListState extends State<PaginationUsedForList> {
             controller: scrollController,
             child: Column(
               children: [
-                UsedForList(
-                    uses: data.documents, onDelete: this.widget.onDelete),
+                this.widget.builder(data.documents),
                 if (data.hasNextPage) this._loadMore(context, result.isLoading)
               ],
             ));
       },
     );
-  }
-}
-
-class UsedForList extends StatelessWidget {
-  final List<UsedFor> uses;
-  final void Function(UsedFor usedFor) onDelete;
-  final bool isEditMode;
-
-  UsedForList(
-      {super.key,
-      required this.uses,
-      this.isEditMode = false,
-      required this.onDelete});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      ...uses.map((usedFor) => Container(
-          padding: EdgeInsets.only(bottom: 20.0),
-          child: SizedBox(
-            height: 30,
-            child: Row(children: [
-              Expanded(child: Text(usedFor.usedFor)),
-              this.isEditMode
-                  ? IconButton(
-                      onPressed: () {
-                        this.onDelete(usedFor);
-                      },
-                      icon: Icon(Icons.delete))
-                  : SizedBox()
-            ]),
-          ))),
-    ]);
   }
 }
