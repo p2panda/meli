@@ -135,6 +135,11 @@ class _PaginationUsedForTagListState extends State<PaginationUsedForTagList> {
           return this._emptyResult(context);
         }
 
+        var seen = Set<String>();
+        List<UsedFor> uniqueUses = data.documents
+            .where((usedFor) => seen.add(usedFor.usedFor))
+            .toList();
+
         return Material(
           color: MeliColors.white,
           shape: const RoundedRectangleBorder(
@@ -146,7 +151,7 @@ class _PaginationUsedForTagListState extends State<PaginationUsedForTagList> {
             child: SingleChildScrollView(
                 controller: scrollController,
                 child: Wrap(children: [
-                  ...this.widget.itemsBuilder(data.documents),
+                  ...this.widget.itemsBuilder(uniqueUses),
                   if (data.hasNextPage)
                     this._loadMore(context, result.isLoading, onLoadMore: () {
                       fetchMore!(opts);
