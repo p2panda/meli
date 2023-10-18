@@ -84,8 +84,12 @@ class _SightingProfileState extends State<SightingProfile> {
   }
 
   void _updateLocalName(AutocompleteItem? item) async {
-    List<LocalName> localNames = [];
+    if (sighting.localName?.id == item?.documentId) {
+      // Nothing has changed
+      return;
+    }
 
+    List<LocalName> localNames = [];
     if (item == null) {
       // Remove local name from sighting
     } else if (item.documentId == null) {
@@ -102,6 +106,11 @@ class _SightingProfileState extends State<SightingProfile> {
   }
 
   void _updateSpecies(TaxonomySpecies? taxon) async {
+    if (sighting.species?.species.id == taxon?.id) {
+      // Nothing has changed
+      return;
+    }
+
     if (taxon == null) {
       // Remove species assignment
       await sighting.update(species: []);

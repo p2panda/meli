@@ -72,6 +72,12 @@ class _SpeciesFieldState extends State<SpeciesField> {
     super.initState();
   }
 
+  @override
+  void didUpdateWidget(covariant SpeciesField oldWidget) {
+    _init();
+    super.didUpdateWidget(oldWidget);
+  }
+
   void _init() {
     if (widget.current != null) {
       // Populate current state with full taxonomy when a species was defined
@@ -202,8 +208,6 @@ class _SpeciesFieldState extends State<SpeciesField> {
   }
 
   void _reset() {
-    print('RESET');
-
     setState(() {
       _taxonomy = List.filled(9, null, growable: false);
       _showUpToRank = 1;
