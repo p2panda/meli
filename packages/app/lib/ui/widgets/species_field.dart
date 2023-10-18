@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -179,11 +180,12 @@ class _SpeciesFieldState extends State<SpeciesField> {
     // * Tribe: <new value> ! We can't change the tribe of an existing genus !
     bool isInNewRange = _taxonomy[0]!.documentId == null;
 
-    for (final rank in _taxonomy) {
+    final t = AppLocalizations.of(context)!;
+    for (final (index, rank) in _taxonomy.indexed) {
       if (rank == null) {
         // Every rank needs to be defined, either by a new value or an already
         // existing one!
-        throw '@TODO';
+        throw t.editSpeciesErrorNullCase(_taxonomySettings[index]['label']!);
       }
 
       if (rank.documentId != null) {
@@ -193,9 +195,24 @@ class _SpeciesFieldState extends State<SpeciesField> {
       if (!isInNewRange && rank.documentId == null) {
         // We do not allow defining new items _after_ existing ones, the parents
         // of existing ranks are unchangeable!
-        throw '@TODO';
+        throw t.editSpeciesErrorInvalidRankCase(
+            _taxonomySettings[index]['label']!);
       }
     }
+  }
+
+  void _showErrorAlert(String error) {
+    final t = AppLocalizations.of(context)!;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return MeliAlertDialog(
+            title: t.editSpeciesErrorTitle,
+            message: t.editSpeciesErrorMessage(error),
+            labelConfirm: t.editSpeciesErrorConfirm);
+      },
+    );
   }
 
   void _toggleEditMode() {
@@ -203,8 +220,7 @@ class _SpeciesFieldState extends State<SpeciesField> {
       try {
         _validate();
       } catch (error) {
-        // @TODO: Show message here to user
-        print('Invalid: ${error}');
+        _showErrorAlert(error.toString());
         return;
       }
 

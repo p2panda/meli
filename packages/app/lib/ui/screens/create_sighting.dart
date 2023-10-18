@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:app/ui/widgets/confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -83,22 +84,15 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
 
     showDialog<String>(
       context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: Text(t.imageDeleteAlertTitle),
-        content: Text(t.imageDeleteAlertBody),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(t.imageDeleteAlertCancel),
-          ),
-          TextButton(
-            onPressed: () {
-              this._removeImageAt(imageIndex);
-              Navigator.pop(context);
-            },
-            child: Text(t.imageDeleteAlertConfirm),
-          ),
-        ],
+      builder: (BuildContext context) => ConfirmDialog(
+        title: t.imageDeleteAlertTitle,
+        message: t.imageDeleteAlertBody,
+        labelAbort: t.imageDeleteAlertCancel,
+        labelConfirm: t.imageDeleteAlertConfirm,
+        onConfirm: () {
+          this._removeImageAt(imageIndex);
+          Navigator.pop(context);
+        },
       ),
     );
   }
