@@ -27,9 +27,65 @@ class SpeciesField extends StatefulWidget {
 }
 
 class _SpeciesFieldState extends State<SpeciesField> {
+  /// Current values of this taxonomy including 9 ranks (from "Species"
+  /// to "Kingdom").
   List<AutocompleteItem?> _taxonomy = List.filled(9, null, growable: false);
 
-  /// Flag indicating if we're currently editing the field or not.
+  /// Human-readable labels and assigned p2panda schema ids for each of the 9
+  /// ranks in the taxonomy.
+  List<Map<String, String>> get _taxonomySettings {
+    final t = AppLocalizations.of(context)!;
+
+    return [
+      {
+        'label': t.taxonomySpecies,
+        'field': 'species',
+        'schemaId': SchemaIds.taxonomy_species
+      },
+      {
+        'label': t.taxonomyGenus,
+        'field': 'genus',
+        'schemaId': SchemaIds.taxonomy_genus
+      },
+      {
+        'label': t.taxonomyTribe,
+        'field': 'tribe',
+        'schemaId': SchemaIds.taxonomy_tribe
+      },
+      {
+        'label': t.taxonomySubfamily,
+        'field': 'subfamily',
+        'schemaId': SchemaIds.taxonomy_subfamily
+      },
+      {
+        'label': t.taxonomyFamily,
+        'field': 'family',
+        'schemaId': SchemaIds.taxonomy_family
+      },
+      {
+        'label': t.taxonomyOrder,
+        'field': 'order',
+        'schemaId': SchemaIds.taxonomy_order
+      },
+      {
+        'label': t.taxonomyClass,
+        'field': 'class',
+        'schemaId': SchemaIds.taxonomy_class
+      },
+      {
+        'label': t.taxonomyPhylum,
+        'field': 'phylum',
+        'schemaId': SchemaIds.taxonomy_phylum
+      },
+      {
+        'label': t.taxonomyKingdom,
+        'field': 'kingdom',
+        'schemaId': SchemaIds.taxonomy_kingdom
+      },
+    ];
+  }
+
+  /// Flag indicating if we're currently editing or not.
   bool _isEditMode = false;
 
   /// Which ranks are shown to the user.
@@ -52,64 +108,20 @@ class _SpeciesFieldState extends State<SpeciesField> {
   }
 
   void _populateTaxonomy(Map<String, dynamic> json) async {
+    // Start with the root of the GraphQL response which is the "Species" rank
     var document = json[DEFAULT_RESULTS_KEY]! as Map<String, dynamic>;
-    BaseTaxonomy species = BaseTaxonomy.fromJson(
-      SchemaIds.taxonomy_species,
-      document,
-    );
 
-    document = document['fields']!['genus']! as Map<String, dynamic>;
-    BaseTaxonomy genus =
-        BaseTaxonomy.fromJson(SchemaIds.taxonomy_genus, document);
+    // Iterate through all ranks and fill in the values into our current state
+    // by converting the GraphQL response into autocomplete items.
+    for (final (index, rank) in _taxonomySettings.indexed) {
+      // Parse and set the current state for this rank
+      final parsed = BaseTaxonomy.fromJson(rank['schemaId']!, document);
+      _taxonomy[index] = AutocompleteItem(
+          value: parsed.name, documentId: parsed.id, viewId: parsed.viewId);
 
-    document = document['fields']!['tribe']! as Map<String, dynamic>;
-    BaseTaxonomy tribe =
-        BaseTaxonomy.fromJson(SchemaIds.taxonomy_tribe, document);
-
-    document = document['fields']!['subfamily']! as Map<String, dynamic>;
-    BaseTaxonomy subfamily =
-        BaseTaxonomy.fromJson(SchemaIds.taxonomy_subfamily, document);
-
-    document = document['fields']!['family']! as Map<String, dynamic>;
-    BaseTaxonomy family =
-        BaseTaxonomy.fromJson(SchemaIds.taxonomy_family, document);
-
-    document = document['fields']!['order']! as Map<String, dynamic>;
-    BaseTaxonomy order =
-        BaseTaxonomy.fromJson(SchemaIds.taxonomy_order, document);
-
-    document = document['fields']!['class']! as Map<String, dynamic>;
-    BaseTaxonomy classs =
-        BaseTaxonomy.fromJson(SchemaIds.taxonomy_class, document);
-
-    document = document['fields']!['phylum']! as Map<String, dynamic>;
-    BaseTaxonomy phylum =
-        BaseTaxonomy.fromJson(SchemaIds.taxonomy_phylum, document);
-
-    document = document['fields']!['kingdom']! as Map<String, dynamic>;
-    BaseTaxonomy kingdom =
-        BaseTaxonomy.fromJson(SchemaIds.taxonomy_kingdom, document);
-
-    _taxonomy[0] = AutocompleteItem(
-        value: species.name, documentId: species.id, viewId: species.viewId);
-    _taxonomy[1] = AutocompleteItem(
-        value: genus.name, documentId: genus.id, viewId: genus.viewId);
-    _taxonomy[2] = AutocompleteItem(
-        value: tribe.name, documentId: tribe.id, viewId: tribe.viewId);
-    _taxonomy[3] = AutocompleteItem(
-        value: subfamily.name,
-        documentId: subfamily.id,
-        viewId: subfamily.viewId);
-    _taxonomy[4] = AutocompleteItem(
-        value: family.name, documentId: family.id, viewId: family.viewId);
-    _taxonomy[5] = AutocompleteItem(
-        value: order.name, documentId: order.id, viewId: order.viewId);
-    _taxonomy[6] = AutocompleteItem(
-        value: classs.name, documentId: classs.id, viewId: classs.viewId);
-    _taxonomy[7] = AutocompleteItem(
-        value: phylum.name, documentId: phylum.id, viewId: phylum.viewId);
-    _taxonomy[8] = AutocompleteItem(
-        value: kingdom.name, documentId: kingdom.id, viewId: kingdom.viewId);
+      // Prepare data for the following rank
+      document = document['fields']![rank['field']!]! as Map<String, dynamic>;
+    }
   }
 
   void _submit() async {
@@ -187,20 +199,7 @@ class _SpeciesFieldState extends State<SpeciesField> {
   }
 
   Widget _editableValue() {
-    final t = AppLocalizations.of(context)!;
-
-    final settings = [
-      {'label': t.taxonomySpecies, 'schemaId': SchemaIds.taxonomy_species},
-      {'label': t.taxonomyGenus, 'schemaId': SchemaIds.taxonomy_genus},
-      {'label': t.taxonomyTribe, 'schemaId': SchemaIds.taxonomy_tribe},
-      {'label': t.taxonomySubfamily, 'schemaId': SchemaIds.taxonomy_subfamily},
-      {'label': t.taxonomyFamily, 'schemaId': SchemaIds.taxonomy_family},
-      {'label': t.taxonomyOrder, 'schemaId': SchemaIds.taxonomy_order},
-      {'label': t.taxonomyClass, 'schemaId': SchemaIds.taxonomy_class},
-      {'label': t.taxonomyPhylum, 'schemaId': SchemaIds.taxonomy_phylum},
-      {'label': t.taxonomyKingdom, 'schemaId': SchemaIds.taxonomy_kingdom},
-    ];
-
+    final settings = _taxonomySettings;
     final Iterable<Widget> ranks = settings.indexed.map((item) {
       final index = item.$1;
       final rank = item.$2;
