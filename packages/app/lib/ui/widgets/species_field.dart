@@ -338,7 +338,10 @@ class _SpeciesFieldState extends State<SpeciesField> {
           return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(rank['label']!),
+                Text(
+                  rank['label']!,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 Text(taxon.value),
               ]);
         }).toList());
