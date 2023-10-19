@@ -64,7 +64,6 @@ class _UsedForFieldState extends State<UsedForField> {
 
     // Refresh both paginators
     this.currentUsedForPaginator.refresh!();
-    this.usedForTagPaginator.refresh!();
 
     // Hide the overlay
     _overlayKey.currentState!.hide();
@@ -101,7 +100,6 @@ class _UsedForFieldState extends State<UsedForField> {
 
     // Refresh both paginators
     this.currentUsedForPaginator.refresh!();
-    this.usedForTagPaginator.refresh!();
 
     // Hide the overlay
     _overlayKey.currentState!.hide();
