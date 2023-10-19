@@ -213,11 +213,6 @@ class _SeaWavesPainer extends BoxPainter {
     path.lineTo((bounds.width / 4) * 4, 0.0);
     path.lineTo(bounds.width, bounds.height);
     path.lineTo(0, bounds.height);
-    path.lineTo((bounds.width / 4) * 1, bounds.height + 50.0);
-    path.lineTo((bounds.width / 4) * 2, bounds.height);
-    path.lineTo((bounds.width / 4) * 3, bounds.height + 50.0);
-    path.lineTo((bounds.width / 4) * 4, bounds.height);
-    path.lineTo(0, bounds.height);
     path.close();
 
     canvas.drawPath(path.shift(offset).shift(Offset(0, 50.0)), paint);

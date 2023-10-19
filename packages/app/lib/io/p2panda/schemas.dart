@@ -48,7 +48,7 @@ Future<bool> publishCommits(List<dynamic> commits) async {
     // Decode entry from commit to retrieve public key, sequence number and log
     // id from it
     final Uint8List entryBytes =
-    hex.decode(commit['entry'] as String) as Uint8List;
+        hex.decode(commit['entry'] as String) as Uint8List;
     final entry = await p2panda.decodeEntry(entry: entryBytes);
     String publicKey = entry.$1;
     BigInt logId = BigInt.parse(entry.$2);
@@ -57,7 +57,7 @@ Future<bool> publishCommits(List<dynamic> commits) async {
     try {
       // Check if node already knows about this entry
       final nextArgs =
-      await queries.nextArgs(publicKey, commit['entry_hash'] as String);
+          await queries.nextArgs(publicKey, commit['entry_hash'] as String);
 
       if (logId != nextArgs.logId) {
         throw Exception('Critical log id mismatch during migration');

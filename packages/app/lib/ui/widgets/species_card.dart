@@ -36,7 +36,7 @@ class _SpeciesCardState extends State<SpeciesCard> {
       textAlign: TextAlign.center,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
-        fontSize: 30.0,
+        fontSize: 23.0,
         fontFamily: 'Staatliches',
       ),
     );
@@ -91,22 +91,18 @@ class _SpeciesCardState extends State<SpeciesCard> {
       onTap: this.widget.onTap,
       child: MeliCard(
           elevation: 0,
-          borderWidth: 0.0,
+          borderWidth: 4.0,
           color: MeliColors.white,
           borderColor: this.isSelected ? MeliColors.black : MeliColors.white,
           child: Column(children: [
             Container(
+              margin: EdgeInsets.all(1.0),
               child: this._image,
-              clipBehavior: Clip.hardEdge,
+              clipBehavior: Clip.antiAlias,
               height: 240.0,
               width: double.infinity,
               decoration: ShapeDecoration(
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                    width: 6.0,
-                    strokeAlign: BorderSide.strokeAlignCenter,
-                    color: Colors.transparent,
-                  ),
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),

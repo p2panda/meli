@@ -203,11 +203,42 @@ String lastSightingQuery(DocumentId speciesId) {
     query LastSighting() {
       $DEFAULT_RESULTS_KEY: all_$schemaId(
         first: 1,
+        filter: {
+          species: { in: ["${speciesId}"] },
+        },
         orderBy: "datetime",
-        orderDirection: DESC
+        orderDirection: DESC,
       ) {
         documents {
           $sightingFields
+        }
+      }
+    }
+  ''';
+}
+
+String allSpeciesImages(DocumentId speciesId, String? cursor) {
+  final after = (cursor != null) ? '''after: "$cursor",''' : '';
+  final schemaId = SchemaIds.bee_sighting;
+
+  return '''
+    query AllSpeciesImages() {
+      $DEFAULT_RESULTS_KEY: all_$schemaId(
+        first: ${DEFAULT_PAGE_SIZE},
+        $after
+        filter: {
+          species: { in: ["${speciesId}"] },
+        },
+        orderBy: "datetime",
+        orderDirection: DESC
+      ) {
+        $paginationFields
+        documents {
+          images {
+            documents {
+              $blobFields
+            }
+          }
         }
       }
     }

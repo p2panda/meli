@@ -1,7 +1,9 @@
 {
+    "allSpeciesScreenTitle": "All Species",
     "createSightingError": "Something went wrong: {error}",
     "createSightingScreenTitle": "Add Sighting",
     "createSightingSuccess": "Yay, you've successfully added a new sighting to the database",
+    "editSpeciesErrorCantRemove": "Species needs to be defined",
     "editSpeciesErrorConfirm": "Ok",
     "editSpeciesErrorInvalidRankCase": "Rank \"{rank}\" can not be changed!",
     "editSpeciesErrorMessage": "{error}",
@@ -40,6 +42,7 @@
     "sightingScreenTitle": "Sighting",
     "sightingUnspecified": "Unknown species",
     "speciesCardTitle": "Species",
+    "speciesDescription": "Description",
     "speciesScreenTitle": "Species",
     "taxonomyClass": "Class",
     "taxonomyFamily": "Family",

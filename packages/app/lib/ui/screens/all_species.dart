@@ -17,7 +17,7 @@ class AllSpeciesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MeliScaffold(
-        title: AppLocalizations.of(context)!.speciesScreenTitle,
+        title: AppLocalizations.of(context)!.allSpeciesScreenTitle,
         body: RefreshIndicator(
             color: MeliColors.black,
             onRefresh: () {
