@@ -80,7 +80,18 @@ class LocaleSettings extends StatelessWidget {
         child: LayoutBuilder(
           builder: (context, constraints) {
             return DropdownMenu<Locale>(
+                inputDecorationTheme: InputDecorationTheme(
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.only(left: 10.0)),
                 width: constraints.maxWidth,
+                menuStyle: MenuStyle(
+                    elevation: MaterialStatePropertyAll<double>(3.0),
+                    surfaceTintColor:
+                        MaterialStatePropertyAll<Color>(Colors.transparent),
+                    backgroundColor:
+                        MaterialStatePropertyAll<Color>(MeliColors.white),
+                    side: MaterialStatePropertyAll<BorderSide>(
+                        BorderSide(width: 0))),
                 initialSelection: currentLocale,
                 onSelected: (Locale? locale) async {
                   await _onLanguageChange(context, locale);
@@ -119,18 +130,22 @@ class _SystemInfoState extends State<SystemInfo> {
           builder: (BuildContext context,
               AsyncSnapshot<AndroidDeviceInfo> snapshot) {
             if (snapshot.hasData) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Device: ${snapshot.data!.device}'),
-                  Text('Android SDK Version: ${snapshot.data!.version.sdkInt}'),
-                  Text(
-                      'Android Build Version: ${snapshot.data!.version.release}'),
-                ],
+              return Container(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        '${t.settingsSystemInfoDevice}: ${snapshot.data!.device}'),
+                    Text(
+                        '${t.settingsSystemInfoSDK}: ${snapshot.data!.version.sdkInt}'),
+                    Text(
+                        '${t.settingsSystemInfoAndroid}: ${snapshot.data!.version.release}'),
+                  ],
+                ),
               );
             } else if (snapshot.hasError) {
-              return Text(
-                  'Something went wrong, could not retrieve system information');
+              return Text(t.settingsSystemInfoError);
             } else {
               return Container(
                 padding: const EdgeInsets.all(20.0),
