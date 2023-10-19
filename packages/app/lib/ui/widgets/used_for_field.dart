@@ -6,6 +6,7 @@ import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/pagination_used_for_list.dart';
 import 'package:app/ui/widgets/pagination_used_for_tags_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/io/p2panda/publish.dart';
@@ -262,21 +263,30 @@ class UsedForList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       ...uses.map((usedFor) => Container(
+          constraints: BoxConstraints(minHeight: 30),
           padding: EdgeInsets.only(bottom: 15.0),
-          child: SizedBox(
-            height: 15,
-            child: Row(children: [
-              Expanded(
-                  child: Text(usedFor.usedFor, style: TextStyle(height: 1.3))),
-              this.isEditMode
-                  ? IconButton(
-                      onPressed: () {
-                        this.onDelete(usedFor);
-                      },
-                      icon: Icon(Icons.delete))
-                  : SizedBox()
-            ]),
-          ))),
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                    flex: 6,
+                    child: Text(usedFor.usedFor, style: TextStyle(fontSize: 16))),
+                Expanded(
+                  flex: 1,
+                  child: this.isEditMode
+                      ? Container(
+                          constraints: BoxConstraints(maxHeight: 23),
+                          child: IconButton(
+                              padding: EdgeInsets.all(0),
+                              onPressed: () {
+                                this.onDelete(usedFor);
+                              },
+                              icon: Icon(size: 20, Icons.delete)),
+                        )
+                      : SizedBox(),
+                )
+              ]))),
     ]);
   }
 }
