@@ -7,9 +7,8 @@ import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/fab.dart';
-import 'package:app/ui/widgets/pagination_list.dart';
 import 'package:app/ui/widgets/scaffold.dart';
-import 'package:app/ui/widgets/sighting_card.dart';
+import 'package:app/ui/widgets/sightings_list.dart';
 
 class AllSightingsScreen extends StatelessWidget {
   @override
@@ -61,48 +60,15 @@ class ScrollView extends StatelessWidget {
             TopBar(),
             BouncyBee(),
             SizedBox(height: 30.0),
-            SightingsList(paginator: this.paginator),
+            Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+                decoration: new MagnoliaWavesBackground(),
+                child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.only(top: 30.0, bottom: 20.0),
+                    child: SightingsList(paginator: this.paginator))),
             SizedBox(height: 40.0),
           ])),
-    );
-  }
-}
-
-class SightingsList extends StatefulWidget {
-  final Paginator<Sighting> paginator;
-
-  SightingsList({super.key, required this.paginator});
-
-  @override
-  State<SightingsList> createState() => _SightingsListState();
-}
-
-class _SightingsListState extends State<SightingsList> {
-  Widget _item(Sighting sighting) {
-    return SightingCard(
-        onTap: () => router.pushNamed(RoutePaths.sighting.name,
-            pathParameters: {'documentId': sighting.id}),
-        date: sighting.datetime,
-        localName: sighting.localName,
-        species: sighting.species,
-        image: sighting.images.firstOrNull);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-      decoration: new MagnoliaWavesBackground(),
-      child: Container(
-          width: double.infinity,
-          padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
-          child: PaginationList<Sighting>(
-              builder: (Sighting sighting) {
-                return Container(
-                    padding: EdgeInsets.only(bottom: 20.0),
-                    child: this._item(sighting));
-              },
-              paginator: widget.paginator)),
     );
   }
 }
