@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:app/app.dart';
-import 'package:app/router.dart';
 import 'package:app/io/p2panda/node.dart';
 import 'package:app/io/p2panda/schemas.dart';
+import 'package:app/io/p2panda/seed.dart';
 import 'package:app/models/schema_ids.dart';
+import 'package:app/router.dart';
 
 void main() async {
   // Wait until we've established connection to native Flutter backend. We need
@@ -45,4 +46,12 @@ Future<void> bootstrapNode() async {
   // Wait until we're sure that all schema ids are ready on the node. This is
   // mostly important after a migration took place
   await untilSchemasAvailable(ALL_SCHEMA_IDS);
+
+  // Seed database with initial data when necessary
+  final bool didSeed = await seedDatabase();
+  if (didSeed) {
+    print("Seed succeeded");
+  } else {
+    print("No seed required");
+  }
 }
