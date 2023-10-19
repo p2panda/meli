@@ -184,7 +184,9 @@ class _UsedForFieldState extends State<UsedForField> {
           paginator: this.currentUsedForPaginator,
           builder: (List<UsedFor> uses) {
             return UsedForList(
-                uses: uses, isEditMode: this.isEditMode, onDelete: this._delete);
+                uses: uses,
+                isEditMode: this.isEditMode,
+                onDelete: this._delete);
           },
         ),
       ),
@@ -200,7 +202,6 @@ class _UsedForFieldState extends State<UsedForField> {
       child: Container(
         constraints: BoxConstraints(
           minHeight: 40,
-          maxHeight: 120,
         ),
         width: double.infinity,
         margin: EdgeInsets.all(10),
@@ -219,30 +220,29 @@ class _UsedForFieldState extends State<UsedForField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: BoxConstraints(maxHeight: isEditMode ? 500 : 250),
-      child: LoadingOverlay(
-        key: _overlayKey,
-        child: EditableCard(
-            title: AppLocalizations.of(context)!.usedForCardTitle,
-            isEditMode: isEditMode,
-            child: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 5),
-                  child: _currentUsesList(),
-                ),
-                isEditMode
-                    ? Container(
-                        padding: EdgeInsets.symmetric(vertical: 5),
-                        child: Column(
-                          children: [_tagList(), _editableValue()],
-                        ),
-                      )
-                    : SizedBox(),
-              ],
+      child: EditableCard(
+          title: AppLocalizations.of(context)!.usedForCardTitle,
+          isEditMode: isEditMode,
+          child: Container(
+            constraints: BoxConstraints(maxHeight: isEditMode ? 400 : 150),
+            child: LoadingOverlay(
+              key: _overlayKey,
+              child: Column(
+                children: [
+                  _currentUsesList(),
+                  ...(isEditMode
+                      ? [
+                          SizedBox(height: 10),
+                          Expanded(child: _tagList()),
+                          SizedBox(height: 10),
+                          _editableValue()
+                        ]
+                      : [SizedBox()])
+                ],
+              ),
             ),
-            onChanged: _toggleEditMode),
-      ),
+          ),
+          onChanged: _toggleEditMode),
     );
   }
 }
@@ -266,7 +266,8 @@ class UsedForList extends StatelessWidget {
           child: SizedBox(
             height: 15,
             child: Row(children: [
-              Expanded(child: Text(usedFor.usedFor)),
+              Expanded(
+                  child: Text(usedFor.usedFor, style: TextStyle(height: 1.3))),
               this.isEditMode
                   ? IconButton(
                       onPressed: () {
