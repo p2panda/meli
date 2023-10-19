@@ -14,11 +14,11 @@ class LocalName {
 
   LocalName({required this.id, required this.viewId, required this.name});
 
-  factory LocalName.fromJson(Map<String, dynamic> result) {
+  factory LocalName.fromJson(Map<String, dynamic> json) {
     return LocalName(
-        id: result['meta']['documentId'] as DocumentId,
-        viewId: result['meta']['viewId'] as DocumentViewId,
-        name: result['fields']['name'] as String);
+        id: json['meta']['documentId'] as DocumentId,
+        viewId: json['meta']['viewId'] as DocumentViewId,
+        name: json['fields']['name'] as String);
   }
 
   static Future<LocalName> create({required String name}) async {

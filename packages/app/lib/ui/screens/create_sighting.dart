@@ -12,6 +12,7 @@ import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/autocomplete.dart';
+import 'package:app/ui/widgets/confirm_dialog.dart';
 import 'package:app/ui/widgets/expandable_fab.dart';
 import 'package:app/ui/widgets/fab.dart';
 import 'package:app/ui/widgets/image_carousel.dart';
@@ -83,22 +84,15 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
 
     showDialog<String>(
       context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: Text(t.imageDeleteAlertTitle),
-        content: Text(t.imageDeleteAlertBody),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(t.imageDeleteAlertCancel),
-          ),
-          TextButton(
-            onPressed: () {
-              this._removeImageAt(imageIndex);
-              Navigator.pop(context);
-            },
-            child: Text(t.imageDeleteAlertConfirm),
-          ),
-        ],
+      builder: (BuildContext context) => ConfirmDialog(
+        title: t.imageDeleteAlertTitle,
+        message: t.imageDeleteAlertBody,
+        labelAbort: t.imageDeleteAlertCancel,
+        labelConfirm: t.imageDeleteAlertConfirm,
+        onConfirm: () {
+          this._removeImageAt(imageIndex);
+          Navigator.pop(context);
+        },
       ),
     );
   }

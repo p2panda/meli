@@ -4,6 +4,7 @@ import 'package:gql/src/ast/ast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:p2panda_flutter/p2panda_flutter.dart';
 
+import 'package:app/io/graphql/queries.dart';
 import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/base.dart';
 import 'package:app/models/schema_ids.dart';
@@ -22,6 +23,21 @@ class Species {
         species: TaxonomySpecies.fromJson(
             result['fields']['species'] as Map<String, dynamic>),
         description: result['fields']['description'] as String);
+  }
+
+  static Future<Species> upsert(TaxonomySpecies taxon) async {
+    // Check if species already exists with this taxon
+    final json = await query(query: firstSpeciesWithTaxon(taxon.id));
+    final list = json[DEFAULT_RESULTS_KEY]['documents'] as List;
+
+    if (list.isNotEmpty) {
+      // Return existing one
+      return Species.fromJson(list[0] as Map<String, dynamic>);
+    } else {
+      // Create new species and then return it
+      final id = await createSpecies(taxonomySpeciesId: taxon.id);
+      return Species(id: id, species: taxon, description: '');
+    }
   }
 }
 
@@ -52,7 +68,27 @@ String get speciesFields {
     fields {
       description
       species {
-        $taxonomySpeciesFields
+        $taxonomyFields
+      }
+    }
+  ''';
+}
+
+String firstSpeciesWithTaxon(DocumentId taxonomySpeciesId) {
+  final schemaId = SchemaIds.bee_species;
+
+  return '''
+    query AllSpecies {
+      $DEFAULT_RESULTS_KEY: all_$schemaId(
+        first: 1,
+        filter: {
+          species: { eq: "$taxonomySpeciesId" },
+        },
+      ) {
+        $paginationFields
+        documents {
+          $speciesFields
+        }
       }
     }
   ''';
@@ -77,8 +113,8 @@ String allSpeciesQuery(String? cursor) {
   ''';
 }
 
-Future<DocumentViewId> createSighting(
-    DocumentId taxonomySpeciesId, String description) async {
+Future<DocumentViewId> createSpecies(
+    {required DocumentId taxonomySpeciesId, String description = ''}) async {
   List<(String, OperationValue)> fields = [
     ("species", OperationValue.relation(taxonomySpeciesId)),
     ("description", OperationValue.string(description)),
@@ -88,7 +124,7 @@ Future<DocumentViewId> createSighting(
 }
 
 Future<DocumentViewId> updateSpecies(DocumentViewId viewId,
-    DocumentId? taxonomySpeciesId, String? description) async {
+    {DocumentId? taxonomySpeciesId, String? description}) async {
   List<(String, OperationValue)> fields = [];
 
   if (taxonomySpeciesId != null) {
@@ -102,6 +138,6 @@ Future<DocumentViewId> updateSpecies(DocumentViewId viewId,
   return await update(SchemaIds.bee_species, viewId, fields);
 }
 
-Future<void> deleteSpecies(DocumentViewId viewId) async {
-  await delete(SchemaIds.bee_species, viewId);
+Future<DocumentViewId> deleteSpecies(DocumentViewId viewId) async {
+  return await delete(SchemaIds.bee_species, viewId);
 }

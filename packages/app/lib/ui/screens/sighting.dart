@@ -7,6 +7,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:app/io/files.dart';
 import 'package:app/models/local_names.dart';
 import 'package:app/models/sightings.dart';
+import 'package:app/models/species.dart';
+import 'package:app/models/taxonomy_species.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/autocomplete.dart';
 import 'package:app/ui/widgets/error_card.dart';
@@ -83,7 +85,6 @@ class _SightingProfileState extends State<SightingProfile> {
 
   void _updateLocalName(AutocompleteItem? item) async {
     List<LocalName> localNames = [];
-
     if (item == null) {
       // Remove local name from sighting
     } else if (item.documentId == null) {
@@ -99,8 +100,22 @@ class _SightingProfileState extends State<SightingProfile> {
     setState(() {});
   }
 
-  void _updateSpecies(AutocompleteItem? item) async {
-    // @TODO
+  void _updateSpecies(TaxonomySpecies? taxon) async {
+    if (sighting.species?.species.id == taxon?.id) {
+      // Nothing has changed
+      return;
+    }
+
+    if (taxon == null) {
+      // Remove species assignment
+      await sighting.update(species: []);
+    } else {
+      // Assign species, create it before if it doesn't exist yet
+      final species = await Species.upsert(taxon);
+      await sighting.update(species: [species]);
+    }
+
+    setState(() {});
   }
 
   @override
@@ -121,11 +136,11 @@ class _SightingProfileState extends State<SightingProfile> {
           onUpdate: _updateLocalName,
         ),
         SpeciesField(
-          sighting.species,
+          sighting.species?.species,
           onUpdate: _updateSpecies,
         ),
         // @TODO: Remove this as soon as there are more elements
-        SizedBox(height: 250.0),
+        SizedBox(height: 550.0),
       ]),
     );
   }
