@@ -32,7 +32,7 @@ class UsedForField extends StatefulWidget {
 }
 
 class _UsedForFieldState extends State<UsedForField> {
-  late Paginator<UsedFor> paginator =
+  late Paginator<UsedFor> currentUsedForPaginator =
       UsedForPaginator(sighting: this.widget.sighting);
   late Paginator<UsedFor> usedForTagPaginator = UsedForPaginator();
   final GlobalKey<LoadingOverlayState> _overlayKey = GlobalKey();
@@ -60,8 +60,9 @@ class _UsedForFieldState extends State<UsedForField> {
       sleep(Duration(milliseconds: 150));
     }
 
-    // Refresh the paginator
-    this.paginator.refresh!();
+    // Refresh both paginators
+    this.currentUsedForPaginator.refresh!();
+    this.usedForTagPaginator.refresh!();
 
     // Hide the overlay
     _overlayKey.currentState!.hide();
@@ -96,8 +97,8 @@ class _UsedForFieldState extends State<UsedForField> {
       sleep(Duration(milliseconds: 100));
     }
 
-    // Refresh the paginator
-    this.paginator.refresh!();
+    // Refresh both paginators
+    this.currentUsedForPaginator.refresh!();
     this.usedForTagPaginator.refresh!();
 
     // Hide the overlay
@@ -159,7 +160,7 @@ class _UsedForFieldState extends State<UsedForField> {
     }
 
     // Refresh the paginator
-    this.paginator.refresh!();
+    this.currentUsedForPaginator.refresh!();
     this.usedForTagPaginator.refresh!();
 
     // Hide the overlay
@@ -184,7 +185,7 @@ class _UsedForFieldState extends State<UsedForField> {
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 5),
                       child: PaginationUsedForList(
-                        paginator: this.paginator,
+                        paginator: this.currentUsedForPaginator,
                         builder: (List<UsedFor> uses) {
                           return UsedForList(
                               uses: uses,
