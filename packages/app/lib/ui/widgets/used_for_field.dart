@@ -129,19 +129,7 @@ class _UsedForFieldState extends State<UsedForField> {
     });
   }
 
-  Widget _editableValue() {
-    return UsedForAutocomplete(
-        // Initial value is always null.
-        initialValue: null,
-        // Don't show keyboard or focus on text field when edit mode clicked
-        autofocus: false,
-        // Flip "edit mode" to false as soon as user hit the "submit" button on
-        // the keyboard
-        onSubmit: _toggleEditMode,
-        onChanged: _changeValue);
-  }
-
-  void _createUsedFor(UsedFor usedFor) async {
+  void _onTagClick(UsedFor usedFor) async {
     // Show the overlay spinner
     _overlayKey.currentState!.show();
 
@@ -159,68 +147,80 @@ class _UsedForFieldState extends State<UsedForField> {
       sleep(Duration(milliseconds: 100));
     }
 
-    // Refresh the paginator
+    // Refresh current uses paginator
     this.currentUsedForPaginator.refresh!();
-    this.usedForTagPaginator.refresh!();
 
     // Hide the overlay
     _overlayKey.currentState!.hide();
   }
 
+  Widget _editableValue() {
+    return UsedForAutocomplete(
+        // Initial value is always null.
+        initialValue: null,
+        // Don't show keyboard or focus on text field when edit mode clicked
+        autofocus: false,
+        // Flip "edit mode" to false as soon as user hit the "submit" button on
+        // the keyboard
+        onSubmit: _toggleEditMode,
+        onChanged: _changeValue);
+  }
+
+  Widget _currentUsesList() {
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: 120,
+      ),
+      child: PaginationUsedForList(
+        paginator: this.currentUsedForPaginator,
+        builder: (List<UsedFor> uses) {
+          return UsedForList(
+              uses: uses, isEditMode: this.isEditMode, onDelete: this._delete);
+        },
+      ),
+    );
+  }
+
+  Widget _tagList() {
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: 120,
+      ),
+      child: PaginationUsedForTagList(
+          paginator: this.usedForTagPaginator,
+          itemsBuilder: (List<UsedFor> uses) {
+            return uses
+                .map((usedFor) => UsedForTagItem(
+                    usedFor: usedFor, createUsedFor: _onTagClick))
+                .toList();
+          }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: isEditMode ? 500 : 250,
+      constraints: BoxConstraints(maxHeight: isEditMode ? 500 : 250),
       child: LoadingOverlay(
         key: _overlayKey,
         child: EditableCard(
             title: AppLocalizations.of(context)!.usedForCardTitle,
             isEditMode: isEditMode,
-            child: Container(
-              height: isEditMode ? 400 : 150,
-              child: Column(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 5),
-                      child: PaginationUsedForList(
-                        paginator: this.currentUsedForPaginator,
-                        builder: (List<UsedFor> uses) {
-                          return UsedForList(
-                              uses: uses,
-                              isEditMode: this.isEditMode,
-                              onDelete: this._delete);
-                        },
-                      ),
-                    ),
-                  ),
-                  isEditMode
-                      ? Expanded(
-                          flex: 1,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 5),
-                            child: Column(
-                              children: [
-                                Expanded(
-                                  child: PaginationUsedForTagList(
-                                      paginator: this.usedForTagPaginator,
-                                      itemsBuilder: (List<UsedFor> uses) {
-                                        return uses
-                                            .map((usedFor) => UsedForTagItem(
-                                                usedFor: usedFor,
-                                                createUsedFor: _createUsedFor))
-                                            .toList();
-                                      }),
-                                ),
-                                _editableValue()
-                              ],
-                            ),
-                          ),
-                        )
-                      : SizedBox(),
-                ],
-              ),
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: _currentUsesList(),
+                ),
+                isEditMode
+                    ? Container(
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        child: Column(
+                          children: [_tagList(), _editableValue()],
+                        ),
+                      )
+                    : SizedBox(),
+              ],
             ),
             onChanged: _toggleEditMode),
       ),
@@ -243,9 +243,9 @@ class UsedForList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       ...uses.map((usedFor) => Container(
-          padding: EdgeInsets.only(bottom: 20.0),
+          padding: EdgeInsets.only(bottom: 15.0),
           child: SizedBox(
-            height: 20,
+            height: 15,
             child: Row(children: [
               Expanded(child: Text(usedFor.usedFor)),
               this.isEditMode
