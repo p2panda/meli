@@ -83,6 +83,7 @@ class _PaginationUsedForTagListState extends State<PaginationUsedForTagList> {
               child: GestureDetector(
                 onTap: onLoadMore,
                 child: Material(
+                  color: Colors.grey,
                   elevation: 5,
                   borderRadius: BorderRadius.all(Radius.circular(12)),
                   child: Container(
