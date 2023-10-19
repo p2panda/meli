@@ -12,7 +12,7 @@ import 'package:app/ui/widgets/error_card.dart';
 
 typedef NextPageFunction = DocumentNode Function(String endCursor);
 
-typedef PaginationListBuilder = Widget Function(
+typedef PaginationListBuilder = List<Widget> Function(
   List<UsedFor> documents,
 );
 
@@ -75,7 +75,7 @@ class _PaginationUsedForListState extends State<PaginationUsedForList> {
   }
 
   Widget _loadMore(BuildContext context, bool isLoading) {
-    return Column(children: [isLoading ? this._loading() : Text("...")]);
+    return isLoading ? this._loading() : Text("...");
   }
 
   @override
@@ -127,7 +127,7 @@ class _PaginationUsedForListState extends State<PaginationUsedForList> {
             controller: scrollController,
             child: Column(
               children: [
-                this.widget.builder(data.documents),
+                ...this.widget.builder(data.documents),
                 if (data.hasNextPage) this._loadMore(context, result.isLoading)
               ],
             ));

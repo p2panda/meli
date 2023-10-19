@@ -166,6 +166,37 @@ class _UsedForFieldState extends State<UsedForField> {
         onChanged: _changeValue);
   }
 
+  List<Widget> _usedForListBuilder(List<UsedFor> uses) {
+    return [
+      ...uses.map((usedFor) => Container(
+          constraints: BoxConstraints(minHeight: 30),
+          padding: EdgeInsets.symmetric(vertical: 7.0),
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                    flex: 6,
+                    child:
+                        Text(usedFor.usedFor, style: TextStyle(fontSize: 16))),
+                Expanded(
+                  flex: 1,
+                  child: this.isEditMode
+                      ? Container(
+                          constraints: BoxConstraints(maxHeight: 23),
+                          child: IconButton(
+                              padding: EdgeInsets.all(0),
+                              onPressed: () {
+                                this._delete(usedFor);
+                              },
+                              icon: Icon(size: 20, Icons.delete)),
+                        )
+                      : SizedBox(),
+                )
+              ]))),
+    ];
+  }
+
   Widget _currentUsesList() {
     return Material(
       color: MeliColors.white,
@@ -173,21 +204,15 @@ class _UsedForFieldState extends State<UsedForField> {
         borderRadius: BorderRadius.all(Radius.circular(13.0)),
       ),
       child: Container(
+        alignment: Alignment.center,
         constraints: BoxConstraints(
-          minHeight: 40,
           maxHeight: 120,
         ),
         width: double.infinity,
         margin: EdgeInsets.all(10),
         child: PaginationUsedForList(
-          paginator: this.currentUsedForPaginator,
-          builder: (List<UsedFor> uses) {
-            return UsedForList(
-                uses: uses,
-                isEditMode: this.isEditMode,
-                onDelete: this._delete);
-          },
-        ),
+            paginator: this.currentUsedForPaginator,
+            builder: this._usedForListBuilder),
       ),
     );
   }
@@ -223,12 +248,12 @@ class _UsedForFieldState extends State<UsedForField> {
           title: AppLocalizations.of(context)!.usedForCardTitle,
           isEditMode: isEditMode,
           child: Container(
-            constraints: BoxConstraints(maxHeight: isEditMode ? 400 : 150),
+            constraints: BoxConstraints(maxHeight: isEditMode ? 400 : 120),
             child: LoadingOverlay(
               key: _overlayKey,
               child: Column(
                 children: [
-                  _currentUsesList(),
+                  Container(height: 120, child: _currentUsesList()),
                   ...(isEditMode
                       ? [
                           SizedBox(height: 10),
@@ -243,49 +268,6 @@ class _UsedForFieldState extends State<UsedForField> {
           ),
           onChanged: _toggleEditMode),
     );
-  }
-}
-
-class UsedForList extends StatelessWidget {
-  final List<UsedFor> uses;
-  final void Function(UsedFor usedFor) onDelete;
-  final bool isEditMode;
-
-  UsedForList(
-      {super.key,
-      required this.uses,
-      this.isEditMode = false,
-      required this.onDelete});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      ...uses.map((usedFor) => Container(
-          constraints: BoxConstraints(minHeight: 30),
-          padding: EdgeInsets.only(bottom: 15.0),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                    flex: 6,
-                    child: Text(usedFor.usedFor, style: TextStyle(fontSize: 16))),
-                Expanded(
-                  flex: 1,
-                  child: this.isEditMode
-                      ? Container(
-                          constraints: BoxConstraints(maxHeight: 23),
-                          child: IconButton(
-                              padding: EdgeInsets.all(0),
-                              onPressed: () {
-                                this.onDelete(usedFor);
-                              },
-                              icon: Icon(size: 20, Icons.delete)),
-                        )
-                      : SizedBox(),
-                )
-              ]))),
-    ]);
   }
 }
 
