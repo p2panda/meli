@@ -120,6 +120,10 @@ class _PaginationUsedForTagListState extends State<PaginationUsedForTagList> {
             .paginator
             .parseJSON(result.data as Map<String, dynamic>);
 
+        if (data.documents.isEmpty) {
+          return this._emptyResult(context);
+        }
+
         FetchMoreOptions opts = FetchMoreOptions(
           document: this.widget.paginator.nextPageQuery(data.endCursor),
           updateQuery: (previousResultData, fetchMoreResultData) {
@@ -137,14 +141,18 @@ class _PaginationUsedForTagListState extends State<PaginationUsedForTagList> {
           }
         };
 
-        if (data.documents.isEmpty) {
-          return this._emptyResult(context);
-        }
-
+        // Deduplicate the returned collection.
         var seen = Set<String>();
         List<UsedFor> uniqueUses = data.documents
             .where((usedFor) => seen.add(usedFor.usedFor))
             .toList();
+
+        // We want to keep fetching more results (while there are any) until
+        // there are a minimum of 20. This is done
+        if (uniqueUses.length < 20 && data.hasNextPage) {
+          fetchMore!(opts);
+          return this._loading();
+        }
 
         return SingleChildScrollView(
             controller: scrollController,
