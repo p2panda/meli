@@ -73,27 +73,9 @@ class _PaginationUsedForTagListState extends State<PaginationUsedForTagList> {
     );
   }
 
-  Widget _loadMore(BuildContext context, bool isLoading,
-      {required VoidCallback onLoadMore}) {
-    return Column(children: [
-      isLoading
-          ? this._loading()
-          : Container(
-              padding: EdgeInsets.all(5),
-              child: GestureDetector(
-                onTap: onLoadMore,
-                child: Material(
-                  color: Colors.grey,
-                  elevation: 5,
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
-                  child: Container(
-                    child: Text("more..."),
-                    margin: EdgeInsets.all(5),
-                  ),
-                ),
-              ),
-            )
-    ]);
+
+  Widget _loadMore(BuildContext context, bool isLoading) {
+    return Column(children: [isLoading ? this._loading() : Text("...")]);
   }
 
   @override
@@ -158,10 +140,7 @@ class _PaginationUsedForTagListState extends State<PaginationUsedForTagList> {
             controller: scrollController,
             child: Wrap(children: [
               ...this.widget.itemsBuilder(uniqueUses),
-              if (data.hasNextPage)
-                this._loadMore(context, result.isLoading, onLoadMore: () {
-                  fetchMore!(opts);
-                })
+              if (data.hasNextPage) this._loadMore(context, result.isLoading)
             ]));
       },
     );
