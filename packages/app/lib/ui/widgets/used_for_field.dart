@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/pagination_used_for_list.dart';
 import 'package:app/ui/widgets/pagination_used_for_tags_list.dart';
 import 'package:flutter/material.dart';
@@ -167,33 +168,51 @@ class _UsedForFieldState extends State<UsedForField> {
   }
 
   Widget _currentUsesList() {
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: 120,
+    return Material(
+      color: MeliColors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(13.0)),
       ),
-      child: PaginationUsedForList(
-        paginator: this.currentUsedForPaginator,
-        builder: (List<UsedFor> uses) {
-          return UsedForList(
-              uses: uses, isEditMode: this.isEditMode, onDelete: this._delete);
-        },
+      child: Container(
+        constraints: BoxConstraints(
+          minHeight: 40,
+          maxHeight: 120,
+        ),
+        width: double.infinity,
+        margin: EdgeInsets.all(10),
+        child: PaginationUsedForList(
+          paginator: this.currentUsedForPaginator,
+          builder: (List<UsedFor> uses) {
+            return UsedForList(
+                uses: uses, isEditMode: this.isEditMode, onDelete: this._delete);
+          },
+        ),
       ),
     );
   }
 
   Widget _tagList() {
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: 120,
+    return Material(
+      color: MeliColors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(13.0)),
       ),
-      child: PaginationUsedForTagList(
-          paginator: this.usedForTagPaginator,
-          itemsBuilder: (List<UsedFor> uses) {
-            return uses
-                .map((usedFor) => UsedForTagItem(
-                    usedFor: usedFor, createUsedFor: _onTagClick))
-                .toList();
-          }),
+      child: Container(
+        constraints: BoxConstraints(
+          minHeight: 40,
+          maxHeight: 120,
+        ),
+        width: double.infinity,
+        margin: EdgeInsets.all(10),
+        child: PaginationUsedForTagList(
+            paginator: this.usedForTagPaginator,
+            itemsBuilder: (List<UsedFor> uses) {
+              return uses
+                  .map((usedFor) => UsedForTagItem(
+                      usedFor: usedFor, createUsedFor: _onTagClick))
+                  .toList();
+            }),
+      ),
     );
   }
 

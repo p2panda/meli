@@ -1,15 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/models/used_for.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gql/ast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'package:app/models/used_for.dart';
 import 'package:app/models/base.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/error_card.dart';
-import 'package:app/ui/widgets/info_card.dart';
 
 typedef NextPageFunction = DocumentNode Function(String endCursor);
 
@@ -50,9 +49,11 @@ class _PaginationUsedForListState extends State<PaginationUsedForList> {
   }
 
   Widget _error(BuildContext context, String errorMessage) {
-    return ErrorCard(
-        message:
-            AppLocalizations.of(context)!.paginationListError(errorMessage));
+    return SingleChildScrollView(
+      child: ErrorCard(
+          message:
+              AppLocalizations.of(context)!.paginationListError(errorMessage)),
+    );
   }
 
   Widget _loading() {
@@ -65,8 +66,12 @@ class _PaginationUsedForListState extends State<PaginationUsedForList> {
   }
 
   Widget _emptyResult(BuildContext context) {
-    return InfoCard(
-        message: AppLocalizations.of(context)!.paginationListNoResults);
+    return SingleChildScrollView(
+      child: Column(children: [
+        Text(AppLocalizations.of(context)!.paginationListNoResults,
+            style: TextStyle(fontStyle: FontStyle.italic)),
+      ]),
+    );
   }
 
   Widget _loadMore(BuildContext context, bool isLoading) {
@@ -118,28 +123,14 @@ class _PaginationUsedForListState extends State<PaginationUsedForList> {
           return this._emptyResult(context);
         }
 
-        return Material(
-          color: MeliColors.white,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(13.0)),
-          ),
-          child: Container(
-            constraints: BoxConstraints(
-              minHeight: 50,
-            ),
-            width: double.infinity,
-            margin: EdgeInsets.all(10),
-            child: SingleChildScrollView(
-                controller: scrollController,
-                child: Column(
-                  children: [
-                    this.widget.builder(data.documents),
-                    if (data.hasNextPage)
-                      this._loadMore(context, result.isLoading)
-                  ],
-                )),
-          ),
-        );
+        return SingleChildScrollView(
+            controller: scrollController,
+            child: Column(
+              children: [
+                this.widget.builder(data.documents),
+                if (data.hasNextPage) this._loadMore(context, result.isLoading)
+              ],
+            ));
       },
     );
   }
