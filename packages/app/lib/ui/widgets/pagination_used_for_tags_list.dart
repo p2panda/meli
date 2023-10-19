@@ -143,11 +143,14 @@ class _PaginationUsedForTagListState extends State<PaginationUsedForTagList> {
         return Material(
           color: MeliColors.white,
           shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(4.0)),
+            borderRadius: BorderRadius.all(Radius.circular(13.0)),
           ),
           child: Container(
+            constraints: BoxConstraints(
+              minHeight: 50,
+            ),
             width: double.infinity,
-            margin: EdgeInsets.all(5),
+            margin: EdgeInsets.all(10),
             child: SingleChildScrollView(
                 controller: scrollController,
                 child: Wrap(children: [
