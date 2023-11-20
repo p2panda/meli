@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/pagination_cards_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -7,7 +8,6 @@ import 'package:app/models/base.dart';
 import 'package:app/models/species.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
-import 'package:app/ui/widgets/pagination_list.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/species_card.dart';
 
@@ -67,7 +67,7 @@ class _SpeciesListState extends State<SpeciesList> {
     return Container(
         width: double.infinity,
         padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
-        child: PaginationList<Species>(
+        child: PaginationCardsList<Species>(
             builder: (Species species) {
               return Container(
                   padding: EdgeInsets.only(bottom: 20.0),
