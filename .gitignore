@@ -27,6 +27,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+.fvm/
 
 # Rust
 /Cargo.lock
