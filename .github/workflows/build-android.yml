@@ -22,7 +22,7 @@ jobs:
         flutter-version: '3.13.7'
     - uses: bluefireteam/melos-action@v2
     - run: flutter pub get
-    - run: flutter build apk --target packages/p2panda_flutter/p2panda_flutter.dart
+    - run: flutter build apk --target packages/p2panda_flutter/lib/p2panda_flutter.dart
     - uses: actions/upload-artifact@v4
       with:
         name: app-release.apk
