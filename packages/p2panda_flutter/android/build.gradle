@@ -23,6 +23,7 @@ rootProject.allprojects {
 }
 
 apply plugin: 'com.android.library'
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     // Bumping the plugin compileSdkVersion requires all clients of this plugin
