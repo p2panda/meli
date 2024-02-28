@@ -17,9 +17,10 @@ jobs:
       with:
         distribution: 'temurin' # AdoptOpenJDK is now Eclipse Temurin
         java-version: '11'
-    - uses: subosito/flutter-action@v1
+    - uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.13.7'
+    - uses: bluefireteam/melos-action@v2
     - run: flutter pub get
     - run: flutter build apk
     - uses: actions/upload-artifact@v4
