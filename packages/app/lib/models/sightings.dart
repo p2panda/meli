@@ -70,6 +70,26 @@ class Sighting {
       String? comment,
       List<Species>? species,
       List<LocalName>? localNames}) async {
+    List<DocumentId>? speciesIds;
+    if (species != null) {
+      speciesIds = species.isEmpty ? [] : [species.first.id];
+    }
+
+    List<DocumentId>? localNameIds;
+    if (localNames != null) {
+      localNameIds = localNames.isEmpty ? [] : [localNames.first.id];
+    }
+
+    this.viewId = await updateSighting(
+      this.viewId,
+      datetime: datetime,
+      latitude: latitude,
+      longitude: longitude,
+      comment: comment,
+      speciesIds: speciesIds,
+      localNameIds: localNameIds,
+    );
+
     if (datetime != null) {
       this.datetime = datetime;
     }
@@ -82,31 +102,13 @@ class Sighting {
       this.longitude = longitude;
     }
 
-    List<DocumentId>? speciesIds;
-    if (species != null && species.isEmpty) {
-      this.species = null;
-      speciesIds = [];
-    } else if (species != null) {
-      this.species = species.first;
-      speciesIds = [species.first.id];
+    if (species != null) {
+      this.species = species.firstOrNull;
     }
 
-    List<DocumentId>? localNameIds;
-    if (localNames != null && localNames.isEmpty) {
-      this.localName = null;
-      localNameIds = [];
-    } else if (localNames != null) {
-      this.localName = localNames.first;
-      localNameIds = [localNames.first.id];
+    if (localNames != null) {
+      this.localName = localNames.firstOrNull;
     }
-
-    this.viewId = await updateSighting(this.viewId,
-        datetime: datetime,
-        latitude: latitude,
-        longitude: longitude,
-        comment: comment,
-        speciesIds: speciesIds,
-        localNameIds: localNameIds);
 
     return this.viewId;
   }
