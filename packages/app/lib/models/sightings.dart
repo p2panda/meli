@@ -70,24 +70,25 @@ class Sighting {
       String? comment,
       List<Species>? species,
       List<LocalName>? localNames}) async {
-    Species? updatedSpecies = species?.firstOrNull;
-    LocalName? updatedLocalName = localNames?.firstOrNull;
+    List<DocumentId>? speciesIds;
+    if (species != null) {
+      speciesIds = species.isEmpty ? [] : [species.first.id];
+    }
 
-    this.viewId = await updateSighting(this.viewId,
-        datetime: datetime,
-        latitude: latitude,
-        longitude: longitude,
-        comment: comment,
-        speciesIds: species == null
-            ? null
-            : updatedSpecies == null
-                ? []
-                : [updatedSpecies.id],
-        localNameIds: localNames == null
-            ? null
-            : updatedLocalName == null
-                ? []
-                : [updatedLocalName.id]);
+    List<DocumentId>? localNameIds;
+    if (localNames != null) {
+      localNameIds = localNames.isEmpty ? [] : [localNames.first.id];
+    }
+
+    this.viewId = await updateSighting(
+      this.viewId,
+      datetime: datetime,
+      latitude: latitude,
+      longitude: longitude,
+      comment: comment,
+      speciesIds: speciesIds,
+      localNameIds: localNameIds,
+    );
 
     if (datetime != null) {
       this.datetime = datetime;
@@ -102,11 +103,11 @@ class Sighting {
     }
 
     if (species != null) {
-      this.species = updatedSpecies;
+      this.species = species.firstOrNull;
     }
 
     if (localNames != null) {
-      this.localName = updatedLocalName;
+      this.localName = localNames.firstOrNull;
     }
 
     return this.viewId;
