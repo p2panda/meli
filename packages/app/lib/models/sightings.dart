@@ -72,7 +72,7 @@ class Sighting {
       String? comment,
       List<Species>? species,
       List<LocalName>? localNames}) async {
-    Species? updatedSpecie = species?.firstOrNull;
+    Species? updatedSpecies = species?.firstOrNull;
     LocalName? updatedLocalName = localNames?.firstOrNull;
 
     this.viewId = await updateSighting(this.viewId,
@@ -80,7 +80,7 @@ class Sighting {
         latitude: latitude,
         longitude: longitude,
         comment: comment,
-        speciesIds: updatedSpecie == null ? [] : [updatedSpecie.id],
+        speciesIds: updatedSpecies == null ? [] : [updatedSpecies.id],
         localNameIds: updatedLocalName == null ? [] : [updatedLocalName.id]);
 
     if (datetime != null) {
@@ -95,7 +95,7 @@ class Sighting {
       this.longitude = longitude;
     }
 
-    this.species = updatedSpecie;
+    this.species = updatedSpecies;
     this.localName = updatedLocalName;
 
     return this.viewId;
