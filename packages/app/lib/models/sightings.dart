@@ -72,8 +72,8 @@ class Sighting {
       String? comment,
       List<Species>? species,
       List<LocalName>? localNames}) async {
-    Species? updatedSpecie = species?.first;
-    LocalName? updatedLocalName = localNames?.first;
+    Species? updatedSpecie = species?.firstOrNull;
+    LocalName? updatedLocalName = localNames?.firstOrNull;
 
     this.viewId = await updateSighting(this.viewId,
         datetime: datetime,
