@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'dart:ffi';
+
 import 'package:gql/src/ast/ast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:p2panda_flutter/p2panda_flutter.dart';
@@ -70,6 +72,17 @@ class Sighting {
       String? comment,
       List<Species>? species,
       List<LocalName>? localNames}) async {
+    Species? updatedSpecie = species?.first;
+    LocalName? updatedLocalName = localNames?.first;
+
+    this.viewId = await updateSighting(this.viewId,
+        datetime: datetime,
+        latitude: latitude,
+        longitude: longitude,
+        comment: comment,
+        speciesIds: updatedSpecie == null ? [] : [updatedSpecie.id],
+        localNameIds: updatedLocalName == null ? [] : [updatedLocalName.id]);
+
     if (datetime != null) {
       this.datetime = datetime;
     }
@@ -82,31 +95,13 @@ class Sighting {
       this.longitude = longitude;
     }
 
-    List<DocumentId>? speciesIds;
-    if (species != null && species.isEmpty) {
-      this.species = null;
-      speciesIds = [];
-    } else if (species != null) {
-      this.species = species.first;
-      speciesIds = [species.first.id];
+    if (updatedSpecie != null) {
+      this.species = updatedSpecie;
     }
 
-    List<DocumentId>? localNameIds;
-    if (localNames != null && localNames.isEmpty) {
-      this.localName = null;
-      localNameIds = [];
-    } else if (localNames != null) {
-      this.localName = localNames.first;
-      localNameIds = [localNames.first.id];
+    if (updatedLocalName != null) {
+      this.localName = updatedLocalName;
     }
-
-    this.viewId = await updateSighting(this.viewId,
-        datetime: datetime,
-        latitude: latitude,
-        longitude: longitude,
-        comment: comment,
-        speciesIds: speciesIds,
-        localNameIds: localNameIds);
 
     return this.viewId;
   }
