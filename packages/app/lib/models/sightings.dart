@@ -80,8 +80,16 @@ class Sighting {
         latitude: latitude,
         longitude: longitude,
         comment: comment,
-        speciesIds: updatedSpecies == null ? [] : [updatedSpecies.id],
-        localNameIds: updatedLocalName == null ? [] : [updatedLocalName.id]);
+        speciesIds: species == null
+            ? null
+            : updatedSpecies == null
+                ? []
+                : [updatedSpecies.id],
+        localNameIds: localNames == null
+            ? null
+            : updatedLocalName == null
+                ? []
+                : [updatedLocalName.id]);
 
     if (datetime != null) {
       this.datetime = datetime;
@@ -95,8 +103,13 @@ class Sighting {
       this.longitude = longitude;
     }
 
-    this.species = updatedSpecies;
-    this.localName = updatedLocalName;
+    if (species != null) {
+      this.species = updatedSpecies;
+    }
+
+    if (localNames != null) {
+      this.localName = updatedLocalName;
+    }
 
     return this.viewId;
   }
