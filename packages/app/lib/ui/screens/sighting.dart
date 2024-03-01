@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/io/p2panda/publish.dart';
+import 'package:app/models/used_for.dart';
+import 'package:app/ui/widgets/used_for_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -118,6 +121,23 @@ class _SightingProfileState extends State<SightingProfile> {
     setState(() {});
   }
 
+  Future<DocumentViewId?> _updateUsedFor(AutocompleteItem? item) async {
+    if (item == null) {
+      // Do nothing
+    } else if (item.viewId == null) {
+      // Create new used for assigned to this sighting
+      final newUsedFor =
+          await UsedFor.create(sighting: sighting.id, usedFor: item.value);
+      return newUsedFor.viewId;
+    } else if (item.viewId != null) {
+      // Assign existing local name to sighting
+      return await updateUsedFor(item.viewId!, usedFor: item.value);
+    }
+
+    setState(() {});
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final imagePaths = sighting.images
@@ -138,6 +158,11 @@ class _SightingProfileState extends State<SightingProfile> {
         SpeciesField(
           sighting.species?.species,
           onUpdate: _updateSpecies,
+        ),
+        UsedForField(
+          null,
+          sighting: sighting.id,
+          onUpdate: _updateUsedFor,
         ),
         // @TODO: Remove this as soon as there are more elements
         SizedBox(height: 550.0),
