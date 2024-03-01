@@ -95,13 +95,8 @@ class Sighting {
       this.longitude = longitude;
     }
 
-    if (updatedSpecie != null) {
-      this.species = updatedSpecie;
-    }
-
-    if (updatedLocalName != null) {
-      this.localName = updatedLocalName;
-    }
+    this.species = updatedSpecie;
+    this.localName = updatedLocalName;
 
     return this.viewId;
   }
