@@ -1,0 +1,29 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin' # AdoptOpenJDK is now Eclipse Temurin
+        java-version: '11'
+    - uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.13.7'
+    - uses: bluefireteam/melos-action@v2
+    - run: flutter pub get
+    - run: flutter build apk --target packages/p2panda_flutter/lib/p2panda_flutter.dart
+    - uses: actions/upload-artifact@v4
+      with:
+        name: app-release.apk
+        path: packages/p2panda_flutter/build/app/outputs/flutter-apk/app-release.apk
