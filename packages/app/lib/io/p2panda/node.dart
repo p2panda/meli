@@ -20,14 +20,14 @@ Future<void> startNode() async {
 
   // Re-use client's key pair also for node. Note that during networking the
   // peer id will be a hashed version of the public key and it will not leak
-  final keyPair = await keyPair;
+  final key = await keyPair;
 
   // @TODO: Better logging here
   print(relayAddresses);
 
   // Start node in background thread
   p2panda.startNode(
-      keyPair: keyPair,
+      keyPair: key,
       databaseUrl: databaseUrl,
       blobsBasePath: basePath,
       relayAddresses: relayAddresses);

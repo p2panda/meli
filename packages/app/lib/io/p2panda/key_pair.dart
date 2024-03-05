@@ -47,12 +47,12 @@ Future<KeyPair> get keyPair async {
 
 /// Returns public key as bytes.
 Future<Uint8List> get publicKey async {
-  final keyPair = await keyPair;
-  return await keyPair.publicKey();
+  final key = await keyPair;
+  return await key.publicKey();
 }
 
 /// Returns public key encoded as hexadecimal string.
 Future<String> get publicKeyHex async {
-  final publicKey = await publicKey;
-  return hex.encode(publicKey);
+  final key = await publicKey;
+  return hex.encode(key);
 }
