@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class MeliCameraProvider extends StatefulWidget {
-  const MeliCameraProvider(this.child, {Key? key}) : super(key: key);
+  const MeliCameraProvider(this.child, {super.key});
   final Widget child;
 
   @override
@@ -25,7 +25,7 @@ class MeliCameraProviderState extends State<MeliCameraProvider> {
       return File(response.file!.path);
     } else if (response.exception != null) {
       _retrieveDataError = response.exception!.code;
-      print('CameraProvider error: ${_retrieveDataError}');
+      print('CameraProvider error: $_retrieveDataError');
     }
 
     return null;
@@ -61,23 +61,23 @@ class MeliCameraProviderState extends State<MeliCameraProvider> {
   }
 
   Widget renderChildren() {
-    return MeliCameraProviderInherited(state: this, child: this.widget.child);
+    return MeliCameraProviderInherited(state: this, child: widget.child);
   }
 
   @override
   Widget build(BuildContext context) {
-    return MeliCameraProviderInherited(state: this, child: this.widget.child);
+    return MeliCameraProviderInherited(state: this, child: widget.child);
   }
 }
 
 class MeliCameraProviderInherited extends InheritedWidget {
   final MeliCameraProviderState state;
 
-  MeliCameraProviderInherited({
-    Key? key,
-    required MeliCameraProviderState this.state,
-    required Widget child,
-  }) : super(key: key, child: child);
+  const MeliCameraProviderInherited({
+    super.key,
+    required this.state,
+    required super.child,
+  });
 
   static MeliCameraProviderState of(BuildContext context) {
     return context

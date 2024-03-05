@@ -26,15 +26,15 @@ class BaseTaxonomy {
 
   Future<publish.DocumentViewId> update(
       {required String name, publish.DocumentId? parentId}) async {
-    this.viewId = await updateTaxon(this.schemaId, this.viewId,
+    viewId = await updateTaxon(schemaId, viewId,
         name: name, parentId: parentId);
     this.name = name;
-    return this.viewId;
+    return viewId;
   }
 
   Future<publish.DocumentViewId> delete() async {
-    this.viewId = await deleteTaxon(this.schemaId, this.viewId);
-    return this.viewId;
+    viewId = await deleteTaxon(schemaId, viewId);
+    return viewId;
   }
 
   Future<String> search(String value) async {

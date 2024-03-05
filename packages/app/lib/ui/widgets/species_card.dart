@@ -17,7 +17,7 @@ class SpeciesCard extends StatefulWidget {
 
   final VoidCallback onTap;
 
-  SpeciesCard(
+  const SpeciesCard(
       {super.key,
       required this.id,
       required this.taxonomySpecies,
@@ -32,10 +32,10 @@ class _SpeciesCardState extends State<SpeciesCard> {
 
   Widget get _title {
     return Text(
-      this.widget.taxonomySpecies.name,
+      widget.taxonomySpecies.name,
       textAlign: TextAlign.center,
       overflow: TextOverflow.ellipsis,
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 23.0,
         fontFamily: 'Staatliches',
       ),
@@ -55,7 +55,7 @@ class _SpeciesCardState extends State<SpeciesCard> {
         }
 
         if (result.isLoading) {
-          return SizedBox.shrink();
+          return const SizedBox.shrink();
         }
 
         final list = result.data![DEFAULT_RESULTS_KEY]['documents'] as List;
@@ -64,7 +64,7 @@ class _SpeciesCardState extends State<SpeciesCard> {
               Sighting.fromJson(list.first as Map<String, dynamic>);
           return MeliImage(image: sighting.images.first);
         } else {
-          return MeliImage(image: null);
+          return const MeliImage(image: null);
         }
       },
     );
@@ -88,16 +88,15 @@ class _SpeciesCardState extends State<SpeciesCard> {
           isSelected = false;
         });
       },
-      onTap: this.widget.onTap,
+      onTap: widget.onTap,
       child: MeliCard(
           elevation: 0,
           borderWidth: 4.0,
           color: MeliColors.white,
-          borderColor: this.isSelected ? MeliColors.black : MeliColors.white,
+          borderColor: isSelected ? MeliColors.black : MeliColors.white,
           child: Column(children: [
             Container(
-              margin: EdgeInsets.all(1.0),
-              child: this._image,
+              margin: const EdgeInsets.all(1.0),
               clipBehavior: Clip.antiAlias,
               height: 240.0,
               width: double.infinity,
@@ -106,12 +105,13 @@ class _SpeciesCardState extends State<SpeciesCard> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
+              child: _image,
             ),
             Container(
               padding: const EdgeInsets.only(
                   top: 8.0, right: 6.0, bottom: 10.0, left: 6.0),
               alignment: AlignmentDirectional.center,
-              child: this._title,
+              child: _title,
             ),
           ])),
     );

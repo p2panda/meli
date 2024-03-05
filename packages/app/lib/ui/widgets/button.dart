@@ -6,7 +6,7 @@ class MeliButton extends StatelessWidget {
   final Widget child;
   final VoidCallback? onPressed;
 
-  MeliButton({
+  const MeliButton({
     super.key,
     required this.child,
     this.onPressed,
@@ -19,15 +19,15 @@ class MeliButton extends StatelessWidget {
             elevation: 2.0,
             foregroundColor: Colors.black87,
             backgroundColor: Colors.white),
-        onPressed: this.onPressed,
-        child: this.child);
+        onPressed: onPressed,
+        child: child);
   }
 }
 
 class MeliIconButton extends MeliButton {
   final Widget icon;
 
-  MeliIconButton({
+  const MeliIconButton({
     super.key,
     required this.icon,
     required super.child,
@@ -41,9 +41,9 @@ class MeliIconButton extends MeliButton {
           elevation: 2.0,
           foregroundColor: Colors.black87,
           backgroundColor: Colors.white),
-      onPressed: this.onPressed,
-      icon: this.icon,
-      label: this.child,
+      onPressed: onPressed,
+      icon: icon,
+      label: child,
     );
   }
 }

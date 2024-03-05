@@ -17,7 +17,7 @@ class LocalNameAutocomplete extends StatefulWidget {
   final AutocompleteItem? initialValue;
   final bool autofocus;
 
-  LocalNameAutocomplete(
+  const LocalNameAutocomplete(
       {super.key,
       required this.onChanged,
       this.onSubmit,

@@ -10,7 +10,7 @@ class IconMessageCard extends StatelessWidget {
   final IconData icon;
   final Color color;
 
-  IconMessageCard(
+  const IconMessageCard(
       {super.key,
       required this.message,
       required this.icon,
@@ -20,20 +20,20 @@ class IconMessageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return MeliCard(
         elevation: 3.0,
-        color: this.color,
+        color: color,
         borderWidth: 0.0,
         child: SizedBox(
           width: double.infinity,
           child: Container(
-              padding: EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(20.0),
               child: Column(children: [
                 Icon(
-                  this.icon,
+                  icon,
                   size: 40.0,
                   color: MeliColors.black,
                 ),
-                SizedBox(height: 10.0),
-                Text(this.message,
+                const SizedBox(height: 10.0),
+                Text(message,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyLarge),
               ])),

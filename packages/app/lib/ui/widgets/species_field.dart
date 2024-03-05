@@ -25,7 +25,7 @@ class SpeciesField extends StatefulWidget {
   final OnUpdate onUpdate;
   final bool allowNull;
 
-  SpeciesField(this.current,
+  const SpeciesField(this.current,
       {super.key, required this.onUpdate, this.allowNull = true});
 
   @override
@@ -317,12 +317,12 @@ class _SpeciesFieldState extends State<SpeciesField> {
     if (_isLoading) {
       return Container(
           padding: const EdgeInsets.all(20.0),
-          child: CircularProgressIndicator(color: MeliColors.black));
+          child: const CircularProgressIndicator(color: MeliColors.black));
     }
 
     if (_taxonomy[0] == null) {
       // Show "no value given" when nothing was set
-      return ReadOnlyValue(null);
+      return const ReadOnlyValue(null);
     }
 
     // Show only defined taxa until "Tribe"
@@ -340,7 +340,7 @@ class _SpeciesFieldState extends State<SpeciesField> {
               children: [
                 Text(
                   rank['label']!,
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Text(taxon.value),
               ]);
@@ -352,8 +352,8 @@ class _SpeciesFieldState extends State<SpeciesField> {
     return EditableCard(
         title: AppLocalizations.of(context)!.speciesCardTitle,
         isEditMode: _isEditMode,
-        child: _isEditMode ? _editableValue() : _readOnlyValue(),
-        onChanged: _toggleEditMode);
+        onChanged: _toggleEditMode,
+        child: _isEditMode ? _editableValue() : _readOnlyValue());
   }
 }
 
@@ -365,7 +365,7 @@ class Rank extends StatefulWidget {
   final String title;
   final OnChanged onChanged;
 
-  Rank(this.title, this.schemaId, this.current,
+  const Rank(this.title, this.schemaId, this.current,
       {super.key, required this.onChanged});
 
   @override

@@ -10,7 +10,7 @@ import 'package:app/ui/widgets/image_provider.dart';
 import 'package:app/io/graphql/graphql.dart' as graphql;
 
 class MeliApp extends StatefulWidget {
-  MeliApp({super.key});
+  const MeliApp({super.key});
 
   @override
   State<MeliApp> createState() => MeliAppState();
@@ -33,15 +33,15 @@ class MeliAppState extends State<MeliApp> {
 
   Future<bool> changeLocale(Locale locale) async {
     final SharedPreferences prefs = await _prefs;
-    bool _success = await prefs.setString('locale', locale.toString());
+    bool success = await prefs.setString('locale', locale.toString());
 
-    if (_success) {
+    if (success) {
       setState(() {
         _locale = locale;
       });
     }
 
-    return _success;
+    return success;
   }
 
   @override
@@ -63,7 +63,7 @@ class MeliAppState extends State<MeliApp> {
               return locale;
             }
 
-            return Locale('pt');
+            return const Locale('pt');
           },
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,

@@ -61,10 +61,10 @@ class Species {
       this.description = description;
     }
 
-    this.viewId = await updateSpecies(this.viewId,
+    viewId = await updateSpecies(viewId,
         description: description, taxonomySpeciesId: taxonomySpeciesId);
 
-    return this.viewId;
+    return viewId;
   }
 }
 
@@ -102,7 +102,7 @@ String get speciesFields {
 }
 
 String speciesQuery(DocumentId id) {
-  final schemaId = SchemaIds.bee_species;
+  const schemaId = SchemaIds.bee_species;
   return '''
     query Species() {
       species: $schemaId(id: "$id") {
@@ -113,7 +113,7 @@ String speciesQuery(DocumentId id) {
 }
 
 String firstSpeciesWithTaxon(DocumentId taxonomySpeciesId) {
-  final schemaId = SchemaIds.bee_species;
+  const schemaId = SchemaIds.bee_species;
 
   return '''
     query AllSpecies {
@@ -134,7 +134,7 @@ String firstSpeciesWithTaxon(DocumentId taxonomySpeciesId) {
 
 String allSpeciesQuery(String? cursor) {
   final after = (cursor != null) ? '''after: "$cursor",''' : '';
-  final schemaId = SchemaIds.bee_species;
+  const schemaId = SchemaIds.bee_species;
 
   return '''
     query AllSpecies {

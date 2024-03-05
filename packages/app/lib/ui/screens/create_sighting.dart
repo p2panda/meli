@@ -27,7 +27,7 @@ import 'package:app/utils/sleep.dart';
 const String PLACEHOLDER_IMG = 'assets/images/placeholder-bee.png';
 
 class CreateSightingScreen extends StatefulWidget {
-  CreateSightingScreen({super.key});
+  const CreateSightingScreen({super.key});
 
   @override
   State<CreateSightingScreen> createState() => _CreateSightingScreenState();
@@ -68,14 +68,14 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
   void _pickFromGallery() async {
     List<File> newImages =
         await MeliCameraProviderInherited.of(context).pickFromGallery();
-    this._addAllImages(newImages);
+    _addAllImages(newImages);
   }
 
   void _capturePhoto() async {
     File? newImage =
         await MeliCameraProviderInherited.of(context).capturePhoto();
     if (newImage != null) {
-      this._addImage(newImage);
+      _addImage(newImage);
     }
   }
 
@@ -90,7 +90,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
         labelAbort: t.imageDeleteAlertCancel,
         labelConfirm: t.imageDeleteAlertConfirm,
         onConfirm: () {
-          this._removeImageAt(imageIndex);
+          _removeImageAt(imageIndex);
           Navigator.pop(context);
         },
       ),
@@ -161,12 +161,12 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
 
     MeliCameraProviderInherited.of(context)
         .retrieveLostData()
-        .then((file) => {if (file != null) this._addImage(file)});
+        .then((file) => {if (file != null) _addImage(file)});
 
     MeliCameraProviderInherited.of(context).capturePhoto().then((file) {
       if (file != null) {
-        this._initialImageCaptured = true;
-        this._addImage(file);
+        _initialImageCaptured = true;
+        _addImage(file);
       } else {
         // If no file was captured navigate back to all sightings screen
         router.pop();
@@ -183,7 +183,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
     if (images.isEmpty && !_initialImageCaptured) {
       return Container(
         color: MeliColors.black,
-        child: Center(
+        child: const Center(
           child: CircularProgressIndicator(
             color: Colors.grey,
           ),
@@ -205,37 +205,37 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
             color: MeliColors.sea,
             buttons: [
               ActionButton(
-                onPressed: this._pickFromGallery,
+                onPressed: _pickFromGallery,
                 color: MeliColors.sea,
                 icon: const Icon(Icons.insert_photo_outlined),
               ),
               ActionButton(
-                onPressed: this._capturePhoto,
+                onPressed: _capturePhoto,
                 color: MeliColors.sea,
                 icon: const Icon(Icons.camera_alt_outlined),
               ),
             ],
           ),
           MeliFloatingActionButton(
-              icon: Icon(Icons.check),
-              disabled: this.images.isEmpty,
+              icon: const Icon(Icons.check),
+              disabled: images.isEmpty,
               backgroundColor: MeliColors.electric,
-              onPressed: this._createSighting),
+              onPressed: _createSighting),
         ],
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [MeliColors.electric, MeliColors.magnolia])),
           child: SingleChildScrollView(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
                 top: 20.0, bottom: 75.0, left: 20.0, right: 20.0),
             child: Wrap(
               runSpacing: 20.0,
               children: [
                 images.isEmpty
-                    ? ImageCarousel(imagePaths: [PLACEHOLDER_IMG])
+                    ? const ImageCarousel(imagePaths: [PLACEHOLDER_IMG])
                     : ImageCarousel(
                         imagePaths: images.map((file) => file.path).toList(),
                         onDelete: _onImageDelete),

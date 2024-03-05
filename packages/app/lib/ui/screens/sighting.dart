@@ -20,7 +20,7 @@ import 'package:app/ui/widgets/species_field.dart';
 class SightingScreen extends StatefulWidget {
   final String documentId;
 
-  SightingScreen({super.key, required this.documentId});
+  const SightingScreen({super.key, required this.documentId});
 
   @override
   State<SightingScreen> createState() => _SightingScreenState();
@@ -67,7 +67,7 @@ class _SightingScreenState extends State<SightingScreen> {
 class SightingProfile extends StatefulWidget {
   final Sighting initialValue;
 
-  SightingProfile(this.initialValue, {super.key});
+  const SightingProfile(this.initialValue, {super.key});
 
   @override
   State<SightingProfile> createState() => _SightingProfileState();
@@ -121,7 +121,7 @@ class _SightingProfileState extends State<SightingProfile> {
   @override
   Widget build(BuildContext context) {
     final imagePaths = sighting.images
-        .map((image) => '${BLOBS_BASE_PATH}/${image.id}')
+        .map((image) => '$BLOBS_BASE_PATH/${image.id}')
         .toList();
 
     return Container(
@@ -140,7 +140,7 @@ class _SightingProfileState extends State<SightingProfile> {
           onUpdate: _updateSpecies,
         ),
         // @TODO: Remove this as soon as there are more elements
-        SizedBox(height: 550.0),
+        const SizedBox(height: 550.0),
       ]),
     );
   }
@@ -149,7 +149,7 @@ class _SightingProfileState extends State<SightingProfile> {
 class SightingProfileTitle extends StatelessWidget {
   final Sighting sighting;
 
-  SightingProfileTitle(this.sighting, {super.key});
+  const SightingProfileTitle(this.sighting, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +182,7 @@ class SightingProfileTitle extends StatelessWidget {
           style: const TextStyle(
               height: 1.1, fontFamily: 'Staatliches', fontSize: 24.0)),
       const SizedBox(height: 10.0),
-      Text('${date} | ${time} | #${id}', style: const TextStyle(fontSize: 16.0))
+      Text('$date | $time | #$id', style: const TextStyle(fontSize: 16.0))
     ]));
   }
 }
@@ -215,6 +215,6 @@ class _SeaWavesPainer extends BoxPainter {
     path.lineTo(0, bounds.height);
     path.close();
 
-    canvas.drawPath(path.shift(offset).shift(Offset(0, 50.0)), paint);
+    canvas.drawPath(path.shift(offset).shift(const Offset(0, 50.0)), paint);
   }
 }

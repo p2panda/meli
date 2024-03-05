@@ -26,9 +26,7 @@ class ConfirmDialog extends StatelessWidget {
       content: Text(message),
       actions: <Widget>[
         TextButton(
-          onPressed: onAbort != null
-              ? onAbort
-              : () {
+          onPressed: onAbort ?? () {
                   Navigator.pop(context);
                 },
           child: Text(labelAbort),

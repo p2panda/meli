@@ -68,10 +68,10 @@ class _ExpandableFabState extends State<ExpandableFab>
 
   @override
   Widget build(BuildContext context) {
-    final alignment = (this.widget.expandDirection == ExpandDirection.left)
+    final alignment = (widget.expandDirection == ExpandDirection.left)
         ? Alignment.bottomRight
         : Alignment.bottomLeft;
-    return Container(
+    return SizedBox(
       height: 120,
       width: 160,
       child: SizedBox.expand(
@@ -99,8 +99,8 @@ class _ExpandableFabState extends State<ExpandableFab>
           elevation: 4,
           child: InkWell(
             onTap: _toggle,
-            child: Padding(
-              padding: const EdgeInsets.all(8),
+            child: const Padding(
+              padding: EdgeInsets.all(8),
               child: Icon(
                 Icons.close,
                 color: MeliColors.black,
@@ -126,8 +126,8 @@ class _ExpandableFabState extends State<ExpandableFab>
           directionInDegrees: angleInDegrees,
           maxDistance: widget.distance,
           progress: _expandAnimation,
-          child: _buildActionButton(widget.buttons[i], _toggle),
           expandDirection: widget.expandDirection,
+          child: _buildActionButton(widget.buttons[i], _toggle),
         ),
       );
     }
@@ -152,10 +152,10 @@ class _ExpandableFabState extends State<ExpandableFab>
           duration: const Duration(milliseconds: 250),
           child: FloatingActionButton(
             foregroundColor: Colors.black,
-            backgroundColor: this.widget.color,
+            backgroundColor: widget.color,
             shape: const CircleBorder(),
             onPressed: _toggle,
-            child: this.widget.icon,
+            child: widget.icon,
           ),
         ),
       ),
@@ -255,8 +255,8 @@ class ExpandableFabItem extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
       height: isBig ? 128 : 36,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
     );
   }

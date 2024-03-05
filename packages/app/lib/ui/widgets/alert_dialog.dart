@@ -22,9 +22,7 @@ class MeliAlertDialog extends StatelessWidget {
       content: Text(message),
       actions: <Widget>[
         TextButton(
-          onPressed: onConfirm != null
-              ? onConfirm
-              : () {
+          onPressed: onConfirm ?? () {
                   Navigator.pop(context);
                 },
           child: Text(labelConfirm),

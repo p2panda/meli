@@ -15,7 +15,7 @@ import 'package:app/ui/widgets/text_field.dart';
 class SpeciesScreen extends StatefulWidget {
   final String documentId;
 
-  SpeciesScreen({super.key, required this.documentId});
+  const SpeciesScreen({super.key, required this.documentId});
 
   @override
   State<SpeciesScreen> createState() => _SpeciesScreenState();
@@ -61,7 +61,7 @@ class _SpeciesScreenState extends State<SpeciesScreen> {
 class SpeciesProfile extends StatefulWidget {
   final Species initialValue;
 
-  SpeciesProfile(this.initialValue, {super.key});
+  const SpeciesProfile(this.initialValue, {super.key});
 
   @override
   State<SpeciesProfile> createState() => _SpeciesProfileState();
@@ -100,7 +100,7 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
       decoration: const SeaWavesBackground(),
       child: Wrap(runSpacing: 20.0, children: [
         SpeciesProfileTitle(species.species.name),
-        SizedBox(height: 100.0),
+        const SizedBox(height: 100.0),
         SpeciesField(
           species.species,
           allowNull: false,
@@ -117,7 +117,7 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
 class SpeciesProfileTitle extends StatelessWidget {
   final String title;
 
-  SpeciesProfileTitle(this.title, {super.key});
+  const SpeciesProfileTitle(this.title, {super.key});
 
   @override
   Widget build(BuildContext context) {

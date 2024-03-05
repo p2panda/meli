@@ -49,18 +49,17 @@ Future<DocumentViewId> _publish(OperationAction action, SchemaId schemaId,
       action: action, schemaId: schemaId, fields: fields, previous: previous);
 
   // Get arguments to create p2panda entry from node
-  final _publicKey = await publicKeyHex;
-  final nextArgs = await queries.nextArgs(_publicKey, previous);
+  final publicKey = await publicKeyHex;
+  final nextArgs = await queries.nextArgs(publicKey, previous);
 
   // Create and sign p2panda entry with key pair and received arguments
-  final _keyPair = await keyPair;
   final encodedEntry = await p2panda.signAndEncodeEntry(
       logId: nextArgs.logId.toString(),
       seqNum: nextArgs.seqNum.toString(),
       backlinkHash: nextArgs.backlink,
       skiplinkHash: nextArgs.skiplink,
       payload: encodedOperation,
-      keyPair: _keyPair);
+      keyPair: await keyPair);
 
   // ... finally publish entry and operation
   final result = await queries.publish(

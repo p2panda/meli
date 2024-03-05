@@ -16,18 +16,18 @@ Future<void> startNode() async {
   final basePath = await applicationSupportDirectory;
 
   // Set up SQLite database file inside of persisted phone directory
-  final databaseUrl = 'sqlite:/${basePath}/db.sqlite3';
+  final databaseUrl = 'sqlite:/$basePath/db.sqlite3';
 
   // Re-use client's key pair also for node. Note that during networking the
   // peer id will be a hashed version of the public key and it will not leak
-  final _keyPair = await keyPair;
+  final key = await keyPair;
 
   // @TODO: Better logging here
   print(relayAddresses);
 
   // Start node in background thread
   p2panda.startNode(
-      keyPair: _keyPair,
+      keyPair: key,
       databaseUrl: databaseUrl,
       blobsBasePath: basePath,
       relayAddresses: relayAddresses);
@@ -44,12 +44,12 @@ Future<void> shutdownNode() async {
 
 /// Async helper method to block until node is up and running.
 Future<void> _untilReady() async {
-  final _publicKey = await publicKeyHex;
+  final publicKey = await publicKeyHex;
 
   while (true) {
     try {
       // Send a simple GraphQL request to find out if node responds
-      await nextArgs(_publicKey, null);
+      await nextArgs(publicKey, null);
 
       // If we got a response (no exception) we can stop here
       break;

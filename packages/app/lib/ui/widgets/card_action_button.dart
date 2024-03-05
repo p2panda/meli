@@ -8,7 +8,7 @@ class CardActionButton extends StatelessWidget {
   final Icon icon;
   final VoidCallback? onPressed;
 
-  CardActionButton({
+  const CardActionButton({
     super.key,
     required this.icon,
     this.onPressed,
@@ -19,9 +19,9 @@ class CardActionButton extends StatelessWidget {
     return FloatingActionButton.small(
         elevation: 5.0,
         heroTag: null,
-        child: this.icon,
-        onPressed: this.onPressed,
+        onPressed: onPressed,
         foregroundColor: MeliColors.black,
-        backgroundColor: MeliColors.pink);
+        backgroundColor: MeliColors.pink,
+        child: icon);
   }
 }

@@ -38,14 +38,14 @@ Future<DocumentViewId> publishBlob(File file) async {
   // Get the length and calculate the total number of pieces, based on the
   // maximum allowed piece size.
   final length = await reader.length();
-  final expected_pieces = (length / MAX_BLOB_PIECE_LENGTH).ceil();
+  final expectedPieces = (length / MAX_BLOB_PIECE_LENGTH).ceil();
 
   // This is where we will keep ids of the created blob pieces
-  List<DocumentViewId> blob_pieces = [];
+  List<DocumentViewId> blobPieces = [];
 
   // For each expected piece read the chunk of bytes into a buffer and publish
   // the piece to the node.
-  for (var i = 0; i < expected_pieces; i++) {
+  for (var i = 0; i < expectedPieces; i++) {
     // Calculate the offset we want to start reading from.
     int offset = i * MAX_BLOB_PIECE_LENGTH;
 
@@ -55,7 +55,7 @@ Future<DocumentViewId> publishBlob(File file) async {
     // Populate a fixed buffer which will contain the bytes of a single blob
     // piece. Account for the final blob piece being variable length.
     Uint8List buffer;
-    if (blob_pieces.length == expected_pieces - 1) {
+    if (blobPieces.length == expectedPieces - 1) {
       buffer = Uint8List(length - offset);
     } else {
       buffer = Uint8List(MAX_BLOB_PIECE_LENGTH);
@@ -64,14 +64,14 @@ Future<DocumentViewId> publishBlob(File file) async {
     // Create and publish the blob piece and store it's id for use later.
     await rangeReader.readInto(buffer);
     DocumentViewId id = await createBlobPiece(buffer);
-    blob_pieces.add(id);
+    blobPieces.add(id);
   }
 
   // Close the reader.
   await reader.close();
 
   // Now create and publish the blob.
-  return await createBlob(mimeType.toString(), length, blob_pieces);
+  return await createBlob(mimeType.toString(), length, blobPieces);
 }
 
 Future<DocumentViewId> createBlobPiece(Uint8List bytes) async {

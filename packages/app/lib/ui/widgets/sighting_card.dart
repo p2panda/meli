@@ -18,7 +18,7 @@ class SightingCard extends StatefulWidget {
 
   final VoidCallback onTap;
 
-  SightingCard(
+  const SightingCard(
       {super.key,
       this.localName,
       required this.onTap,
@@ -43,15 +43,15 @@ class _SightingCardState extends State<SightingCard> {
     }
 
     return Text(title,
-        style: TextStyle(fontSize: 20.0, fontFamily: 'Staatliches'));
+        style: const TextStyle(fontSize: 20.0, fontFamily: 'Staatliches'));
   }
 
   Widget get _icon {
     if (widget.species == null) {
-      return Icon(Icons.question_mark);
+      return const Icon(Icons.question_mark);
     }
 
-    return SizedBox.shrink();
+    return const SizedBox.shrink();
   }
 
   Widget get _date {
@@ -76,12 +76,12 @@ class _SightingCardState extends State<SightingCard> {
           isSelected = false;
         });
       },
-      onTap: this.widget.onTap,
+      onTap: widget.onTap,
       child: MeliCard(
           elevation: 0,
           borderWidth: 3.0,
           color: MeliColors.white,
-          borderColor: this.isSelected ? MeliColors.black : MeliColors.white,
+          borderColor: isSelected ? MeliColors.black : MeliColors.white,
           child: Column(children: [
             Container(
               alignment: AlignmentDirectional.centerStart,
@@ -92,25 +92,25 @@ class _SightingCardState extends State<SightingCard> {
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        this._title,
-                        this._icon,
+                        _title,
+                        _icon,
                       ]),
-                  this._date,
+                  _date,
                 ],
               ),
             ),
             Container(
-              child: MeliImage(image: widget.image),
               clipBehavior: Clip.hardEdge,
               height: 200.0,
               width: double.infinity,
-              decoration: ShapeDecoration(
+              decoration: const ShapeDecoration(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(12.0),
                       bottomRight: Radius.circular(12.0)),
                 ),
               ),
+              child: MeliImage(image: widget.image),
             )
           ])),
     );

@@ -14,24 +14,24 @@ class ImageCarousel extends StatefulWidget {
   final List<String> imagePaths;
   final DeleteFunction? onDelete;
 
-  ImageCarousel({super.key, required this.imagePaths, this.onDelete});
+  const ImageCarousel({super.key, required this.imagePaths, this.onDelete});
 
   @override
   State<ImageCarousel> createState() => _ImageCarouselState();
 }
 
 class _ImageCarouselState extends State<ImageCarousel> {
-  CarouselController _controller = CarouselController();
+  final CarouselController _controller = CarouselController();
   int _currentIndex = 0;
 
   Widget _deleteButton() {
     return Container(
         alignment: Alignment.bottomCenter,
-        padding: EdgeInsets.only(bottom: 10.0),
+        padding: const EdgeInsets.only(bottom: 10.0),
         child: CarouselButton(
             color: Colors.red,
             onPressed: () {
-              this.widget.onDelete!(this._currentIndex);
+              widget.onDelete!(_currentIndex);
             },
             icon: Icons.delete_outline));
   }
@@ -42,8 +42,8 @@ class _ImageCarouselState extends State<ImageCarousel> {
         child: CarouselButton(
             color: Colors.transparent,
             onPressed: () {
-              this._controller.previousPage(
-                  duration: Duration(milliseconds: 300), curve: Curves.linear);
+              _controller.previousPage(
+                  duration: const Duration(milliseconds: 300), curve: Curves.linear);
             },
             icon: Icons.navigate_before));
   }
@@ -54,8 +54,8 @@ class _ImageCarouselState extends State<ImageCarousel> {
         child: CarouselButton(
             color: Colors.transparent,
             onPressed: () {
-              this._controller.nextPage(
-                  duration: Duration(milliseconds: 300), curve: Curves.linear);
+              _controller.nextPage(
+                  duration: const Duration(milliseconds: 300), curve: Curves.linear);
             },
             icon: Icons.navigate_next));
   }
@@ -76,26 +76,26 @@ class _ImageCarouselState extends State<ImageCarousel> {
         child: Stack(
           children: [
             CarouselSlider(
-              carouselController: this._controller,
+              carouselController: _controller,
               options: CarouselOptions(
                   height: 200.0,
                   onPageChanged: (value, reason) {
                     setState(() {
-                      this._currentIndex = value;
+                      _currentIndex = value;
                     });
                   },
                   enableInfiniteScroll: false,
                   viewportFraction: 1,
                   padEnds: false,
                   enlargeCenterPage: false),
-              items: this.widget.imagePaths.map((path) {
+              items: widget.imagePaths.map((path) {
                 return CarouselItem(imagePath: path);
               }).toList(),
             ),
-            if (this.widget.onDelete != null) this._deleteButton(),
-            if (this._currentIndex > 0) this._previousButton(),
-            if (this._currentIndex < this.widget.imagePaths.length - 1)
-              this._nextButton(),
+            if (widget.onDelete != null) _deleteButton(),
+            if (_currentIndex > 0) _previousButton(),
+            if (_currentIndex < widget.imagePaths.length - 1)
+              _nextButton(),
           ],
         ),
       ),
@@ -113,12 +113,12 @@ class CarouselItem extends StatelessWidget {
     BoxFit fit = BoxFit.cover;
     double width = double.infinity;
 
-    if (this.imagePath.contains('http')) {
-      return Image.network(this.imagePath, fit: fit, width: width);
-    } else if (this.imagePath.startsWith('/')) {
-      return Image.file(File(this.imagePath), fit: fit, width: width);
+    if (imagePath.contains('http')) {
+      return Image.network(imagePath, fit: fit, width: width);
+    } else if (imagePath.startsWith('/')) {
+      return Image.file(File(imagePath), fit: fit, width: width);
     } else {
-      return Image.asset(this.imagePath, fit: fit, width: width);
+      return Image.asset(imagePath, fit: fit, width: width);
     }
   }
 }
@@ -138,8 +138,8 @@ class CarouselButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
-            backgroundColor: this.color, shape: CircleBorder()),
-        onPressed: this.onPressed,
-        child: Icon(this.icon, color: Colors.white));
+            backgroundColor: color, shape: const CircleBorder()),
+        onPressed: onPressed,
+        child: Icon(icon, color: Colors.white));
   }
 }

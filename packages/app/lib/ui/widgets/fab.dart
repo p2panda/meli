@@ -10,7 +10,7 @@ class MeliFloatingActionButton extends StatefulWidget {
   final Color backgroundColor;
   final bool disabled;
 
-  MeliFloatingActionButton(
+  const MeliFloatingActionButton(
       {super.key,
       required this.icon,
       required this.onPressed,
@@ -33,9 +33,9 @@ class _MeliFloatingActionButtonState extends State<MeliFloatingActionButton> {
         backgroundColor:
             widget.disabled ? Colors.grey[400] : widget.backgroundColor,
         heroTag: null,
-        child: widget.icon,
         shape: const CircleBorder(),
         onPressed: widget.disabled ? null : widget.onPressed,
+        child: widget.icon,
       ),
     );
   }

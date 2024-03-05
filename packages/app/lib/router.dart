@@ -33,8 +33,8 @@ final router = GoRouter(routes: [
   // the native splash screen is shown. We have this in place to not have any
   // app logic running yet while everything else is bootstrapping.
   _Route(RoutePaths.splash, (_) => Container(color: Colors.white)),
-  _Route(RoutePaths.settings, (_) => SettingsScreen()),
-  _Route(RoutePaths.allSightings, (_) => AllSightingsScreen()),
+  _Route(RoutePaths.settings, (_) => const SettingsScreen()),
+  _Route(RoutePaths.allSightings, (_) => const AllSightingsScreen()),
   _Route(RoutePaths.allSpecies, (_) => AllSpeciesScreen()),
   _Route(
       RoutePaths.sighting,
@@ -44,7 +44,7 @@ final router = GoRouter(routes: [
       RoutePaths.species,
       (state) =>
           SpeciesScreen(documentId: state.pathParameters["documentId"]!)),
-  _Route(RoutePaths.createSighting, (_) => CreateSightingScreen()),
+  _Route(RoutePaths.createSighting, (_) => const CreateSightingScreen()),
 ]);
 
 class _Route extends GoRoute {
@@ -60,7 +60,7 @@ class _Route extends GoRoute {
                   transitionsBuilder:
                       (context, animation, secondaryAnimation, child) {
                     final tween =
-                        Tween(begin: Offset(1.0, 0.0), end: Offset.zero)
+                        Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
                             .chain(CurveTween(curve: Curves.ease));
 
                     return SlideTransition(

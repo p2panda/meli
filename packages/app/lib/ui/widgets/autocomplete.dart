@@ -28,7 +28,7 @@ class MeliAutocomplete extends StatefulWidget {
   final AutocompleteItem? initialValue;
   final bool autofocus;
 
-  MeliAutocomplete({
+  const MeliAutocomplete({
     super.key,
     required this.onOptionsRequest,
     this.autofocus = false,
@@ -72,7 +72,7 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
     try {
       options = await widget.onOptionsRequest(query);
     } catch (error) {
-      if (this.mounted) {
+      if (mounted) {
         setState(() {
           _isError = true;
         });
@@ -80,7 +80,7 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
 
       return <AutocompleteItem>[];
     } finally {
-      if (this.mounted) {
+      if (mounted) {
         setState(() {
           _isLoading = false;
         });
@@ -137,10 +137,10 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
               suffixIcon: _isLoading
                   ? Transform.scale(
                       scale: 0.4,
-                      child: CircularProgressIndicator(
+                      child: const CircularProgressIndicator(
                         color: Colors.black,
                       ))
-                  : Icon(Icons.arrow_drop_down, color: Colors.black),
+                  : const Icon(Icons.arrow_drop_down, color: Colors.black),
               errorText: _isError ? 'Error, please try again.' : null,
               focusedBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(
@@ -163,7 +163,7 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
         optionsViewBuilder: (BuildContext context, onSelected,
             Iterable<AutocompleteItem> options) {
           return Container(
-              margin: EdgeInsets.only(top: 1.0),
+              margin: const EdgeInsets.only(top: 1.0),
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Material(
@@ -172,7 +172,7 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
                     borderRadius:
                         BorderRadius.vertical(bottom: Radius.circular(4.0)),
                   ),
-                  child: Container(
+                  child: SizedBox(
                     height: 52.0 * options.length,
                     width: constraints.maxWidth,
                     child: ListView.builder(
