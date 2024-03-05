@@ -32,7 +32,7 @@ Future<bool> migrateSchemas() async {
   // Load .toml file holding the migration data which was generated with
   // p2panda `fishy` tool
   final toml = await loadAsset(MIGRATION_FILE_PATH);
-  final migration = await TomlDocument.parse(toml).toMap();
+  final migration = TomlDocument.parse(toml).toMap();
   final commits = migration['commits'] as List<dynamic>;
   return await publishCommits(commits);
 }

@@ -27,7 +27,7 @@ Future<KeyPair> get keyPair async {
 
   // Determine folder to load private key file from
   final basePath = await applicationSupportDirectory;
-  final filePath = await path.join(basePath, PRIVATE_KEY_FILE_NAME);
+  final filePath = path.join(basePath, PRIVATE_KEY_FILE_NAME);
 
   final io.File file = io.File(filePath);
 
@@ -47,12 +47,12 @@ Future<KeyPair> get keyPair async {
 
 /// Returns public key as bytes.
 Future<Uint8List> get publicKey async {
-  final _keyPair = await keyPair;
-  return await _keyPair.publicKey();
+  final keyPair = await keyPair;
+  return await keyPair.publicKey();
 }
 
 /// Returns public key encoded as hexadecimal string.
 Future<String> get publicKeyHex async {
-  final _publicKey = await publicKey;
-  return hex.encode(_publicKey);
+  final publicKey = await publicKey;
+  return hex.encode(publicKey);
 }

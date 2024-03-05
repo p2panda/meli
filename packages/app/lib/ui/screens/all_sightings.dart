@@ -12,18 +12,20 @@ import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/sighting_card.dart';
 
 class AllSightingsScreen extends StatelessWidget {
+  const AllSightingsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MeliScaffold(
       floatingActionButtons: [
         MeliFloatingActionButton(
-            icon: Icon(Icons.hive_outlined),
+            icon: const Icon(Icons.hive_outlined),
             backgroundColor: MeliColors.peach,
             onPressed: () {
               router.push(RoutePaths.allSpecies.path);
             }),
         MeliFloatingActionButton(
-            icon: Icon(Icons.camera_alt_outlined),
+            icon: const Icon(Icons.camera_alt_outlined),
             backgroundColor: MeliColors.sea,
             onPressed: () {
               router.push(RoutePaths.createSighting.path);
@@ -31,7 +33,7 @@ class AllSightingsScreen extends StatelessWidget {
       ],
       body: Container(
           child: Container(
-              decoration: new GreenGradientBackground(),
+              decoration: const GreenGradientBackground(),
               child: Container(
                 padding: EdgeInsets.only(
                     top: MediaQuery.of(context).viewPadding.top),
@@ -44,6 +46,8 @@ class AllSightingsScreen extends StatelessWidget {
 class ScrollView extends StatelessWidget {
   final Paginator<Sighting> paginator = SightingPaginator();
 
+  ScrollView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -53,16 +57,16 @@ class ScrollView extends StatelessWidget {
           paginator.refresh!();
         }
 
-        return Future.delayed(Duration(milliseconds: 150));
+        return Future.delayed(const Duration(milliseconds: 150));
       },
       child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(children: [
-            TopBar(),
-            BouncyBee(),
-            SizedBox(height: 30.0),
-            SightingsList(paginator: this.paginator),
-            SizedBox(height: 40.0),
+            const TopBar(),
+            const BouncyBee(),
+            const SizedBox(height: 30.0),
+            SightingsList(paginator: paginator),
+            const SizedBox(height: 40.0),
           ])),
     );
   }
@@ -71,7 +75,7 @@ class ScrollView extends StatelessWidget {
 class SightingsList extends StatefulWidget {
   final Paginator<Sighting> paginator;
 
-  SightingsList({super.key, required this.paginator});
+  const SightingsList({super.key, required this.paginator});
 
   @override
   State<SightingsList> createState() => _SightingsListState();
@@ -91,16 +95,16 @@ class _SightingsListState extends State<SightingsList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-      decoration: new MagnoliaWavesBackground(),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+      decoration: const MagnoliaWavesBackground(),
       child: Container(
           width: double.infinity,
-          padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
+          padding: const EdgeInsets.only(top: 30.0, bottom: 20.0),
           child: PaginationList<Sighting>(
               builder: (Sighting sighting) {
                 return Container(
-                    padding: EdgeInsets.only(bottom: 20.0),
-                    child: this._item(sighting));
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: _item(sighting));
               },
               paginator: widget.paginator)),
     );
@@ -108,13 +112,15 @@ class _SightingsListState extends State<SightingsList> {
 }
 
 class TopBar extends StatelessWidget {
+  const TopBar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
       alignment: Alignment.centerRight,
       child: IconButton(
-          icon: Icon(Icons.settings_outlined),
+          icon: const Icon(Icons.settings_outlined),
           onPressed: () {
             router.push(RoutePaths.settings.path);
           }),
@@ -123,7 +129,7 @@ class TopBar extends StatelessWidget {
 }
 
 class BouncyBee extends StatefulWidget {
-  BouncyBee({super.key});
+  const BouncyBee({super.key});
 
   @override
   State<BouncyBee> createState() => _BouncyBeeState();
@@ -141,7 +147,7 @@ class _BouncyBeeState extends State<BouncyBee>
     end: const Offset(0.0, -0.8),
   ).animate(CurvedAnimation(
     parent: _beeAnimationController,
-    curve: ElasticInOutCurve(0.5),
+    curve: const ElasticInOutCurve(0.5),
   ));
 
   @override
@@ -158,14 +164,14 @@ class _BouncyBeeState extends State<BouncyBee>
       },
       child: SlideTransition(
         position: _flyingBeeAnimation,
-        child: Center(child: Text("🐝", style: TextStyle(fontSize: 50.0))),
+        child: const Center(child: Text("🐝", style: TextStyle(fontSize: 50.0))),
       ),
     );
   }
 }
 
 class GreenGradientBackground extends Decoration {
-  GreenGradientBackground();
+  const GreenGradientBackground();
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {
@@ -179,7 +185,7 @@ class _GreenGradientPainter extends BoxPainter {
     final Size? bounds = configuration.size;
 
     final paint = Paint()
-      ..shader = new LinearGradient(
+      ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
@@ -204,12 +210,12 @@ class _GreenGradientPainter extends BoxPainter {
     path.lineTo(0, bounds.height);
     path.close();
 
-    canvas.drawPath(path.shift(offset + Offset(0, 80.0)), paint);
+    canvas.drawPath(path.shift(offset + const Offset(0, 80.0)), paint);
   }
 }
 
 class MagnoliaWavesBackground extends Decoration {
-  MagnoliaWavesBackground();
+  const MagnoliaWavesBackground();
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {

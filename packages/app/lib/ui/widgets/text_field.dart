@@ -12,7 +12,7 @@ class EditableTextField extends StatefulWidget {
   final String current;
   final OnUpdate onUpdate;
 
-  EditableTextField(this.current,
+  const EditableTextField(this.current,
       {super.key, required this.title, required this.onUpdate});
 
   @override
@@ -20,7 +20,7 @@ class EditableTextField extends StatefulWidget {
 }
 
 class _TextFieldState extends State<EditableTextField> {
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   /// Flag indicating if we're currently editing the field or not.
   bool isEditMode = false;
@@ -87,9 +87,9 @@ class _TextFieldState extends State<EditableTextField> {
 
   Widget _readOnlyValue() {
     if (widget.current == '') {
-      return ReadOnlyValue(null);
+      return const ReadOnlyValue(null);
     } else {
-      return Container(
+      return SizedBox(
           width: double.infinity,
           child: Text(widget.current, textAlign: TextAlign.start));
     }
@@ -100,7 +100,7 @@ class _TextFieldState extends State<EditableTextField> {
     return EditableCard(
         title: widget.title,
         isEditMode: isEditMode,
-        child: isEditMode ? _editableValue() : _readOnlyValue(),
-        onChanged: _toggleEditMode);
+        onChanged: _toggleEditMode,
+        child: isEditMode ? _editableValue() : _readOnlyValue());
   }
 }
