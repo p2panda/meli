@@ -107,7 +107,11 @@ class Sighting {
     }
 
     if (localNames != null) {
-      localName = localNames.firstOrNull;
+      this.localName = localNames.firstOrNull;
+    }
+
+    if (comment != null) {
+      this.comment = comment;
     }
 
     return viewId;

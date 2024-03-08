@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/note_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -118,6 +119,17 @@ class _SightingProfileState extends State<SightingProfile> {
     setState(() {});
   }
 
+  void _updateComment(String? comment) async {
+    if (sighting.comment == comment) {
+      // Nothing has changed
+      return;
+    }
+
+    await sighting.update(comment: comment);
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final imagePaths = sighting.images
@@ -139,6 +151,7 @@ class _SightingProfileState extends State<SightingProfile> {
           sighting.species?.species,
           onUpdate: _updateSpecies,
         ),
+        NoteField(sighting.comment, onUpdate: _updateComment),
         // @TODO: Remove this as soon as there are more elements
         const SizedBox(height: 550.0),
       ]),
