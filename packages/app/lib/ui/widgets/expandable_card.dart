@@ -24,17 +24,19 @@ class _ExpandableCardState extends State<ExpandableCard> {
 
   Widget _icon() {
     final icon = this.isExpanded ? Icon(Icons.remove) : Icon(Icons.add);
-    return CardActionButton(
-        icon: icon,
-        onPressed: () {
-          this.tileKey.currentState!.toggle();
-        });
+    return CardActionButton(icon: icon);
   }
 
   Widget _content() {
     return MeliExpansionTile(
       key: tileKey,
-      header: MeliCardHeader(title: widget.title, icon: this._icon()),
+      header: MeliCardHeader(
+        title: widget.title,
+        icon: this._icon(),
+        onPress: () {
+          this.tileKey.currentState!.toggle();
+        },
+      ),
       child: widget.child,
       onExpansionChanged: (isExpanded) {
         setState(() {
