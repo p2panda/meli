@@ -21,17 +21,18 @@ class EditableCard extends StatelessWidget {
 
   Widget _icon() {
     final icon = isEditMode ? Icon(Icons.check) : Icon(Icons.edit_outlined);
-    return CardActionButton(
-        icon: icon,
-        onPressed: () {
-          onChanged.call();
-        });
+    return CardActionButton(icon: icon);
   }
 
   Widget _content() {
     return Column(
       children: [
-        MeliCardHeader(title: title, icon: _icon()),
+        MeliCardHeader(
+            title: title,
+            icon: _icon(),
+            onPress: () {
+              onChanged.call();
+            }),
         Container(
             padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
             child: child),
