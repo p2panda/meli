@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:app/ui/widgets/card.dart';
 import 'package:app/ui/widgets/card_action_button.dart';
 import 'package:app/ui/widgets/card_header.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 typedef OnUpdate = void Function(String?);
 
@@ -14,9 +15,9 @@ class NoteField extends StatefulWidget {
   final String? value;
   final OnUpdate onUpdate;
 
-  NoteField(this.value, {super.key, required this.onUpdate});
+  const NoteField(this.value, {super.key, required this.onUpdate});
 
-  // @override
+  @override
   State<NoteField> createState() => _NoteFieldState();
 }
 
@@ -62,12 +63,12 @@ class _NoteFieldState extends State<NoteField> {
               title: t.noteCardTitle,
               icon: _inputMode == InputMode.read
                   ? CardActionButton(
-                      icon: Icon(Icons.edit),
+                      icon: const Icon(Icons.edit),
                       onPressed: _handleStartEditMode,
                     )
                   : null),
           Container(
-              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 6.0),
+              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 6.0),
               alignment: AlignmentDirectional.centerStart,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,7 +76,7 @@ class _NoteFieldState extends State<NoteField> {
                   // TODO: TextField seems to have a bug where it does not respect _textInputFocusNode.canRequestFocus being false when in 'read' input mode
                   TextFormField(
                       controller: _textInputController,
-                      decoration: InputDecoration(border: OutlineInputBorder()),
+                      decoration: const InputDecoration(border: OutlineInputBorder()),
                       focusNode: _textInputFocusNode,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
@@ -84,7 +85,7 @@ class _NoteFieldState extends State<NoteField> {
                       readOnly: _inputMode == InputMode.read,
                       textCapitalization: TextCapitalization.sentences),
                   if (_inputMode == InputMode.edit) ...[
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
                     Row(children: [
                       OverflowBar(
                         spacing: 12,

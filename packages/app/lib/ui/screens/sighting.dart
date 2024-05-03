@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/widgets/note_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -15,6 +14,7 @@ import 'package:app/ui/widgets/autocomplete.dart';
 import 'package:app/ui/widgets/error_card.dart';
 import 'package:app/ui/widgets/image_carousel.dart';
 import 'package:app/ui/widgets/local_name_field.dart';
+import 'package:app/ui/widgets/note_field.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/species_field.dart';
 

@@ -107,7 +107,7 @@ class Sighting {
     }
 
     if (localNames != null) {
-      this.localName = localNames.firstOrNull;
+      localName = localNames.firstOrNull;
     }
 
     if (comment != null) {
