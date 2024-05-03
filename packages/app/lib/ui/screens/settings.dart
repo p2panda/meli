@@ -10,7 +10,7 @@ import 'package:app/ui/widgets/expandable_card.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 
 class SettingsScreen extends StatefulWidget {
-  SettingsScreen({super.key});
+  const SettingsScreen({super.key});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -25,9 +25,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         title: t.settings,
         backgroundColor: MeliColors.sky,
         body: Container(
-          decoration: new PandaBackground(),
-          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-          child: SingleChildScrollView(
+          decoration: const PandaBackground(),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+          child: const SingleChildScrollView(
               padding: EdgeInsets.only(top: 0.0, bottom: 20.0),
               child: Wrap(runSpacing: 20.0, children: [
                 HelloPanda(),
@@ -39,20 +39,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
 }
 
 class HelloPanda extends StatelessWidget {
+  const HelloPanda({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('🐼', style: TextStyle(fontSize: 60.0)));
+    return const Center(child: Text('🐼', style: TextStyle(fontSize: 60.0)));
   }
 }
 
 class LocaleSettings extends StatelessWidget {
+  const LocaleSettings({super.key});
+
   Future<void> _onLanguageChange(BuildContext context, Locale? locale) async {
     final app = context.findAncestorStateOfType<MeliAppState>()!;
     final t = AppLocalizations.of(context)!;
 
-    bool _success = await app.changeLocale(locale!);
+    bool success = await app.changeLocale(locale!);
 
-    if (_success) {
+    if (success) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           // Override the current context localization so the success message
           // is shown in the new language.
@@ -80,11 +84,11 @@ class LocaleSettings extends StatelessWidget {
         child: LayoutBuilder(
           builder: (context, constraints) {
             return DropdownMenu<Locale>(
-                inputDecorationTheme: InputDecorationTheme(
+                inputDecorationTheme: const InputDecorationTheme(
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.only(left: 10.0)),
                 width: constraints.maxWidth,
-                menuStyle: MenuStyle(
+                menuStyle: const MenuStyle(
                     elevation: MaterialStatePropertyAll<double>(3.0),
                     surfaceTintColor:
                         MaterialStatePropertyAll<Color>(Colors.transparent),
@@ -98,9 +102,9 @@ class LocaleSettings extends StatelessWidget {
                 },
                 dropdownMenuEntries: [
                   DropdownMenuEntry<Locale>(
-                      value: Locale('en'), label: t.settingsEnglish),
+                      value: const Locale('en'), label: t.settingsEnglish),
                   DropdownMenuEntry<Locale>(
-                      value: Locale('pt'), label: t.settingsPortuguese)
+                      value: const Locale('pt'), label: t.settingsPortuguese)
                 ]);
           },
         ));
@@ -108,6 +112,8 @@ class LocaleSettings extends StatelessWidget {
 }
 
 class SystemInfo extends StatefulWidget {
+  const SystemInfo({super.key});
+
   @override
   State<SystemInfo> createState() => _SystemInfoState();
 }
@@ -131,7 +137,7 @@ class _SystemInfoState extends State<SystemInfo> {
               AsyncSnapshot<AndroidDeviceInfo> snapshot) {
             if (snapshot.hasData) {
               return Container(
-                padding: EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -159,7 +165,7 @@ class _SystemInfoState extends State<SystemInfo> {
 }
 
 class PandaBackground extends Decoration {
-  PandaBackground();
+  const PandaBackground();
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {

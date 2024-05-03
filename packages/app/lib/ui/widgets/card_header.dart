@@ -7,12 +7,13 @@ class MeliCardHeader extends StatelessWidget {
   final Widget? icon;
   final VoidCallback? onPress;
 
-  MeliCardHeader({super.key, required this.title, this.icon, this.onPress});
+  const MeliCardHeader(
+      {super.key, required this.title, this.icon, this.onPress});
 
   Widget _title() {
     return Text(
-      this.title,
-      style: TextStyle(
+      title,
+      style: const TextStyle(
         fontSize: 16.0,
         fontWeight: FontWeight.w500,
       ),
@@ -20,7 +21,7 @@ class MeliCardHeader extends StatelessWidget {
   }
 
   Widget _icon() {
-    return this.icon != null ? this.icon! : SizedBox.shrink();
+    return icon != null ? icon! : const SizedBox.shrink();
   }
 
   @override
@@ -29,7 +30,7 @@ class MeliCardHeader extends StatelessWidget {
         child: GestureDetector(
             onTap: onPress,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   // color: Colors.white,
                   border: Border.fromBorderSide(BorderSide(
                     width: 6.0,
@@ -40,12 +41,12 @@ class MeliCardHeader extends StatelessWidget {
               child: Container(
                 alignment: AlignmentDirectional.centerStart,
                 padding: EdgeInsets.symmetric(
-                    vertical: this.icon != null ? 9.0 : 14.0, horizontal: 16.0),
+                    vertical: icon != null ? 9.0 : 14.0, horizontal: 16.0),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      this._title(),
-                      this._icon(),
+                      _title(),
+                      _icon(),
                     ]),
               ),
             )));

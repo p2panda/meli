@@ -15,7 +15,7 @@ class LocalNameField extends StatefulWidget {
   final LocalName? current;
   final OnUpdate onUpdate;
 
-  LocalNameField(this.current, {super.key, required this.onUpdate});
+  const LocalNameField(this.current, {super.key, required this.onUpdate});
 
   @override
   State<LocalNameField> createState() => _LocalNameFieldState();
@@ -90,12 +90,12 @@ class _LocalNameFieldState extends State<LocalNameField> {
 
   @override
   Widget build(BuildContext context) {
-    String? displayValue = widget.current == null ? null : widget.current!.name;
+    String? displayValue = widget.current?.name;
 
     return EditableCard(
         title: AppLocalizations.of(context)!.localNameCardTitle,
         isEditMode: isEditMode,
-        child: isEditMode ? _editableValue() : ReadOnlyValue(displayValue),
-        onChanged: _toggleEditMode);
+        onChanged: _toggleEditMode,
+        child: isEditMode ? _editableValue() : ReadOnlyValue(displayValue));
   }
 }

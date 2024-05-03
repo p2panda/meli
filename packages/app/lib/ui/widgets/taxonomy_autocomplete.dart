@@ -18,7 +18,7 @@ class TaxonomyAutocomplete extends StatefulWidget {
   final VoidCallback? onSubmit;
   final AutocompleteItem? initialValue;
 
-  TaxonomyAutocomplete(
+  const TaxonomyAutocomplete(
       {super.key,
       required this.onChanged,
       required this.schemaId,

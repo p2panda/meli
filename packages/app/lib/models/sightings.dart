@@ -80,8 +80,8 @@ class Sighting {
       localNameIds = localNames.isEmpty ? [] : [localNames.first.id];
     }
 
-    this.viewId = await updateSighting(
-      this.viewId,
+    viewId = await updateSighting(
+      viewId,
       datetime: datetime,
       latitude: latitude,
       longitude: longitude,
@@ -107,15 +107,15 @@ class Sighting {
     }
 
     if (localNames != null) {
-      this.localName = localNames.firstOrNull;
+      localName = localNames.firstOrNull;
     }
 
-    return this.viewId;
+    return viewId;
   }
 
   Future<DocumentViewId> delete() async {
-    this.viewId = await deleteSighting(this.viewId);
-    return this.viewId;
+    viewId = await deleteSighting(viewId);
+    return viewId;
   }
 }
 
@@ -169,7 +169,7 @@ String get sightingFields {
 
 String allSightingsQuery(String? cursor) {
   final after = (cursor != null) ? '''after: "$cursor",''' : '';
-  final schemaId = SchemaIds.bee_sighting;
+  const schemaId = SchemaIds.bee_sighting;
 
   return '''
     query AllSightings {
@@ -189,7 +189,7 @@ String allSightingsQuery(String? cursor) {
 }
 
 String sightingQuery(DocumentId id) {
-  final schemaId = SchemaIds.bee_sighting;
+  const schemaId = SchemaIds.bee_sighting;
   return '''
     query Sighting() {
       sighting: $schemaId(id: "$id") {
@@ -200,13 +200,13 @@ String sightingQuery(DocumentId id) {
 }
 
 String lastSightingQuery(DocumentId speciesId) {
-  final schemaId = SchemaIds.bee_sighting;
+  const schemaId = SchemaIds.bee_sighting;
   return '''
     query LastSighting() {
       $DEFAULT_RESULTS_KEY: all_$schemaId(
         first: 1,
         filter: {
-          species: { in: ["${speciesId}"] },
+          species: { in: ["$speciesId"] },
         },
         orderBy: "datetime",
         orderDirection: DESC,
@@ -221,15 +221,15 @@ String lastSightingQuery(DocumentId speciesId) {
 
 String allSpeciesImages(DocumentId speciesId, String? cursor) {
   final after = (cursor != null) ? '''after: "$cursor",''' : '';
-  final schemaId = SchemaIds.bee_sighting;
+  const schemaId = SchemaIds.bee_sighting;
 
   return '''
     query AllSpeciesImages() {
       $DEFAULT_RESULTS_KEY: all_$schemaId(
-        first: ${DEFAULT_PAGE_SIZE},
+        first: $DEFAULT_PAGE_SIZE,
         $after
         filter: {
-          species: { in: ["${speciesId}"] },
+          species: { in: ["$speciesId"] },
         },
         orderBy: "datetime",
         orderDirection: DESC

@@ -20,7 +20,8 @@ class EditableCard extends StatelessWidget {
       required this.onChanged});
 
   Widget _icon() {
-    final icon = isEditMode ? Icon(Icons.check) : Icon(Icons.edit_outlined);
+    final icon =
+        isEditMode ? const Icon(Icons.check) : const Icon(Icons.edit_outlined);
     return CardActionButton(icon: icon);
   }
 
@@ -34,7 +35,8 @@ class EditableCard extends StatelessWidget {
               onChanged.call();
             }),
         Container(
-            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
             child: child),
       ],
     );
@@ -42,6 +44,6 @@ class EditableCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MeliCard(child: this._content());
+    return MeliCard(child: _content());
   }
 }
