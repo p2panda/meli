@@ -31,14 +31,14 @@ class LocalName {
   }
 
   Future<DocumentViewId> update({required String name}) async {
-    this.viewId = await updateLocalName(this.viewId, name: name);
+    viewId = await updateLocalName(viewId, name: name);
     this.name = name;
-    return this.viewId;
+    return viewId;
   }
 
   Future<DocumentViewId> delete() async {
-    this.viewId = await deleteLocalName(this.viewId);
-    return this.viewId;
+    viewId = await deleteLocalName(viewId);
+    return viewId;
   }
 }
 
@@ -52,7 +52,7 @@ String get localNameFields {
 }
 
 String searchLocalNamesQuery(String query) {
-  final schemaId = SchemaIds.bee_local_name;
+  const schemaId = SchemaIds.bee_local_name;
 
   return '''
     query SearchLocalNames {

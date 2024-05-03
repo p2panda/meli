@@ -20,7 +20,7 @@ class PaginationList<T> extends StatelessWidget {
   final PaginationListBuilder<T> builder;
   final Paginator<T> paginator;
 
-  PaginationList({super.key, required this.builder, required this.paginator});
+  const PaginationList({super.key, required this.builder, required this.paginator});
 
   Widget _error(BuildContext context, String errorMessage) {
     return ErrorCard(
@@ -31,8 +31,8 @@ class PaginationList<T> extends StatelessWidget {
   Widget _loading() {
     return Center(
         child: Container(
-            padding: EdgeInsets.all(30.0),
-            child: CircularProgressIndicator(
+            padding: const EdgeInsets.all(30.0),
+            child: const CircularProgressIndicator(
               color: MeliColors.black,
             )));
   }
@@ -48,9 +48,9 @@ class PaginationList<T> extends StatelessWidget {
       isLoading
           ? this._loading()
           : ElevatedButton(
-              child: Text(AppLocalizations.of(context)!.paginationListLoadMore,
-                  style: TextStyle(color: MeliColors.black)),
               onPressed: onLoadMore,
+              child: Text(AppLocalizations.of(context)!.paginationListLoadMore,
+                  style: const TextStyle(color: MeliColors.black)),
             )
     ]);
   }

@@ -11,7 +11,7 @@ class MeliCard extends StatelessWidget {
   final double borderWidth;
   final Color borderColor;
 
-  MeliCard(
+  const MeliCard(
       {super.key,
       required this.child,
       this.elevation = 5.0,
@@ -22,17 +22,17 @@ class MeliCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        elevation: this.elevation,
-        color: this.color,
+        elevation: elevation,
+        color: color,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            width: this.borderWidth,
+            width: borderWidth,
             strokeAlign: BorderSide.strokeAlignCenter,
-            color: this.borderColor,
+            color: borderColor,
           ),
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(12.0)),
         ),
-        child: this.child);
+        child: child);
   }
 }

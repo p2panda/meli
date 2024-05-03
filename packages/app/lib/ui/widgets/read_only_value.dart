@@ -19,7 +19,7 @@ class ReadOnlyValue extends StatelessWidget {
           textAlign: TextAlign.left,
           style: TextStyle(
               fontSize: value == null ? 35.0 : 16.0,
-              shadows: value == null ? [Shadow(blurRadius: 1.0)] : null)),
+              shadows: value == null ? [const Shadow(blurRadius: 1.0)] : null)),
     );
   }
 }

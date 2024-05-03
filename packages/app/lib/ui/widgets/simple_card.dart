@@ -9,21 +9,21 @@ class SimpleCard extends StatelessWidget {
   final Widget child;
   final String title;
 
-  SimpleCard({super.key, required this.child, required this.title});
+  const SimpleCard({super.key, required this.child, required this.title});
 
   Widget _content() {
     return Column(
       children: [
-        MeliCardHeader(title: this.title),
+        MeliCardHeader(title: title),
         Container(
-            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
-            child: this.child),
+            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
+            child: child),
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return MeliCard(child: this._content());
+    return MeliCard(child: _content());
   }
 }

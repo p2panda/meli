@@ -19,7 +19,7 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   // Start application
-  runApp(MeliApp());
+  runApp(const MeliApp());
 
   // Bootstrap backend for p2p communication and data persistence
   await bootstrapNode();

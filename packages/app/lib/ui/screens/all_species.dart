@@ -14,6 +14,8 @@ import 'package:app/ui/widgets/species_card.dart';
 class AllSpeciesScreen extends StatelessWidget {
   final Paginator<Species> paginator = SpeciesPaginator();
 
+  AllSpeciesScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MeliScaffold(
@@ -25,17 +27,17 @@ class AllSpeciesScreen extends StatelessWidget {
                 paginator.refresh!();
               }
 
-              return Future.delayed(Duration(milliseconds: 150));
+              return Future.delayed(const Duration(milliseconds: 150));
             },
             child: LayoutBuilder(builder: (context, constraints) {
               return Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                decoration: new PeachWavesBackground(),
+                decoration: const PeachWavesBackground(),
                 child: SingleChildScrollView(
-                  padding: EdgeInsets.only(top: 80.0, bottom: 20.0),
+                  padding: const EdgeInsets.only(top: 80.0, bottom: 20.0),
                   physics: const AlwaysScrollableScrollPhysics(),
-                  child: SpeciesList(paginator: this.paginator),
+                  child: SpeciesList(paginator: paginator),
                 ),
               );
             })));
@@ -45,7 +47,7 @@ class AllSpeciesScreen extends StatelessWidget {
 class SpeciesList extends StatefulWidget {
   final Paginator<Species> paginator;
 
-  SpeciesList({super.key, required this.paginator});
+  const SpeciesList({super.key, required this.paginator});
 
   @override
   State<SpeciesList> createState() => _SpeciesListState();
@@ -66,19 +68,19 @@ class _SpeciesListState extends State<SpeciesList> {
   Widget build(BuildContext context) {
     return Container(
         width: double.infinity,
-        padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
+        padding: const EdgeInsets.only(top: 30.0, bottom: 20.0),
         child: PaginationList<Species>(
             builder: (Species species) {
               return Container(
-                  padding: EdgeInsets.only(bottom: 20.0),
-                  child: this._item(species));
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: _item(species));
             },
             paginator: widget.paginator));
   }
 }
 
 class PeachWavesBackground extends Decoration {
-  PeachWavesBackground();
+  const PeachWavesBackground();
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {
@@ -105,6 +107,6 @@ class _PeachWavesPainter extends BoxPainter {
     path.lineTo(0, bounds.height);
     path.close();
 
-    canvas.drawPath(path.shift(Offset(0.0, 160.0)), paint);
+    canvas.drawPath(path.shift(const Offset(0.0, 160.0)), paint);
   }
 }
