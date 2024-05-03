@@ -51,7 +51,7 @@ class MeliCameraProviderState extends State<MeliCameraProvider> {
     XFile? imageFile = await _imagePicker.pickImage(
         source: ImageSource.camera,
         imageQuality: 80,
-        preferredCameraDevice: CameraDevice.front);
+        preferredCameraDevice: CameraDevice.rear);
 
     if (imageFile != null) {
       return File(imageFile.path);
