@@ -16,6 +16,7 @@ jobs:
       - uses: moonrepo/setup-rust@v1
         with:
           channel: "1.74"
+          components: rustfmt
       - uses: actions/setup-java@v4
         with:
           distribution: "temurin" # AdoptOpenJDK is now Eclipse Temurin
