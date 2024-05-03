@@ -20,20 +20,23 @@ class EditableCard extends StatelessWidget {
       required this.onChanged});
 
   Widget _icon() {
-    final icon = isEditMode ? const Icon(Icons.check) : const Icon(Icons.edit_outlined);
-    return CardActionButton(
-        icon: icon,
-        onPressed: () {
-          onChanged.call();
-        });
+    final icon =
+        isEditMode ? const Icon(Icons.check) : const Icon(Icons.edit_outlined);
+    return CardActionButton(icon: icon);
   }
 
   Widget _content() {
     return Column(
       children: [
-        MeliCardHeader(title: title, icon: _icon()),
+        MeliCardHeader(
+            title: title,
+            icon: _icon(),
+            onPress: () {
+              onChanged.call();
+            }),
         Container(
-            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
             child: child),
       ],
     );
