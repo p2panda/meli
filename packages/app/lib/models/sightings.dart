@@ -110,6 +110,10 @@ class Sighting {
       localName = localNames.firstOrNull;
     }
 
+    if (comment != null) {
+      this.comment = comment;
+    }
+
     return viewId;
   }
 

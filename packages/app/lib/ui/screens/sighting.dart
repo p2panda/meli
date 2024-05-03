@@ -14,6 +14,7 @@ import 'package:app/ui/widgets/autocomplete.dart';
 import 'package:app/ui/widgets/error_card.dart';
 import 'package:app/ui/widgets/image_carousel.dart';
 import 'package:app/ui/widgets/local_name_field.dart';
+import 'package:app/ui/widgets/note_field.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/species_field.dart';
 
@@ -118,6 +119,17 @@ class _SightingProfileState extends State<SightingProfile> {
     setState(() {});
   }
 
+  void _updateComment(String? comment) async {
+    if (sighting.comment == comment) {
+      // Nothing has changed
+      return;
+    }
+
+    await sighting.update(comment: comment);
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final imagePaths = sighting.images
@@ -139,6 +151,7 @@ class _SightingProfileState extends State<SightingProfile> {
           sighting.species?.species,
           onUpdate: _updateSpecies,
         ),
+        NoteField(sighting.comment, onUpdate: _updateComment),
         // @TODO: Remove this as soon as there are more elements
         const SizedBox(height: 550.0),
       ]),
