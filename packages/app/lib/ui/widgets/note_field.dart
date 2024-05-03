@@ -73,7 +73,10 @@ class _NoteFieldState extends State<NoteField> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // TODO: TextField seems to have a bug where it does not respect _textInputFocusNode.canRequestFocus being false when in 'read' input mode
+                  // TODO: TextField seems to still be focusable even when
+                  // being in 'read' mode (click on it to see). Might be a bug
+                  // where it does not respect _textInputFocusNode.canRequestFocus
+                  // being false when in 'read' input mode
                   TextFormField(
                       controller: _textInputController,
                       decoration: const InputDecoration(border: OutlineInputBorder()),
