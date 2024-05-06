@@ -120,6 +120,17 @@ class _SightingProfileState extends State<SightingProfile> {
     setState(() {});
   }
 
+  void _updateComment(String? comment) async {
+    if (sighting.comment == comment) {
+      // Nothing has changed
+      return;
+    }
+
+    await sighting.update(comment: comment);
+
+    setState(() {});
+  }
+
   Future<DocumentViewId?> _updateUsedFor(AutocompleteItem? item) async {
     if (item == null) {
       // Do nothing
