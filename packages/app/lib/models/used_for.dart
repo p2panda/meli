@@ -41,20 +41,6 @@ class UsedFor {
     );
   }
 
-  Future<DocumentViewId> update({DocumentId? sighting, String? usedFor}) async {
-    this.viewId =
-        await updateUsedFor(this.viewId, sighting: sighting, usedFor: usedFor);
-    if (sighting != null) {
-      this.sighting = sighting;
-    }
-
-    if (usedFor != null) {
-      this.usedFor = usedFor;
-    }
-
-    return this.viewId;
-  }
-
   Future<DocumentViewId> delete() async {
     this.viewId = await deleteUsedFor(this.viewId);
     return this.viewId;
@@ -165,21 +151,6 @@ Future<DocumentViewId> createUsedFor(
     ("used_for", OperationValue.string(usedFor)),
   ];
   return await create(SchemaIds.bee_attributes_used_for, fields);
-}
-
-Future<DocumentViewId> updateUsedFor(DocumentViewId viewId,
-    {DocumentId? sighting, String? usedFor}) async {
-  List<(String, OperationValue)> fields = [];
-
-  if (sighting != null) {
-    fields.add(("sighting", OperationValue.relation(sighting)));
-  }
-
-  if (usedFor != null) {
-    fields.add(("used_for", OperationValue.string(usedFor)));
-  }
-
-  return await update(SchemaIds.bee_attributes_used_for, viewId, fields);
 }
 
 Future<DocumentViewId> deleteUsedFor(DocumentViewId viewId) async {
