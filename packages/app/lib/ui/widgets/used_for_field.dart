@@ -6,16 +6,13 @@ import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/pagination_used_for_list.dart';
 import 'package:app/ui/widgets/pagination_used_for_tags_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/base.dart';
 import 'package:app/models/used_for.dart';
 import 'package:app/ui/widgets/loading_overlay.dart';
-import 'package:app/ui/widgets/autocomplete.dart';
 import 'package:app/ui/widgets/editable_card.dart';
-import 'package:app/ui/widgets/used_for_autocomplete.dart';
 import 'package:app/io/graphql/graphql.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -26,7 +23,7 @@ class UsedForField extends StatefulWidget {
   final DocumentId sighting;
   final OnUpdate onUpdate;
 
-  UsedForField(this.current,
+  const UsedForField(this.current,
       {super.key, required this.sighting, required this.onUpdate});
 
   @override
@@ -34,16 +31,17 @@ class UsedForField extends StatefulWidget {
 }
 
 class _UsedForFieldState extends State<UsedForField> {
+  final TextEditingController _controller = TextEditingController();
+  final GlobalKey<LoadingOverlayState> _overlayKey = GlobalKey();
   late Paginator<UsedFor> currentUsedForPaginator =
       UsedForPaginator(sighting: this.widget.sighting);
   late Paginator<UsedFor> usedForTagPaginator = UsedForPaginator();
-  final GlobalKey<LoadingOverlayState> _overlayKey = GlobalKey();
 
   /// Flag indicating if we're currently editing the field or not.
   bool isEditMode = false;
 
   /// Contains changed value when user adjusted the field.
-  AutocompleteItem? _dirty;
+  String? _dirty;
 
   void _delete(UsedFor usedFor) async {
     // Show the overlay spinner
@@ -57,13 +55,12 @@ class _UsedForFieldState extends State<UsedForField> {
     while (!isDeleted) {
       final options = QueryOptions(document: gql(usedForQuery(usedFor.id)));
       final result = await client.query(options);
-      print(result.data);
       isDeleted = (result.data?['document'] == null);
-      sleep(Duration(milliseconds: 150));
+      sleep(const Duration(milliseconds: 150));
     }
 
     // Refresh both paginators
-    this.currentUsedForPaginator.refresh!();
+    currentUsedForPaginator.refresh!();
 
     // Hide the overlay
     _overlayKey.currentState!.hide();
@@ -75,14 +72,19 @@ class _UsedForFieldState extends State<UsedForField> {
       return;
     }
 
-    if (_dirty!.value == '') {
+    if (_dirty == '') {
       // We consider that the user changed their mind and actually doesn't
       // want to create a UsedFor.
       _dirty = null;
       return;
     }
 
-    await _handleCreateUse(_dirty!.value);
+    await _handleCreateUse(_dirty!);
+
+    _controller.text = '';
+    setState(() {
+      _dirty = null;
+    });
   }
 
   void _toggleEditMode() {
@@ -95,7 +97,16 @@ class _UsedForFieldState extends State<UsedForField> {
         _submit();
       }
 
-      _dirty = null;
+      _controller.text = '';
+      setState(() {
+        _dirty = null;
+      });
+    });
+  }
+
+  void _changeNewTagValue(String newValue) {
+    setState(() {
+      _dirty = newValue;
     });
   }
 
@@ -117,38 +128,15 @@ class _UsedForFieldState extends State<UsedForField> {
       final options = QueryOptions(document: gql(usedForQuery(usedforViewId)));
       final result = await client.query(options);
       isReady = (result.data?['document'] != null);
-      sleep(Duration(milliseconds: 100));
+      sleep(const Duration(milliseconds: 100));
     }
 
     // Refresh both paginators
     this.currentUsedForPaginator.refresh!();
+    this.usedForTagPaginator.refresh!();
 
     // Hide the overlay
     _overlayKey.currentState!.hide();
-  }
-
-  void _changeValue(AutocompleteItem newValue) async {
-    if (widget.current == null) {
-      // User selected an item when none was selected before
-      _dirty = newValue;
-    } else if (widget.current!.usedFor != newValue.value) {
-      // User selected a different item than before
-      _dirty = newValue;
-    } else {
-      // User selected the same item or still no item as before .. do nothing!
-    }
-  }
-
-  Widget _editableValue() {
-    return UsedForAutocomplete(
-        // Initial value is always null.
-        initialValue: null,
-        // Don't show keyboard or focus on text field when edit mode clicked
-        autofocus: false,
-        // Flip "edit mode" to false as soon as user hit the "submit" button on
-        // the keyboard
-        onSubmit: _toggleEditMode,
-        onChanged: _changeValue);
   }
 
   List<Widget> _usedForListBuilder(List<UsedFor> uses) {
@@ -190,14 +178,14 @@ class _UsedForFieldState extends State<UsedForField> {
       ),
       child: Container(
         alignment: Alignment.center,
-        constraints: BoxConstraints(
+        constraints: const BoxConstraints(
           maxHeight: 120,
         ),
         width: double.infinity,
-        margin: EdgeInsets.all(10),
+        margin: const EdgeInsets.all(10),
         child: PaginationUsedForList(
-            paginator: this.currentUsedForPaginator,
-            builder: this._usedForListBuilder),
+            paginator: currentUsedForPaginator,
+            builder: _usedForListBuilder),
       ),
     );
   }
@@ -209,7 +197,7 @@ class _UsedForFieldState extends State<UsedForField> {
         borderRadius: BorderRadius.all(Radius.circular(13.0)),
       ),
       child: Container(
-        constraints: BoxConstraints(
+        constraints: const BoxConstraints(
           minHeight: 40,
         ),
         width: double.infinity,
@@ -226,33 +214,50 @@ class _UsedForFieldState extends State<UsedForField> {
     );
   }
 
+  Widget _newTagField() {
+    return TextField(
+      keyboardType: TextInputType.text,
+      minLines: 1,
+      controller: _controller,
+      maxLines: 1,
+      onChanged: _changeNewTagValue,
+      onEditingComplete: _submit,
+      decoration: const InputDecoration(
+        focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+                color: Colors.black, width: 2.0, style: BorderStyle.solid)),
+        enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+                color: Colors.black, width: 2.0, style: BorderStyle.solid)),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: EditableCard(
-          title: AppLocalizations.of(context)!.usedForCardTitle,
-          isEditMode: isEditMode,
-          child: Container(
-            constraints: BoxConstraints(maxHeight: isEditMode ? 400 : 120),
-            child: LoadingOverlay(
-              key: _overlayKey,
-              child: Column(
-                children: [
-                  Container(height: 120, child: _currentUsesList()),
-                  ...(isEditMode
-                      ? [
-                          SizedBox(height: 10),
-                          Expanded(child: _tagList()),
-                          SizedBox(height: 10),
-                          _editableValue()
-                        ]
-                      : [SizedBox()])
-                ],
-              ),
+    return EditableCard(
+        title: AppLocalizations.of(context)!.usedForCardTitle,
+        isEditMode: isEditMode,
+        onChanged: _toggleEditMode,
+        child: Container(
+          constraints: BoxConstraints(maxHeight: isEditMode ? 400 : 120),
+          child: LoadingOverlay(
+            key: _overlayKey,
+            child: Column(
+              children: [
+                SizedBox(height: 120, child: _currentUsesList()),
+                ...(isEditMode
+                    ? [
+                        const SizedBox(height: 10),
+                        Expanded(child: _tagList()),
+                        const SizedBox(height: 10),
+                        _newTagField()
+                      ]
+                    : [const SizedBox()])
+              ],
             ),
           ),
-          onChanged: _toggleEditMode),
-    );
+        ));
   }
 }
 
@@ -266,17 +271,17 @@ class UsedForTagItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       child: GestureDetector(
         onTap: () {
-          this.createUsedFor(this.usedFor);
+          createUsedFor(this.usedFor);
         },
         child: Material(
           elevation: 5,
           borderRadius: BorderRadius.all(Radius.circular(12)),
           child: Container(
+            margin: const EdgeInsets.all(5),
             child: Text(usedFor.usedFor),
-            margin: EdgeInsets.all(5),
           ),
         ),
       ),
