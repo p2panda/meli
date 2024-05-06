@@ -33,7 +33,7 @@ class _UsedForFieldState extends State<UsedForField> {
   final TextEditingController _controller = TextEditingController();
   final GlobalKey<LoadingOverlayState> _overlayKey = GlobalKey();
   late Paginator<UsedFor> currentUsedForPaginator =
-      UsedForPaginator(sighting: this.widget.sighting);
+      UsedForPaginator(sighting: widget.sighting);
   late Paginator<UsedFor> usedForTagPaginator = UsedForPaginator();
 
   /// Flag indicating if we're currently editing the field or not.
@@ -60,8 +60,8 @@ class _UsedForFieldState extends State<UsedForField> {
     }
 
     // Refresh both paginators
-    this.currentUsedForPaginator.refresh!();
-    this.usedForTagPaginator.refresh!();
+    currentUsedForPaginator.refresh!();
+    usedForTagPaginator.refresh!();
 
     // Hide the overlay
     _overlayKey.currentState!.hide();
@@ -141,29 +141,29 @@ class _UsedForFieldState extends State<UsedForField> {
   List<Widget> _usedForListBuilder(List<UsedFor> uses) {
     return [
       ...uses.map((usedFor) => Container(
-          constraints: BoxConstraints(minHeight: 30),
-          padding: EdgeInsets.symmetric(vertical: 7.0),
+          constraints: const BoxConstraints(minHeight: 30),
+          padding: const EdgeInsets.symmetric(vertical: 7.0),
           child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                     flex: 6,
-                    child:
-                        Text(usedFor.usedFor, style: TextStyle(fontSize: 16))),
+                    child: Text(usedFor.usedFor,
+                        style: const TextStyle(fontSize: 16))),
                 Expanded(
                   flex: 1,
-                  child: this.isEditMode
+                  child: isEditMode
                       ? Container(
-                          constraints: BoxConstraints(maxHeight: 23),
+                          constraints: const BoxConstraints(maxHeight: 23),
                           child: IconButton(
-                              padding: EdgeInsets.all(0),
+                              padding: const EdgeInsets.all(0),
                               onPressed: () {
-                                this._delete(usedFor);
+                                _delete(usedFor);
                               },
-                              icon: Icon(size: 20, Icons.delete)),
+                              icon: const Icon(size: 20, Icons.delete)),
                         )
-                      : SizedBox(),
+                      : const SizedBox(),
                 )
               ]))),
     ];
@@ -199,9 +199,9 @@ class _UsedForFieldState extends State<UsedForField> {
           minHeight: 40,
         ),
         width: double.infinity,
-        margin: EdgeInsets.all(10),
+        margin: const EdgeInsets.all(10),
         child: PaginationUsedForTagList(
-            paginator: this.usedForTagPaginator,
+            paginator: usedForTagPaginator,
             itemsBuilder: (List<UsedFor> uses) {
               return uses
                   .map((usedFor) => UsedForTagItem(
@@ -272,11 +272,11 @@ class UsedForTagItem extends StatelessWidget {
       padding: const EdgeInsets.all(5),
       child: GestureDetector(
         onTap: () {
-          createUsedFor(this.usedFor);
+          createUsedFor(usedFor);
         },
         child: Material(
           elevation: 5,
-          borderRadius: BorderRadius.all(Radius.circular(12)),
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
           child: Container(
             margin: const EdgeInsets.all(5),
             child: Text(usedFor.usedFor),
