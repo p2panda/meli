@@ -33,7 +33,7 @@ bridge_codegen() {
 }
 
 # For non-Debian Linux distributions we need extra prerequisites
-if [ ! -f "/etc/debian_version" ]; then
+if [[ (! -f "/etc/debian_version") && ("$OSTYPE" == "linux-gnu"* )]]; then
         # See: https://cjycode.com/flutter_rust_bridge/v1/integrate/deps.html#system-dependencies
         CPATH="$(clang -v 2>&1 | grep "Selected GCC installation" | rev | cut -d' ' -f1 | rev)/include" \
                 bridge_codegen
