@@ -131,21 +131,13 @@ class _SightingProfileState extends State<SightingProfile> {
     setState(() {});
   }
 
-  Future<DocumentViewId?> _updateUsedFor(AutocompleteItem? item) async {
-    if (item == null) {
-      // Do nothing
-    } else if (item.viewId == null) {
-      // Create new used for assigned to this sighting
-      final newUsedFor =
-          await UsedFor.create(sighting: sighting.id, usedFor: item.value);
-      return newUsedFor.viewId;
-    } else if (item.viewId != null) {
-      // Assign existing local name to sighting
-      return await updateUsedFor(item.viewId!, usedFor: item.value);
-    }
+  Future<DocumentViewId> _addUse(String usedFor) async {
+    // Create new used for assigned to this sighting
+    final newUsedFor =
+        await UsedFor.create(sighting: sighting.id, usedFor: usedFor);
 
     setState(() {});
-    return null;
+    return newUsedFor.viewId;
   }
 
   @override
@@ -172,7 +164,7 @@ class _SightingProfileState extends State<SightingProfile> {
         UsedForField(
           null,
           sighting: sighting.id,
-          onUpdate: _updateUsedFor,
+          onUpdate: _addUse,
         ),
         // @TODO: Remove this as soon as there are more elements
         const SizedBox(height: 550.0),
