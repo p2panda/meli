@@ -162,7 +162,6 @@ class _SightingProfileState extends State<SightingProfile> {
         ),
         NoteField(sighting.comment, onUpdate: _updateComment),
         UsedForField(
-          null,
           sighting: sighting.id,
           onUpdate: _addUse,
         ),

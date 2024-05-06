@@ -19,11 +19,10 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 typedef OnUpdate = Future<DocumentViewId> Function(String);
 
 class UsedForField extends StatefulWidget {
-  final UsedFor? current;
   final DocumentId sighting;
   final OnUpdate onUpdate;
 
-  const UsedForField(this.current,
+  const UsedForField(
       {super.key, required this.sighting, required this.onUpdate});
 
   @override
@@ -42,6 +41,31 @@ class _UsedForFieldState extends State<UsedForField> {
 
   /// Contains changed value when user adjusted the field.
   String? _dirty;
+
+  Future<void> _createUse(String usedForString) async {
+    // Show the overlay spinner
+    _overlayKey.currentState!.show();
+
+    // Create the new UsedFor document
+    DocumentViewId usedforViewId = await widget.onUpdate.call(usedForString);
+
+    // We want to wait until it is materialized and then refresh the
+    // paginated query
+    bool isReady = false;
+    while (!isReady) {
+      final options = QueryOptions(document: gql(usedForQuery(usedforViewId)));
+      final result = await client.query(options);
+      isReady = (result.data?['document'] != null);
+      sleep(const Duration(milliseconds: 100));
+    }
+
+    // Refresh both paginators
+    this.currentUsedForPaginator.refresh!();
+    this.usedForTagPaginator.refresh!();
+
+    // Hide the overlay
+    _overlayKey.currentState!.hide();
+  }
 
   void _delete(UsedFor usedFor) async {
     // Show the overlay spinner
@@ -79,7 +103,7 @@ class _UsedForFieldState extends State<UsedForField> {
       return;
     }
 
-    await _handleCreateUse(_dirty!);
+    await _createUse(_dirty!);
 
     _controller.text = '';
     setState(() {
@@ -111,32 +135,7 @@ class _UsedForFieldState extends State<UsedForField> {
   }
 
   void _onTagClick(UsedFor usedFor) async {
-    await _handleCreateUse(usedFor.usedFor);
-  }
-
-  Future<void> _handleCreateUse(String usedForString) async {
-    // Show the overlay spinner
-    _overlayKey.currentState!.show();
-
-    // Create the new UsedFor document
-    DocumentViewId usedforViewId = await widget.onUpdate.call(usedForString);
-
-    // We want to wait until it is materialized and then refresh the
-    // paginated query
-    bool isReady = false;
-    while (!isReady) {
-      final options = QueryOptions(document: gql(usedForQuery(usedforViewId)));
-      final result = await client.query(options);
-      isReady = (result.data?['document'] != null);
-      sleep(const Duration(milliseconds: 100));
-    }
-
-    // Refresh both paginators
-    this.currentUsedForPaginator.refresh!();
-    this.usedForTagPaginator.refresh!();
-
-    // Hide the overlay
-    _overlayKey.currentState!.hide();
+    await _createUse(usedFor.usedFor);
   }
 
   List<Widget> _usedForListBuilder(List<UsedFor> uses) {
@@ -184,8 +183,7 @@ class _UsedForFieldState extends State<UsedForField> {
         width: double.infinity,
         margin: const EdgeInsets.all(10),
         child: PaginationUsedForList(
-            paginator: currentUsedForPaginator,
-            builder: _usedForListBuilder),
+            paginator: currentUsedForPaginator, builder: _usedForListBuilder),
       ),
     );
   }
