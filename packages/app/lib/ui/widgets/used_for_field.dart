@@ -19,7 +19,7 @@ import 'package:app/ui/widgets/used_for_autocomplete.dart';
 import 'package:app/io/graphql/graphql.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-typedef OnUpdate = Future<DocumentViewId?> Function(AutocompleteItem?);
+typedef OnUpdate = Future<DocumentViewId> Function(String);
 
 class UsedForField extends StatefulWidget {
   final UsedFor? current;
@@ -82,17 +82,39 @@ class _UsedForFieldState extends State<UsedForField> {
       return;
     }
 
+    await _handleCreateUse(_dirty!.value);
+  }
+
+  void _toggleEditMode() {
+    setState(() {
+      isEditMode = !isEditMode;
+
+      // If we flip from edit mode to read-only mode we interpret this as a
+      // "submit" action by the user
+      if (!isEditMode) {
+        _submit();
+      }
+
+      _dirty = null;
+    });
+  }
+
+  void _onTagClick(UsedFor usedFor) async {
+    await _handleCreateUse(usedFor.usedFor);
+  }
+
+  Future<void> _handleCreateUse(String usedForString) async {
     // Show the overlay spinner
     _overlayKey.currentState!.show();
 
     // Create the new UsedFor document
-    DocumentViewId? newUsedFor = await widget.onUpdate.call(_dirty!);
+    DocumentViewId usedforViewId = await widget.onUpdate.call(usedForString);
 
     // We want to wait until it is materialized and then refresh the
     // paginated query
     bool isReady = false;
     while (!isReady) {
-      final options = QueryOptions(document: gql(usedForQuery(newUsedFor!)));
+      final options = QueryOptions(document: gql(usedForQuery(usedforViewId)));
       final result = await client.query(options);
       isReady = (result.data?['document'] != null);
       sleep(Duration(milliseconds: 100));
@@ -115,43 +137,6 @@ class _UsedForFieldState extends State<UsedForField> {
     } else {
       // User selected the same item or still no item as before .. do nothing!
     }
-  }
-
-  void _toggleEditMode() {
-    setState(() {
-      isEditMode = !isEditMode;
-
-      // If we flip from edit mode to read-only mode we interpret this as a
-      // "submit" action by the user
-      if (!isEditMode) {
-        _submit();
-      }
-    });
-  }
-
-  void _onTagClick(UsedFor usedFor) async {
-    // Show the overlay spinner
-    _overlayKey.currentState!.show();
-
-    // Create the new UsedFor document
-    DocumentViewId? newUsedFor = await createUsedFor(
-        sighting: this.widget.sighting, usedFor: usedFor.usedFor);
-
-    // We want to wait until it is materialized and then refresh the
-    // paginated query
-    bool isReady = false;
-    while (!isReady) {
-      final options = QueryOptions(document: gql(usedForQuery(newUsedFor)));
-      final result = await client.query(options);
-      isReady = (result.data?['document'] != null);
-      sleep(Duration(milliseconds: 100));
-    }
-
-    // Refresh current uses paginator
-    this.currentUsedForPaginator.refresh!();
-
-    // Hide the overlay
-    _overlayKey.currentState!.hide();
   }
 
   Widget _editableValue() {
