@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/io/p2panda/publish.dart';
-import 'package:app/models/used_for.dart';
 import 'package:app/ui/widgets/used_for_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
