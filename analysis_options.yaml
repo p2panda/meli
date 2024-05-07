@@ -14,3 +14,12 @@ analyzer:
   exclude:
     - '**.freezed.dart'
     - '**.g.dart'
+
+linter:
+  rules:
+    # Allow good old UPPER_CASE_CONSTANT_VARIABLE_NAMES
+    constant_identifier_names: false
+    non_constant_identifier_names: false
+
+    # We dont want to use a logging framework (yet)
+    avoid_print: false
