@@ -3,8 +3,8 @@
 import 'dart:io';
 
 import 'package:app/ui/colors.dart';
-import 'package:app/ui/widgets/pagination_used_for_list.dart';
-import 'package:app/ui/widgets/pagination_used_for_tags_list.dart';
+import 'package:app/ui/widgets/infinite_scroll_list.dart';
+import 'package:app/ui/widgets/infinite_dedup_tags_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -30,9 +30,9 @@ class UsedForField extends StatefulWidget {
 class _UsedForFieldState extends State<UsedForField> {
   final TextEditingController _controller = TextEditingController();
   final GlobalKey<LoadingOverlayState> _overlayKey = GlobalKey();
-  late Paginator<UsedFor> currentUsedForPaginator =
+  late Paginator<UsedFor> listPaginator =
       UsedForPaginator(sighting: widget.sighting);
-  late Paginator<UsedFor> usedForTagPaginator = UsedForPaginator();
+  late Paginator<UsedFor> tagPaginator = UsedForPaginator();
 
   /// Flag indicating if we're currently editing the field or not.
   bool isEditMode = false;
@@ -41,10 +41,12 @@ class _UsedForFieldState extends State<UsedForField> {
   String? _dirty;
 
   Future<void> _createUse(String usedForString) async {
-    // Create the new UsedFor document
-    UsedFor usedFor =
-        await UsedFor.create(sighting: widget.sighting, usedFor: usedForString);
-    DocumentViewId usedforViewId = usedFor.viewId;
+    // Show the overlay spinner
+    _overlayKey.currentState!.show();
+
+    // Create a new UsedFor document which relates to the current sighting.
+    DocumentViewId usedforViewId =
+        await createUsedFor(sighting: widget.sighting, usedFor: usedForString);
 
     // We want to wait until it is materialized and then refresh the
     // paginated query
@@ -55,30 +57,10 @@ class _UsedForFieldState extends State<UsedForField> {
       isReady = (result.data?['document'] != null);
       sleep(const Duration(milliseconds: 100));
     }
-  }
-
-  Future<void> _assignUse(String usedForString) async {
-    // Show the overlay spinner
-    _overlayKey.currentState!.show();
-
-    await _createUse(usedForString);
-
-    // Refresh only the current used for list paginator
-    currentUsedForPaginator.refresh!();
-
-    // Hide the overlay
-    _overlayKey.currentState!.hide();
-  }
-
-  Future<void> _createNewUse(String usedForString) async {
-    // Show the overlay spinner
-    _overlayKey.currentState!.show();
-
-    await _createUse(usedForString);
 
     // Refresh both paginators
-    currentUsedForPaginator.refresh!();
-    usedForTagPaginator.refresh!();
+    listPaginator.refresh!();
+    tagPaginator.refresh!();
 
     // Hide the overlay
     _overlayKey.currentState!.hide();
@@ -88,6 +70,7 @@ class _UsedForFieldState extends State<UsedForField> {
     // Show the overlay spinner
     _overlayKey.currentState!.show();
 
+    // Delete the used for document.
     await deleteUsedFor(usedFor.viewId);
 
     // We want to wait until the delete is materialized and then refresh the
@@ -100,8 +83,8 @@ class _UsedForFieldState extends State<UsedForField> {
       sleep(const Duration(milliseconds: 150));
     }
 
-    // Refresh both paginators
-    currentUsedForPaginator.refresh!();
+    // Refresh only the list paginator
+    listPaginator.refresh!();
 
     // Hide the overlay
     _overlayKey.currentState!.hide();
@@ -120,7 +103,7 @@ class _UsedForFieldState extends State<UsedForField> {
       return;
     }
 
-    await _createNewUse(_dirty!);
+    await _createUse(_dirty!);
 
     _controller.text = '';
     setState(() {
@@ -152,10 +135,10 @@ class _UsedForFieldState extends State<UsedForField> {
   }
 
   void _onTagClick(UsedFor usedFor) async {
-    await _assignUse(usedFor.usedFor);
+    await _createUse(usedFor.usedFor);
   }
 
-  List<Widget> _usedForListBuilder(List<UsedFor> uses) {
+  List<Widget> _usesListBuilder(List<UsedFor> uses) {
     return [
       ...uses.map((usedFor) => Container(
           constraints: const BoxConstraints(minHeight: 30),
@@ -186,7 +169,7 @@ class _UsedForFieldState extends State<UsedForField> {
     ];
   }
 
-  Widget _currentUsesList() {
+  Widget _usesList() {
     return Material(
       color: MeliColors.white,
       shape: const RoundedRectangleBorder(
@@ -199,8 +182,8 @@ class _UsedForFieldState extends State<UsedForField> {
         ),
         width: double.infinity,
         margin: const EdgeInsets.all(10),
-        child: PaginationUsedForList(
-            paginator: currentUsedForPaginator, builder: _usedForListBuilder),
+        child: InfiniteScrollList(
+            paginator: listPaginator, builder: _usesListBuilder),
       ),
     );
   }
@@ -217,8 +200,8 @@ class _UsedForFieldState extends State<UsedForField> {
         ),
         width: double.infinity,
         margin: const EdgeInsets.all(10),
-        child: PaginationUsedForTagList(
-            paginator: usedForTagPaginator,
+        child: InfiniteDedupTagsList(
+            paginator: tagPaginator,
             itemsBuilder: (List<UsedFor> uses) {
               return uses
                   .map((usedFor) => UsedForTagItem(
@@ -260,7 +243,7 @@ class _UsedForFieldState extends State<UsedForField> {
             key: _overlayKey,
             child: Column(
               children: [
-                SizedBox(height: 120, child: _currentUsesList()),
+                SizedBox(height: 120, child: _usesList()),
                 ...(isEditMode
                     ? [
                         const SizedBox(height: 10),
