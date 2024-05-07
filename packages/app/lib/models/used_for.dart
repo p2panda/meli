@@ -61,27 +61,6 @@ String get usedForFields {
   ''';
 }
 
-String searchUsedForQuery(String query) {
-  final schemaId = SchemaIds.bee_attributes_used_for;
-
-  return '''
-    query SearchUsedFor {
-      $DEFAULT_RESULTS_KEY: all_$schemaId(
-        first: 5,
-        filter: {
-          used_for: { contains: "$query" },
-        },
-        orderBy: "used_for",
-        orderDirection: ASC,
-      ) {
-        documents {
-          $usedForFields
-        }
-      }
-    }
-  ''';
-}
-
 String usedForQuery(DocumentId id) {
   final schemaId = SchemaIds.bee_attributes_used_for;
 
