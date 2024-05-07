@@ -16,18 +16,18 @@ typedef PaginationListBuilder = List<Widget> Function(
   List<UsedFor> documents,
 );
 
-class PaginationUsedForList extends StatefulWidget {
+class InfiniteScrollList extends StatefulWidget {
   final Paginator<UsedFor> paginator;
   final PaginationListBuilder builder;
 
-  PaginationUsedForList(
+  InfiniteScrollList(
       {super.key, required this.paginator, required this.builder});
 
   @override
-  State<PaginationUsedForList> createState() => _PaginationUsedForListState();
+  State<InfiniteScrollList> createState() => _InfiniteScrollListState();
 }
 
-class _PaginationUsedForListState extends State<PaginationUsedForList> {
+class _InfiniteScrollListState extends State<InfiniteScrollList> {
   ScrollController scrollController = ScrollController();
 
   @override
@@ -128,7 +128,6 @@ class _PaginationUsedForListState extends State<PaginationUsedForList> {
             child: Column(
               children: [
                 ...this.widget.builder(data.documents),
-                if (data.hasNextPage) this._loadMore(context, result.isLoading)
               ],
             ));
       },

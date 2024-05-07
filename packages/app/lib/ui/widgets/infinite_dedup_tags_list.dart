@@ -14,19 +14,19 @@ typedef PaginationListBuilder = List<UsedForTagItem> Function(
   List<UsedFor> documents,
 );
 
-class PaginationUsedForTagList extends StatefulWidget {
+class InfiniteDedupTagsList extends StatefulWidget {
   final Paginator<UsedFor> paginator;
   final PaginationListBuilder itemsBuilder;
 
-  PaginationUsedForTagList(
+  InfiniteDedupTagsList(
       {super.key, required this.paginator, required this.itemsBuilder});
 
   @override
-  State<PaginationUsedForTagList> createState() =>
-      _PaginationUsedForTagListState();
+  State<InfiniteDedupTagsList> createState() =>
+      _InfiniteDedupTagsListState();
 }
 
-class _PaginationUsedForTagListState extends State<PaginationUsedForTagList> {
+class _InfiniteDedupTagsListState extends State<InfiniteDedupTagsList> {
   ScrollController scrollController = ScrollController();
 
   @override
@@ -140,7 +140,6 @@ class _PaginationUsedForTagListState extends State<PaginationUsedForTagList> {
             controller: scrollController,
             child: Wrap(children: [
               ...this.widget.itemsBuilder(uniqueUses),
-              if (data.hasNextPage) this._loadMore(context, result.isLoading)
             ]));
       },
     );
