@@ -27,13 +27,11 @@ class MeliAutocomplete extends StatefulWidget {
   final VoidCallback? onSubmit;
   final AutocompleteItem? initialValue;
   final bool autofocus;
-  final bool dedup;
 
   const MeliAutocomplete({
     super.key,
     required this.onOptionsRequest,
     this.autofocus = false,
-    this.dedup = true,
     this.initialValue,
     this.onChanged,
     this.onSubmit,
@@ -101,18 +99,14 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
 
   void _onChanged(String value) {
     if (widget.onChanged != null) {
-      if (widget.dedup) {
-        // Double-check if user actually typed _exactly_ the same value
-        // as one of our existing options
-        final Iterable<AutocompleteItem> duplicates = _lastOptions.where(
-            (element) => element.value == value && element.documentId != null);
-        if (duplicates.isNotEmpty) {
-          widget.onChanged!.call(duplicates.first);
-        } else {
-          // .. otherwise use newly created user value
-          widget.onChanged!.call(AutocompleteItem(value: value));
-        }
+      // Double-check if user actually typed _exactly_ the same value
+      // as one of our existing options
+      final Iterable<AutocompleteItem> duplicates = _lastOptions.where(
+          (element) => element.value == value && element.documentId != null);
+      if (duplicates.isNotEmpty) {
+        widget.onChanged!.call(duplicates.first);
       } else {
+        // .. otherwise use newly created user value
         widget.onChanged!.call(AutocompleteItem(value: value));
       }
     }
