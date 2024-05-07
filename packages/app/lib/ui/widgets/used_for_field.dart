@@ -20,10 +20,8 @@ typedef OnUpdate = Future<DocumentViewId> Function(String);
 
 class UsedForField extends StatefulWidget {
   final DocumentId sighting;
-  final OnUpdate onUpdate;
 
-  const UsedForField(
-      {super.key, required this.sighting, required this.onUpdate});
+  const UsedForField({super.key, required this.sighting});
 
   @override
   State<UsedForField> createState() => _UsedForFieldState();
@@ -44,7 +42,9 @@ class _UsedForFieldState extends State<UsedForField> {
 
   Future<void> _createUse(String usedForString) async {
     // Create the new UsedFor document
-    DocumentViewId usedforViewId = await widget.onUpdate.call(usedForString);
+    UsedFor usedFor =
+        await UsedFor.create(sighting: widget.sighting, usedFor: usedForString);
+    DocumentViewId usedforViewId = usedFor.viewId;
 
     // We want to wait until it is materialized and then refresh the
     // paginated query
@@ -63,7 +63,7 @@ class _UsedForFieldState extends State<UsedForField> {
 
     await _createUse(usedForString);
 
-    // Refresh both paginators
+    // Refresh only the current used for list paginator
     currentUsedForPaginator.refresh!();
 
     // Hide the overlay

@@ -131,15 +131,6 @@ class _SightingProfileState extends State<SightingProfile> {
     setState(() {});
   }
 
-  Future<DocumentViewId> _addUse(String usedFor) async {
-    // Create new used for assigned to this sighting
-    final newUsedFor =
-        await UsedFor.create(sighting: sighting.id, usedFor: usedFor);
-
-    setState(() {});
-    return newUsedFor.viewId;
-  }
-
   @override
   Widget build(BuildContext context) {
     final imagePaths =
@@ -163,7 +154,6 @@ class _SightingProfileState extends State<SightingProfile> {
         NoteField(sighting.comment, onUpdate: _updateComment),
         UsedForField(
           sighting: sighting.id,
-          onUpdate: _addUse,
         ),
         // @TODO: Remove this as soon as there are more elements
         const SizedBox(height: 550.0),
