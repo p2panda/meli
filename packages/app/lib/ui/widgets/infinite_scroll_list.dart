@@ -74,10 +74,6 @@ class _InfiniteScrollListState extends State<InfiniteScrollList> {
     );
   }
 
-  Widget _loadMore(BuildContext context, bool isLoading) {
-    return isLoading ? this._loading() : Text("...");
-  }
-
   @override
   Widget build(BuildContext context) {
     return Query(

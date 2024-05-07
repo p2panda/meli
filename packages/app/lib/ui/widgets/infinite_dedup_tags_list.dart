@@ -73,11 +73,6 @@ class _InfiniteDedupTagsListState extends State<InfiniteDedupTagsList> {
     );
   }
 
-
-  Widget _loadMore(BuildContext context, bool isLoading) {
-    return Column(children: [isLoading ? this._loading() : Text("...")]);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Query(
