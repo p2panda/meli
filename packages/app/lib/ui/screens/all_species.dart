@@ -70,7 +70,7 @@ class _SpeciesListState extends State<SpeciesList> {
     return Container(
         width: double.infinity,
         padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
-        child: PaginationCardsList<Species>(
+        child: PaginationList<Species>(
             builder: (Species species) {
               return Container(
                   padding: EdgeInsets.only(bottom: 20.0),

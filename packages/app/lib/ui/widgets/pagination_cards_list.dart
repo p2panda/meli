@@ -12,15 +12,15 @@ import 'package:app/ui/widgets/info_card.dart';
 
 typedef NextPageFunction = DocumentNode Function(String endCursor);
 
-typedef PaginationCardsListBuilder<T> = Widget Function(
+typedef PaginationBuilder<T> = Widget Function(
     T document,
     );
 
-class PaginationCardsList<T> extends StatelessWidget {
-  final PaginationCardsListBuilder<T> builder;
+class PaginationList<T> extends StatelessWidget {
+  final PaginationBuilder<T> builder;
   final Paginator<T> paginator;
 
-  PaginationCardsList({super.key, required this.builder, required this.paginator});
+  PaginationList({super.key, required this.builder, required this.paginator});
 
   Widget _error(BuildContext context, String errorMessage) {
     return ErrorCard(

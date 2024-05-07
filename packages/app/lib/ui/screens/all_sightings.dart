@@ -99,7 +99,7 @@ class _SightingsListState extends State<SightingsList> {
       child: Container(
           width: double.infinity,
           padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
-          child: PaginationCardsList<Sighting>(
+          child: PaginationList<Sighting>(
               builder: (Sighting sighting) {
                 return Container(
                     padding: EdgeInsets.only(bottom: 20.0),
