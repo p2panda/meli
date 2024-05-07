@@ -42,8 +42,8 @@ class UsedFor {
   }
 
   Future<DocumentViewId> delete() async {
-    this.viewId = await deleteUsedFor(this.viewId);
-    return this.viewId;
+    viewId = await deleteUsedFor(viewId);
+    return viewId;
   }
 }
 
@@ -62,7 +62,7 @@ String get usedForFields {
 }
 
 String usedForQuery(DocumentId id) {
-  final schemaId = SchemaIds.bee_attributes_used_for;
+  const schemaId = SchemaIds.bee_attributes_used_for;
 
   return '''
     query usedForQuery {
@@ -80,7 +80,7 @@ class UsedForPaginator extends Paginator<UsedFor> {
 
   @override
   DocumentNode nextPageQuery(String? cursor) {
-    return gql(allUsesQuery(this.sighting, cursor));
+    return gql(allUsesQuery(sighting, cursor));
   }
 
   @override
@@ -103,7 +103,7 @@ String allUsesQuery(DocumentId? sighting, String? cursor) {
   final filter = (sighting != null)
       ? '''filter: { sighting: { eq: "$sighting" } },'''
       : '';
-  final schemaId = SchemaIds.bee_attributes_used_for;
+  const schemaId = SchemaIds.bee_attributes_used_for;
 
   return '''
     query AllUses {

@@ -18,12 +18,11 @@ class InfiniteDedupTagsList extends StatefulWidget {
   final Paginator<UsedFor> paginator;
   final PaginationListBuilder itemsBuilder;
 
-  InfiniteDedupTagsList(
+  const InfiniteDedupTagsList(
       {super.key, required this.paginator, required this.itemsBuilder});
 
   @override
-  State<InfiniteDedupTagsList> createState() =>
-      _InfiniteDedupTagsListState();
+  State<InfiniteDedupTagsList> createState() => _InfiniteDedupTagsListState();
 }
 
 class _InfiniteDedupTagsListState extends State<InfiniteDedupTagsList> {
@@ -32,16 +31,16 @@ class _InfiniteDedupTagsListState extends State<InfiniteDedupTagsList> {
   @override
   void initState() {
     super.initState();
-    this._initScrollController();
+    _initScrollController();
   }
 
   void _initScrollController() {
     scrollController.addListener(() {
-      final _scrollOffset = scrollController.offset;
-      final _maxOffset = scrollController.position.maxScrollExtent;
-      if (_scrollOffset >= _maxOffset) {
-        if (this.widget.paginator.fetchMore != null) {
-          this.widget.paginator.fetchMore!();
+      final scrollOffset = scrollController.offset;
+      final maxOffset = scrollController.position.maxScrollExtent;
+      if (scrollOffset >= maxOffset) {
+        if (widget.paginator.fetchMore != null) {
+          widget.paginator.fetchMore!();
         }
       }
     });
@@ -58,8 +57,8 @@ class _InfiniteDedupTagsListState extends State<InfiniteDedupTagsList> {
   Widget _loading() {
     return Center(
         child: Container(
-            padding: EdgeInsets.all(15.0),
-            child: CircularProgressIndicator(
+            padding: const EdgeInsets.all(15.0),
+            child: const CircularProgressIndicator(
               color: MeliColors.black,
             )));
   }
@@ -68,7 +67,7 @@ class _InfiniteDedupTagsListState extends State<InfiniteDedupTagsList> {
     return SingleChildScrollView(
       child: Column(children: [
         Text(AppLocalizations.of(context)!.paginationListNoResults,
-            style: TextStyle(fontStyle: FontStyle.italic)),
+            style: const TextStyle(fontStyle: FontStyle.italic)),
       ]),
     );
   }
@@ -77,42 +76,38 @@ class _InfiniteDedupTagsListState extends State<InfiniteDedupTagsList> {
   Widget build(BuildContext context) {
     return Query(
       options:
-          QueryOptions(document: this.widget.paginator.nextPageQuery(null)),
+          QueryOptions(document: widget.paginator.nextPageQuery(null)),
       builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
-        if (this.widget.paginator.refresh == null) {
-          // Workaround to access `refetch` method from the outside
-          this.widget.paginator.refresh = refetch;
-        }
+        // Workaround to access `refetch` method from the outside
+        widget.paginator.refresh ??= refetch;
 
         if (result.hasException) {
-          return this._error(context, result.exception.toString());
+          return _error(context, result.exception.toString());
         }
 
         if (result.isLoading && result.data == null) {
-          return this._loading();
+          return _loading();
         }
 
-        final data = this
-            .widget
+        final data = widget
             .paginator
             .parseJSON(result.data as Map<String, dynamic>);
 
         if (data.documents.isEmpty) {
-          return this._emptyResult(context);
+          return _emptyResult(context);
         }
 
         FetchMoreOptions opts = FetchMoreOptions(
-          document: this.widget.paginator.nextPageQuery(data.endCursor),
+          document: widget.paginator.nextPageQuery(data.endCursor),
           updateQuery: (previousResultData, fetchMoreResultData) {
-            return this
-                .widget
+            return widget
                 .paginator
                 .mergeResponses(previousResultData!, fetchMoreResultData!);
           },
         );
 
         // Get to access `fetchMore` method from the outside
-        this.widget.paginator.fetchMore = () {
+        widget.paginator.fetchMore = () {
           if (data.hasNextPage) {
             fetchMore!(opts);
           }
@@ -125,16 +120,16 @@ class _InfiniteDedupTagsListState extends State<InfiniteDedupTagsList> {
             .toList();
 
         // We want to keep fetching more results (while there are any) until
-        // there are a minimum of 20. This is done
+        // there are a minimum of 20.
         if (uniqueUses.length < 20 && data.hasNextPage) {
           fetchMore!(opts);
-          return this._loading();
+          return _loading();
         }
 
         return SingleChildScrollView(
             controller: scrollController,
             child: Wrap(children: [
-              ...this.widget.itemsBuilder(uniqueUses),
+              ...widget.itemsBuilder(uniqueUses),
             ]));
       },
     );
