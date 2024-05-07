@@ -27,33 +27,31 @@ class _SpeciesScreenState extends State<SpeciesScreen> {
     return MeliScaffold(
         title: AppLocalizations.of(context)!.speciesScreenTitle,
         appBarColor: MeliColors.peach,
-        body: Container(
-          child: SingleChildScrollView(
-            child: Query(
-                options: QueryOptions(
-                    document: gql(speciesQuery(widget.documentId))),
-                builder: (result,
-                    {VoidCallback? refetch, FetchMore? fetchMore}) {
-                  if (result.hasException) {
-                    return ErrorCard(message: result.exception.toString());
-                  }
+        body: SingleChildScrollView(
+          child: Query(
+              options: QueryOptions(
+                  document: gql(speciesQuery(widget.documentId))),
+              builder: (result,
+                  {VoidCallback? refetch, FetchMore? fetchMore}) {
+                if (result.hasException) {
+                  return ErrorCard(message: result.exception.toString());
+                }
 
-                  if (result.isLoading) {
-                    return const Center(
-                      child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: CircularProgressIndicator(
-                              color: MeliColors.black)),
-                    );
-                  }
+                if (result.isLoading) {
+                  return const Center(
+                    child: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: CircularProgressIndicator(
+                            color: MeliColors.black)),
+                  );
+                }
 
-                  final species = Species.fromJson(
-                      result.data?['species'] as Map<String, dynamic>);
+                final species = Species.fromJson(
+                    result.data?['species'] as Map<String, dynamic>);
 
-                  return SpeciesProfile(species);
-                }),
-          ),
+                return SpeciesProfile(species);
+              }),
         ));
   }
 }

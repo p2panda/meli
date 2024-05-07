@@ -32,13 +32,12 @@ class AllSightingsScreen extends StatelessWidget {
             }),
       ],
       body: Container(
+          decoration: const GreenGradientBackground(),
           child: Container(
-              decoration: const GreenGradientBackground(),
-              child: Container(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).viewPadding.top),
-                child: ScrollView(),
-              ))),
+            padding: EdgeInsets.only(
+                top: MediaQuery.of(context).viewPadding.top),
+            child: ScrollView(),
+          )),
     );
   }
 }

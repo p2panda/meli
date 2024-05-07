@@ -34,33 +34,31 @@ class _SightingScreenState extends State<SightingScreen> {
         title: AppLocalizations.of(context)!.sightingScreenTitle,
         backgroundColor: MeliColors.electric,
         appBarColor: MeliColors.electric,
-        body: Container(
-          child: SingleChildScrollView(
-            child: Query(
-                options: QueryOptions(
-                    document: gql(sightingQuery(widget.documentId))),
-                builder: (result,
-                    {VoidCallback? refetch, FetchMore? fetchMore}) {
-                  if (result.hasException) {
-                    return ErrorCard(message: result.exception.toString());
-                  }
+        body: SingleChildScrollView(
+          child: Query(
+              options: QueryOptions(
+                  document: gql(sightingQuery(widget.documentId))),
+              builder: (result,
+                  {VoidCallback? refetch, FetchMore? fetchMore}) {
+                if (result.hasException) {
+                  return ErrorCard(message: result.exception.toString());
+                }
 
-                  if (result.isLoading) {
-                    return const Center(
-                      child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: CircularProgressIndicator(
-                              color: MeliColors.black)),
-                    );
-                  }
+                if (result.isLoading) {
+                  return const Center(
+                    child: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: CircularProgressIndicator(
+                            color: MeliColors.black)),
+                  );
+                }
 
-                  final sighting = Sighting.fromJson(
-                      result.data?['sighting'] as Map<String, dynamic>);
+                final sighting = Sighting.fromJson(
+                    result.data?['sighting'] as Map<String, dynamic>);
 
-                  return SightingProfile(sighting);
-                }),
-          ),
+                return SightingProfile(sighting);
+              }),
         ));
   }
 }
