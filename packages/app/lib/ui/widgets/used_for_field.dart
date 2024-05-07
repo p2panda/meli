@@ -43,9 +43,6 @@ class _UsedForFieldState extends State<UsedForField> {
   String? _dirty;
 
   Future<void> _createUse(String usedForString) async {
-    // Show the overlay spinner
-    _overlayKey.currentState!.show();
-
     // Create the new UsedFor document
     DocumentViewId usedforViewId = await widget.onUpdate.call(usedForString);
 
@@ -58,6 +55,26 @@ class _UsedForFieldState extends State<UsedForField> {
       isReady = (result.data?['document'] != null);
       sleep(const Duration(milliseconds: 100));
     }
+  }
+
+  Future<void> _assignUse(String usedForString) async {
+    // Show the overlay spinner
+    _overlayKey.currentState!.show();
+
+    await _createUse(usedForString);
+
+    // Refresh both paginators
+    currentUsedForPaginator.refresh!();
+
+    // Hide the overlay
+    _overlayKey.currentState!.hide();
+  }
+
+  Future<void> _createNewUse(String usedForString) async {
+    // Show the overlay spinner
+    _overlayKey.currentState!.show();
+
+    await _createUse(usedForString);
 
     // Refresh both paginators
     currentUsedForPaginator.refresh!();
@@ -67,7 +84,7 @@ class _UsedForFieldState extends State<UsedForField> {
     _overlayKey.currentState!.hide();
   }
 
-  void _delete(UsedFor usedFor) async {
+  void _deleteUse(UsedFor usedFor) async {
     // Show the overlay spinner
     _overlayKey.currentState!.show();
 
@@ -103,7 +120,7 @@ class _UsedForFieldState extends State<UsedForField> {
       return;
     }
 
-    await _createUse(_dirty!);
+    await _createNewUse(_dirty!);
 
     _controller.text = '';
     setState(() {
@@ -135,7 +152,7 @@ class _UsedForFieldState extends State<UsedForField> {
   }
 
   void _onTagClick(UsedFor usedFor) async {
-    await _createUse(usedFor.usedFor);
+    await _assignUse(usedFor.usedFor);
   }
 
   List<Widget> _usedForListBuilder(List<UsedFor> uses) {
@@ -159,7 +176,7 @@ class _UsedForFieldState extends State<UsedForField> {
                           child: IconButton(
                               padding: const EdgeInsets.all(0),
                               onPressed: () {
-                                _delete(usedFor);
+                                _deleteUse(usedFor);
                               },
                               icon: const Icon(size: 20, Icons.delete)),
                         )
