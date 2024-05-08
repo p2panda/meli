@@ -2,19 +2,19 @@
 
 import 'dart:io';
 
-import 'package:app/ui/widgets/used_for_list.dart';
-import 'package:app/ui/widgets/used_for_tag_selector.dart';
-import 'package:app/ui/widgets/used_for_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'package:app/io/graphql/graphql.dart';
 import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/base.dart';
 import 'package:app/models/used_for.dart';
-import 'package:app/ui/widgets/loading_overlay.dart';
 import 'package:app/ui/widgets/editable_card.dart';
-import 'package:app/io/graphql/graphql.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:app/ui/widgets/loading_overlay.dart';
+import 'package:app/ui/widgets/used_for_list.dart';
+import 'package:app/ui/widgets/used_for_tag_selector.dart';
+import 'package:app/ui/widgets/used_for_text_field.dart';
 
 typedef OnUpdate = Future<DocumentViewId> Function(String);
 

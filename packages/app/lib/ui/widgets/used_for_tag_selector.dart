@@ -1,10 +1,12 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+import 'package:flutter/material.dart';
+
 import 'package:app/models/base.dart';
 import 'package:app/models/used_for.dart';
 import 'package:app/ui/colors.dart';
+import 'package:app/ui/widgets/infinite_dedup_tags_list.dart';
 import 'package:app/ui/widgets/tag_item.dart';
-import 'package:flutter/material.dart';
-
-import 'infinite_dedup_tags_list.dart';
 
 class UsedForTagSelector extends StatefulWidget {
   final void Function(String) onTagClick;
