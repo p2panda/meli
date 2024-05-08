@@ -2,8 +2,7 @@
 
 import 'dart:io';
 
-import 'package:app/ui/colors.dart';
-import 'package:app/ui/widgets/infinite_scroll_list.dart';
+import 'package:app/ui/widgets/used_for_list.dart';
 import 'package:app/ui/widgets/used_for_tag_selector.dart';
 import 'package:app/ui/widgets/used_for_text_field.dart';
 import 'package:flutter/material.dart';
@@ -101,56 +100,6 @@ class _UsedForFieldState extends State<UsedForField> {
     await _createUse(usedFor);
   }
 
-  List<Widget> _usesListBuilder(List<UsedFor> uses) {
-    return [
-      ...uses.map((usedFor) => Container(
-          constraints: const BoxConstraints(minHeight: 30),
-          padding: const EdgeInsets.symmetric(vertical: 7.0),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                    flex: 6,
-                    child: Text(usedFor.usedFor,
-                        style: const TextStyle(fontSize: 16))),
-                Expanded(
-                  flex: 1,
-                  child: isEditMode
-                      ? Container(
-                          constraints: const BoxConstraints(maxHeight: 23),
-                          child: IconButton(
-                              padding: const EdgeInsets.all(0),
-                              onPressed: () {
-                                _deleteUse(usedFor);
-                              },
-                              icon: const Icon(size: 20, Icons.delete)),
-                        )
-                      : const SizedBox(),
-                )
-              ]))),
-    ];
-  }
-
-  Widget _usesList() {
-    return Material(
-      color: MeliColors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(13.0)),
-      ),
-      child: Container(
-        alignment: Alignment.center,
-        constraints: const BoxConstraints(
-          maxHeight: 120,
-        ),
-        width: double.infinity,
-        margin: const EdgeInsets.all(10),
-        child: InfiniteScrollList(
-            paginator: listPaginator, builder: _usesListBuilder),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return EditableCard(
@@ -163,7 +112,10 @@ class _UsedForFieldState extends State<UsedForField> {
             key: _overlayKey,
             child: Column(
               children: [
-                SizedBox(height: 120, child: _usesList()),
+                SizedBox(
+                    height: 120,
+                    child: UsedForList(
+                        paginator: listPaginator, onDeleteClick: _deleteUse)),
                 ...(isEditMode
                     ? [
                         const SizedBox(height: 10),
