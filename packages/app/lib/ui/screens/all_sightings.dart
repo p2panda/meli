@@ -65,11 +65,11 @@ class ScrollView extends StatelessWidget {
             const SizedBox(height: 30.0),
             Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-                decoration: new MagnoliaWavesBackground(),
+                decoration: const MagnoliaWavesBackground(),
                 child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.only(top: 30.0, bottom: 20.0),
-                    child: SightingsList(paginator: this.paginator))),
+                    child: SightingsList(paginator: paginator))),
             const SizedBox(height: 40.0),
           ])),
     );
