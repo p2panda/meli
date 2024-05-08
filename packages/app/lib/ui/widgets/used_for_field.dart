@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/infinite_scroll_list.dart';
-import 'package:app/ui/widgets/infinite_dedup_tags_list.dart';
+import 'package:app/ui/widgets/used_for_tag_selector.dart';
 import 'package:app/ui/widgets/used_for_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -32,7 +32,7 @@ class _UsedForFieldState extends State<UsedForField> {
   final GlobalKey<LoadingOverlayState> _overlayKey = GlobalKey();
   late Paginator<UsedFor> listPaginator =
       UsedForPaginator(sighting: widget.sighting);
-  late Paginator<UsedFor> tagPaginator = UsedForPaginator();
+  final Paginator<UsedFor> tagPaginator = UsedForPaginator();
 
   /// Flag indicating if we're currently editing the field or not.
   bool isEditMode = false;
@@ -97,8 +97,8 @@ class _UsedForFieldState extends State<UsedForField> {
     });
   }
 
-  void _onTagClick(UsedFor usedFor) async {
-    await _createUse(usedFor.usedFor);
+  void _onTagClick(String usedFor) async {
+    await _createUse(usedFor);
   }
 
   List<Widget> _usesListBuilder(List<UsedFor> uses) {
@@ -151,32 +151,6 @@ class _UsedForFieldState extends State<UsedForField> {
     );
   }
 
-  Widget _tagList() {
-    return Material(
-      color: MeliColors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(13.0)),
-      ),
-      child: Container(
-        constraints: const BoxConstraints(
-          minHeight: 40,
-        ),
-        width: double.infinity,
-        margin: const EdgeInsets.all(10),
-        child: InfiniteDedupTagsList(
-            paginator: tagPaginator,
-            itemsBuilder: (List<UsedFor> uses) {
-              return uses
-                  .map((usedFor) => UsedForTagItem(
-                      usedFor: usedFor, createUsedFor: _onTagClick))
-                  .toList();
-            }),
-      ),
-    );
-  }
-
-
-
   @override
   Widget build(BuildContext context) {
     return EditableCard(
@@ -193,7 +167,10 @@ class _UsedForFieldState extends State<UsedForField> {
                 ...(isEditMode
                     ? [
                         const SizedBox(height: 10),
-                        Expanded(child: _tagList()),
+                        Expanded(
+                            child: UsedForTagSelector(
+                                paginator: tagPaginator,
+                                onTagClick: _onTagClick)),
                         const SizedBox(height: 10),
                         UsedForTextField(submit: _createNewTag)
                       ]
@@ -202,33 +179,5 @@ class _UsedForFieldState extends State<UsedForField> {
             ),
           ),
         ));
-  }
-}
-
-class UsedForTagItem extends StatelessWidget {
-  final UsedFor usedFor;
-  final void Function(UsedFor) createUsedFor;
-
-  const UsedForTagItem(
-      {super.key, required this.usedFor, required this.createUsedFor});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(5),
-      child: GestureDetector(
-        onTap: () {
-          createUsedFor(usedFor);
-        },
-        child: Material(
-          elevation: 5,
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
-          child: Container(
-            margin: const EdgeInsets.all(5),
-            child: Text(usedFor.usedFor),
-          ),
-        ),
-      ),
-    );
   }
 }

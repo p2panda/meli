@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/tag_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -8,9 +9,8 @@ import 'package:app/models/used_for.dart';
 import 'package:app/models/base.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/error_card.dart';
-import 'package:app/ui/widgets/used_for_field.dart';
 
-typedef PaginationListBuilder = List<UsedForTagItem> Function(
+typedef PaginationListBuilder = List<TagItem> Function(
   List<UsedFor> documents,
 );
 
