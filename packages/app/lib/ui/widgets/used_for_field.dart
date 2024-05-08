@@ -107,7 +107,7 @@ class _UsedForFieldState extends State<UsedForField> {
         isEditMode: isEditMode,
         onChanged: _toggleEditMode,
         child: Container(
-          constraints: BoxConstraints(maxHeight: isEditMode ? 400 : 120),
+          constraints: BoxConstraints(maxHeight: isEditMode ? 500 : 120),
           child: LoadingOverlay(
             key: _overlayKey,
             child: Column(
@@ -119,10 +119,18 @@ class _UsedForFieldState extends State<UsedForField> {
                 ...(isEditMode
                     ? [
                         const SizedBox(height: 10),
+                        Text("Add Uses",
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.titleLarge),
+                        const SizedBox(height: 10),
                         Expanded(
                             child: UsedForTagSelector(
                                 paginator: tagPaginator,
                                 onTagClick: _onTagClick)),
+                        const SizedBox(height: 10),
+                        Text("Create New Use",
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.titleLarge),
                         const SizedBox(height: 10),
                         UsedForTextField(submit: _createNewTag)
                       ]
