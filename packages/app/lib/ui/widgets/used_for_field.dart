@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/infinite_scroll_list.dart';
 import 'package:app/ui/widgets/infinite_dedup_tags_list.dart';
+import 'package:app/ui/widgets/used_for_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -28,7 +29,6 @@ class UsedForField extends StatefulWidget {
 }
 
 class _UsedForFieldState extends State<UsedForField> {
-  final TextEditingController _controller = TextEditingController();
   final GlobalKey<LoadingOverlayState> _overlayKey = GlobalKey();
   late Paginator<UsedFor> listPaginator =
       UsedForPaginator(sighting: widget.sighting);
@@ -36,9 +36,6 @@ class _UsedForFieldState extends State<UsedForField> {
 
   /// Flag indicating if we're currently editing the field or not.
   bool isEditMode = false;
-
-  /// Contains changed value when user adjusted the field.
-  String? _dirty;
 
   Future<void> _createUse(String usedForString) async {
     // Show the overlay spinner
@@ -90,47 +87,13 @@ class _UsedForFieldState extends State<UsedForField> {
     _overlayKey.currentState!.hide();
   }
 
-  void _submit() async {
-    if (_dirty == null) {
-      // Nothing has changed
-      return;
-    }
-
-    if (_dirty == '') {
-      // We consider that the user changed their mind and actually doesn't
-      // want to create a UsedFor.
-      _dirty = null;
-      return;
-    }
-
-    await _createUse(_dirty!);
-
-    _controller.text = '';
-    setState(() {
-      _dirty = null;
-    });
+  void _createNewTag(String usedFor) async {
+    await _createUse(usedFor);
   }
 
   void _toggleEditMode() {
     setState(() {
       isEditMode = !isEditMode;
-
-      // If we flip from edit mode to read-only mode we interpret this as a
-      // "submit" action by the user
-      if (!isEditMode) {
-        _submit();
-      }
-
-      _controller.text = '';
-      setState(() {
-        _dirty = null;
-      });
-    });
-  }
-
-  void _changeNewTagValue(String newValue) {
-    setState(() {
-      _dirty = newValue;
     });
   }
 
@@ -212,24 +175,7 @@ class _UsedForFieldState extends State<UsedForField> {
     );
   }
 
-  Widget _newTagField() {
-    return TextField(
-      keyboardType: TextInputType.text,
-      minLines: 1,
-      controller: _controller,
-      maxLines: 1,
-      onChanged: _changeNewTagValue,
-      onEditingComplete: _submit,
-      decoration: const InputDecoration(
-        focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-                color: Colors.black, width: 2.0, style: BorderStyle.solid)),
-        enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-                color: Colors.black, width: 2.0, style: BorderStyle.solid)),
-      ),
-    );
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -249,7 +195,7 @@ class _UsedForFieldState extends State<UsedForField> {
                         const SizedBox(height: 10),
                         Expanded(child: _tagList()),
                         const SizedBox(height: 10),
-                        _newTagField()
+                        UsedForTextField(submit: _createNewTag)
                       ]
                     : [const SizedBox()])
               ],
