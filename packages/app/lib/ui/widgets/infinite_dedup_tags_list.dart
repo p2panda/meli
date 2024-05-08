@@ -17,9 +17,13 @@ typedef PaginationListBuilder = List<TagItem> Function(
 class InfiniteDedupTagsList extends StatefulWidget {
   final Paginator<UsedFor> paginator;
   final PaginationListBuilder itemsBuilder;
+  final String? emptyMessage;
 
   const InfiniteDedupTagsList(
-      {super.key, required this.paginator, required this.itemsBuilder});
+      {super.key,
+      required this.paginator,
+      required this.itemsBuilder,
+      this.emptyMessage});
 
   @override
   State<InfiniteDedupTagsList> createState() => _InfiniteDedupTagsListState();
@@ -64,10 +68,12 @@ class _InfiniteDedupTagsListState extends State<InfiniteDedupTagsList> {
   }
 
   Widget _emptyResult(BuildContext context) {
+    String message = widget.emptyMessage ??
+        AppLocalizations.of(context)!.paginationListNoResults;
+
     return SingleChildScrollView(
       child: Column(children: [
-        Text(AppLocalizations.of(context)!.paginationListNoResults,
-            style: const TextStyle(fontStyle: FontStyle.italic)),
+        Text(message, style: const TextStyle(fontStyle: FontStyle.italic)),
       ]),
     );
   }
@@ -75,8 +81,7 @@ class _InfiniteDedupTagsListState extends State<InfiniteDedupTagsList> {
   @override
   Widget build(BuildContext context) {
     return Query(
-      options:
-          QueryOptions(document: widget.paginator.nextPageQuery(null)),
+      options: QueryOptions(document: widget.paginator.nextPageQuery(null)),
       builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
         // Workaround to access `refetch` method from the outside
         widget.paginator.refresh ??= refetch;
@@ -89,9 +94,8 @@ class _InfiniteDedupTagsListState extends State<InfiniteDedupTagsList> {
           return _loading();
         }
 
-        final data = widget
-            .paginator
-            .parseJSON(result.data as Map<String, dynamic>);
+        final data =
+            widget.paginator.parseJSON(result.data as Map<String, dynamic>);
 
         if (data.documents.isEmpty) {
           return _emptyResult(context);
@@ -100,8 +104,7 @@ class _InfiniteDedupTagsListState extends State<InfiniteDedupTagsList> {
         FetchMoreOptions opts = FetchMoreOptions(
           document: widget.paginator.nextPageQuery(data.endCursor),
           updateQuery: (previousResultData, fetchMoreResultData) {
-            return widget
-                .paginator
+            return widget.paginator
                 .mergeResponses(previousResultData!, fetchMoreResultData!);
           },
         );

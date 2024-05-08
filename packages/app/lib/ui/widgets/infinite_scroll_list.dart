@@ -19,9 +19,10 @@ typedef PaginationListBuilder = List<Widget> Function(
 class InfiniteScrollList extends StatefulWidget {
   final Paginator<UsedFor> paginator;
   final PaginationListBuilder builder;
+  final String? emptyMessage;
 
   const InfiniteScrollList(
-      {super.key, required this.paginator, required this.builder});
+      {super.key, required this.paginator, required this.builder, this.emptyMessage});
 
   @override
   State<InfiniteScrollList> createState() => _InfiniteScrollListState();
@@ -66,10 +67,12 @@ class _InfiniteScrollListState extends State<InfiniteScrollList> {
   }
 
   Widget _emptyResult(BuildContext context) {
+    String message = widget.emptyMessage ??
+        AppLocalizations.of(context)!.paginationListNoResults;
+
     return SingleChildScrollView(
       child: Column(children: [
-        Text(AppLocalizations.of(context)!.paginationListNoResults,
-            style: const TextStyle(fontStyle: FontStyle.italic)),
+        Text(message, style: const TextStyle(fontStyle: FontStyle.italic)),
       ]),
     );
   }
@@ -77,8 +80,7 @@ class _InfiniteScrollListState extends State<InfiniteScrollList> {
   @override
   Widget build(BuildContext context) {
     return Query(
-      options:
-          QueryOptions(document: widget.paginator.nextPageQuery(null)),
+      options: QueryOptions(document: widget.paginator.nextPageQuery(null)),
       builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
         // Workaround to access `refetch` method from the outside
         widget.paginator.refresh ??= refetch;
@@ -91,15 +93,13 @@ class _InfiniteScrollListState extends State<InfiniteScrollList> {
           return _loading();
         }
 
-        final data = widget
-            .paginator
-            .parseJSON(result.data as Map<String, dynamic>);
+        final data =
+            widget.paginator.parseJSON(result.data as Map<String, dynamic>);
 
         FetchMoreOptions opts = FetchMoreOptions(
           document: widget.paginator.nextPageQuery(data.endCursor),
           updateQuery: (previousResultData, fetchMoreResultData) {
-            return widget
-                .paginator
+            return widget.paginator
                 .mergeResponses(previousResultData!, fetchMoreResultData!);
           },
         );

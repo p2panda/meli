@@ -32,6 +32,7 @@ class _UsedForTagSelectorState extends State<UsedForTagSelector> {
         width: double.infinity,
         margin: const EdgeInsets.all(10),
         child: InfiniteDedupTagsList(
+            emptyMessage: "No uses created yet.",
             paginator: widget.paginator,
             itemsBuilder: (List<UsedFor> uses) {
               return uses

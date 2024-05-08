@@ -65,6 +65,7 @@ class _UsedForListState extends State<UsedForList> {
         width: double.infinity,
         margin: const EdgeInsets.all(10),
         child: InfiniteScrollList(
+            emptyMessage: "No uses selected yet.",
             paginator: widget.paginator, builder: _usesListBuilder),
       ),
     );
