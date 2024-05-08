@@ -74,16 +74,10 @@ class _UsedForListState extends State<UsedForList> {
         ),
         width: double.infinity,
         margin: const EdgeInsets.all(10),
-        child: RawScrollbar(
-          thumbVisibility: true,
-          thumbColor: Colors.grey,
-          radius: const Radius.circular(16),
-          thickness: 4,
-          child: InfiniteScrollList(
-              emptyMessage: "No uses selected yet.",
-              paginator: widget.paginator,
-              builder: _usesListBuilder),
-        ),
+        child: InfiniteScrollList(
+            emptyMessage: "No uses selected yet.",
+            paginator: widget.paginator,
+            builder: _usesListBuilder),
       ),
     );
   }

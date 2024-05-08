@@ -115,13 +115,20 @@ class _InfiniteScrollListState extends State<InfiniteScrollList> {
           return _emptyResult(context);
         }
 
-        return SingleChildScrollView(
-            controller: scrollController,
-            child: Column(
-              children: [
-                ...widget.builder(data.documents),
-              ],
-            ));
+        return RawScrollbar(
+          controller: scrollController,
+          thumbVisibility: true,
+          thumbColor: Colors.grey,
+          radius: const Radius.circular(16),
+          thickness: 4,
+          child: SingleChildScrollView(
+              controller: scrollController,
+              child: Column(
+                children: [
+                  ...widget.builder(data.documents),
+                ],
+              )),
+        );
       },
     );
   }

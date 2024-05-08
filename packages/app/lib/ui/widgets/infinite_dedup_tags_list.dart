@@ -129,11 +129,17 @@ class _InfiniteDedupTagsListState extends State<InfiniteDedupTagsList> {
           return _loading();
         }
 
-        return SingleChildScrollView(
-            controller: scrollController,
-            child: Wrap(children: [
-              ...widget.itemsBuilder(uniqueUses),
-            ]));
+        return RawScrollbar(
+          thumbVisibility: true,
+          thumbColor: Colors.grey,
+          radius: Radius.circular(16),
+          thickness: 4,
+          child: SingleChildScrollView(
+              controller: scrollController,
+              child: Wrap(children: [
+                ...widget.itemsBuilder(uniqueUses),
+              ])),
+        );
       },
     );
   }
