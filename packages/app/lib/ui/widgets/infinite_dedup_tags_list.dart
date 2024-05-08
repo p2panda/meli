@@ -130,6 +130,7 @@ class _InfiniteDedupTagsListState extends State<InfiniteDedupTagsList> {
         }
 
         return RawScrollbar(
+          controller: scrollController,
           thumbVisibility: true,
           thumbColor: Colors.grey,
           radius: Radius.circular(16),
