@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/used_for_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -130,9 +131,8 @@ class _SightingProfileState extends State<SightingProfile> {
 
   @override
   Widget build(BuildContext context) {
-    final imagePaths = sighting.images
-        .map((image) => '$BLOBS_BASE_PATH/${image.id}')
-        .toList();
+    final imagePaths =
+        sighting.images.map((image) => '$BLOBS_BASE_PATH/${image.id}').toList();
 
     return Container(
       padding: const EdgeInsets.only(
@@ -150,6 +150,9 @@ class _SightingProfileState extends State<SightingProfile> {
           onUpdate: _updateSpecies,
         ),
         NoteField(sighting.comment, onUpdate: _updateComment),
+        UsedForField(
+          sighting: sighting.id,
+        ),
         // @TODO: Remove this as soon as there are more elements
         const SizedBox(height: 550.0),
       ]),

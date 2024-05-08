@@ -39,6 +39,8 @@ abstract class Paginator<T> {
   /// Paginator instance.
   VoidCallback? refresh;
 
+  VoidCallback? fetchMore;
+
   /// Should return GraphQL query for the next page.
   DocumentNode nextPageQuery(String? cursor);
 

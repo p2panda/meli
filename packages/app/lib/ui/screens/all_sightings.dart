@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/pagination_cards_list.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app/models/base.dart';
@@ -7,7 +8,6 @@ import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/fab.dart';
-import 'package:app/ui/widgets/pagination_list.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/sighting_card.dart';
 
@@ -98,12 +98,12 @@ class _SightingsListState extends State<SightingsList> {
       decoration: const MagnoliaWavesBackground(),
       child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.only(top: 30.0, bottom: 20.0),
+          padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
           child: PaginationList<Sighting>(
               builder: (Sighting sighting) {
                 return Container(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    child: _item(sighting));
+                    padding: EdgeInsets.only(bottom: 20.0),
+                    child: this._item(sighting));
               },
               paginator: widget.paginator)),
     );
@@ -163,7 +163,8 @@ class _BouncyBeeState extends State<BouncyBee>
       },
       child: SlideTransition(
         position: _flyingBeeAnimation,
-        child: const Center(child: Text("🐝", style: TextStyle(fontSize: 50.0))),
+        child:
+            const Center(child: Text("🐝", style: TextStyle(fontSize: 50.0))),
       ),
     );
   }
