@@ -115,7 +115,10 @@ class _UsedForFieldState extends State<UsedForField> {
                 SizedBox(
                     height: 120,
                     child: UsedForList(
-                        paginator: listPaginator, onDeleteClick: _deleteUse)),
+                      paginator: listPaginator,
+                      onDeleteClick: _deleteUse,
+                      isEditMode: isEditMode,
+                    )),
                 ...(isEditMode
                     ? [
                         const SizedBox(height: 10),
