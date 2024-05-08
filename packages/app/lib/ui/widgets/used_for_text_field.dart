@@ -80,7 +80,7 @@ class _UsedForTextFieldState extends State<UsedForTextField> {
                               MaterialStatePropertyAll(Colors.grey))
                       : const ButtonStyle(),
                   onPressed: _onSubmit,
-                  child: Text(t.usedForCreateTag)),
+                  child: Text(t.usedForTextSave)),
             ],
           )
         ])
