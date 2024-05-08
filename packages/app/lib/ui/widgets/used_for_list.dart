@@ -1,9 +1,7 @@
-import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/base.dart';
 import 'package:app/models/used_for.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/infinite_scroll_list.dart';
-import 'package:app/ui/widgets/tag_item.dart';
 import 'package:flutter/material.dart';
 
 class UsedForList extends StatefulWidget {

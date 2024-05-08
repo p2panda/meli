@@ -17,7 +17,7 @@ class _UsedForTextFieldState extends State<UsedForTextField> {
   final TextEditingController _controller = TextEditingController();
   bool disabled = true;
 
-  _onSubmit() {
+  void _onSubmit() {
     if (disabled) {
       return;
     }
