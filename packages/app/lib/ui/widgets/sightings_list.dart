@@ -11,7 +11,7 @@ import 'package:app/ui/widgets/sighting_card.dart';
 class SightingsList extends StatefulWidget {
   final Paginator<Sighting> paginator;
 
-  SightingsList({super.key, required this.paginator});
+  const SightingsList({super.key, required this.paginator});
 
   @override
   State<SightingsList> createState() => _SightingsListState();
@@ -33,8 +33,8 @@ class _SightingsListState extends State<SightingsList> {
     return PaginationList<Sighting>(
         builder: (Sighting sighting) {
           return Container(
-              padding: EdgeInsets.only(bottom: 20.0),
-              child: this._item(sighting));
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: _item(sighting));
         },
         paginator: widget.paginator);
   }

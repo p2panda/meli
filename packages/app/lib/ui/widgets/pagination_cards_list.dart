@@ -16,11 +16,15 @@ typedef PaginationBuilder<T> = Widget Function(
   T document,
 );
 
-class PaginationList<T> extends StatelessWidget {
-  final PaginationBuilder<T> builder;
+typedef ContainerBuilder<T> = Widget Function(
+  List<T> collection,
+);
+
+class PaginationBase<T> extends StatelessWidget {
+  final ContainerBuilder<T> builder;
   final Paginator<T> paginator;
 
-  const PaginationList(
+  const PaginationBase(
       {super.key, required this.builder, required this.paginator});
 
   Widget _error(BuildContext context, String errorMessage) {
@@ -91,14 +95,38 @@ class PaginationList<T> extends StatelessWidget {
         }
 
         return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              ...data.documents.map((document) => this.builder(document)),
-              if (data.hasNextPage)
-                this._loadMore(context, result.isLoading, onLoadMore: () {
-                  fetchMore!(opts);
-                })
-            ]);
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            this.builder(data.documents),
+            if (data.hasNextPage)
+              this._loadMore(context, result.isLoading, onLoadMore: () {
+                fetchMore!(opts);
+              })
+          ],
+        );
+      },
+    );
+  }
+}
+
+class PaginationList<T> extends StatelessWidget {
+  final PaginationBuilder<T> builder;
+  final Paginator<T> paginator;
+
+  const PaginationList(
+      {super.key, required this.builder, required this.paginator});
+
+  @override
+  Widget build(BuildContext context) {
+    return PaginationBase<T>(
+      paginator: this.paginator,
+      builder: (List<T> collection) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            ...collection.map((document) => this.builder(document)),
+          ],
+        );
       },
     );
   }

@@ -12,7 +12,7 @@ import 'package:app/ui/widgets/pagination_cards_list.dart';
 class SightingsTiles extends StatefulWidget {
   final Paginator<Sighting> paginator;
 
-  SightingsTiles({super.key, required this.paginator});
+  const SightingsTiles({super.key, required this.paginator});
 
   @override
   State<SightingsTiles> createState() => _SightingsTilesState();
@@ -32,8 +32,8 @@ class _SightingsTilesState extends State<SightingsTiles> {
     return PaginationList<Sighting>(
         builder: (Sighting sighting) {
           return Container(
-              padding: EdgeInsets.only(bottom: 20.0),
-              child: this._item(sighting));
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: _item(sighting));
         },
         paginator: widget.paginator);
   }
@@ -51,7 +51,7 @@ class SightingTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return Container(
-          constraints: BoxConstraints(maxWidth: 50.0),
+          constraints: const BoxConstraints(maxWidth: 50.0),
           child: MeliImage(image: image));
     });
   }
