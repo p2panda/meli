@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 class UsedForList extends StatefulWidget {
   final Paginator<UsedFor> paginator;
   final void Function(UsedFor usedFor) onDeleteClick;
-  bool isEditMode = false;
+  final bool isEditMode;
 
-  UsedForList(
+  const UsedForList(
       {super.key,
       required this.paginator,
       required this.onDeleteClick,
