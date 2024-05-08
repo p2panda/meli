@@ -107,13 +107,13 @@ class _UsedForFieldState extends State<UsedForField> {
         isEditMode: isEditMode,
         onChanged: _toggleEditMode,
         child: Container(
-          constraints: BoxConstraints(maxHeight: isEditMode ? 500 : 120),
+          constraints: BoxConstraints(maxHeight: isEditMode ? 560 : 200),
           child: LoadingOverlay(
             key: _overlayKey,
             child: Column(
               children: [
                 SizedBox(
-                    height: 120,
+                    height: 200,
                     child: UsedForList(
                       paginator: listPaginator,
                       onDeleteClick: _deleteUse,

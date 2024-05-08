@@ -27,29 +27,36 @@ class _UsedForListState extends State<UsedForList> {
       ...uses.map((usedFor) => Container(
           constraints: const BoxConstraints(minHeight: 30),
           padding: const EdgeInsets.symmetric(vertical: 7.0),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                    flex: 6,
-                    child: Text(usedFor.usedFor,
-                        style: const TextStyle(fontSize: 16))),
-                Expanded(
-                  flex: 1,
-                  child: widget.isEditMode
-                      ? Container(
-                          constraints: const BoxConstraints(maxHeight: 23),
-                          child: IconButton(
-                              padding: const EdgeInsets.all(0),
-                              onPressed: () {
-                                widget.onDeleteClick(usedFor);
-                              },
-                              icon: const Icon(size: 20, Icons.delete)),
-                        )
-                      : const SizedBox(),
-                )
-              ]))),
+          child: Material(
+            elevation: 5,
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
+            child: Container(
+              margin: const EdgeInsets.all(5),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        flex: 6,
+                        child: Text(usedFor.usedFor,
+                            style: Theme.of(context).textTheme.titleMedium)),
+                    Expanded(
+                      flex: 1,
+                      child: widget.isEditMode
+                          ? Container(
+                              constraints: const BoxConstraints(maxHeight: 23),
+                              child: IconButton(
+                                  padding: const EdgeInsets.all(0),
+                                  onPressed: () {
+                                    widget.onDeleteClick(usedFor);
+                                  },
+                                  icon: const Icon(size: 20, Icons.delete)),
+                            )
+                          : const SizedBox(),
+                    )
+                  ]),
+            ),
+          ))),
     ];
   }
 
