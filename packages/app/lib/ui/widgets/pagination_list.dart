@@ -142,16 +142,17 @@ class SliverPaginationBase<T> extends StatelessWidget {
 
   Widget _loadMore(BuildContext context, bool isLoading,
       {required VoidCallback onLoadMore}) {
-    return SliverToBoxAdapter(
-        child: Column(children: [
+    return MultiSliver(children: [
+      const SizedBox(height: 20.0),
       isLoading
           ? this._loading()
-          : ElevatedButton(
+          : Center(
+              child: ElevatedButton(
               onPressed: onLoadMore,
               child: Text(AppLocalizations.of(context)!.paginationListLoadMore,
                   style: const TextStyle(color: MeliColors.black)),
-            )
-    ]));
+            ))
+    ]);
   }
 
   @override
@@ -188,7 +189,7 @@ class SliverPaginationBase<T> extends StatelessWidget {
           return this._emptyResult(context);
         }
 
-        return SliverStack(children: [
+        return MultiSliver(children: [
           this.builder(data.documents),
           if (data.hasNextPage)
             this._loadMore(context, result.isLoading, onLoadMore: () {
