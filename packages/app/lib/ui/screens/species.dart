@@ -31,32 +31,29 @@ class _SpeciesScreenState extends State<SpeciesScreen> {
     return MeliScaffold(
         title: AppLocalizations.of(context)!.speciesScreenTitle,
         appBarColor: MeliColors.peach,
-        body: SingleChildScrollView(
-          child: Query(
-              options: QueryOptions(
-                  document: gql(speciesQuery(widget.documentId))),
-              builder: (result,
-                  {VoidCallback? refetch, FetchMore? fetchMore}) {
-                if (result.hasException) {
-                  return ErrorCard(message: result.exception.toString());
-                }
+        body: Query(
+            options:
+                QueryOptions(document: gql(speciesQuery(widget.documentId))),
+            builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
+              if (result.hasException) {
+                return ErrorCard(message: result.exception.toString());
+              }
 
-                if (result.isLoading) {
-                  return const Center(
-                    child: SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: CircularProgressIndicator(
-                            color: MeliColors.black)),
-                  );
-                }
+              if (result.isLoading) {
+                return const Center(
+                  child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child:
+                          CircularProgressIndicator(color: MeliColors.black)),
+                );
+              }
 
-                final species = Species.fromJson(
-                    result.data?['species'] as Map<String, dynamic>);
+              final species = Species.fromJson(
+                  result.data?['species'] as Map<String, dynamic>);
 
-                return SpeciesProfile(species);
-              }),
-        ));
+              return SpeciesProfile(species);
+            }));
   }
 }
 
@@ -97,22 +94,29 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(
-          top: 10.0, right: 20.0, bottom: 20.0, left: 20.0),
+      padding: const EdgeInsets.only(top: 10.0, right: 20.0, left: 20.0),
       decoration: const SeaWavesBackground(),
-      child: Wrap(runSpacing: 20.0, children: [
-        SpeciesProfileTitle(species.species.name),
-        const SizedBox(height: 100.0),
-        SpeciesField(
-          species.species,
-          allowNull: false,
-          onUpdate: _updateTaxon,
-        ),
-        EditableTextField(species.description,
-            title: AppLocalizations.of(context)!.speciesDescription,
-            onUpdate: _updateDescription),
-        RelatedSightings(id: species.id),
-      ]),
+      child: CustomScrollView(
+        slivers: [
+          SliverList(
+              delegate: SliverChildListDelegate([
+            SpeciesProfileTitle(species.species.name),
+            const SizedBox(height: 100.0),
+            SpeciesField(
+              species.species,
+              allowNull: false,
+              onUpdate: _updateTaxon,
+            ),
+            const SizedBox(height: 20.0),
+            EditableTextField(species.description,
+                title: AppLocalizations.of(context)!.speciesDescription,
+                onUpdate: _updateDescription),
+            const SizedBox(height: 20.0),
+          ])),
+          RelatedSightings(id: species.id),
+          const SliverToBoxAdapter(child: SizedBox(height: 20.0)),
+        ],
+      ),
     );
   }
 }
@@ -124,9 +128,7 @@ class RelatedSightings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Paginator<Sighting> paginator =
-        SpeciesSightingsPaginator(id);
-
+    final Paginator<Sighting> paginator = SpeciesSightingsPaginator(id);
     return SightingsTiles(paginator: paginator);
   }
 }
