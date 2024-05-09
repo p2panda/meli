@@ -76,7 +76,12 @@ class _SightingTileState extends State<SightingTile> {
       child: MeliCard(
           borderColor: isSelected ? MeliColors.black : MeliColors.white,
           borderWidth: 3.0,
-          child: MeliImage(image: widget.image)),
+          child: Container(
+              clipBehavior: Clip.hardEdge,
+              decoration: const ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)))),
+              child: MeliImage(image: widget.image))),
     );
   }
 }
