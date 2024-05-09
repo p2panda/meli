@@ -53,22 +53,17 @@ class LocaleSettings extends StatelessWidget {
   Future<void> _onLanguageChange(BuildContext context, Locale? locale) async {
     final app = context.findAncestorStateOfType<MeliAppState>()!;
     final t = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
 
     bool success = await app.changeLocale(locale!);
 
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          // Override the current context localization so the success message
-          // is shown in the new language.
-          content: Localizations.override(
-              context: context,
-              locale: locale,
-              child: Builder(builder: (context) {
-                return Text(AppLocalizations.of(context)!
-                    .settingsLanguageChangeSuccess(locale.languageCode));
-              }))));
+      messenger.showSnackBar(SnackBar(content: Builder(builder: (context) {
+        return Text(AppLocalizations.of(context)!
+            .settingsLanguageChangeSuccess(locale.languageCode));
+      })));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      messenger.showSnackBar(SnackBar(
         content: Text(t.settingsLanguageChangeError),
       ));
     }

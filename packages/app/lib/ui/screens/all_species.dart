@@ -69,12 +69,12 @@ class _SpeciesListState extends State<SpeciesList> {
   Widget build(BuildContext context) {
     return Container(
         width: double.infinity,
-        padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
+        padding: const EdgeInsets.only(top: 30.0, bottom: 20.0),
         child: PaginationList<Species>(
             builder: (Species species) {
               return Container(
-                  padding: EdgeInsets.only(bottom: 20.0),
-                  child: this._item(species));
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: _item(species));
             },
             paginator: widget.paginator));
   }

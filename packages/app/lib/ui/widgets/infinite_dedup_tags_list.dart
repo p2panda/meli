@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/widgets/tag_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import 'package:app/models/used_for.dart';
 import 'package:app/models/base.dart';
+import 'package:app/models/used_for.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/error_card.dart';
+import 'package:app/ui/widgets/tag_item.dart';
 
 typedef PaginationListBuilder = List<TagItem> Function(
   List<UsedFor> documents,
@@ -117,7 +117,7 @@ class _InfiniteDedupTagsListState extends State<InfiniteDedupTagsList> {
         };
 
         // Deduplicate the returned collection.
-        var seen = Set<String>();
+        Set<String> seen = {};
         List<UsedFor> uniqueUses = data.documents
             .where((usedFor) => seen.add(usedFor.usedFor))
             .toList();
@@ -133,7 +133,7 @@ class _InfiniteDedupTagsListState extends State<InfiniteDedupTagsList> {
           controller: scrollController,
           thumbVisibility: true,
           thumbColor: Colors.grey,
-          radius: Radius.circular(16),
+          radius: const Radius.circular(16),
           thickness: 4,
           child: SingleChildScrollView(
               controller: scrollController,

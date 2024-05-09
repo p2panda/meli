@@ -13,19 +13,20 @@ import 'package:app/ui/widgets/info_card.dart';
 typedef NextPageFunction = DocumentNode Function(String endCursor);
 
 typedef PaginationBuilder<T> = Widget Function(
-    T document,
-    );
+  T document,
+);
 
 class PaginationList<T> extends StatelessWidget {
   final PaginationBuilder<T> builder;
   final Paginator<T> paginator;
 
-  PaginationList({super.key, required this.builder, required this.paginator});
+  const PaginationList(
+      {super.key, required this.builder, required this.paginator});
 
   Widget _error(BuildContext context, String errorMessage) {
     return ErrorCard(
         message:
-        AppLocalizations.of(context)!.paginationListError(errorMessage));
+            AppLocalizations.of(context)!.paginationListError(errorMessage));
   }
 
   Widget _loading() {
@@ -48,10 +49,10 @@ class PaginationList<T> extends StatelessWidget {
       isLoading
           ? this._loading()
           : ElevatedButton(
-        child: Text(AppLocalizations.of(context)!.paginationListLoadMore,
-            style: TextStyle(color: MeliColors.black)),
-        onPressed: onLoadMore,
-      )
+              onPressed: onLoadMore,
+              child: Text(AppLocalizations.of(context)!.paginationListLoadMore,
+                  style: const TextStyle(color: MeliColors.black)),
+            )
     ]);
   }
 
@@ -74,7 +75,7 @@ class PaginationList<T> extends StatelessWidget {
         }
 
         final data =
-        this.paginator.parseJSON(result.data as Map<String, dynamic>);
+            this.paginator.parseJSON(result.data as Map<String, dynamic>);
 
         FetchMoreOptions opts = FetchMoreOptions(
           document: this.paginator.nextPageQuery(data.endCursor),

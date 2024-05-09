@@ -98,6 +98,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
   }
 
   void _createSighting() async {
+    final messenger = ScaffoldMessenger.of(context);
     final t = AppLocalizations.of(context)!;
 
     _overlayKey.currentState!.show();
@@ -137,13 +138,13 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
       router.pop();
 
       // Show notification
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      messenger.showSnackBar(SnackBar(
         content: Text(t.createSightingSuccess),
       ));
     } catch (error) {
       print(error);
 
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      messenger.showSnackBar(SnackBar(
         content: Text(t.createSightingError(error)),
       ));
     } finally {
