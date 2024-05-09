@@ -7,7 +7,7 @@ import 'package:app/models/blobs.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/widgets/image.dart';
-import 'package:app/ui/widgets/pagination_cards_list.dart';
+import 'package:app/ui/widgets/pagination_list.dart';
 
 class SightingsTiles extends StatefulWidget {
   final Paginator<Sighting> paginator;
@@ -29,11 +29,9 @@ class _SightingsTilesState extends State<SightingsTiles> {
 
   @override
   Widget build(BuildContext context) {
-    return PaginationList<Sighting>(
+    return PaginationGrid<Sighting>(
         builder: (Sighting sighting) {
-          return Container(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: _item(sighting));
+          return _item(sighting);
         },
         paginator: widget.paginator);
   }
