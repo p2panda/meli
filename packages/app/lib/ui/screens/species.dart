@@ -94,7 +94,7 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 10.0, right: 20.0, left: 20.0),
+      padding: const EdgeInsets.only(top: 0.0, right: 20.0, left: 20.0),
       decoration: const SeaWavesBackground(),
       child: CustomScrollView(
         slivers: [

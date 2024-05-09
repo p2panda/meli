@@ -6,6 +6,8 @@ import 'package:app/models/base.dart';
 import 'package:app/models/blobs.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
+import 'package:app/ui/colors.dart';
+import 'package:app/ui/widgets/card.dart';
 import 'package:app/ui/widgets/image.dart';
 import 'package:app/ui/widgets/pagination_list.dart';
 
@@ -37,7 +39,7 @@ class _SightingsTilesState extends State<SightingsTiles> {
   }
 }
 
-class SightingTile extends StatelessWidget {
+class SightingTile extends StatefulWidget {
   final Blob? image;
   final DateTime date;
   final VoidCallback onTap;
@@ -46,11 +48,35 @@ class SightingTile extends StatelessWidget {
       {super.key, this.image, required this.date, required this.onTap});
 
   @override
+  State<SightingTile> createState() => _SightingTileState();
+}
+
+class _SightingTileState extends State<SightingTile> {
+  bool isSelected = false;
+
+  @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return Container(
-          constraints: const BoxConstraints(maxWidth: 50.0),
-          child: MeliImage(image: image));
-    });
+    return GestureDetector(
+      onTap: widget.onTap,
+      onTapDown: (details) {
+        setState(() {
+          isSelected = true;
+        });
+      },
+      onTapUp: (details) {
+        setState(() {
+          isSelected = false;
+        });
+      },
+      onTapCancel: () {
+        setState(() {
+          isSelected = false;
+        });
+      },
+      child: MeliCard(
+          borderColor: isSelected ? MeliColors.black : MeliColors.white,
+          borderWidth: 3.0,
+          child: MeliImage(image: widget.image)),
+    );
   }
 }
