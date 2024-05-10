@@ -128,9 +128,11 @@ class _UsedForFieldState extends State<UsedForField> {
                             style: Theme.of(context).textTheme.titleLarge),
                         const SizedBox(height: 10),
                         Expanded(
-                            child: UsedForTagSelector(
-                                paginator: tagPaginator,
-                                onTagClick: _onTagClick)),
+                            child: SingleChildScrollView(
+                              child: UsedForTagSelector(
+                                  paginator: tagPaginator,
+                                  onTagClick: _onTagClick),
+                            )),
                         const SizedBox(height: 10),
                         Text("Create New Use",
                             textAlign: TextAlign.center,
