@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/species_uses_aggregate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -114,6 +115,8 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
             const SizedBox(height: 20.0),
           ])),
           RelatedSightings(id: species.id),
+          const SliverToBoxAdapter(child: SizedBox(height: 20.0)),
+          SliverToBoxAdapter(child: SpeciesUsesAggregate(id: species.id)),
           const SliverToBoxAdapter(child: SizedBox(height: 20.0)),
         ],
       ),
