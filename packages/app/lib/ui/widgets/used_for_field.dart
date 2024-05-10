@@ -30,7 +30,7 @@ class UsedForField extends StatefulWidget {
 class _UsedForFieldState extends State<UsedForField> {
   final GlobalKey<LoadingOverlayState> _overlayKey = GlobalKey();
   late Paginator<UsedFor> listPaginator =
-      UsedForPaginator(sighting: widget.sighting);
+      UsedForPaginator(sightings: [widget.sighting]);
   final Paginator<UsedFor> tagPaginator = UsedForPaginator();
 
   /// Flag indicating if we're currently editing the field or not.

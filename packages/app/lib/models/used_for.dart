@@ -74,13 +74,13 @@ String usedForQuery(DocumentId id) {
 }
 
 class UsedForPaginator extends Paginator<UsedFor> {
-  final DocumentId? sighting;
+  final List<DocumentId>? sightings;
 
-  UsedForPaginator({this.sighting});
+  UsedForPaginator({this.sightings});
 
   @override
   DocumentNode nextPageQuery(String? cursor) {
-    return gql(allUsesQuery(sighting, cursor));
+    return gql(allUsesQuery(sightings, cursor));
   }
 
   @override
@@ -98,11 +98,13 @@ class UsedForPaginator extends Paginator<UsedFor> {
   }
 }
 
-String allUsesQuery(DocumentId? sighting, String? cursor) {
+String allUsesQuery(List<DocumentId>? sightings, String? cursor) {
   final after = (cursor != null) ? '''after: "$cursor",''' : '';
-  final filter = (sighting != null)
-      ? '''filter: { sighting: { eq: "$sighting" } },'''
-      : '';
+  String filter = '';
+  if (sightings != null) {
+    String sightingsString = sightings.map((sighting) => '''"$sighting"''').join(", ");
+    filter = '''filter: { sighting: { in: [$sightingsString] } },''';
+  }
   const schemaId = SchemaIds.bee_attributes_used_for;
 
   return '''
