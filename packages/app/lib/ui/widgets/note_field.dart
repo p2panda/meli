@@ -63,12 +63,13 @@ class _NoteFieldState extends State<NoteField> {
               title: t.noteCardTitle,
               icon: _inputMode == InputMode.read
                   ? CardActionButton(
-                      icon: const Icon(Icons.edit),
+                      icon: const Icon(Icons.edit_outlined),
                       onPressed: _handleStartEditMode,
                     )
                   : null),
           Container(
-              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 6.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 6.0),
               alignment: AlignmentDirectional.centerStart,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +80,8 @@ class _NoteFieldState extends State<NoteField> {
                   // being false when in 'read' input mode
                   TextFormField(
                       controller: _textInputController,
-                      decoration: const InputDecoration(border: OutlineInputBorder()),
+                      decoration:
+                          const InputDecoration(border: OutlineInputBorder()),
                       focusNode: _textInputFocusNode,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
