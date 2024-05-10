@@ -28,7 +28,9 @@ class SpeciesUsesAggregate extends StatelessWidget {
                   child:
                       TagItem(label: usedFor.usedFor, onClick: (item) => {}));
             },
-            paginator: UsedForPaginator(sighting: collection.first.id)));
+            paginator: UsedForPaginator(
+                sightings:
+                    collection.map((sighting) => sighting.id).toList())));
   }
 
   @override
