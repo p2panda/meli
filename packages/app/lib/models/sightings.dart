@@ -56,7 +56,7 @@ class Sighting {
         viewId: result['meta']['viewId'] as DocumentViewId,
         datetime: DateTime.parse(result['fields']['datetime'] as String),
         latitude: result['fields']['latitude'] as double,
-        longitude: result['fields']['latitude'] as double,
+        longitude: result['fields']['longitude'] as double,
         comment: result['fields']['comment'] as String,
         images: images,
         species: species.firstOrNull,
