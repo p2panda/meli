@@ -21,12 +21,22 @@ typedef ContainerBuilder<T> = Widget Function(
   List<T> collection,
 );
 
+typedef FetchMoreOverride<T> = bool Function(PaginatedCollection<T>);
+
 class PaginationBase<T> extends StatelessWidget {
   final ContainerBuilder<T> builder;
   final Paginator<T> paginator;
 
-  const PaginationBase(
-      {super.key, required this.builder, required this.paginator});
+  /// Optional function which can override the default behaviour regarding when
+  /// the next page of documents are requested. By default this only happens on
+  /// user interaction. With this method you could, for example, continue to call fetchNext.
+  FetchMoreOverride? fetchMoreOverride;
+
+  PaginationBase(
+      {super.key,
+      required this.builder,
+      required this.paginator,
+      this.fetchMoreOverride});
 
   Widget _error(BuildContext context, String errorMessage) {
     return ErrorCard(
@@ -93,6 +103,10 @@ class PaginationBase<T> extends StatelessWidget {
 
         if (data.documents.isEmpty) {
           return this._emptyResult(context);
+        }
+
+        if (this.fetchMoreOverride != null && this.fetchMoreOverride!(data)) {
+          fetchMore!(opts);
         }
 
         return Column(
@@ -197,6 +211,27 @@ class SliverPaginationBase<T> extends StatelessWidget {
             })
         ]);
       },
+    );
+  }
+}
+
+class PaginationListWrapper<T> extends StatelessWidget {
+  final PaginationBuilder<List<T>> builder;
+  final Paginator<T> paginator;
+  final FetchMoreOverride? fetchMoreOverride;
+
+  const PaginationListWrapper(
+      {super.key,
+      required this.builder,
+      required this.paginator,
+      this.fetchMoreOverride});
+
+  @override
+  Widget build(BuildContext context) {
+    return PaginationBase<T>(
+      paginator: this.paginator,
+      builder: this.builder,
+      fetchMoreOverride: this.fetchMoreOverride,
     );
   }
 }

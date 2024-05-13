@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/pagination_list.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/models/used_for.dart';
-import 'package:app/ui/widgets/species_uses_list.dart';
 import 'package:app/ui/widgets/tag_item.dart';
 import 'package:app/ui/widgets/used_for_dedup_tag_list.dart';
 import 'package:app/ui/widgets/card.dart';
@@ -42,12 +44,18 @@ class SpeciesUsesAggregate extends StatelessWidget {
             title: AppLocalizations.of(context)!.usedForCardTitle,
           ),
           Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
-              child: SpeciesUsedForList(
-                paginator: SpeciesSightingsPaginator(id),
-                builder: this._builder,
-              )),
+            constraints: const BoxConstraints(maxHeight: 300),
+            child: SingleChildScrollView(
+              child: Container(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 18.0),
+                  child: PaginationListWrapper(
+                    paginator: SpeciesSightingsPaginator(id),
+                    builder: this._builder,
+                    fetchMoreOverride: (data) => data.hasNextPage,
+                  )),
+            ),
+          ),
         ],
       ),
     );
