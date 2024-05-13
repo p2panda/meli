@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/used_for_dedup_tag_list.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app/models/base.dart';
 import 'package:app/models/used_for.dart';
-import 'package:app/ui/colors.dart';
-import 'package:app/ui/widgets/infinite_dedup_tags_list.dart';
 import 'package:app/ui/widgets/tag_item.dart';
 
 class UsedForTagSelector extends StatefulWidget {
@@ -22,27 +21,13 @@ class UsedForTagSelector extends StatefulWidget {
 class _UsedForTagSelectorState extends State<UsedForTagSelector> {
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: MeliColors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(13.0)),
-      ),
-      child: Container(
-        constraints: const BoxConstraints(
-          minHeight: 40,
-        ),
-        width: double.infinity,
-        margin: const EdgeInsets.all(10),
-        child: InfiniteDedupTagsList(
-            emptyMessage: "No uses created yet.",
-            paginator: widget.paginator,
-            itemsBuilder: (List<UsedFor> uses) {
-              return uses
-                  .map((use) =>
-                      TagItem(label: use.usedFor, onClick: widget.onTagClick))
-                  .toList();
-            }),
-      ),
-    );
+    return DeduplicatedUsedForTagsList(
+        builder: (UsedFor usedFor) {
+          return Container(
+              padding: const EdgeInsets.only(bottom: 5.0),
+              child:
+                  TagItem(label: usedFor.usedFor, onClick: widget.onTagClick));
+        },
+        paginator: widget.paginator);
   }
 }
