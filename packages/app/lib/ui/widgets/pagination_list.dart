@@ -215,23 +215,26 @@ class SliverPaginationBase<T> extends StatelessWidget {
   }
 }
 
-class PaginationListWrapper<T> extends StatelessWidget {
+class FetchAll<T> extends StatelessWidget {
   final PaginationBuilder<List<T>> builder;
   final Paginator<T> paginator;
-  final FetchMoreOverride<T>? fetchMoreOverride;
 
-  const PaginationListWrapper(
-      {super.key,
-      required this.builder,
-      required this.paginator,
-      this.fetchMoreOverride});
+  const FetchAll({super.key, required this.builder, required this.paginator});
+
+  bool _fetchMoreOverride(PaginatedCollection<T> data) {
+    // This is preparatory query where we want to get _all_ sightings for the
+    // specified species in order to then compose a paginated query over uses
+    // filtered by sighting id. We keep fetching more pages until there is no
+    // next page.
+    return data.hasNextPage;
+  }
 
   @override
   Widget build(BuildContext context) {
     return PaginationBase<T>(
       paginator: this.paginator,
       builder: this.builder,
-      fetchMoreOverride: this.fetchMoreOverride,
+      fetchMoreOverride: _fetchMoreOverride,
     );
   }
 }
