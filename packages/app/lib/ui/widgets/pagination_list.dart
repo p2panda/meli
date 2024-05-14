@@ -30,7 +30,7 @@ class PaginationBase<T> extends StatelessWidget {
   /// Optional function which can override the default behaviour regarding when
   /// the next page of documents are requested. By default this only happens on
   /// user interaction. With this method you could, for example, continue to call fetchNext.
-  final FetchMoreOverride? fetchMoreOverride;
+  final FetchMoreOverride<T>? fetchMoreOverride;
 
   const PaginationBase(
       {super.key,
@@ -218,7 +218,7 @@ class SliverPaginationBase<T> extends StatelessWidget {
 class PaginationListWrapper<T> extends StatelessWidget {
   final PaginationBuilder<List<T>> builder;
   final Paginator<T> paginator;
-  final FetchMoreOverride? fetchMoreOverride;
+  final FetchMoreOverride<T>? fetchMoreOverride;
 
   const PaginationListWrapper(
       {super.key,
