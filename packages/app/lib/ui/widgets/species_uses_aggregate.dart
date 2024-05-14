@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/models/base.dart';
 import 'package:app/ui/widgets/pagination_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
@@ -19,22 +20,6 @@ class SpeciesUsesAggregate extends StatelessWidget {
 
   const SpeciesUsesAggregate({super.key, required this.id});
 
-  Widget _builder(List<Sighting> collection) {
-    return MeliCard(
-        elevation: 0,
-        borderWidth: 3.0,
-        child: DeduplicatedUsedForTagsList(
-            builder: (UsedFor usedFor) {
-              return Container(
-                  padding: const EdgeInsets.only(bottom: 5.0),
-                  child:
-                      TagItem(label: usedFor.usedFor, onClick: (item) => {}));
-            },
-            paginator: UsedForPaginator(
-                sightings:
-                    collection.map((sighting) => sighting.id).toList())));
-  }
-
   @override
   Widget build(BuildContext context) {
     return MeliCard(
@@ -43,21 +28,65 @@ class SpeciesUsesAggregate extends StatelessWidget {
           MeliCardHeader(
             title: AppLocalizations.of(context)!.usedForCardTitle,
           ),
-          Container(
-            constraints: const BoxConstraints(maxHeight: 300),
-            child: SingleChildScrollView(
-              child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 10.0, horizontal: 18.0),
-                  child: PaginationListWrapper(
-                    paginator: SpeciesSightingsPaginator(id),
-                    builder: this._builder,
-                    fetchMoreOverride: (data) => data.hasNextPage,
-                  )),
-            ),
-          ),
+          SpeciesUsesAggregateList(id: id),
         ],
       ),
     );
+  }
+}
+
+class SpeciesUsesAggregateList extends StatelessWidget {
+  const SpeciesUsesAggregateList({
+    super.key,
+    required this.id,
+  });
+
+  final DocumentId id;
+
+  bool _fetchMoreOverride(PaginatedCollection<Sighting> data) {
+    // This is preparatory query where we want to get _all_ sightings for the
+    // specified species in order to then compose a paginated query over uses
+    // filtered by sighting id. We keep fetching more pages until there is no
+    // next page.
+    return data.hasNextPage;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(maxHeight: 300),
+      child: SingleChildScrollView(
+        child: Container(
+            padding: const EdgeInsets.symmetric(
+                vertical: 10.0, horizontal: 18.0),
+            child: PaginationListWrapper(
+              paginator: SpeciesSightingsPaginator(id),
+              builder: (collection) {
+                return UsedForTagsList(sightings: collection);
+              },
+              fetchMoreOverride: _fetchMoreOverride,
+            )),
+      ),
+    );
+  }
+}
+
+class UsedForTagsList extends StatelessWidget {
+  final List<Sighting> sightings;
+
+  const UsedForTagsList({super.key, required this.sightings});
+
+  @override
+  Widget build(BuildContext context) {
+    UsedForPaginator paginator = UsedForPaginator(
+        sightings: sightings.map((sighting) => sighting.id).toList());
+
+    return DeduplicatedUsedForTagsList(
+        builder: (UsedFor usedFor) {
+          return Container(
+              padding: const EdgeInsets.only(bottom: 5.0),
+              child: TagItem(label: usedFor.usedFor, onClick: (item) => {}));
+        },
+        paginator: paginator);
   }
 }
