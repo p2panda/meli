@@ -34,12 +34,12 @@ class DeduplicatedUsedForTagsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return PaginationBase<UsedFor>(
       fetchMoreOverride: _fetchMoreOverride,
-      paginator: this.paginator,
+      paginator: paginator,
       builder: (List<UsedFor> collection) {
         return Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
           children: <Widget>[
-            ...collection.map((document) => this.builder(document)),
+            ...collection.map((document) => builder(document)),
           ],
         );
       },
