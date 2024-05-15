@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/species_uses_aggregate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -111,6 +112,8 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
             EditableTextField(species.description,
                 title: AppLocalizations.of(context)!.speciesDescription,
                 onUpdate: _updateDescription),
+            const SizedBox(height: 20.0),
+            SpeciesUsesAggregate(id: species.id),
             const SizedBox(height: 20.0),
           ])),
           RelatedSightings(id: species.id),

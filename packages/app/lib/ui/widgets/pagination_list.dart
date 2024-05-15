@@ -21,12 +21,22 @@ typedef ContainerBuilder<T> = Widget Function(
   List<T> collection,
 );
 
+typedef FetchMoreOverride<T> = bool Function(PaginatedCollection<T>);
+
 class PaginationBase<T> extends StatelessWidget {
   final ContainerBuilder<T> builder;
   final Paginator<T> paginator;
 
+  /// Optional function which can override the default behaviour regarding when
+  /// the next page of documents are requested. By default this only happens on
+  /// user interaction. With this method you could, for example, continue to call fetchNext.
+  final FetchMoreOverride<T>? fetchMoreOverride;
+
   const PaginationBase(
-      {super.key, required this.builder, required this.paginator});
+      {super.key,
+      required this.builder,
+      required this.paginator,
+      this.fetchMoreOverride});
 
   Widget _error(BuildContext context, String errorMessage) {
     return ErrorCard(
@@ -93,6 +103,10 @@ class PaginationBase<T> extends StatelessWidget {
 
         if (data.documents.isEmpty) {
           return this._emptyResult(context);
+        }
+
+        if (this.fetchMoreOverride != null && this.fetchMoreOverride!(data)) {
+          fetchMore!(opts);
         }
 
         return Column(
@@ -197,6 +211,30 @@ class SliverPaginationBase<T> extends StatelessWidget {
             })
         ]);
       },
+    );
+  }
+}
+
+class FetchAll<T> extends StatelessWidget {
+  final PaginationBuilder<List<T>> builder;
+  final Paginator<T> paginator;
+
+  const FetchAll({super.key, required this.builder, required this.paginator});
+
+  bool _fetchMoreOverride(PaginatedCollection<T> data) {
+    // This is preparatory query where we want to get _all_ sightings for the
+    // specified species in order to then compose a paginated query over uses
+    // filtered by sighting id. We keep fetching more pages until there is no
+    // next page.
+    return data.hasNextPage;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PaginationBase<T>(
+      paginator: this.paginator,
+      builder: this.builder,
+      fetchMoreOverride: _fetchMoreOverride,
     );
   }
 }
