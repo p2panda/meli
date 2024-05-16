@@ -38,7 +38,10 @@ used_for = { type = "str" }
 description = "Bee sighting location: tree"
 
 [bee_attributes_location_tree.fields]
+height = { type = "float" }
+diameter = { type = "float" }
 sighting = { type = "relation", schema = { name = "bee_sighting" } }
+
 
 [bee_attributes_location_building]
 description = "Bee sighting location: building"
