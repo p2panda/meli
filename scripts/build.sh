@@ -46,7 +46,7 @@ echo
 
 # Build the android libraries in the jniLibs directory
 cargo ndk -o $JNI_DIR \
-        --manifest-path ../Cargo.toml \
+        --manifest-path ../packages/p2panda/native/Cargo.toml \
         -t armeabi-v7a \
         -t arm64-v8a \
         -t x86 \
