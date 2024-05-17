@@ -21,9 +21,12 @@ jobs:
         with:
           distribution: "temurin" # AdoptOpenJDK is now Eclipse Temurin
           java-version: "11"
-      - uses: subosito/flutter-action@v2
+      - uses: kuhnroyal/flutter-fvm-config-action@v2
+        id: fvm-config-action
+      - name: Using Flutter ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
+        uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.19.2"
+          flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
       - uses: bluefireteam/melos-action@v3
       - name: Install Dart dependencies
         run: dart pub get
