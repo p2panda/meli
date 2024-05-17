@@ -34,8 +34,8 @@ jobs:
         run: melos build
       - name: Build APK
         working-directory: ./packages/app
-        run: flutter build apk
+        run: flutter build apk --flavor qa
       - uses: actions/upload-artifact@v4
         with:
-          name: app-release
-          path: packages/app/build/app/outputs/flutter-apk/app-release.apk
+          name: app-qa-release
+          path: packages/app/build/app/outputs/flutter-apk/app-qa-release.apk

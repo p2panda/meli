@@ -51,13 +51,44 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        manifestPlaceholders = [applicationLabel: "Meli"]
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+            manifestPlaceholders = [applicationLabel: "Meli (Debug)"]
+        }
+        profile {
+            applicationIdSuffix ".profile"
+            manifestPlaceholders = [applicationLabel: "Meli (Profile)"]
+        }
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
+        }
+    }
+
+    flavorDimensions "appType"
+
+    productFlavors {
+        normal {
+            dimension "appType"
+        }
+        qa {
+            dimension "appType"
+            applicationIdSuffix ".qa"
+            manifestPlaceholders = [applicationLabel: "Meli (QA)"]
+        }
+    }
+
+    variantFilter { variant ->
+        def names = variant.flavors*.name
+        // Skip qa flavor for debug and profile builds
+        if (names.contains('qa') && (variant.buildType.name == "debug" || variant.buildType.name == "profile")) {
+            setIgnore(true)
         }
     }
 }
