@@ -41,7 +41,7 @@ providing all p2panda functionality via FFI bindings.
 * [Rust](https://www.rust-lang.org/tools/install) `1.74.0`
 * [Android SDK](https://developer.android.com/tools) `34.0.0`
 * [Android NDK](https://developer.android.com/ndk/) `25.2.9519653`
-* [Flutter SDK](https://docs.flutter.dev/get-started/install) `3.19.2` and Dart SDK `3.3.0`
+* [Flutter SDK](https://docs.flutter.dev/get-started/install) `3.22.0` and Dart SDK `3.4.0`
 * [Melos](https://melos.invertase.dev/getting-started)
 
 ### Setup

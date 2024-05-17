@@ -11,7 +11,7 @@ dependencies:
   ffi: 2.1.2
   flutter_rust_bridge: 1.82.6
   freezed_annotation: 2.4.1
-  meta: 1.11.0
+  meta: 1.12.0
   uuid: 4.1.0
 
 dev_dependencies:
