@@ -113,6 +113,45 @@ class Location {
   }
 }
 
+String locationQuery(DocumentId sightingId) {
+  const locationBoxSchemaId = SchemaIds.bee_attributes_location_box;
+  const locationBuildingSchemaId = SchemaIds.bee_attributes_location_building;
+  const locationGroundSchemaId = SchemaIds.bee_attributes_location_ground;
+  const locationTreeSchemaId = SchemaIds.bee_attributes_location_tree;
+
+  String parameters = '''
+    first: 1,
+    filter: {
+      sighting: { eq: "$sightingId" },
+    },
+  ''';
+
+  return '''
+    query GetAllLocationsForSighting {
+      locationBox: all_$locationBoxSchemaId($parameters) {
+        documents {
+          $locationBoxFields
+        }
+      }
+      locationBuilding: all_$locationBuildingSchemaId($parameters) {
+        documents {
+          $locationBuildingFields
+        }
+      }
+      locationGround: all_$locationGroundSchemaId($parameters) {
+        documents {
+          $locationGroundFields
+        }
+      }
+      locationTree: all_$locationTreeSchemaId($parameters) {
+        documents {
+          $locationTreeFields
+        }
+      }
+    }
+  ''';
+}
+
 /*
  * Location: Tree
  */
