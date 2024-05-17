@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'dart:math';
-
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:app/ui/widgets/card.dart';
 import 'package:app/ui/widgets/card_action_button.dart';
 import 'package:app/ui/widgets/card_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:maplibre_gl/maplibre_gl.dart';
 
 typedef OnUpdate = void Function(
     {required double latitude, required double longitude});
@@ -29,11 +30,18 @@ class LocationField extends StatefulWidget {
 
 enum InputMode { read, edit }
 
+double DEFAULT_ZOOM = 10;
+String CURRENT_FEATURE_ID = 'current';
+String TARGET_FEATURE_ID = 'target';
+
 class _LocationFieldState extends State<LocationField> {
   InputMode _inputMode = InputMode.read;
 
   late double _lat;
   late double _lon;
+
+  MaplibreMapController? _mapController;
+  Circle? _currentMapMarker;
 
   @override
   void initState() {
@@ -64,6 +72,9 @@ class _LocationFieldState extends State<LocationField> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _renderMap(),
+                const SizedBox(
+                  height: 20,
+                ),
                 Text(t.sightingLocationFieldCoordinates(_lat, _lon),
                     style: const TextStyle(
                       fontSize: 16.0,
@@ -96,29 +107,65 @@ class _LocationFieldState extends State<LocationField> {
   }
 
   Widget _renderMap() {
-    // TODO: replace with actual map
+    bool enableInteractions = _inputMode == InputMode.edit;
+
     return Container(
-      height: 200,
-      alignment: Alignment.center,
-      child: _inputMode == InputMode.read
-          ? const Text("🚧 There should be a map here 🚧")
-          : OutlinedButton(
-              onPressed: () {
-                final r = Random();
+        alignment: Alignment.center,
+        height: 200,
+        child: MaplibreMap(
+            initialCameraPosition: CameraPosition(
+                target: LatLng(widget.latitude, widget.longitude),
+                zoom: DEFAULT_ZOOM),
+            scrollGesturesEnabled: enableInteractions,
+            dragEnabled: enableInteractions,
+            zoomGesturesEnabled: enableInteractions,
+            trackCameraPosition: enableInteractions,
+            compassEnabled: false,
+            rotateGesturesEnabled: false,
+            onMapCreated: (controller) {
+              _mapController = controller;
+            },
+            gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+              Factory<OneSequenceGestureRecognizer>(
+                  () => EagerGestureRecognizer()),
+            },
+            onStyleLoadedCallback: () async {
+              _currentMapMarker = await _mapController!.addCircle(CircleOptions(
+                  circleRadius: 8,
+                  circleColor: Colors.blue.toHexStringRGB(),
+                  geometry: LatLng(widget.latitude, widget.longitude)));
+            },
+            onMapClick: (_, latLng) async {
+              if (_inputMode == InputMode.read) return;
+              if (_currentMapMarker == null) return;
 
-                double newLat = r.nextInt(181).toDouble();
-                double newLon = r.nextInt(91).toDouble();
+              var existingNextMarker = _mapController!.circles.where((c) {
+                return c != _currentMapMarker;
+              }).firstOrNull;
 
-                setState(() {
-                  _lon = newLon;
-                  _lat = newLat;
-                });
-              },
-              child: const Text("Simulate location change")),
-    );
+              if (existingNextMarker == null) {
+                await _mapController!.addCircle(CircleOptions(
+                    circleRadius: 8,
+                    circleColor: Colors.blue.toHexStringRGB(),
+                    geometry: LatLng(latLng.latitude, latLng.longitude)));
+
+                await _mapController!.updateCircle(_currentMapMarker!,
+                    const CircleOptions(circleOpacity: 0.4));
+              } else {
+                await _mapController!.updateCircle(
+                    existingNextMarker, CircleOptions(geometry: latLng));
+              }
+
+              _mapController!.animateCamera(CameraUpdate.newLatLng(latLng));
+
+              setState(() {
+                _lon = latLng.longitude;
+                _lat = latLng.latitude;
+              });
+            }));
   }
 
-  void _handleSave() {
+  void _handleSave() async {
     // Do nothing if coordinates have not changed at all
     if (_lat == widget.latitude && _lon == widget.longitude) {
       _handleCancel();
@@ -129,13 +176,16 @@ class _LocationFieldState extends State<LocationField> {
       _inputMode = InputMode.read;
       widget.onUpdate(latitude: _lat, longitude: _lon);
     });
+
+    _resetMap(LatLng(_lat, _lon));
   }
 
-  void _handleCancel() {
+  void _handleCancel() async {
+    await _resetMap(LatLng(widget.latitude, widget.longitude));
+
     setState(() {
       _inputMode = InputMode.read;
 
-      // Reset coordinates to initial values
       _lat = widget.latitude;
       _lon = widget.longitude;
     });
@@ -145,5 +195,17 @@ class _LocationFieldState extends State<LocationField> {
     setState(() {
       _inputMode = InputMode.edit;
     });
+  }
+
+  Future<void> _resetMap(LatLng latLng) async {
+    await _mapController!.updateCircle(_currentMapMarker!,
+        CircleOptions(geometry: latLng, circleOpacity: 1.0));
+
+    await _mapController!.removeCircles(_mapController!.circles.where((c) {
+      return c != _currentMapMarker;
+    }));
+
+    _mapController!
+        .moveCamera(CameraUpdate.newLatLngZoom(latLng, DEFAULT_ZOOM));
   }
 }
