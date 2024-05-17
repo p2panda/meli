@@ -19,9 +19,9 @@ import 'package:app/ui/widgets/used_for_text_field.dart';
 typedef OnUpdate = Future<DocumentViewId> Function(String);
 
 class UsedForField extends StatefulWidget {
-  final DocumentId sighting;
+  final DocumentId sightingId;
 
-  const UsedForField({super.key, required this.sighting});
+  const UsedForField({super.key, required this.sightingId});
 
   @override
   State<UsedForField> createState() => _UsedForFieldState();
@@ -30,7 +30,7 @@ class UsedForField extends StatefulWidget {
 class _UsedForFieldState extends State<UsedForField> {
   final GlobalKey<LoadingOverlayState> _overlayKey = GlobalKey();
   late Paginator<UsedFor> listPaginator =
-      UsedForPaginator(sightings: [widget.sighting]);
+      UsedForPaginator(sightings: [widget.sightingId]);
   final Paginator<UsedFor> tagPaginator = UsedForPaginator();
 
   /// Flag indicating if we're currently editing the field or not.
@@ -42,7 +42,7 @@ class _UsedForFieldState extends State<UsedForField> {
 
     // Create a new UsedFor document which relates to the current sighting.
     DocumentViewId usedforViewId =
-        await createUsedFor(sighting: widget.sighting, usedFor: usedForString);
+        await createUsedFor(sighting: widget.sightingId, usedFor: usedForString);
 
     // We want to wait until it is materialized and then refresh the
     // paginated query
