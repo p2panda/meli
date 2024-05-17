@@ -6,6 +6,11 @@ import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/base.dart';
 import 'package:app/models/schema_ids.dart';
 
+const BOX_RESULTS_KEY = 'locationBox';
+const BUILDING_RESULTS_KEY = 'locationBuilding';
+const GROUND_RESULTS_KEY = 'locationGround';
+const TREE_RESULTS_KEY = 'locationTree';
+
 enum LocationType {
   Box,
   Building,
@@ -126,30 +131,66 @@ String locationQuery(DocumentId sightingId) {
     },
   ''';
 
+  // Our data-model allows attaching multiple locations to a sighting, but in
+  // our UI we're only displaying one of them. This query checks for all
+  // location types first and we handle selecting one later
   return '''
-    query GetAllLocationsForSighting {
-      locationBox: all_$locationBoxSchemaId($parameters) {
+    query GetLocationForSighting {
+      $BOX_RESULTS_KEY: all_$locationBoxSchemaId($parameters) {
         documents {
           $locationBoxFields
         }
       }
-      locationBuilding: all_$locationBuildingSchemaId($parameters) {
+      $BUILDING_RESULTS_KEY: all_$locationBuildingSchemaId($parameters) {
         documents {
           $locationBuildingFields
         }
       }
-      locationGround: all_$locationGroundSchemaId($parameters) {
+      $GROUND_RESULTS_KEY: all_$locationGroundSchemaId($parameters) {
         documents {
           $locationGroundFields
         }
       }
-      locationTree: all_$locationTreeSchemaId($parameters) {
+      $TREE_RESULTS_KEY: all_$locationTreeSchemaId($parameters) {
         documents {
           $locationTreeFields
         }
       }
     }
   ''';
+}
+
+// Expects multiple results from a multi-query GraphQL request over all
+// location types. This method will automatically select one of them based
+// on deterministic rules as the UI can only display one location at a time
+// for sightings.
+Location? getLocationFromResults(Map<String, dynamic> result) {
+  var boxLocations = result[BOX_RESULTS_KEY]['documents'] as List;
+  var buildingLocations = result[BUILDING_RESULTS_KEY]['documents'] as List;
+  var groundLocations = result[GROUND_RESULTS_KEY]['documents'] as List;
+  var treeLocations = result[TREE_RESULTS_KEY]['documents'] as List;
+
+  if (boxLocations.isNotEmpty) {
+    return Location.fromJson(
+        LocationType.Box, boxLocations[0] as Map<String, dynamic>);
+  }
+
+  if (buildingLocations.isNotEmpty) {
+    return Location.fromJson(
+        LocationType.Building, buildingLocations[0] as Map<String, dynamic>);
+  }
+
+  if (groundLocations.isNotEmpty) {
+    return Location.fromJson(
+        LocationType.Ground, groundLocations[0] as Map<String, dynamic>);
+  }
+
+  if (treeLocations.isNotEmpty) {
+    return Location.fromJson(
+        LocationType.Tree, treeLocations[0] as Map<String, dynamic>);
+  }
+
+  return null;
 }
 
 /*
