@@ -6,7 +6,6 @@ BUILD_DIR=platform-build
 JNI_DIR=jniLibs
 APP_DIR=../packages/p2panda_flutter/android/src/main
 
-
 # Generate FFI bindings from Rust and build native libraries for Android.
 
 echo "◆ Install Rust toolchain dependencies"
@@ -25,13 +24,22 @@ rustup target add \
 echo "◆ Generate FFI bindings"
 echo
 
-# See: https://cjycode.com/flutter_rust_bridge/integrate/deps.html#system-dependencies
-CPATH="$(clang -v 2>&1 | grep "Selected GCC installation" | rev | cut -d' ' -f1 | rev)/include" \
+bridge_codegen() {
         flutter_rust_bridge_codegen \
-                            --inline-rust \
-                            --skip-add-mod-to-lib \
-                            --rust-input packages/p2panda/native/src/api.rs \
-                            --dart-output packages/p2panda/lib/src/bridge_generated.dart
+                --inline-rust \
+                --skip-add-mod-to-lib \
+                --rust-input packages/p2panda/native/src/api.rs \
+                --dart-output packages/p2panda/lib/src/bridge_generated.dart
+}
+
+# For non-Debian Linux distributions we need extra prerequisites
+if [[ (! -f "/etc/debian_version") && ("$OSTYPE" == "linux-gnu"* )]]; then
+        # See: https://cjycode.com/flutter_rust_bridge/v1/integrate/deps.html#system-dependencies
+        CPATH="$(clang -v 2>&1 | grep "Selected GCC installation" | rev | cut -d' ' -f1 | rev)/include" \
+                bridge_codegen
+else
+        bridge_codegen
+fi
 
 echo
 echo "◆ Create folders"
