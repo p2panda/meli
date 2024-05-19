@@ -19,8 +19,10 @@ class LocationField extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
 
+    // @TODO: Edit button should be disabled while widget is loading.
+    // See related issue: https://github.com/p2panda/meli/issues/93
     return EditableCard(
-        title: t.allSpeciesScreenTitle,
+        title: t.hiveLocationCardTitle,
         onChanged: () {},
         child: Query(
             options: QueryOptions(document: gql(locationQuery(sightingId))),
