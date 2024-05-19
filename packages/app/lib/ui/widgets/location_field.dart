@@ -72,26 +72,95 @@ class _LocationFieldState extends State<LocationField> {
               // See related issue: https://github.com/p2panda/meli/issues/93
               isReady = true;
 
-              if (isEditMode) {
-                return LocationFieldEdit(
-                    location: location,
-                    onUpdated: (type, treeSpecies, height, diameter) {
-                      // @TODO: Persist location selection
-                      print("$type $treeSpecies $height $diameter");
-
-                      setState(() {
-                        isEditMode = false;
-                      });
-                    },
-                    onCancelled: () {
-                      setState(() {
-                        isEditMode = false;
-                      });
+              return LocationFieldInner(
+                  initialValue: location,
+                  sightingId: widget.sightingId,
+                  isEditMode: isEditMode,
+                  onUpdated: () {
+                    setState(() {
+                      isEditMode = false;
                     });
-              }
-
-              return LocationFieldShow(location: location);
+                  });
             }));
+  }
+}
+
+class LocationFieldInner extends StatefulWidget {
+  final Location? initialValue;
+  final DocumentId sightingId;
+
+  final bool isEditMode;
+  final VoidCallback onUpdated;
+
+  const LocationFieldInner(
+      {super.key,
+      required this.initialValue,
+      required this.sightingId,
+      required this.isEditMode,
+      required this.onUpdated});
+
+  @override
+  State<LocationFieldInner> createState() => _LocationFieldInnerState();
+}
+
+class _LocationFieldInnerState extends State<LocationFieldInner> {
+  late Location? location;
+
+  @override
+  void initState() {
+    super.initState();
+    location = widget.initialValue;
+  }
+
+  void _handleUpdate(LocationType? type, String? treeSpecies,
+      double? treeHeight, double? treeDiameter) async {
+    if (widget.initialValue != null && type == null) {
+      // Delete attached sighting if any existed
+      await widget.initialValue!.delete();
+      setState(() {});
+    } else if (widget.initialValue?.type == LocationType.Tree &&
+        type == LocationType.Tree) {
+      // Update location if it is a tree location (other location types do not
+      // have any special fields to update so we ignore them)
+      // @TODO: Also update tree species
+      await widget.initialValue!
+          .update(height: treeHeight, diameter: treeDiameter);
+      setState(() {});
+    } else if (widget.initialValue?.type != type && type != null) {
+      // Delete previous attached location if any existed
+      if (widget.initialValue != null) {
+        await widget.initialValue!.delete();
+      }
+
+      // Create new location and attach it to sighting
+      Location location = await Location.create(
+          type: type,
+          sightingId: widget.sightingId,
+          height: treeHeight,
+          diameter: treeDiameter);
+
+      setState(() {
+        this.location = location;
+      });
+    } else {
+      // Nothing changed, so do nothing ..
+    }
+
+    widget.onUpdated();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.isEditMode) {
+      return LocationFieldEdit(
+          location: location,
+          onUpdated: _handleUpdate,
+          onCancelled: () {
+            widget.onUpdated();
+          });
+    }
+
+    return LocationFieldShow(location: location);
   }
 }
 
