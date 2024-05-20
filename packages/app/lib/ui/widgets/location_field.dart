@@ -217,17 +217,16 @@ class LocationFieldShow extends StatelessWidget {
                   style: const TextStyle(
                       fontSize: 15.0, fontWeight: FontWeight.bold),
                 ),
-                if (location!.type == LocationType.Tree &&
-                    location!.treeSpecies != null)
-                  Text(location!.treeSpecies!,
+                if (location.type == LocationType.Tree &&
+                    location.treeSpecies != null)
+                  Text(location.treeSpecies!,
                       style: const TextStyle(fontStyle: FontStyle.italic)),
-                if (location!.type == LocationType.Tree &&
-                    location!.height != null)
-                  Text("${t.hiveLocationTreeHeight}: ${location!.height!}m"),
-                if (location!.type == LocationType.Tree &&
-                    location!.diameter != null)
-                  Text(
-                      "${t.hiveLocationTreeDiameter}: ${location!.diameter!}m"),
+                if (location.type == LocationType.Tree &&
+                    location.height != null)
+                  Text("${t.hiveLocationTreeHeight}: ${location.height!}m"),
+                if (location.type == LocationType.Tree &&
+                    location.diameter != null)
+                  Text("${t.hiveLocationTreeDiameter}: ${location.diameter!}m"),
               ]),
             ]),
           );
