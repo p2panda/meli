@@ -239,7 +239,7 @@ class _LocationFieldEditState extends State<LocationFieldEdit> {
       type = widget.location!.type;
 
       if (widget.location!.type == LocationType.Tree) {
-        // @TODO: Set treeSpecies as well
+        treeSpecies = widget.location!.treeSpecies;
         height = widget.location!.height;
         diameter = widget.location!.diameter;
       }
