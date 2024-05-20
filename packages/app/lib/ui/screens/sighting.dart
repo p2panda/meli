@@ -14,7 +14,7 @@ import 'package:app/ui/widgets/autocomplete.dart';
 import 'package:app/ui/widgets/error_card.dart';
 import 'package:app/ui/widgets/image_carousel.dart';
 import 'package:app/ui/widgets/local_name_field.dart';
-import 'package:app/ui/widgets/location_field.dart';
+import 'package:app/ui/widgets/hive_location_field.dart';
 import 'package:app/ui/widgets/note_field.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/species_field.dart';
@@ -150,7 +150,7 @@ class _SightingProfileState extends State<SightingProfile> {
           onUpdate: _updateSpecies,
         ),
         UsedForField(sightingId: sighting.id),
-        LocationField(sightingId: sighting.id),
+        HiveLocationField(sightingId: sighting.id),
         NoteField(sighting.comment, onUpdate: _updateComment),
       ]),
     );

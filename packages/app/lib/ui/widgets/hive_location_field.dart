@@ -16,17 +16,17 @@ const BUILDING_ICON = Icons.home;
 const GROUND_ICON = Icons.grass;
 const TREE_ICON = Icons.park;
 
-class LocationField extends StatefulWidget {
+class HiveLocationField extends StatefulWidget {
   /// Document id of the sighting we're managing the location for.
   final DocumentId sightingId;
 
-  const LocationField({super.key, required this.sightingId});
+  const HiveLocationField({super.key, required this.sightingId});
 
   @override
-  State<LocationField> createState() => _LocationFieldState();
+  State<HiveLocationField> createState() => _HiveLocationFieldState();
 }
 
-class _LocationFieldState extends State<LocationField> {
+class _HiveLocationFieldState extends State<HiveLocationField> {
   /// Flag indicating if we're currently editing the field or not.
   bool isEditMode = false;
 
@@ -72,7 +72,7 @@ class _LocationFieldState extends State<LocationField> {
               // See related issue: https://github.com/p2panda/meli/issues/93
               isReady = true;
 
-              return LocationFieldInner(
+              return HiveLocationFieldInner(
                   initialValue: location,
                   sightingId: widget.sightingId,
                   isEditMode: isEditMode,
@@ -85,14 +85,14 @@ class _LocationFieldState extends State<LocationField> {
   }
 }
 
-class LocationFieldInner extends StatefulWidget {
+class HiveLocationFieldInner extends StatefulWidget {
   final Location? initialValue;
   final DocumentId sightingId;
 
   final bool isEditMode;
   final VoidCallback onUpdated;
 
-  const LocationFieldInner(
+  const HiveLocationFieldInner(
       {super.key,
       required this.initialValue,
       required this.sightingId,
@@ -100,10 +100,10 @@ class LocationFieldInner extends StatefulWidget {
       required this.onUpdated});
 
   @override
-  State<LocationFieldInner> createState() => _LocationFieldInnerState();
+  State<HiveLocationFieldInner> createState() => _HiveLocationFieldInnerState();
 }
 
-class _LocationFieldInnerState extends State<LocationFieldInner> {
+class _HiveLocationFieldInnerState extends State<HiveLocationFieldInner> {
   late Location? location;
 
   @override
@@ -149,7 +149,7 @@ class _LocationFieldInnerState extends State<LocationFieldInner> {
   @override
   Widget build(BuildContext context) {
     if (widget.isEditMode) {
-      return LocationFieldEdit(
+      return HiveLocationFieldEdit(
           location: location,
           onUpdated: _handleUpdate,
           onCancelled: () {
@@ -157,14 +157,14 @@ class _LocationFieldInnerState extends State<LocationFieldInner> {
           });
     }
 
-    return LocationFieldShow(location: location);
+    return HiveLocationFieldShow(location: location);
   }
 }
 
-class LocationFieldShow extends StatelessWidget {
+class HiveLocationFieldShow extends StatelessWidget {
   final Location? location;
 
-  const LocationFieldShow({super.key, required this.location});
+  const HiveLocationFieldShow({super.key, required this.location});
 
   Widget _icon() {
     IconData icon;
@@ -237,22 +237,22 @@ class LocationFieldShow extends StatelessWidget {
 typedef OnUpdated = void Function(
     LocationType? type, String? species, double? height, double? diameter);
 
-class LocationFieldEdit extends StatefulWidget {
+class HiveLocationFieldEdit extends StatefulWidget {
   final Location? location;
   final OnUpdated onUpdated;
   final Function onCancelled;
 
-  const LocationFieldEdit(
+  const HiveLocationFieldEdit(
       {super.key,
       required this.location,
       required this.onUpdated,
       required this.onCancelled});
 
   @override
-  State<LocationFieldEdit> createState() => _LocationFieldEditState();
+  State<HiveLocationFieldEdit> createState() => _HiveLocationFieldEditState();
 }
 
-class _LocationFieldEditState extends State<LocationFieldEdit> {
+class _HiveLocationFieldEditState extends State<HiveLocationFieldEdit> {
   LocationType? type;
   String? treeSpecies;
   double? height;
@@ -291,7 +291,7 @@ class _LocationFieldEditState extends State<LocationFieldEdit> {
     if (type == LocationType.Tree) {
       return Padding(
           padding: const EdgeInsets.symmetric(vertical: 10.0),
-          child: TreeLocationEdit(
+          child: HiveTreeLocationEdit(
               treeSpecies: treeSpecies,
               height: height,
               diameter: diameter,
@@ -312,7 +312,7 @@ class _LocationFieldEditState extends State<LocationFieldEdit> {
     final t = AppLocalizations.of(context)!;
 
     return Column(children: [
-      LocationTypeSelector(
+      HiveLocationTypeSelector(
         locationType: type,
         onUpdated: (LocationType? locationType) {
           setState(() {
@@ -361,14 +361,14 @@ class _LocationFieldEditState extends State<LocationFieldEdit> {
 typedef OnTreeUpdated = void Function(
     String? treeSpecies, double? height, double? diameter);
 
-class TreeLocationEdit extends StatelessWidget {
+class HiveTreeLocationEdit extends StatelessWidget {
   final String? treeSpecies;
   final double? diameter;
   final double? height;
 
   final OnTreeUpdated onUpdated;
 
-  const TreeLocationEdit(
+  const HiveTreeLocationEdit(
       {super.key,
       required this.treeSpecies,
       required this.diameter,
@@ -458,11 +458,11 @@ class TreeLocationEdit extends StatelessWidget {
 
 typedef OnTypeUpdated = void Function(LocationType? locationType);
 
-class LocationTypeSelector extends StatelessWidget {
+class HiveLocationTypeSelector extends StatelessWidget {
   final LocationType? locationType;
   final OnTypeUpdated onUpdated;
 
-  const LocationTypeSelector(
+  const HiveLocationTypeSelector(
       {super.key, required this.locationType, required this.onUpdated});
 
   void _onToggle(LocationType value) {
@@ -478,28 +478,28 @@ class LocationTypeSelector extends StatelessWidget {
     final t = AppLocalizations.of(context)!;
 
     return Wrap(spacing: 5.0, runSpacing: 5.0, children: [
-      LocationTypeButton(
+      HiveLocationTypeButton(
           label: t.hiveLocationBox,
           icon: const Icon(BOX_ICON),
           onPressed: () {
             _onToggle(LocationType.Box);
           },
           active: locationType == LocationType.Box),
-      LocationTypeButton(
+      HiveLocationTypeButton(
           label: t.hiveLocationBuilding,
           icon: const Icon(BUILDING_ICON),
           onPressed: () {
             _onToggle(LocationType.Building);
           },
           active: locationType == LocationType.Building),
-      LocationTypeButton(
+      HiveLocationTypeButton(
           label: t.hiveLocationGround,
           icon: const Icon(GROUND_ICON),
           onPressed: () {
             _onToggle(LocationType.Ground);
           },
           active: locationType == LocationType.Ground),
-      LocationTypeButton(
+      HiveLocationTypeButton(
           label: t.hiveLocationTree,
           icon: const Icon(TREE_ICON),
           onPressed: () {
@@ -510,13 +510,13 @@ class LocationTypeSelector extends StatelessWidget {
   }
 }
 
-class LocationTypeButton extends StatelessWidget {
+class HiveLocationTypeButton extends StatelessWidget {
   final String label;
   final Icon icon;
   final VoidCallback? onPressed;
   final bool active;
 
-  const LocationTypeButton(
+  const HiveLocationTypeButton(
       {super.key,
       required this.active,
       required this.label,
