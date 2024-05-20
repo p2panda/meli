@@ -232,31 +232,6 @@ String get locationTreeFields {
   ''';
 }
 
-String allLocationsTreeQuery(List<DocumentId>? sightingIds, String? cursor) {
-  final after = (cursor != null) ? '''after: "$cursor",''' : '';
-  String filter = '';
-  if (sightingIds != null) {
-    String sightingsString = sightingIds.map((id) => '''"$id"''').join(", ");
-    filter = '''filter: { sighting: { in: [$sightingsString] } },''';
-  }
-  const schemaId = SchemaIds.bee_attributes_location_tree;
-
-  return '''
-    query AllLocationTree {
-      $DEFAULT_RESULTS_KEY: all_$schemaId(
-        $filter
-        first: $DEFAULT_PAGE_SIZE,
-        $after
-      ) {
-        $paginationFields
-        documents {
-          $locationTreeFields
-        }
-      }
-    }
-  ''';
-}
-
 Future<DocumentViewId> createLocationTree(
     {required DocumentId sightingId,
     String? treeSpecies,
