@@ -254,7 +254,7 @@ class LocationFieldEdit extends StatefulWidget {
 }
 
 class _LocationFieldEditState extends State<LocationFieldEdit> {
-  late LocationType? type;
+  LocationType? type;
   String? treeSpecies;
   double? height;
   double? diameter;
@@ -263,9 +263,7 @@ class _LocationFieldEditState extends State<LocationFieldEdit> {
   void initState() {
     super.initState();
 
-    if (widget.location == null) {
-      type = LocationType.Box;
-    } else {
+    if (widget.location != null) {
       type = widget.location!.type;
 
       if (widget.location!.type == LocationType.Tree) {
