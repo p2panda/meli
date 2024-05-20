@@ -18,7 +18,7 @@ abstract final class SchemaIds {
 
   /// Bee attributes schema.
   static const SchemaId bee_attributes_location_tree =
-      'bee_attributes_location_tree_00207b8419615d96212f674de4ae191b13f02d4de6ac87cb85240f972c68986161cc';
+      'bee_attributes_location_tree_0020a960a5e60c7daf66f9b9056de6e7904247360017dd09c223800e65223c0adafe';
   static const SchemaId bee_attributes_location_ground =
       'bee_attributes_location_ground_00207f1b4d7115e518ed754024db27c86756479c9448aebc3f39a0e67c18b611bc25';
   static const SchemaId bee_attributes_location_building =

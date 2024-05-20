@@ -28,6 +28,7 @@ class Location {
 
   final LocationType type;
   final DocumentId sightingId;
+  String? treeSpecies;
   double? height;
   double? diameter;
 
@@ -36,23 +37,34 @@ class Location {
     required this.viewId,
     required this.type,
     required this.sightingId,
+    this.treeSpecies,
     this.height,
     this.diameter,
-  }) {
-    if (type == LocationType.Tree) {
-      if (height == null || diameter == null) {
-        throw "Locations of type 'tree' need a height and diameter value";
-      }
-    }
-  }
+  });
 
   factory Location.fromJson(LocationType type, Map<String, dynamic> result) {
+    String? treeSpecies;
     double? height;
     double? diameter;
 
     if (type == LocationType.Tree) {
+      // Values are not nullable in p2panda schemas
+      treeSpecies = result['fields']['tree_species'] as String;
       height = result['fields']['height'] as double;
       diameter = result['fields']['diameter'] as double;
+
+      // .. so we do that afterwards
+      if (treeSpecies.isEmpty) {
+        treeSpecies = null;
+      }
+
+      if (height == 0.0) {
+        height = null;
+      }
+
+      if (diameter == 0.0) {
+        diameter = null;
+      }
     }
 
     return Location(
@@ -61,6 +73,7 @@ class Location {
       type: type,
       sightingId:
           result['fields']['sighting']['meta']['documentId'] as DocumentId,
+      treeSpecies: treeSpecies,
       height: height,
       diameter: diameter,
     );
@@ -69,13 +82,17 @@ class Location {
   static Future<Location> create(
       {required LocationType type,
       required DocumentId sightingId,
+      String? treeSpecies,
       double? height,
       double? diameter}) async {
     DocumentViewId? viewId;
 
     if (type == LocationType.Tree) {
       viewId = await createLocationTree(
-          sightingId: sightingId, height: height!, diameter: diameter!);
+          sightingId: sightingId,
+          treeSpecies: treeSpecies,
+          height: height,
+          diameter: diameter);
     } else if (type == LocationType.Box) {
       viewId = await createLocationBox(sightingId: sightingId);
     } else if (type == LocationType.Ground) {
@@ -89,18 +106,20 @@ class Location {
       viewId: viewId,
       type: type,
       sightingId: sightingId,
+      treeSpecies: treeSpecies,
       height: height,
       diameter: diameter,
     );
   }
 
-  Future<DocumentViewId> update({double? height, double? diameter}) async {
+  Future<DocumentViewId> update(
+      {String? treeSpecies, double? height, double? diameter}) async {
     if (type != LocationType.Tree) {
       throw "Can only update locations of type 'tree'";
     }
 
-    viewId =
-        await updateLocationTree(viewId, height: height, diameter: diameter);
+    viewId = await updateLocationTree(viewId,
+        treeSpecies: treeSpecies, height: height, diameter: diameter);
     return viewId;
   }
 
@@ -201,6 +220,7 @@ String get locationTreeFields {
   return '''
     $metaFields
     fields {
+      tree_species
       height
       diameter
       sighting {
@@ -239,19 +259,25 @@ String allLocationsTreeQuery(List<DocumentId>? sightingIds, String? cursor) {
 
 Future<DocumentViewId> createLocationTree(
     {required DocumentId sightingId,
-    required double height,
-    required double diameter}) async {
+    String? treeSpecies,
+    double? height,
+    double? diameter}) async {
   List<(String, OperationValue)> fields = [
+    ("tree_species", OperationValue.string(treeSpecies ?? "")),
+    ("height", OperationValue.float(height ?? 0.0)),
+    ("diameter", OperationValue.float(diameter ?? 0.0)),
     ("sighting", OperationValue.relation(sightingId)),
-    ("height", OperationValue.float(height)),
-    ("diameter", OperationValue.float(diameter)),
   ];
   return await create(SchemaIds.bee_attributes_location_tree, fields);
 }
 
 Future<DocumentViewId> updateLocationTree(DocumentViewId viewId,
-    {double? height, double? diameter}) async {
+    {String? treeSpecies, double? height, double? diameter}) async {
   List<(String, OperationValue)> fields = [];
+
+  if (treeSpecies != null) {
+    fields.add(("tree_species", OperationValue.string(treeSpecies)));
+  }
 
   if (height != null) {
     fields.add(("height", OperationValue.float(height)));
