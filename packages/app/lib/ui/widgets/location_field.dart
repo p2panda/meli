@@ -114,38 +114,34 @@ class _LocationFieldInnerState extends State<LocationFieldInner> {
 
   void _handleUpdate(LocationType? type, String? treeSpecies,
       double? treeHeight, double? treeDiameter) async {
-    if (widget.initialValue != null && type == null) {
+    if (location != null && type == null) {
       // Delete attached sighting if any existed
-      await widget.initialValue!.delete();
-      setState(() {});
-    } else if (widget.initialValue?.type == LocationType.Tree &&
+      await location!.delete();
+      location = null;
+    } else if (location?.type == LocationType.Tree &&
         type == LocationType.Tree) {
       // Update location if it is a tree location (other location types do not
       // have any special fields to update so we ignore them)
-      // @TODO: Also update tree species
-      await widget.initialValue!
-          .update(height: treeHeight, diameter: treeDiameter);
-      setState(() {});
-    } else if (widget.initialValue?.type != type && type != null) {
+      await location!.update(
+          treeSpecies: treeSpecies, height: treeHeight, diameter: treeDiameter);
+    } else if (location?.type != type && type != null) {
       // Delete previous attached location if any existed
-      if (widget.initialValue != null) {
-        await widget.initialValue!.delete();
+      if (location != null) {
+        await location!.delete();
+        location = null;
       }
 
       // Create new location and attach it to sighting
-      Location location = await Location.create(
+      location = await Location.create(
           type: type,
           sightingId: widget.sightingId,
           height: treeHeight,
           diameter: treeDiameter);
-
-      setState(() {
-        this.location = location;
-      });
     } else {
       // Nothing changed, so do nothing ..
     }
 
+    setState(() {});
     widget.onUpdated();
   }
 
