@@ -330,7 +330,7 @@ class _LocationFieldEditState extends State<LocationFieldEdit> {
 }
 
 typedef OnTreeUpdated = void Function(
-    String? species, double? height, double? diameter);
+    String? treeSpecies, double? height, double? diameter);
 
 class TreeLocationEdit extends StatelessWidget {
   final String? treeSpecies;

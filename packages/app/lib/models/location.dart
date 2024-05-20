@@ -120,6 +120,19 @@ class Location {
 
     viewId = await updateLocationTree(viewId,
         treeSpecies: treeSpecies, height: height, diameter: diameter);
+
+    if (treeSpecies != null) {
+      this.treeSpecies = treeSpecies;
+    }
+
+    if (height != null) {
+      this.height = height;
+    }
+
+    if (diameter != null) {
+      this.diameter = diameter;
+    }
+
     return viewId;
   }
 
