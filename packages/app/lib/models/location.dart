@@ -262,7 +262,7 @@ Future<DocumentViewId> updateLocationTree(DocumentViewId viewId,
     fields.add(("diameter", OperationValue.float(diameter)));
   }
 
-  return await update(viewId, SchemaIds.bee_attributes_location_tree, fields);
+  return await update(SchemaIds.bee_attributes_location_tree, viewId, fields);
 }
 
 Future<DocumentViewId> deleteLocationTree(DocumentViewId viewId) async {
