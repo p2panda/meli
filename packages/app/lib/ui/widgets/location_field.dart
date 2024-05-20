@@ -135,6 +135,7 @@ class _LocationFieldInnerState extends State<LocationFieldInner> {
       location = await Location.create(
           type: type,
           sightingId: widget.sightingId,
+          treeSpecies: treeSpecies,
           height: treeHeight,
           diameter: treeDiameter);
     } else {
