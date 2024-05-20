@@ -186,37 +186,22 @@ class LocationFieldShow extends StatelessWidget {
     );
   }
 
-  Widget _type() {
-    String label;
-
-    switch (location!.type) {
-      case LocationType.Box:
-        label = "Box";
-      case LocationType.Building:
-        label = "Building";
-      case LocationType.Ground:
-        label = "Ground";
-      case LocationType.Tree:
-        label = "Tree";
-    }
-
-    return Column(children: [
-      Text(
-        label,
-        style: const TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-      ),
-      if (location!.type == LocationType.Tree && location!.treeSpecies != null)
-        Text(location!.treeSpecies!,
-            style: const TextStyle(fontStyle: FontStyle.italic)),
-      if (location!.type == LocationType.Tree && location!.height != null)
-        Text("Height: ${location!.height!}m"),
-      if (location!.type == LocationType.Tree && location!.diameter != null)
-        Text("Diameter: ${location!.diameter!}m"),
-    ]);
-  }
-
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
+    String label;
+    switch (location!.type) {
+      case LocationType.Box:
+        label = t.hiveLocationBox;
+      case LocationType.Building:
+        label = t.hiveLocationBuilding;
+      case LocationType.Ground:
+        label = t.hiveLocationGround;
+      case LocationType.Tree:
+        label = t.hiveLocationTree;
+    }
+
     return ReadOnlyBase<Location>(
         value: location,
         builder: (Location location) {
@@ -224,7 +209,24 @@ class LocationFieldShow extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 15.0),
             child: Column(children: [
               _icon(),
-              _type(),
+              Column(children: [
+                Text(
+                  label,
+                  style: const TextStyle(
+                      fontSize: 15.0, fontWeight: FontWeight.bold),
+                ),
+                if (location!.type == LocationType.Tree &&
+                    location!.treeSpecies != null)
+                  Text(location!.treeSpecies!,
+                      style: const TextStyle(fontStyle: FontStyle.italic)),
+                if (location!.type == LocationType.Tree &&
+                    location!.height != null)
+                  Text("${t.hiveLocationTreeHeight}: ${location!.height!}m"),
+                if (location!.type == LocationType.Tree &&
+                    location!.diameter != null)
+                  Text(
+                      "${t.hiveLocationTreeDiameter}: ${location!.diameter!}m"),
+              ]),
             ]),
           );
         });
@@ -308,6 +310,8 @@ class _LocationFieldEditState extends State<LocationFieldEdit> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Column(children: [
       LocationTypeSelector(
         locationType: type,
@@ -333,7 +337,7 @@ class _LocationFieldEditState extends State<LocationFieldEdit> {
                       foregroundColor: MeliColors.white,
                       backgroundColor: MeliColors.plum),
                   onPressed: _handleSave,
-                  child: const Text("Save"),
+                  child: Text(t.editCardSaveButton),
                 ),
                 OutlinedButton(
                     style: OutlinedButton.styleFrom(
@@ -344,9 +348,9 @@ class _LocationFieldEditState extends State<LocationFieldEdit> {
                             width: 3.0, color: MeliColors.plum),
                         foregroundColor: MeliColors.plum),
                     onPressed: _handleCancel,
-                    child: const Text(
-                      "Cancel",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    child: Text(
+                      t.editCardCancelButton,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ))
               ],
             )
@@ -399,13 +403,15 @@ class TreeLocationEdit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      _label("Tree Species", null),
+      _label(t.hiveLocationTreeSpecies, null),
       TextFormField(
           cursorColor: MeliColors.plum,
           initialValue: treeSpecies,
           decoration: InputDecoration(
-            hintText: 'Enter a tree species here',
+            hintText: t.hiveLocationTreeSpeciesHint,
             hintStyle: TextStyle(color: MeliColors.plum.withOpacity(0.4)),
             border: const UnderlineInputBorder(
               borderSide: BorderSide.none,
@@ -417,7 +423,7 @@ class TreeLocationEdit extends StatelessWidget {
           onChanged: (String value) {
             onUpdated(value, height, diameter);
           }),
-      _label("Height", height),
+      _label(t.hiveLocationTreeHeight, height),
       SliderTheme(
         data: SliderThemeData(tickMarkShape: SliderTickMarkShape.noTickMark),
         child: Slider(
@@ -432,7 +438,7 @@ class TreeLocationEdit extends StatelessWidget {
           },
         ),
       ),
-      _label("Diameter", diameter),
+      _label(t.hiveLocationTreeDiameter, diameter),
       SliderTheme(
         data: SliderThemeData(tickMarkShape: SliderTickMarkShape.noTickMark),
         child: Slider(
@@ -470,30 +476,32 @@ class LocationTypeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Wrap(spacing: 5.0, runSpacing: 5.0, children: [
       LocationTypeButton(
-          label: "Box",
+          label: t.hiveLocationBox,
           icon: const Icon(BOX_ICON),
           onPressed: () {
             _onToggle(LocationType.Box);
           },
           active: locationType == LocationType.Box),
       LocationTypeButton(
-          label: "Building",
+          label: t.hiveLocationBuilding,
           icon: const Icon(BUILDING_ICON),
           onPressed: () {
             _onToggle(LocationType.Building);
           },
           active: locationType == LocationType.Building),
       LocationTypeButton(
-          label: "Ground",
+          label: t.hiveLocationGround,
           icon: const Icon(GROUND_ICON),
           onPressed: () {
             _onToggle(LocationType.Ground);
           },
           active: locationType == LocationType.Ground),
       LocationTypeButton(
-          label: "Tree",
+          label: t.hiveLocationTree,
           icon: const Icon(TREE_ICON),
           onPressed: () {
             _onToggle(LocationType.Tree);

@@ -98,10 +98,10 @@ class _NoteFieldState extends State<NoteField> {
                         children: [
                           FilledButton(
                               onPressed: _handleSave,
-                              child: Text(t.noteCardSaveAction)),
+                              child: Text(t.editCardSaveButton)),
                           OutlinedButton(
                               onPressed: _handleCancel,
-                              child: Text(t.noteCardCancelAction))
+                              child: Text(t.editCardCancelButton))
                         ],
                       )
                     ])
