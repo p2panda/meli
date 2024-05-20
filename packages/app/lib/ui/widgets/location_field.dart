@@ -191,7 +191,7 @@ class LocationFieldShow extends StatelessWidget {
     final t = AppLocalizations.of(context)!;
 
     String label;
-    switch (location!.type) {
+    switch (location?.type) {
       case LocationType.Box:
         label = t.hiveLocationBox;
       case LocationType.Building:
@@ -200,6 +200,8 @@ class LocationFieldShow extends StatelessWidget {
         label = t.hiveLocationGround;
       case LocationType.Tree:
         label = t.hiveLocationTree;
+      case null:
+        label = "";
     }
 
     return ReadOnlyBase<Location>(
