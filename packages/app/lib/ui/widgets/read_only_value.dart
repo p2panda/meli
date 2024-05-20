@@ -17,7 +17,6 @@ class ReadOnlyBase<T> extends StatelessWidget {
 
     return Container(
       alignment: Alignment.center,
-      height: 48.0,
       child: value == null
           ? Text(
               noValueGivenSymbol,
@@ -40,10 +39,14 @@ class ReadOnlyValue extends StatelessWidget {
     return ReadOnlyBase<String>(
         value: value,
         builder: (String str) {
-          return Text(
-            str,
-            textAlign: TextAlign.left,
-            style: const TextStyle(fontSize: 16.0),
+          return Container(
+            alignment: Alignment.center,
+            height: 48,
+            child: Text(
+              str,
+              textAlign: TextAlign.left,
+              style: const TextStyle(fontSize: 16.0),
+            ),
           );
         });
   }

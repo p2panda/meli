@@ -11,10 +11,10 @@ import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/error_card.dart';
 import 'package:app/ui/widgets/read_only_value.dart';
 
-const BOX_ICON = Icon(Icons.hive);
-const BUILDING_ICON = Icon(Icons.home);
-const GROUND_ICON = Icon(Icons.grass);
-const TREE_ICON = Icon(Icons.park);
+const BOX_ICON = Icons.hive;
+const BUILDING_ICON = Icons.home;
+const GROUND_ICON = Icons.grass;
+const TREE_ICON = Icons.park;
 
 class LocationField extends StatefulWidget {
   /// Document id of the sighting we're managing the location for.
@@ -167,29 +167,52 @@ class LocationFieldShow extends StatelessWidget {
   const LocationFieldShow({super.key, required this.location});
 
   Widget _icon() {
+    IconData icon;
+
     switch (location!.type) {
       case LocationType.Box:
-        return BOX_ICON;
+        icon = BOX_ICON;
       case LocationType.Building:
-        return BUILDING_ICON;
+        icon = BUILDING_ICON;
       case LocationType.Ground:
-        return GROUND_ICON;
+        icon = GROUND_ICON;
       case LocationType.Tree:
-        return TREE_ICON;
+        icon = TREE_ICON;
     }
+
+    return Icon(
+      icon,
+      size: 40.0,
+    );
   }
 
   Widget _type() {
+    String label;
+
     switch (location!.type) {
       case LocationType.Box:
-        return const Text("Box");
+        label = "Box";
       case LocationType.Building:
-        return const Text("Building");
+        label = "Building";
       case LocationType.Ground:
-        return const Text("Ground");
+        label = "Ground";
       case LocationType.Tree:
-        return const Text("Tree");
+        label = "Tree";
     }
+
+    return Column(children: [
+      Text(
+        label,
+        style: const TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+      ),
+      if (location!.type == LocationType.Tree && location!.treeSpecies != null)
+        Text(location!.treeSpecies!,
+            style: const TextStyle(fontStyle: FontStyle.italic)),
+      if (location!.type == LocationType.Tree && location!.height != null)
+        Text("Height: ${location!.height!}m"),
+      if (location!.type == LocationType.Tree && location!.diameter != null)
+        Text("Diameter: ${location!.diameter!}m"),
+    ]);
   }
 
   @override
@@ -389,7 +412,7 @@ class TreeLocationEdit extends StatelessWidget {
             ),
           ),
           onChanged: (String value) {
-            onUpdated(value.isEmpty ? null : value, height, diameter);
+            onUpdated(value, height, diameter);
           }),
       _label("Height", height),
       SliderTheme(
@@ -402,8 +425,7 @@ class TreeLocationEdit extends StatelessWidget {
           divisions: 100,
           value: height != null ? height! : 0.0,
           onChanged: (double value) {
-            onUpdated(treeSpecies, value == 0.0 ? null : value.roundToDouble(),
-                diameter);
+            onUpdated(treeSpecies, value.roundToDouble(), diameter);
           },
         ),
       ),
@@ -418,7 +440,7 @@ class TreeLocationEdit extends StatelessWidget {
           divisions: 20,
           value: diameter != null ? diameter! : 0.0,
           onChanged: (double value) {
-            onUpdated(treeSpecies, height, value == 0.0 ? null : value);
+            onUpdated(treeSpecies, height, value);
           },
         ),
       ),
@@ -448,28 +470,28 @@ class LocationTypeSelector extends StatelessWidget {
     return Wrap(spacing: 5.0, runSpacing: 5.0, children: [
       LocationTypeButton(
           label: "Box",
-          icon: BOX_ICON,
+          icon: const Icon(BOX_ICON),
           onPressed: () {
             _onToggle(LocationType.Box);
           },
           active: locationType == LocationType.Box),
       LocationTypeButton(
           label: "Building",
-          icon: BUILDING_ICON,
+          icon: const Icon(BUILDING_ICON),
           onPressed: () {
             _onToggle(LocationType.Building);
           },
           active: locationType == LocationType.Building),
       LocationTypeButton(
           label: "Ground",
-          icon: GROUND_ICON,
+          icon: const Icon(GROUND_ICON),
           onPressed: () {
             _onToggle(LocationType.Ground);
           },
           active: locationType == LocationType.Ground),
       LocationTypeButton(
           label: "Tree",
-          icon: TREE_ICON,
+          icon: const Icon(TREE_ICON),
           onPressed: () {
             _onToggle(LocationType.Tree);
           },
