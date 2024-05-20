@@ -112,7 +112,7 @@ flutter emulators --launch <id>
 flutter devices
 
 # Run app on emulated or connected device
-flutter run --device-id <id>
+flutter run --flavor normal --device-id <id>
 ```
 
 ### Relay Node
