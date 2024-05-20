@@ -115,7 +115,7 @@ class _HiveLocationFieldInnerState extends State<HiveLocationFieldInner> {
   void _handleUpdate(LocationType? type, String? treeSpecies,
       double? treeHeight, double? treeDiameter) async {
     if (location != null && type == null) {
-      // Delete attached sighting if any existed
+      // Delete attached location if any existed
       await location!.delete();
       location = null;
     } else if (location?.type == LocationType.Tree &&
