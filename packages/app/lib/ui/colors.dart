@@ -7,10 +7,10 @@ abstract final class MeliColors {
   static const Color electric = Color(0xff95fff2);
   static const Color flurry = Color(0xfff0ffc7);
   static const Color grass = Color(0xff95ffd9);
-  static const Color leaf = Color(0xff3b7964);
   static const Color magnolia = Color(0xffeaddff);
   static const Color peach = Color(0xffffd8d8);
   static const Color pink = Color(0xffffd8e4);
+  static const Color plum = Color(0xff77729c);
   static const Color sea = Color(0xffbfdff6);
   static const Color sky = Color(0xff9ac4e8);
   static const Color white = Color(0xffffffff);

@@ -296,15 +296,32 @@ class _LocationFieldEditState extends State<LocationFieldEdit> {
           padding: const EdgeInsets.only(top: 10.0),
           child: Row(children: [
             OverflowBar(
-              spacing: 5,
+              spacing: 10,
               overflowAlignment: OverflowBarAlignment.start,
               children: [
                 FilledButton(
+                  style: FilledButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      foregroundColor: MeliColors.white,
+                      backgroundColor: MeliColors.plum),
                   onPressed: _handleSave,
                   child: const Text("Save"),
                 ),
                 OutlinedButton(
-                    onPressed: _handleCancel, child: const Text("Cancel"))
+                    style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        side: const BorderSide(
+                            width: 3.0, color: MeliColors.plum),
+                        foregroundColor: MeliColors.plum),
+                    onPressed: _handleCancel,
+                    child: const Text(
+                      "Cancel",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ))
               ],
             )
           ])),
@@ -331,13 +348,25 @@ class TreeLocationEdit extends StatelessWidget {
 
   Widget _label(String title, double? value) {
     if (value == null) {
-      return Text(title, style: const TextStyle(fontWeight: FontWeight.bold));
+      return Column(children: [
+        const SizedBox(height: 20.0),
+        Text(title,
+            style:
+                const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+      ]);
     }
 
-    return Row(
+    return Column(
       children: [
-        Text("$title: ", style: const TextStyle(fontWeight: FontWeight.bold)),
-        Text("${value}m"),
+        const SizedBox(height: 20.0),
+        Row(
+          children: [
+            Text("$title: ",
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold, fontSize: 16.0)),
+            Text("${value}m", style: const TextStyle(fontSize: 16.0)),
+          ],
+        )
       ],
     );
   }
@@ -347,32 +376,51 @@ class TreeLocationEdit extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       _label("Tree Species", null),
       TextFormField(
+          cursorColor: MeliColors.plum,
           initialValue: treeSpecies,
+          decoration: InputDecoration(
+            hintText: 'Enter a tree species here',
+            hintStyle: TextStyle(color: MeliColors.plum.withOpacity(0.4)),
+            border: const UnderlineInputBorder(
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: MeliColors.plum, width: 3.0),
+            ),
+          ),
           onChanged: (String value) {
             onUpdated(value.isEmpty ? null : value, height, diameter);
           }),
-      const SizedBox(height: 20.0),
       _label("Height", height),
-      Slider(
-        min: 0.0,
-        max: 100.0,
-        divisions: 100,
-        value: height != null ? height! : 0.0,
-        onChanged: (double value) {
-          onUpdated(treeSpecies, value == 0.0 ? null : value.roundToDouble(),
-              diameter);
-        },
+      SliderTheme(
+        data: SliderThemeData(tickMarkShape: SliderTickMarkShape.noTickMark),
+        child: Slider(
+          activeColor: MeliColors.plum,
+          inactiveColor: MeliColors.plum.withOpacity(0.1),
+          min: 0.0,
+          max: 100.0,
+          divisions: 100,
+          value: height != null ? height! : 0.0,
+          onChanged: (double value) {
+            onUpdated(treeSpecies, value == 0.0 ? null : value.roundToDouble(),
+                diameter);
+          },
+        ),
       ),
-      const SizedBox(height: 20.0),
       _label("Diameter", diameter),
-      Slider(
-        min: 0.0,
-        max: 10.0,
-        divisions: 20,
-        value: diameter != null ? diameter! : 0.0,
-        onChanged: (double value) {
-          onUpdated(treeSpecies, height, value == 0.0 ? null : value);
-        },
+      SliderTheme(
+        data: SliderThemeData(tickMarkShape: SliderTickMarkShape.noTickMark),
+        child: Slider(
+          activeColor: MeliColors.plum,
+          inactiveColor: MeliColors.plum.withOpacity(0.1),
+          min: 0.0,
+          max: 10.0,
+          divisions: 20,
+          value: diameter != null ? diameter! : 0.0,
+          onChanged: (double value) {
+            onUpdated(treeSpecies, height, value == 0.0 ? null : value);
+          },
+        ),
       ),
     ]);
   }
@@ -447,8 +495,12 @@ class LocationTypeButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
+          elevation: 2.0,
+          side: active
+              ? const BorderSide(color: MeliColors.plum, width: 3.0)
+              : null,
           foregroundColor:
-              active ? MeliColors.leaf : MeliColors.leaf.withOpacity(0.3),
+              active ? MeliColors.plum : MeliColors.plum.withOpacity(0.3),
           padding: const EdgeInsets.all(20.0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
