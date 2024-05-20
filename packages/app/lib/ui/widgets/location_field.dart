@@ -220,10 +220,13 @@ class LocationFieldShow extends StatelessWidget {
     return ReadOnlyBase<Location>(
         value: location,
         builder: (Location location) {
-          return Column(children: [
-            _icon(),
-            _type(),
-          ]);
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 15.0),
+            child: Column(children: [
+              _icon(),
+              _type(),
+            ]),
+          );
         });
   }
 }
