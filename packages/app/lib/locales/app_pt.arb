@@ -17,6 +17,7 @@
     "imageLoadingError": "Não foi possível carregar a imagem",
     "imageMissingError": "Nenhuma imagem fornecida",
     "localNameCardTitle": "Nome Local",
+    "localNamesCardTitle": "Nomes locais",
     "locationAdd": "Deseja adicionar uma localização GPS?",
     "locationAddAction": "Adicionar localização à imagem",
     "locationErrorPermissionDenied": "Permissão de localização negada",
