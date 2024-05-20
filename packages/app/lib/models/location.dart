@@ -122,15 +122,15 @@ class Location {
         treeSpecies: treeSpecies, height: height, diameter: diameter);
 
     if (treeSpecies != null) {
-      this.treeSpecies = treeSpecies;
+      this.treeSpecies = treeSpecies.isEmpty ? null : treeSpecies;
     }
 
     if (height != null) {
-      this.height = height;
+      this.height = height == 0.0 ? null : height;
     }
 
     if (diameter != null) {
-      this.diameter = diameter;
+      this.diameter = diameter == 0.0 ? null : diameter;
     }
 
     return viewId;
