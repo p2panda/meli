@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:gql/ast.dart';
+import 'package:graphql/client.dart';
 import 'package:p2panda/p2panda.dart';
 
 import 'package:app/io/p2panda/publish.dart';
@@ -89,4 +91,63 @@ Future<DocumentViewId> updateLocalName(DocumentViewId viewId,
 
 Future<DocumentViewId> deleteLocalName(DocumentViewId viewId) async {
   return await delete(viewId, SchemaIds.bee_local_name);
+}
+
+class LocalNamesPaginator extends Paginator<LocalName> {
+  final DocumentId species;
+
+  LocalNamesPaginator({required this.species});
+
+  @override
+  DocumentNode nextPageQuery(String? cursor) {
+    return gql(allSpeciesLocalNames(cursor, species));
+  }
+
+  @override
+  PaginatedCollection<LocalName> parseJSON(Map<String, dynamic> json) {
+    final list = json[DEFAULT_RESULTS_KEY]['documents'] as List;
+    final documents = list
+        .where((sighting) =>
+            sighting['fields']['local_names']['documents'][0] != null)
+        .map((sighting) => LocalName.fromJson(sighting['fields']['local_names']
+            ['documents'][0] as Map<String, dynamic>))
+        .toList();
+
+    final endCursor = json[DEFAULT_RESULTS_KEY]['endCursor'] as String?;
+    final hasNextPage = json[DEFAULT_RESULTS_KEY]['hasNextPage'] as bool;
+
+    return PaginatedCollection(
+        documents: documents, hasNextPage: hasNextPage, endCursor: endCursor);
+  }
+}
+
+String allSpeciesLocalNames(String? cursor, DocumentId? speciesId) {
+  const schemaId = SchemaIds.bee_sighting;
+  final after = (cursor != null) ? '''after: "$cursor",''' : '';
+  final filter = (speciesId != null)
+      ? '''filter: { species: { in: ["$speciesId"] } },'''
+      : '';
+
+  return '''
+    query SpeciesLocalNames {
+      $DEFAULT_RESULTS_KEY: all_$schemaId(
+        first: $DEFAULT_PAGE_SIZE,
+        $after
+        $filter
+        orderBy: "datetime",
+        orderDirection: DESC
+      ) {
+        $paginationFields
+        documents {
+          fields {
+            local_names {
+              documents {
+                $localNameFields
+              }
+            }
+          }
+        }
+      }
+    }
+  ''';
 }
