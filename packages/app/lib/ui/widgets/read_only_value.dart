@@ -2,10 +2,13 @@
 
 import 'package:flutter/material.dart';
 
-class ReadOnlyValue extends StatelessWidget {
-  final String? value;
+typedef ReadOnlyBuilder<T> = Widget Function(T value);
 
-  const ReadOnlyValue(this.value, {super.key});
+class ReadOnlyBase<T> extends StatelessWidget {
+  final T? value;
+  final ReadOnlyBuilder<T> builder;
+
+  const ReadOnlyBase({super.key, required this.value, required this.builder});
 
   @override
   Widget build(BuildContext context) {
@@ -14,12 +17,37 @@ class ReadOnlyValue extends StatelessWidget {
 
     return Container(
       alignment: Alignment.center,
-      height: 48.0,
-      child: Text(value == null ? noValueGivenSymbol : value!,
-          textAlign: TextAlign.left,
-          style: TextStyle(
-              fontSize: value == null ? 35.0 : 16.0,
-              shadows: value == null ? [const Shadow(blurRadius: 1.0)] : null)),
+      child: value == null
+          ? Text(
+              noValueGivenSymbol,
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                  fontSize: 35.0, shadows: [Shadow(blurRadius: 1.0)]),
+            )
+          : builder(value as T),
     );
+  }
+}
+
+class ReadOnlyValue extends StatelessWidget {
+  final String? value;
+
+  const ReadOnlyValue(this.value, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ReadOnlyBase<String>(
+        value: value,
+        builder: (String str) {
+          return Container(
+            alignment: Alignment.center,
+            height: 48,
+            child: Text(
+              str,
+              textAlign: TextAlign.left,
+              style: const TextStyle(fontSize: 16.0),
+            ),
+          );
+        });
   }
 }

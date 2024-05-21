@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/widgets/used_for_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -15,9 +14,11 @@ import 'package:app/ui/widgets/autocomplete.dart';
 import 'package:app/ui/widgets/error_card.dart';
 import 'package:app/ui/widgets/image_carousel.dart';
 import 'package:app/ui/widgets/local_name_field.dart';
+import 'package:app/ui/widgets/hive_location_field.dart';
 import 'package:app/ui/widgets/note_field.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/species_field.dart';
+import 'package:app/ui/widgets/used_for_field.dart';
 
 class SightingScreen extends StatefulWidget {
   final String documentId;
@@ -37,10 +38,9 @@ class _SightingScreenState extends State<SightingScreen> {
         appBarColor: MeliColors.electric,
         body: SingleChildScrollView(
           child: Query(
-              options: QueryOptions(
-                  document: gql(sightingQuery(widget.documentId))),
-              builder: (result,
-                  {VoidCallback? refetch, FetchMore? fetchMore}) {
+              options:
+                  QueryOptions(document: gql(sightingQuery(widget.documentId))),
+              builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
                 if (result.hasException) {
                   return ErrorCard(message: result.exception.toString());
                 }
@@ -50,8 +50,8 @@ class _SightingScreenState extends State<SightingScreen> {
                     child: SizedBox(
                         width: 50,
                         height: 50,
-                        child: CircularProgressIndicator(
-                            color: MeliColors.black)),
+                        child:
+                            CircularProgressIndicator(color: MeliColors.black)),
                   );
                 }
 
@@ -149,12 +149,9 @@ class _SightingProfileState extends State<SightingProfile> {
           sighting.species?.species,
           onUpdate: _updateSpecies,
         ),
+        UsedForField(sightingId: sighting.id),
+        HiveLocationField(sightingId: sighting.id),
         NoteField(sighting.comment, onUpdate: _updateComment),
-        UsedForField(
-          sighting: sighting.id,
-        ),
-        // @TODO: Remove this as soon as there are more elements
-        const SizedBox(height: 550.0),
       ]),
     );
   }
