@@ -3,6 +3,7 @@
 import 'dart:math';
 
 import 'package:app/ui/colors.dart';
+import 'package:app/ui/widgets/save_cancel_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -18,7 +19,7 @@ import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/read_only_value.dart';
 import 'package:app/ui/widgets/taxonomy_autocomplete.dart';
 
-typedef OnUpdate = void Function(TaxonomySpecies?);
+typedef OnUpdate = Future<void> Function(TaxonomySpecies?);
 
 class SpeciesField extends StatefulWidget {
   final TaxonomySpecies? current;
@@ -119,7 +120,31 @@ class _SpeciesFieldState extends State<SpeciesField> {
     setState(() {});
   }
 
-  void _submit() async {
+  void _handleSubmit() async {
+    setState(() {
+      _isEditMode = false;
+      _isLoading = true;
+    });
+
+    try {
+      _validate();
+    } catch (error) {
+      _showErrorAlert(error.toString());
+      setState(() {
+        _isLoading = false;
+      });
+
+      return;
+    }
+
+    await _submit();
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _submit() async {
     if (widget.current == null) {
       if (_taxonomy[0] == null || _taxonomy[0]!.value == '') {
         // Nothing has changed, therefore do nothing
@@ -152,7 +177,7 @@ class _SpeciesFieldState extends State<SpeciesField> {
     }
 
     // Taxon for species (new or existing) got added by user
-    widget.onUpdate.call(TaxonomySpecies(BaseTaxonomy(
+    await widget.onUpdate.call(TaxonomySpecies(BaseTaxonomy(
         SchemaIds.taxonomy_species,
         id: parent!.documentId!,
         viewId: parent.viewId!,
@@ -242,23 +267,9 @@ class _SpeciesFieldState extends State<SpeciesField> {
   }
 
   void _toggleEditMode() {
-    if (_isEditMode) {
-      try {
-        _validate();
-      } catch (error) {
-        _showErrorAlert(error.toString());
-        return;
-      }
-    }
-
+    _reset();
     setState(() {
       _isEditMode = !_isEditMode;
-
-      // If we flip from edit mode to read-only mode we interpret this as a
-      // "submit" action by the user
-      if (!_isEditMode) {
-        _submit();
-      }
     });
   }
 
@@ -353,7 +364,18 @@ class _SpeciesFieldState extends State<SpeciesField> {
         title: AppLocalizations.of(context)!.speciesCardTitle,
         isEditMode: _isEditMode,
         onChanged: _toggleEditMode,
-        child: _isEditMode ? _editableValue() : _readOnlyValue());
+        child: Column(
+            children: _isEditMode
+                ? [
+                    _editableValue(),
+                    Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: SaveCancel(
+                          handleSave: _handleSubmit,
+                          handleCancel: _toggleEditMode,
+                        ))
+                  ]
+                : [_readOnlyValue()]));
   }
 }
 

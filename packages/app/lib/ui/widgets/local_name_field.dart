@@ -10,7 +10,7 @@ import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/local_name_autocomplete.dart';
 import 'package:app/ui/widgets/read_only_value.dart';
 
-typedef OnUpdate = Future<dynamic> Function(AutocompleteItem?);
+typedef OnUpdate = Future<void> Function(AutocompleteItem?);
 
 class LocalNameField extends StatefulWidget {
   final LocalName? current;
@@ -96,16 +96,16 @@ class _LocalNameFieldState extends State<LocalNameField> {
         isEditMode: isEditMode,
         onChanged: _toggleEditMode,
         child: Column(
-          children: [
-            isEditMode ? _editableValue() : ReadOnlyValue(displayValue),
-            if (isEditMode)
-              Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: SaveCancel(
-                    handleSave: _submit,
-                    handleCancel: _cancel,
-                  ))
-          ],
-        ));
+            children: isEditMode
+                ? [
+                    _editableValue(),
+                    Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: SaveCancel(
+                          handleSave: _submit,
+                          handleCancel: _cancel,
+                        ))
+                  ]
+                : [ReadOnlyValue(displayValue)]));
   }
 }

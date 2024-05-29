@@ -78,7 +78,7 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
     super.initState();
   }
 
-  void _updateTaxon(TaxonomySpecies? taxon) async {
+  Future<void> _updateTaxon(TaxonomySpecies? taxon) async {
     if (species.species.id == taxon?.id) {
       // Nothing has changed
       return;

@@ -83,7 +83,7 @@ class _SightingProfileState extends State<SightingProfile> {
     super.initState();
   }
 
-  Future<dynamic> _updateLocalName(AutocompleteItem? item) async {
+  Future<void> _updateLocalName(AutocompleteItem? item) async {
     List<LocalName> localNames = [];
     if (item == null) {
       // Remove local name from sighting
@@ -101,7 +101,7 @@ class _SightingProfileState extends State<SightingProfile> {
     setState(() {});
   }
 
-  void _updateSpecies(TaxonomySpecies? taxon) async {
+  Future<void> _updateSpecies(TaxonomySpecies? taxon) async {
     if (sighting.species?.species.id == taxon?.id) {
       // Nothing has changed
       return;
