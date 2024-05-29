@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+use std::thread;
+
 use anyhow::Result;
 use aquadoggo::{Configuration, Node};
 use p2panda_rs::identity::KeyPair;
-use tokio::runtime::Runtime;
+use tokio::runtime;
 use tokio::sync::mpsc::{channel, Sender};
 
 pub struct Manager {
@@ -12,19 +14,24 @@ pub struct Manager {
 
 impl Manager {
     pub fn new(key_pair: KeyPair, config: Configuration) -> Result<Self> {
-        let (shutdown_signal, mut on_shutdown) = channel(16);
+        let (shutdown_signal, mut on_shutdown) = channel(4);
 
-        let rt = Runtime::new()?;
+        thread::spawn(move || {
+            let rt = runtime::Builder::new_current_thread()
+                .enable_all()
+                .build()
+                .expect("Could not create async tokio runtime");
 
-        rt.block_on(async move {
-            let node = Node::start(key_pair, config).await;
+            rt.block_on(async move {
+                let node = Node::start(key_pair, config).await;
 
-            tokio::select! {
-                _ = on_shutdown.recv() => (),
-                _ = node.on_exit() => (),
-            }
+                tokio::select! {
+                    _ = on_shutdown.recv() => (),
+                    _ = node.on_exit() => (),
+                }
 
-            node.shutdown().await;
+                node.shutdown().await;
+            });
         });
 
         Ok(Manager { shutdown_signal })
