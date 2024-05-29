@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/save_cancel_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -102,20 +103,10 @@ class _LocalNameFieldState extends State<LocalNameField> {
             if (isEditMode)
               Padding(
                   padding: const EdgeInsets.only(top: 8.0),
-                  child: Row(children: [
-                    OverflowBar(
-                      spacing: 12,
-                      overflowAlignment: OverflowBarAlignment.start,
-                      children: [
-                        FilledButton(
-                            onPressed: _submit,
-                            child: Text(t.editCardSaveButton)),
-                        OutlinedButton(
-                            onPressed: _cancel,
-                            child: Text(t.editCardCancelButton))
-                      ],
-                    )
-                  ]))
+                  child: SaveCancel(
+                    handleSave: _submit,
+                    handleCancel: _cancel,
+                  ))
           ],
         ));
   }

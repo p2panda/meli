@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:app/ui/widgets/editable_card.dart';
+import 'package:app/ui/widgets/save_cancel_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -88,20 +89,10 @@ class _NoteFieldState extends State<NoteField> {
                       textCapitalization: TextCapitalization.sentences),
                   if (_inputMode == InputMode.edit) ...[
                     const SizedBox(height: 12),
-                    Row(children: [
-                      OverflowBar(
-                        spacing: 12,
-                        overflowAlignment: OverflowBarAlignment.start,
-                        children: [
-                          FilledButton(
-                              onPressed: _handleSave,
-                              child: Text(t.editCardSaveButton)),
-                          OutlinedButton(
-                              onPressed: _handleCancel,
-                              child: Text(t.editCardCancelButton))
-                        ],
-                      )
-                    ])
+                    SaveCancel(
+                      handleSave: _handleSave,
+                      handleCancel: _handleCancel,
+                    )
                   ]
                 ],
               )),
