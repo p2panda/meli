@@ -310,8 +310,6 @@ class _HiveLocationFieldEditState extends State<HiveLocationFieldEdit> {
 
   @override
   Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context)!;
-
     return Column(children: [
       HiveLocationTypeSelector(
         locationType: type,
