@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/widgets/read_only_value.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app/ui/widgets/editable_card.dart';
+import 'package:app/ui/widgets/read_only_value.dart';
 
 typedef OnUpdate = void Function(String);
 
@@ -26,7 +26,7 @@ class _TextFieldState extends State<EditableTextField> {
   bool isEditMode = false;
 
   /// Contains changed value when user adjusted the field.
-  String? _dirty;
+  String _dirty = "";
 
   @override
   void initState() {
@@ -48,7 +48,7 @@ class _TextFieldState extends State<EditableTextField> {
     if (_dirty == widget.current) {
       return; // Nothing has changed
     } else {
-      widget.onUpdate.call(_dirty!);
+      widget.onUpdate.call(_dirty);
     }
   }
 
