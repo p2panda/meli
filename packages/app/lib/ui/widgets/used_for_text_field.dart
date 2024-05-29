@@ -75,8 +75,7 @@ class _UsedForTextFieldState extends State<UsedForTextField> {
               FilledButton(
                   style: disabled
                       ? const ButtonStyle(
-                          backgroundColor:
-                              MaterialStatePropertyAll(Colors.grey))
+                          backgroundColor: WidgetStatePropertyAll(Colors.grey))
                       : const ButtonStyle(),
                   onPressed: _onSubmit,
                   child: Text(t.usedForTextSave)),

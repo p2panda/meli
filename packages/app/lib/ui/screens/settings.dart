@@ -84,12 +84,12 @@ class LocaleSettings extends StatelessWidget {
                     contentPadding: EdgeInsets.only(left: 10.0)),
                 width: constraints.maxWidth,
                 menuStyle: const MenuStyle(
-                    elevation: MaterialStatePropertyAll<double>(3.0),
+                    elevation: WidgetStatePropertyAll<double>(3.0),
                     surfaceTintColor:
-                        MaterialStatePropertyAll<Color>(Colors.transparent),
+                        WidgetStatePropertyAll<Color>(Colors.transparent),
                     backgroundColor:
-                        MaterialStatePropertyAll<Color>(MeliColors.white),
-                    side: MaterialStatePropertyAll<BorderSide>(
+                        WidgetStatePropertyAll<Color>(MeliColors.white),
+                    side: WidgetStatePropertyAll<BorderSide>(
                         BorderSide(width: 0))),
                 initialSelection: currentLocale,
                 onSelected: (Locale? locale) async {
