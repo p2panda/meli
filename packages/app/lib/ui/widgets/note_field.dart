@@ -59,6 +59,7 @@ class _NoteFieldState extends State<NoteField> {
     return EditableCard(
         title: t.noteCardTitle,
         onChanged: _handleEditToggle,
+        isEditMode: _inputMode == InputMode.edit,
         child: Form(
           key: _formKey,
           child: Container(
