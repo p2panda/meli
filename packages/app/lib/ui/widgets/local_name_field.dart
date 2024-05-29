@@ -89,8 +89,6 @@ class _LocalNameFieldState extends State<LocalNameField> {
 
   @override
   Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context)!;
-
     String? displayValue = widget.current?.name;
 
     return EditableCard(

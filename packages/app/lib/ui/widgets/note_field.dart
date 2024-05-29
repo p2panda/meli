@@ -5,10 +5,6 @@ import 'package:app/ui/widgets/save_cancel_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:app/ui/widgets/card.dart';
-import 'package:app/ui/widgets/card_action_button.dart';
-import 'package:app/ui/widgets/card_header.dart';
-
 typedef OnUpdate = void Function(String?);
 
 enum InputMode { read, edit }
