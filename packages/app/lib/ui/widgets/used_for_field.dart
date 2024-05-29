@@ -41,8 +41,8 @@ class _UsedForFieldState extends State<UsedForField> {
     _overlayKey.currentState!.show();
 
     // Create a new UsedFor document which relates to the current sighting.
-    DocumentViewId usedforViewId =
-        await createUsedFor(sighting: widget.sightingId, usedFor: usedForString);
+    DocumentViewId usedforViewId = await createUsedFor(
+        sighting: widget.sightingId, usedFor: usedForString);
 
     // We want to wait until it is materialized and then refresh the
     // paginated query
@@ -129,16 +129,18 @@ class _UsedForFieldState extends State<UsedForField> {
                         const SizedBox(height: 10),
                         Expanded(
                             child: SingleChildScrollView(
-                              child: UsedForTagSelector(
-                                  paginator: tagPaginator,
-                                  onTagClick: _onTagClick),
-                            )),
+                          child: UsedForTagSelector(
+                              paginator: tagPaginator, onTagClick: _onTagClick),
+                        )),
                         const SizedBox(height: 10),
                         Text("Create New Use",
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.titleLarge),
                         const SizedBox(height: 10),
-                        UsedForTextField(submit: _createNewTag)
+                        UsedForTextField(
+                          submit: _createNewTag,
+                          cancel: _toggleEditMode,
+                        )
                       ]
                     : [const SizedBox()])
               ],
