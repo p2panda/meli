@@ -83,7 +83,7 @@ class _SightingProfileState extends State<SightingProfile> {
     super.initState();
   }
 
-  void _updateLocalName(AutocompleteItem? item) async {
+  Future<dynamic> _updateLocalName(AutocompleteItem? item) async {
     List<LocalName> localNames = [];
     if (item == null) {
       // Remove local name from sighting
@@ -97,6 +97,7 @@ class _SightingProfileState extends State<SightingProfile> {
     }
 
     await sighting.update(localNames: localNames);
+
     setState(() {});
   }
 

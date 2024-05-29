@@ -9,7 +9,7 @@ import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/local_name_autocomplete.dart';
 import 'package:app/ui/widgets/read_only_value.dart';
 
-typedef OnUpdate = void Function(AutocompleteItem?);
+typedef OnUpdate = Future<dynamic> Function(AutocompleteItem?);
 
 class LocalNameField extends StatefulWidget {
   final LocalName? current;
@@ -31,16 +31,16 @@ class _LocalNameFieldState extends State<LocalNameField> {
   void _submit() async {
     if (_dirty == null) {
       // Nothing has changed
-      return;
-    }
-
-    if (_dirty!.value == '') {
+    } else if (_dirty!.value == '') {
       // Value is empty, we consider the user wants to remove it
-      widget.onUpdate.call(null);
+      await widget.onUpdate.call(null);
     } else {
       // Value gets updated (either with item from database or something new)
-      widget.onUpdate.call(_dirty!);
+      await widget.onUpdate.call(_dirty!);
     }
+
+    // Any time the submit method is triggered we toggle out of edit mode
+    _toggleEditMode();
   }
 
   void _changeValue(AutocompleteItem newValue) async {
@@ -58,12 +58,6 @@ class _LocalNameFieldState extends State<LocalNameField> {
   void _toggleEditMode() {
     setState(() {
       isEditMode = !isEditMode;
-
-      // If we flip from edit mode to read-only mode we interpret this as a
-      // "submit" action by the user
-      if (!isEditMode) {
-        _submit();
-      }
     });
   }
 
@@ -82,20 +76,32 @@ class _LocalNameFieldState extends State<LocalNameField> {
         // Make sure that we focus the text field and show the keyboard as soon
         // as we've entered "edit mode"
         autofocus: true,
-        // Flip "edit mode" to false as soon as user hit the "submit" button on
-        // the keyboard
-        onSubmit: _toggleEditMode,
+        onSubmit: _submit,
         onChanged: _changeValue);
   }
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     String? displayValue = widget.current?.name;
 
     return EditableCard(
         title: AppLocalizations.of(context)!.localNameCardTitle,
         isEditMode: isEditMode,
         onChanged: _toggleEditMode,
-        child: isEditMode ? _editableValue() : ReadOnlyValue(displayValue));
+        child: Column(
+          children: [
+            isEditMode ? _editableValue() : ReadOnlyValue(displayValue),
+            if (isEditMode)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Row(children: [
+                  FilledButton(
+                      onPressed: _submit, child: Text(t.localNameCardSaveAction))
+                ]),
+              )
+          ],
+        ));
   }
 }
