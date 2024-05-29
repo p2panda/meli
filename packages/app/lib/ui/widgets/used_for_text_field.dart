@@ -60,8 +60,6 @@ class _UsedForTextFieldState extends State<UsedForTextField> {
 
   @override
   Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context)!;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
