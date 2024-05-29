@@ -43,6 +43,12 @@ class _LocalNameFieldState extends State<LocalNameField> {
     _toggleEditMode();
   }
 
+  void _cancel() {
+    setState(() {
+      isEditMode = !isEditMode;
+    });
+  }
+
   void _changeValue(AutocompleteItem newValue) async {
     if (widget.current == null) {
       // User selected an item when none was selected before
@@ -95,12 +101,21 @@ class _LocalNameFieldState extends State<LocalNameField> {
             isEditMode ? _editableValue() : ReadOnlyValue(displayValue),
             if (isEditMode)
               Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Row(children: [
-                  FilledButton(
-                      onPressed: _submit, child: Text(t.localNameCardSaveAction))
-                ]),
-              )
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Row(children: [
+                    OverflowBar(
+                      spacing: 12,
+                      overflowAlignment: OverflowBarAlignment.start,
+                      children: [
+                        FilledButton(
+                            onPressed: _submit,
+                            child: Text(t.editCardSaveButton)),
+                        OutlinedButton(
+                            onPressed: _cancel,
+                            child: Text(t.editCardCancelButton))
+                      ],
+                    )
+                  ]))
           ],
         ));
   }
