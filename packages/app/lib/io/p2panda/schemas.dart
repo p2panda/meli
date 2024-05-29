@@ -10,6 +10,7 @@ import 'package:app/io/assets.dart';
 import 'package:app/io/graphql/graphql.dart';
 import 'package:app/io/graphql/queries.dart' as queries;
 import 'package:app/io/p2panda/p2panda.dart';
+import 'package:app/io/p2panda/publish.dart';
 import 'package:app/utils/sleep.dart';
 
 /// Path to .toml file holding all data for schema migrations.
@@ -101,6 +102,28 @@ Future<bool> isSchemaAvailable(SchemaId schemaId) async {
   return !result.hasException;
 }
 
+/// Returns true if document is materialized with the specified view id.
+Future<bool> isDocumentViewAvailable(
+    SchemaId schemaId, DocumentViewId viewId) async {
+  String query = '''
+    query CheckDocumentStatus() {
+      status: all_$schemaId(meta: { viewId: "$viewId" }) {
+        totalCount
+      }
+    }
+  ''';
+
+  final options = QueryOptions(document: gql(query));
+  final result = await client.query(options);
+
+  if (!result.hasException) {
+    final status = result.data?['status'] as Map<String, dynamic>;
+    return status['totalCount'] == 1;
+  }
+
+  return false;
+}
+
 /// Async helper method to block until node materialized schemas and updated
 /// GraphQL API.
 Future<void> untilSchemasAvailable(List<SchemaId> schemaIds) async {
@@ -118,6 +141,19 @@ Future<void> untilSchemasAvailable(List<SchemaId> schemaIds) async {
   // .. do this until all of them exist
   while (true) {
     if (await areAllSchemasAvailable()) {
+      break;
+    } else {
+      sleep(250);
+    }
+  }
+}
+
+/// Async helper method to block until node materialized document to a
+/// specific view id.
+Future<void> untilDocumentViewAvailable(
+    SchemaId schemaId, DocumentViewId viewId) async {
+  while (true) {
+    if (await isDocumentViewAvailable(schemaId, viewId)) {
       break;
     } else {
       sleep(250);
