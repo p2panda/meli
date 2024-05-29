@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/io/p2panda/publish.dart';
+import 'package:app/io/p2panda/schemas.dart';
 import 'package:app/models/blobs.dart';
 import 'package:app/models/local_names.dart';
+import 'package:app/models/schema_ids.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
@@ -22,7 +24,6 @@ import 'package:app/ui/widgets/local_name_autocomplete.dart';
 import 'package:app/ui/widgets/location_tracker.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/simple_card.dart';
-import 'package:app/utils/sleep.dart';
 
 const String PLACEHOLDER_IMG = 'assets/images/placeholder-bee.png';
 
@@ -124,15 +125,15 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
       }
 
       // Publish the sighting
-      await createSighting(
+      final viewId = await createSighting(
           datetime: datetime,
           latitude: latitude,
           longitude: longitude,
           imageIds: imageIds,
           localNameIds: localNameIds);
 
-      // .. wait a little bit
-      await sleep(500);
+      // .. wait until sighting got materialized on node
+      await untilDocumentViewAvailable(SchemaIds.bee_sighting, viewId);
 
       // Go back to sightings overview
       router.pop();
