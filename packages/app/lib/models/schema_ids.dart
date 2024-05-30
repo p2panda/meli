@@ -55,6 +55,8 @@ abstract final class SchemaIds {
 const List<SchemaId> ALL_SCHEMA_IDS = [
   SchemaIds.blob,
   SchemaIds.blob_piece,
+  SchemaIds.schema_definition,
+  SchemaIds.schema_field_definition,
   SchemaIds.bee_sighting,
   SchemaIds.bee_local_name,
   SchemaIds.bee_species,
