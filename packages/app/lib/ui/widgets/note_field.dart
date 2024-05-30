@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/editable_card.dart';
+import 'package:app/ui/widgets/save_cancel_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'package:app/ui/widgets/card.dart';
-import 'package:app/ui/widgets/card_action_button.dart';
-import 'package:app/ui/widgets/card_header.dart';
 
 typedef OnUpdate = void Function(String?);
 
@@ -26,6 +24,9 @@ class _NoteFieldState extends State<NoteField> {
   late TextEditingController _textInputController;
   late FocusNode _textInputFocusNode;
   final _formKey = GlobalKey<FormState>();
+
+  /// Flag indicating if we're currently editing the field or not.
+  bool isEditMode = false;
 
   @override
   void initState() {
@@ -55,19 +56,13 @@ class _NoteFieldState extends State<NoteField> {
 
     final initialValue = widget.value ?? '';
 
-    return Form(
-        key: _formKey,
-        child: MeliCard(
-            child: Column(children: [
-          MeliCardHeader(
-              title: t.noteCardTitle,
-              icon: _inputMode == InputMode.read
-                  ? CardActionButton(
-                      icon: const Icon(Icons.edit_outlined),
-                      onPressed: _handleStartEditMode,
-                    )
-                  : null),
-          Container(
+    return EditableCard(
+        title: t.noteCardTitle,
+        onChanged: _handleEditToggle,
+        isEditMode: _inputMode == InputMode.edit,
+        child: Form(
+          key: _formKey,
+          child: Container(
               padding:
                   const EdgeInsets.symmetric(vertical: 10.0, horizontal: 6.0),
               alignment: AlignmentDirectional.centerStart,
@@ -91,24 +86,14 @@ class _NoteFieldState extends State<NoteField> {
                       textCapitalization: TextCapitalization.sentences),
                   if (_inputMode == InputMode.edit) ...[
                     const SizedBox(height: 12),
-                    Row(children: [
-                      OverflowBar(
-                        spacing: 12,
-                        overflowAlignment: OverflowBarAlignment.start,
-                        children: [
-                          FilledButton(
-                              onPressed: _handleSave,
-                              child: Text(t.editCardSaveButton)),
-                          OutlinedButton(
-                              onPressed: _handleCancel,
-                              child: Text(t.editCardCancelButton))
-                        ],
-                      )
-                    ])
+                    SaveCancel(
+                      handleSave: _handleSave,
+                      handleCancel: _handleCancel,
+                    )
                   ]
                 ],
               )),
-        ])));
+        ));
   }
 
   void _handleCancel() {
@@ -138,11 +123,19 @@ class _NoteFieldState extends State<NoteField> {
     _formKey.currentState!.save();
   }
 
-  void _handleStartEditMode() {
-    setState(() {
-      _inputMode = InputMode.edit;
-      _textInputFocusNode.canRequestFocus = true;
-      _textInputFocusNode.requestFocus();
-    });
+  void _handleEditToggle() {
+    isEditMode = !isEditMode;
+    if (isEditMode) {
+      setState(() {
+        _inputMode = InputMode.edit;
+        _textInputFocusNode.canRequestFocus = true;
+        _textInputFocusNode.requestFocus();
+      });
+    } else {
+      setState(() {
+        _inputMode = InputMode.read;
+        _textInputFocusNode.canRequestFocus = false;
+      });
+    }
   }
 }

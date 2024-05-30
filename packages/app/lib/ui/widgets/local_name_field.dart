@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/save_cancel_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -9,7 +10,7 @@ import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/local_name_autocomplete.dart';
 import 'package:app/ui/widgets/read_only_value.dart';
 
-typedef OnUpdate = void Function(AutocompleteItem?);
+typedef OnUpdate = Future<void> Function(AutocompleteItem?);
 
 class LocalNameField extends StatefulWidget {
   final LocalName? current;
@@ -31,16 +32,22 @@ class _LocalNameFieldState extends State<LocalNameField> {
   void _submit() async {
     if (_dirty == null) {
       // Nothing has changed
-      return;
-    }
-
-    if (_dirty!.value == '') {
+    } else if (_dirty!.value == '') {
       // Value is empty, we consider the user wants to remove it
-      widget.onUpdate.call(null);
+      await widget.onUpdate.call(null);
     } else {
       // Value gets updated (either with item from database or something new)
-      widget.onUpdate.call(_dirty!);
+      await widget.onUpdate.call(_dirty!);
     }
+
+    // Any time the submit method is triggered we toggle out of edit mode
+    _toggleEditMode();
+  }
+
+  void _cancel() {
+    setState(() {
+      isEditMode = !isEditMode;
+    });
   }
 
   void _changeValue(AutocompleteItem newValue) async {
@@ -58,12 +65,6 @@ class _LocalNameFieldState extends State<LocalNameField> {
   void _toggleEditMode() {
     setState(() {
       isEditMode = !isEditMode;
-
-      // If we flip from edit mode to read-only mode we interpret this as a
-      // "submit" action by the user
-      if (!isEditMode) {
-        _submit();
-      }
     });
   }
 
@@ -82,9 +83,7 @@ class _LocalNameFieldState extends State<LocalNameField> {
         // Make sure that we focus the text field and show the keyboard as soon
         // as we've entered "edit mode"
         autofocus: true,
-        // Flip "edit mode" to false as soon as user hit the "submit" button on
-        // the keyboard
-        onSubmit: _toggleEditMode,
+        onSubmit: _submit,
         onChanged: _changeValue);
   }
 
@@ -96,6 +95,17 @@ class _LocalNameFieldState extends State<LocalNameField> {
         title: AppLocalizations.of(context)!.localNameCardTitle,
         isEditMode: isEditMode,
         onChanged: _toggleEditMode,
-        child: isEditMode ? _editableValue() : ReadOnlyValue(displayValue));
+        child: Column(
+            children: isEditMode
+                ? [
+                    _editableValue(),
+                    Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: SaveCancel(
+                          handleSave: _submit,
+                          handleCancel: _cancel,
+                        ))
+                  ]
+                : [ReadOnlyValue(displayValue)]));
   }
 }

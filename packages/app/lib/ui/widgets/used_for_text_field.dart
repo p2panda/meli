@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/save_cancel_buttons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UsedForTextField extends StatefulWidget {
   final void Function(String) submit;
+  final void Function() cancel;
 
-  const UsedForTextField({super.key, required this.submit});
+  const UsedForTextField(
+      {super.key, required this.submit, required this.cancel});
 
   @override
   State<UsedForTextField> createState() => _UsedForTextFieldState();
@@ -16,7 +18,7 @@ class _UsedForTextFieldState extends State<UsedForTextField> {
   final TextEditingController _controller = TextEditingController();
   bool disabled = true;
 
-  void _onSubmit() {
+  void _handleSubmit() {
     if (disabled) {
       return;
     }
@@ -31,6 +33,10 @@ class _UsedForTextFieldState extends State<UsedForTextField> {
     setState(() {
       disabled = true;
     });
+  }
+
+  void _handleCancel() {
+    widget.cancel();
   }
 
   void _onChange(String newText) {
@@ -53,8 +59,6 @@ class _UsedForTextFieldState extends State<UsedForTextField> {
 
   @override
   Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context)!;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -67,21 +71,10 @@ class _UsedForTextFieldState extends State<UsedForTextField> {
             onChanged: _onChange,
             textCapitalization: TextCapitalization.sentences),
         const SizedBox(height: 12),
-        Row(children: [
-          OverflowBar(
-            spacing: 12,
-            overflowAlignment: OverflowBarAlignment.start,
-            children: [
-              FilledButton(
-                  style: disabled
-                      ? const ButtonStyle(
-                          backgroundColor: WidgetStatePropertyAll(Colors.grey))
-                      : const ButtonStyle(),
-                  onPressed: _onSubmit,
-                  child: Text(t.usedForTextSave)),
-            ],
-          )
-        ])
+        SaveCancel(
+          handleSave: _handleSubmit,
+          handleCancel: _handleCancel,
+        )
       ],
     );
   }

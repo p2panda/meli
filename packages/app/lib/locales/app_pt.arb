@@ -18,6 +18,7 @@
     "imageMissingError": "Nenhuma imagem fornecida",
     "localNameCardTitle": "Nome Local",
     "localNamesCardTitle": "Nomes locais",
+    "localNameCardSaveAction": "Save",
     "locationAdd": "Deseja adicionar uma localização GPS?",
     "locationAddAction": "Adicionar localização à imagem",
     "locationErrorPermissionDenied": "Permissão de localização negada",
