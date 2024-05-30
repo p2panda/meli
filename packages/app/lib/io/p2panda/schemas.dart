@@ -116,12 +116,12 @@ Future<bool> isDocumentViewAvailable(
   final options = QueryOptions(document: gql(query));
   final result = await client.query(options);
 
-  if (!result.hasException) {
-    final status = result.data?['status'] as Map<String, dynamic>;
-    return status['totalCount'] == 1;
+  if (result.hasException) {
+    throw "Error while querying if document view was materialized on node";
   }
 
-  return false;
+  final status = result.data?['status'] as Map<String, dynamic>;
+  return status['totalCount'] == 1;
 }
 
 /// Async helper method to block until node materialized schemas and updated
