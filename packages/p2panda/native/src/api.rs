@@ -14,7 +14,7 @@ pub use p2panda_rs::identity::KeyPair as PandaKeyPair;
 use p2panda_rs::operation;
 use p2panda_rs::operation::traits::{Actionable, Schematic};
 use p2panda_rs::operation::EncodedOperation;
-use p2panda_rs::schema::{Schema, SchemaId};
+use p2panda_rs::schema::SchemaId;
 use tokio::sync::OnceCell;
 
 use crate::node::Manager;
