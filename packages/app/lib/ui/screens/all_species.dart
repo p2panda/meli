@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:app/ui/widgets/pagination_list.dart';
+import 'package:app/ui/widgets/refresh_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -61,7 +62,9 @@ class _SpeciesListState extends State<SpeciesList> {
               router.pushNamed(RoutePaths.species.name,
                   pathParameters: {'documentId': species.id}).then((value) {
                 // Refresh list after returning from updating a species
-                if (widget.paginator.refresh != null) {
+                if (RefreshProvider.of(context)
+                        .isDirty(RefreshKeys.UpdatedSpecies) &&
+                    widget.paginator.refresh != null) {
                   widget.paginator.refresh!();
                 }
               })

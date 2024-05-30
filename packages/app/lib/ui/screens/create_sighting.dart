@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:app/ui/widgets/refresh_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -101,6 +102,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
   void _createSighting() async {
     final messenger = ScaffoldMessenger.of(context);
     final t = AppLocalizations.of(context)!;
+    final refreshProvider = RefreshProvider.of(context);
 
     _overlayKey.currentState!.show();
 
@@ -135,8 +137,12 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
       // .. wait until sighting got materialized on node
       await untilDocumentViewAvailable(SchemaIds.bee_sighting, viewId);
 
+      // Set flag to indicate to other widgets that they need to refresh their
+      // data to include this new sighting in their listings
+      refreshProvider.setDirty(RefreshKeys.CreatedSighting);
+
       // Go back to sightings overview
-      router.pop(true);
+      router.pop();
 
       // Show notification
       messenger.showSnackBar(SnackBar(
@@ -171,7 +177,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
         _addImage(file);
       } else {
         // If no file was captured navigate back to all sightings screen
-        router.pop(false);
+        router.pop();
       }
     });
   }

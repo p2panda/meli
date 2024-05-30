@@ -7,6 +7,7 @@ import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/fab.dart';
+import 'package:app/ui/widgets/refresh_provider.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/sightings_list.dart';
 
@@ -31,10 +32,10 @@ class AllSightingsScreen extends StatelessWidget {
             onPressed: () {
               router.push(RoutePaths.createSighting.path).then((value) {
                 // Refresh list after returning from creating a new sighting
-                if (value == true) {
-                  if (paginator.refresh != null) {
-                    paginator.refresh!();
-                  }
+                if (RefreshProvider.of(context)
+                        .isDirty(RefreshKeys.CreatedSighting) &&
+                    paginator.refresh != null) {
+                  paginator.refresh!();
                 }
               });
             }),

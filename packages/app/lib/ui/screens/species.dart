@@ -12,6 +12,7 @@ import 'package:app/models/taxonomy_species.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/error_card.dart';
+import 'package:app/ui/widgets/refresh_provider.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/sightings_tiles.dart';
 import 'package:app/ui/widgets/species_field.dart';
@@ -84,12 +85,19 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
     super.initState();
   }
 
+  void _setUpdateFlag() {
+    // Set flag for other widgets to tell them that they might need to re-render
+    // their data. This will make sure that our updates are reflected in the UI
+    RefreshProvider.of(context).setDirty(RefreshKeys.UpdatedSpecies);
+  }
+
   Future<void> _updateTaxon(TaxonomySpecies? taxon) async {
     if (species.species.id == taxon?.id) {
       // Nothing has changed
       return;
     } else if (taxon != null) {
       await species.update(species: taxon);
+      _setUpdateFlag();
       setState(() {});
     }
   }
@@ -133,7 +141,9 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
                   // Force loading the species again after we've returned from
                   // an updated sighting, to make sure that aggregated data over
                   // all sightings is up-to-date
-                  if (widget.refetch != null) {
+                  if (RefreshProvider.of(context)
+                          .isDirty(RefreshKeys.UpdatedSighting) &&
+                      widget.refetch != null) {
                     widget.refetch!();
                   }
                 });
