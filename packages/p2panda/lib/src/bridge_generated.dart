@@ -64,6 +64,7 @@ abstract class P2Panda {
       required String databaseUrl,
       required String blobsBasePath,
       required List<String> relayAddresses,
+      required List<String> allowSchemaIds,
       dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kStartNodeConstMeta;
@@ -334,18 +335,26 @@ class P2PandaImpl implements P2Panda {
       required String databaseUrl,
       required String blobsBasePath,
       required List<String> relayAddresses,
+      required List<String> allowSchemaIds,
       dynamic hint}) {
     var arg0 = _platform.api2wire_box_autoadd_key_pair(keyPair);
     var arg1 = _platform.api2wire_String(databaseUrl);
     var arg2 = _platform.api2wire_String(blobsBasePath);
     var arg3 = _platform.api2wire_StringList(relayAddresses);
+    var arg4 = _platform.api2wire_StringList(allowSchemaIds);
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) =>
-          _platform.inner.wire_start_node(port_, arg0, arg1, arg2, arg3),
+          _platform.inner.wire_start_node(port_, arg0, arg1, arg2, arg3, arg4),
       parseSuccessData: _wire2api_unit,
       parseErrorData: _wire2api_FrbAnyhowException,
       constMeta: kStartNodeConstMeta,
-      argValues: [keyPair, databaseUrl, blobsBasePath, relayAddresses],
+      argValues: [
+        keyPair,
+        databaseUrl,
+        blobsBasePath,
+        relayAddresses,
+        allowSchemaIds
+      ],
       hint: hint,
     ));
   }
@@ -353,7 +362,13 @@ class P2PandaImpl implements P2Panda {
   FlutterRustBridgeTaskConstMeta get kStartNodeConstMeta =>
       const FlutterRustBridgeTaskConstMeta(
         debugName: "start_node",
-        argNames: ["keyPair", "databaseUrl", "blobsBasePath", "relayAddresses"],
+        argNames: [
+          "keyPair",
+          "databaseUrl",
+          "blobsBasePath",
+          "relayAddresses",
+          "allowSchemaIds"
+        ],
       );
 
   Future<void> shutdownNode({dynamic hint}) {
@@ -944,6 +959,7 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
     ffi.Pointer<wire_uint_8_list> database_url,
     ffi.Pointer<wire_uint_8_list> blobs_base_path,
     ffi.Pointer<wire_StringList> relay_addresses,
+    ffi.Pointer<wire_StringList> allow_schema_ids,
   ) {
     return _wire_start_node(
       port_,
@@ -951,6 +967,7 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
       database_url,
       blobs_base_path,
       relay_addresses,
+      allow_schema_ids,
     );
   }
 
@@ -961,6 +978,7 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
               ffi.Pointer<wire_KeyPair>,
               ffi.Pointer<wire_uint_8_list>,
               ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_StringList>,
               ffi.Pointer<wire_StringList>)>>('wire_start_node');
   late final _wire_start_node = _wire_start_nodePtr.asFunction<
       void Function(
@@ -968,6 +986,7 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
           ffi.Pointer<wire_KeyPair>,
           ffi.Pointer<wire_uint_8_list>,
           ffi.Pointer<wire_uint_8_list>,
+          ffi.Pointer<wire_StringList>,
           ffi.Pointer<wire_StringList>)>();
 
   void wire_shutdown_node(

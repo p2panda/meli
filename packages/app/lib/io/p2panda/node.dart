@@ -4,6 +4,7 @@ import 'package:app/io/files.dart';
 import 'package:app/io/graphql/queries.dart';
 import 'package:app/io/p2panda/key_pair.dart';
 import 'package:app/io/p2panda/p2panda.dart';
+import 'package:app/models/schema_ids.dart';
 import 'package:app/utils/sleep.dart';
 
 const List<String> relayAddresses = bool.hasEnvironment("RELAY_ADDRESS")
@@ -27,10 +28,12 @@ Future<void> startNode() async {
 
   // Start node in background thread
   p2panda.startNode(
-      keyPair: key,
-      databaseUrl: databaseUrl,
-      blobsBasePath: basePath,
-      relayAddresses: relayAddresses);
+    keyPair: key,
+    databaseUrl: databaseUrl,
+    blobsBasePath: basePath,
+    relayAddresses: relayAddresses,
+    allowSchemaIds: ALL_SCHEMA_IDS,
+  );
 
   // .. since we can't `await` the FFI binding method from Rust we need to
   // poll here to find out until the node is ready
