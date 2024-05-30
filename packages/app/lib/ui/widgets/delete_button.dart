@@ -1,17 +1,32 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/io/p2panda/publish.dart';
+import 'package:app/models/sightings.dart';
+import 'package:app/router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/confirm_dialog.dart';
 
-class DeleteButton extends StatelessWidget {
-  final Function onDelete;
+class DeleteSightingButton extends StatelessWidget {
+  final DocumentViewId viewId;
 
-  const DeleteButton({super.key, required this.onDelete});
+  const DeleteSightingButton({super.key, required this.viewId});
 
-  void _delete(BuildContext context) {
+  _delete(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final t = AppLocalizations.of(context)!;
+
+    await deleteSighting(viewId);
+    // @TODO: also delete all uses documents and hive location documents.
+
+    router.pushNamed("all_sightings");
+    messenger
+        .showSnackBar(SnackBar(content: Text(t.sightingDeleteConfirmation)));
+  }
+
+  void _confirmDelete(BuildContext context) {
     final t = AppLocalizations.of(context)!;
 
     showDialog<String>(
@@ -22,7 +37,7 @@ class DeleteButton extends StatelessWidget {
         labelAbort: t.sightingDeleteAlertCancel,
         labelConfirm: t.sightingDeleteAlertConfirm,
         onConfirm: () {
-          onDelete();
+          _delete(context);
         },
       ),
     );
@@ -39,7 +54,7 @@ class DeleteButton extends StatelessWidget {
             ),
             side: const BorderSide(width: 3.0, color: MeliColors.plum),
             foregroundColor: MeliColors.plum),
-        onPressed: () => _delete(context),
+        onPressed: () => _confirmDelete(context),
         child: const Icon(Icons.delete),
       ),
     );

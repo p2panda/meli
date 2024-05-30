@@ -151,12 +151,6 @@ class _SightingProfileState extends State<SightingProfile> {
     setState(() {});
   }
 
-  void _deleteSighting() async {
-    await deleteSighting(sighting.viewId);
-    // @TODO: also delete all uses documents and hive location documents.
-    router.pushNamed("all_sightings");
-  }
-
   @override
   Widget build(BuildContext context) {
     final imagePaths =
@@ -181,7 +175,7 @@ class _SightingProfileState extends State<SightingProfile> {
         HiveLocationField(
             sightingId: sighting.id, onUpdate: _updateHiveLocation),
         NoteField(sighting.comment, onUpdate: _updateComment),
-        DeleteButton(onDelete: () => _deleteSighting())
+        DeleteSightingButton(viewId: sighting.viewId)
       ]),
     );
   }
