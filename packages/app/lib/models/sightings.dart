@@ -119,7 +119,16 @@ class Sighting {
   }
 
   Future<DocumentViewId> delete() async {
-    viewId = await deleteSighting(id, viewId);
+    // Remove associated "Hive Location" documents
+    await deleteAllLocations(id);
+
+    // Remove associated "Blob" documents (images)
+
+    // Remove associated "Used For" documents
+    // @TODO
+
+    // Finally delete the sighting itself
+    viewId = await deleteSighting(viewId);
     return viewId;
   }
 }
@@ -329,14 +338,6 @@ Future<DocumentViewId> updateSighting(DocumentViewId viewId,
   return await update(SchemaIds.bee_sighting, viewId, fields);
 }
 
-Future<DocumentViewId> deleteSighting(
-    DocumentId sightingId, DocumentViewId viewId) async {
-  // Remove associated "Hive Location" documents
-  await deleteAllLocations(sightingId);
-
-  // Remove associated "Used For" documents
-  // @TODO
-
-  // Finally delete the sighting itself
+Future<DocumentViewId> deleteSighting(DocumentViewId viewId) async {
   return await delete(SchemaIds.bee_sighting, viewId);
 }
