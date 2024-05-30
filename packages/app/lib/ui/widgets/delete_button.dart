@@ -17,10 +17,10 @@ class DeleteButton extends StatelessWidget {
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => ConfirmDialog(
-        title: t.imageDeleteAlertTitle,
-        message: t.imageDeleteAlertBody,
-        labelAbort: t.imageDeleteAlertCancel,
-        labelConfirm: t.imageDeleteAlertConfirm,
+        title: t.sightingDeleteAlertTitle,
+        message: t.sightingDeleteAlertBody,
+        labelAbort: t.sightingDeleteAlertCancel,
+        labelConfirm: t.sightingDeleteAlertConfirm,
         onConfirm: () {
           onDelete();
         },
