@@ -268,7 +268,8 @@ class _SpeciesFieldState extends State<SpeciesField> {
   }
 
   void _toggleEditMode() {
-    // _reset();
+    if (_isEditMode) _reset();
+
     setState(() {
       _isEditMode = !_isEditMode;
     });
