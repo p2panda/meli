@@ -66,6 +66,7 @@ class _UsedForTextFieldState extends State<UsedForTextField> {
             controller: _controller,
             decoration: const InputDecoration(border: OutlineInputBorder()),
             keyboardType: TextInputType.text,
+            scrollPadding: const EdgeInsets.only(bottom: 100.0),
             maxLines: 1,
             minLines: 1,
             onChanged: _onChange,

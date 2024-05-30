@@ -80,6 +80,7 @@ class _NoteFieldState extends State<NoteField> {
                       focusNode: _textInputFocusNode,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
+                      scrollPadding: const EdgeInsets.only(bottom: 200.0),
                       minLines: 5,
                       onSaved: (text) => _handleSubmit(text, initialValue),
                       readOnly: _inputMode == InputMode.read,
