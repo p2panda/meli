@@ -7,6 +7,8 @@ abstract final class SchemaIds {
   /// System schema
   static const SchemaId blob_piece = 'blob_piece_v1';
   static const SchemaId blob = 'blob_v1';
+  static const SchemaId schema_definition = 'schema_definition_v1';
+  static const SchemaId schema_field_definition = 'schema_field_definition_v1';
 
   /// Sighting and species schema.
   static const SchemaId bee_sighting =
@@ -51,6 +53,10 @@ abstract final class SchemaIds {
 
 /// List of all schema ids which are used by the meli app.
 const List<SchemaId> ALL_SCHEMA_IDS = [
+  SchemaIds.blob,
+  SchemaIds.blob_piece,
+  SchemaIds.schema_definition,
+  SchemaIds.schema_field_definition,
   SchemaIds.bee_sighting,
   SchemaIds.bee_local_name,
   SchemaIds.bee_species,

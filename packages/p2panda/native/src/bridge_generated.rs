@@ -114,6 +114,7 @@ fn wire_start_node_impl(
     database_url: impl Wire2Api<String> + UnwindSafe,
     blobs_base_path: impl Wire2Api<String> + UnwindSafe,
     relay_addresses: impl Wire2Api<Vec<String>> + UnwindSafe,
+    allow_schema_ids: impl Wire2Api<Vec<String>> + UnwindSafe,
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, (), _>(
         WrapInfo {
@@ -126,12 +127,14 @@ fn wire_start_node_impl(
             let api_database_url = database_url.wire2api();
             let api_blobs_base_path = blobs_base_path.wire2api();
             let api_relay_addresses = relay_addresses.wire2api();
+            let api_allow_schema_ids = allow_schema_ids.wire2api();
             move |task_callback| {
                 start_node(
                     api_key_pair,
                     api_database_url,
                     api_blobs_base_path,
                     api_relay_addresses,
+                    api_allow_schema_ids,
                 )
             }
         },
@@ -358,6 +361,7 @@ mod io {
         database_url: *mut wire_uint_8_list,
         blobs_base_path: *mut wire_uint_8_list,
         relay_addresses: *mut wire_StringList,
+        allow_schema_ids: *mut wire_StringList,
     ) {
         wire_start_node_impl(
             port_,
@@ -365,6 +369,7 @@ mod io {
             database_url,
             blobs_base_path,
             relay_addresses,
+            allow_schema_ids,
         )
     }
 

@@ -2,7 +2,7 @@
 
 use android_logger::{Config, FilterBuilder};
 use anyhow::{anyhow, Result};
-use aquadoggo::Configuration;
+use aquadoggo::{AllowList, Configuration};
 use ed25519_dalek::SecretKey;
 use flutter_rust_bridge::RustOpaque;
 use log::LevelFilter;
@@ -215,6 +215,7 @@ pub fn start_node(
     database_url: String,
     blobs_base_path: String,
     relay_addresses: Vec<String>,
+    allow_schema_ids: Vec<String>,
 ) -> Result<()> {
     // Initialise logging for Android developer console
     android_logger::init_once(
@@ -233,6 +234,11 @@ pub fn start_node(
     config.blobs_base_path = blobs_base_path.into();
     config.worker_pool_size = 2;
     config.database_max_connections = 16;
+    let allow_schema_ids = allow_schema_ids
+        .iter()
+        .map(|id| SchemaId::new(id))
+        .collect::<Result<Vec<SchemaId>, _>>()?;
+    config.allow_schema_ids = AllowList::Set(allow_schema_ids);
     config.network.mdns = true;
     config.network.relay_addresses = relay_addresses
         .iter()
