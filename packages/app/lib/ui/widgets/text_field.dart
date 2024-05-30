@@ -2,10 +2,11 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/read_only_value.dart';
+import 'package:app/ui/widgets/save_cancel_buttons.dart';
+import 'package:app/ui/widgets/editable_card.dart';
 
-typedef OnUpdate = void Function(String);
+typedef OnUpdate = Future<void> Function(String);
 
 class EditableTextField extends StatefulWidget {
   final String title;
@@ -44,11 +45,11 @@ class _TextFieldState extends State<EditableTextField> {
     _controller.text = widget.current;
   }
 
-  void _submit() async {
+  Future<void> _submit() async {
     if (_dirty == widget.current) {
       return; // Nothing has changed
     } else {
-      widget.onUpdate.call(_dirty);
+      await widget.onUpdate.call(_dirty);
     }
   }
 
@@ -61,9 +62,13 @@ class _TextFieldState extends State<EditableTextField> {
   void _toggleEditMode() {
     setState(() {
       isEditMode = !isEditMode;
-      if (!isEditMode) {
-        _submit();
-      }
+    });
+  }
+
+  void _handleSubmit() async {
+    await _submit();
+    setState(() {
+      isEditMode = !isEditMode;
     });
   }
 
@@ -101,6 +106,20 @@ class _TextFieldState extends State<EditableTextField> {
         title: widget.title,
         isEditMode: isEditMode,
         onChanged: _toggleEditMode,
-        child: isEditMode ? _editableValue() : _readOnlyValue());
+        child: Column(
+          children: [
+            if (isEditMode) ...[
+              _editableValue(),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: SaveCancel(
+                  handleSave: _handleSubmit,
+                  handleCancel: _toggleEditMode,
+                ),
+              )
+            ] else
+              _readOnlyValue(),
+          ],
+        ));
   }
 }
