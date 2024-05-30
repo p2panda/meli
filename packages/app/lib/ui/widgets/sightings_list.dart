@@ -6,6 +6,7 @@ import 'package:app/models/base.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/widgets/pagination_list.dart';
+import 'package:app/ui/widgets/refresh_provider.dart';
 import 'package:app/ui/widgets/sighting_card.dart';
 
 class SightingsList extends StatefulWidget {
@@ -21,7 +22,14 @@ class _SightingsListState extends State<SightingsList> {
   Widget _item(Sighting sighting) {
     return SightingCard(
         onTap: () => router.pushNamed(RoutePaths.sighting.name,
-            pathParameters: {'documentId': sighting.id}),
+                pathParameters: {'documentId': sighting.id}).then((value) {
+              // Refresh list when we've returned from updating a sighting
+              if (RefreshProvider.of(context)
+                      .isDirty(RefreshKeys.UpdatedSighting) &&
+                  widget.paginator.refresh != null) {
+                widget.paginator.refresh!();
+              }
+            }),
         date: sighting.datetime,
         localName: sighting.localName,
         species: sighting.species,

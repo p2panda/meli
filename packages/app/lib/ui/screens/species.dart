@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/widgets/species_local_names_aggregate.dart';
-import 'package:app/ui/widgets/species_uses_aggregate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -11,11 +9,15 @@ import 'package:app/models/base.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/models/species.dart';
 import 'package:app/models/taxonomy_species.dart';
+import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/error_card.dart';
+import 'package:app/ui/widgets/refresh_provider.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/sightings_tiles.dart';
 import 'package:app/ui/widgets/species_field.dart';
+import 'package:app/ui/widgets/species_local_names_aggregate.dart';
+import 'package:app/ui/widgets/species_uses_aggregate.dart';
 import 'package:app/ui/widgets/text_field.dart';
 
 class SpeciesScreen extends StatefulWidget {
@@ -28,6 +30,8 @@ class SpeciesScreen extends StatefulWidget {
 }
 
 class _SpeciesScreenState extends State<SpeciesScreen> {
+  VoidCallback? refetch;
+
   @override
   Widget build(BuildContext context) {
     return MeliScaffold(
@@ -37,6 +41,8 @@ class _SpeciesScreenState extends State<SpeciesScreen> {
             options:
                 QueryOptions(document: gql(speciesQuery(widget.documentId))),
             builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
+              this.refetch = refetch;
+
               if (result.hasException) {
                 return ErrorCard(message: result.exception.toString());
               }
@@ -54,15 +60,16 @@ class _SpeciesScreenState extends State<SpeciesScreen> {
               final species = Species.fromJson(
                   result.data?['species'] as Map<String, dynamic>);
 
-              return SpeciesProfile(species);
+              return SpeciesProfile(species, refetch);
             }));
   }
 }
 
 class SpeciesProfile extends StatefulWidget {
   final Species initialValue;
+  final VoidCallback? refetch;
 
-  const SpeciesProfile(this.initialValue, {super.key});
+  const SpeciesProfile(this.initialValue, this.refetch, {super.key});
 
   @override
   State<SpeciesProfile> createState() => _SpeciesProfileState();
@@ -78,12 +85,19 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
     super.initState();
   }
 
+  void _setUpdateFlag() {
+    // Set flag for other widgets to tell them that they might need to re-render
+    // their data. This will make sure that our updates are reflected in the UI
+    RefreshProvider.of(context).setDirty(RefreshKeys.UpdatedSpecies);
+  }
+
   Future<void> _updateTaxon(TaxonomySpecies? taxon) async {
     if (species.species.id == taxon?.id) {
       // Nothing has changed
       return;
     } else if (taxon != null) {
       await species.update(species: taxon);
+      _setUpdateFlag();
       setState(() {});
     }
   }
@@ -119,7 +133,21 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
             SpeciesLocalNamesAggregate(id: species.id),
             const SizedBox(height: 20.0),
           ])),
-          RelatedSightings(id: species.id),
+          RelatedSightings(
+              id: species.id,
+              onTap: (DocumentId sightingId) {
+                router.pushNamed(RoutePaths.sighting.name,
+                    pathParameters: {'documentId': sightingId}).then((value) {
+                  // Force loading the species again after we've returned from
+                  // an updated sighting, to make sure that aggregated data over
+                  // all sightings is up-to-date
+                  if (RefreshProvider.of(context)
+                          .isDirty(RefreshKeys.UpdatedSighting) &&
+                      widget.refetch != null) {
+                    widget.refetch!();
+                  }
+                });
+              }),
           const SliverToBoxAdapter(child: SizedBox(height: 20.0)),
         ],
       ),
@@ -127,15 +155,18 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
   }
 }
 
+typedef OnTap = void Function(DocumentId id);
+
 class RelatedSightings extends StatelessWidget {
   final DocumentId id;
+  final OnTap onTap;
 
-  const RelatedSightings({super.key, required this.id});
+  const RelatedSightings({super.key, required this.id, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final Paginator<Sighting> paginator = SpeciesSightingsPaginator(id);
-    return SightingsTiles(paginator: paginator);
+    return SightingsTiles(paginator: paginator, onTap: onTap);
   }
 }
 

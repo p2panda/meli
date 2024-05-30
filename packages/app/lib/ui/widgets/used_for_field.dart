@@ -20,8 +20,10 @@ typedef OnUpdate = Future<DocumentViewId> Function(String);
 
 class UsedForField extends StatefulWidget {
   final DocumentId sightingId;
+  final VoidCallback onUpdate;
 
-  const UsedForField({super.key, required this.sightingId});
+  const UsedForField(
+      {super.key, required this.sightingId, required this.onUpdate});
 
   @override
   State<UsedForField> createState() => _UsedForFieldState();
@@ -54,6 +56,8 @@ class _UsedForFieldState extends State<UsedForField> {
       sleep(const Duration(milliseconds: 100));
     }
 
+    widget.onUpdate();
+
     // Refresh both paginators
     listPaginator.refresh!();
     tagPaginator.refresh!();
@@ -78,6 +82,8 @@ class _UsedForFieldState extends State<UsedForField> {
       isDeleted = (result.data?['document'] == null);
       sleep(const Duration(milliseconds: 150));
     }
+
+    widget.onUpdate();
 
     // Refresh only the list paginator
     listPaginator.refresh!();

@@ -5,9 +5,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:app/io/graphql/graphql.dart' as graphql;
 import 'package:app/router.dart';
 import 'package:app/ui/widgets/image_provider.dart';
-import 'package:app/io/graphql/graphql.dart' as graphql;
+import 'package:app/ui/widgets/refresh_provider.dart';
 
 class MeliApp extends StatefulWidget {
   const MeliApp({super.key});
@@ -50,7 +51,8 @@ class MeliAppState extends State<MeliApp> {
 
     return GraphQLProvider(
         client: client,
-        child: MeliCameraProvider(MaterialApp.router(
+        child: RefreshProvider(
+            child: MeliCameraProvider(MaterialApp.router(
           // Register router for navigation
           routerDelegate: router.routerDelegate,
           routeInformationProvider: router.routeInformationProvider,
@@ -73,6 +75,6 @@ class MeliAppState extends State<MeliApp> {
 
           // Disable "debug" banner shown in top right corner during development
           debugShowCheckedModeBanner: false,
-        )));
+        ))));
   }
 }

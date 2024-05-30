@@ -5,16 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:app/models/base.dart';
 import 'package:app/models/blobs.dart';
 import 'package:app/models/sightings.dart';
-import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
+import 'package:app/ui/screens/species.dart';
 import 'package:app/ui/widgets/card.dart';
 import 'package:app/ui/widgets/image.dart';
 import 'package:app/ui/widgets/pagination_list.dart';
 
 class SightingsTiles extends StatefulWidget {
   final Paginator<Sighting> paginator;
+  final OnTap onTap;
 
-  const SightingsTiles({super.key, required this.paginator});
+  const SightingsTiles(
+      {super.key, required this.paginator, required this.onTap});
 
   @override
   State<SightingsTiles> createState() => _SightingsTilesState();
@@ -23,8 +25,7 @@ class SightingsTiles extends StatefulWidget {
 class _SightingsTilesState extends State<SightingsTiles> {
   Widget _item(Sighting sighting) {
     return SightingTile(
-        onTap: () => router.pushNamed(RoutePaths.sighting.name,
-            pathParameters: {'documentId': sighting.id}),
+        onTap: () => widget.onTap(sighting.id),
         date: sighting.datetime,
         image: sighting.images.firstOrNull);
   }

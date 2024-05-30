@@ -12,10 +12,11 @@ import 'package:app/models/taxonomy_species.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/autocomplete.dart';
 import 'package:app/ui/widgets/error_card.dart';
+import 'package:app/ui/widgets/hive_location_field.dart';
 import 'package:app/ui/widgets/image_carousel.dart';
 import 'package:app/ui/widgets/local_name_field.dart';
-import 'package:app/ui/widgets/hive_location_field.dart';
 import 'package:app/ui/widgets/note_field.dart';
+import 'package:app/ui/widgets/refresh_provider.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/species_field.dart';
 import 'package:app/ui/widgets/used_for_field.dart';
@@ -83,6 +84,12 @@ class _SightingProfileState extends State<SightingProfile> {
     super.initState();
   }
 
+  void _setUpdateFlag() {
+    // Set flag for other widgets to tell them that they might need to re-render
+    // their data. This will make sure that our updates are reflected in the UI
+    RefreshProvider.of(context).setDirty(RefreshKeys.UpdatedSighting);
+  }
+
   Future<void> _updateLocalName(AutocompleteItem? item) async {
     List<LocalName> localNames = [];
     if (item == null) {
@@ -98,7 +105,17 @@ class _SightingProfileState extends State<SightingProfile> {
 
     await sighting.update(localNames: localNames);
 
+    _setUpdateFlag();
+
     setState(() {});
+  }
+
+  void _updateHiveLocation() {
+    _setUpdateFlag();
+  }
+
+  void _updateUsedFor() {
+    _setUpdateFlag();
   }
 
   Future<void> _updateSpecies(TaxonomySpecies? taxon) async {
@@ -115,6 +132,8 @@ class _SightingProfileState extends State<SightingProfile> {
       final species = await Species.upsert(taxon);
       await sighting.update(species: [species]);
     }
+
+    _setUpdateFlag();
 
     setState(() {});
   }
@@ -150,8 +169,9 @@ class _SightingProfileState extends State<SightingProfile> {
           sighting.species?.species,
           onUpdate: _updateSpecies,
         ),
-        UsedForField(sightingId: sighting.id),
-        HiveLocationField(sightingId: sighting.id),
+        UsedForField(sightingId: sighting.id, onUpdate: _updateUsedFor),
+        HiveLocationField(
+            sightingId: sighting.id, onUpdate: _updateHiveLocation),
         NoteField(sighting.comment, onUpdate: _updateComment),
       ]),
     );

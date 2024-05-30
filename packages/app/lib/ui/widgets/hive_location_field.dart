@@ -18,10 +18,13 @@ const GROUND_ICON = Icons.grass;
 const TREE_ICON = Icons.park;
 
 class HiveLocationField extends StatefulWidget {
+  final VoidCallback onUpdate;
+
   /// Document id of the sighting we're managing the location for.
   final DocumentId sightingId;
 
-  const HiveLocationField({super.key, required this.sightingId});
+  const HiveLocationField(
+      {super.key, required this.sightingId, required this.onUpdate});
 
   @override
   State<HiveLocationField> createState() => _HiveLocationFieldState();
@@ -77,10 +80,12 @@ class _HiveLocationFieldState extends State<HiveLocationField> {
                   initialValue: location,
                   sightingId: widget.sightingId,
                   isEditMode: isEditMode,
-                  onUpdated: () {
+                  onUpdate: () {
                     setState(() {
                       isEditMode = false;
                     });
+
+                    widget.onUpdate();
                   });
             }));
   }
@@ -91,14 +96,14 @@ class HiveLocationFieldInner extends StatefulWidget {
   final DocumentId sightingId;
 
   final bool isEditMode;
-  final VoidCallback onUpdated;
+  final VoidCallback onUpdate;
 
   const HiveLocationFieldInner(
       {super.key,
       required this.initialValue,
       required this.sightingId,
       required this.isEditMode,
-      required this.onUpdated});
+      required this.onUpdate});
 
   @override
   State<HiveLocationFieldInner> createState() => _HiveLocationFieldInnerState();
@@ -144,7 +149,7 @@ class _HiveLocationFieldInnerState extends State<HiveLocationFieldInner> {
     }
 
     setState(() {});
-    widget.onUpdated();
+    widget.onUpdate();
   }
 
   @override
@@ -152,9 +157,9 @@ class _HiveLocationFieldInnerState extends State<HiveLocationFieldInner> {
     if (widget.isEditMode) {
       return HiveLocationFieldEdit(
           location: location,
-          onUpdated: _handleUpdate,
+          onUpdate: _handleUpdate,
           onCancelled: () {
-            widget.onUpdated();
+            widget.onUpdate();
           });
     }
 
@@ -235,18 +240,18 @@ class HiveLocationFieldShow extends StatelessWidget {
   }
 }
 
-typedef OnUpdated = void Function(
+typedef OnUpdate = void Function(
     LocationType? type, String? species, double? height, double? diameter);
 
 class HiveLocationFieldEdit extends StatefulWidget {
   final Location? location;
-  final OnUpdated onUpdated;
+  final OnUpdate onUpdate;
   final Function onCancelled;
 
   const HiveLocationFieldEdit(
       {super.key,
       required this.location,
-      required this.onUpdated,
+      required this.onUpdate,
       required this.onCancelled});
 
   @override
@@ -276,11 +281,11 @@ class _HiveLocationFieldEditState extends State<HiveLocationFieldEdit> {
 
   void _handleSave() {
     if (type == LocationType.Tree) {
-      widget.onUpdated(type, treeSpecies, height, diameter);
+      widget.onUpdate(type, treeSpecies, height, diameter);
     } else if (type == null) {
-      widget.onUpdated(null, null, null, null);
+      widget.onUpdate(null, null, null, null);
     } else {
-      widget.onUpdated(type, null, null, null);
+      widget.onUpdate(type, null, null, null);
     }
   }
 
@@ -296,7 +301,7 @@ class _HiveLocationFieldEditState extends State<HiveLocationFieldEdit> {
               treeSpecies: treeSpecies,
               height: height,
               diameter: diameter,
-              onUpdated: (treeSpecies, height, diameter) {
+              onUpdate: (treeSpecies, height, diameter) {
                 setState(() {
                   this.treeSpecies = treeSpecies;
                   this.height = height;
@@ -313,7 +318,7 @@ class _HiveLocationFieldEditState extends State<HiveLocationFieldEdit> {
     return Column(children: [
       HiveLocationTypeSelector(
         locationType: type,
-        onUpdated: (LocationType? locationType) {
+        onUpdate: (LocationType? locationType) {
           setState(() {
             type = locationType;
           });
@@ -336,14 +341,14 @@ class HiveTreeLocationEdit extends StatelessWidget {
   final double? diameter;
   final double? height;
 
-  final OnTreeUpdated onUpdated;
+  final OnTreeUpdated onUpdate;
 
   const HiveTreeLocationEdit(
       {super.key,
       required this.treeSpecies,
       required this.diameter,
       required this.height,
-      required this.onUpdated});
+      required this.onUpdate});
 
   Widget _label(String title, double? value) {
     if (value == null) {
@@ -390,7 +395,7 @@ class HiveTreeLocationEdit extends StatelessWidget {
             ),
           ),
           onChanged: (String value) {
-            onUpdated(value, height, diameter);
+            onUpdate(value, height, diameter);
           }),
       _label(t.hiveLocationTreeHeight, height),
       SliderTheme(
@@ -403,7 +408,7 @@ class HiveTreeLocationEdit extends StatelessWidget {
           divisions: 100,
           value: height != null ? height! : 0.0,
           onChanged: (double value) {
-            onUpdated(treeSpecies, value.roundToDouble(), diameter);
+            onUpdate(treeSpecies, value.roundToDouble(), diameter);
           },
         ),
       ),
@@ -418,7 +423,7 @@ class HiveTreeLocationEdit extends StatelessWidget {
           divisions: 20,
           value: diameter != null ? diameter! : 0.0,
           onChanged: (double value) {
-            onUpdated(treeSpecies, height, value);
+            onUpdate(treeSpecies, height, value);
           },
         ),
       ),
@@ -430,16 +435,16 @@ typedef OnTypeUpdated = void Function(LocationType? locationType);
 
 class HiveLocationTypeSelector extends StatelessWidget {
   final LocationType? locationType;
-  final OnTypeUpdated onUpdated;
+  final OnTypeUpdated onUpdate;
 
   const HiveLocationTypeSelector(
-      {super.key, required this.locationType, required this.onUpdated});
+      {super.key, required this.locationType, required this.onUpdate});
 
   void _onToggle(LocationType value) {
     if (locationType == value) {
-      onUpdated(null);
+      onUpdate(null);
     } else {
-      onUpdated(value);
+      onUpdate(value);
     }
   }
 

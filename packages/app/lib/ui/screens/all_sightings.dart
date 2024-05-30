@@ -7,11 +7,14 @@ import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/fab.dart';
+import 'package:app/ui/widgets/refresh_provider.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/sightings_list.dart';
 
 class AllSightingsScreen extends StatelessWidget {
-  const AllSightingsScreen({super.key});
+  final Paginator<Sighting> paginator = SightingPaginator();
+
+  AllSightingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +30,14 @@ class AllSightingsScreen extends StatelessWidget {
             icon: const Icon(Icons.camera_alt_outlined),
             backgroundColor: MeliColors.sea,
             onPressed: () {
-              router.push(RoutePaths.createSighting.path);
+              router.push(RoutePaths.createSighting.path).then((value) {
+                // Refresh list after returning from creating a new sighting
+                if (RefreshProvider.of(context)
+                        .isDirty(RefreshKeys.CreatedSighting) &&
+                    paginator.refresh != null) {
+                  paginator.refresh!();
+                }
+              });
             }),
       ],
       body: Container(
@@ -35,16 +45,16 @@ class AllSightingsScreen extends StatelessWidget {
           child: Container(
             padding:
                 EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top),
-            child: ScrollView(),
+            child: ScrollView(paginator: paginator),
           )),
     );
   }
 }
 
 class ScrollView extends StatelessWidget {
-  final Paginator<Sighting> paginator = SightingPaginator();
+  final Paginator<Sighting> paginator;
 
-  ScrollView({super.key});
+  const ScrollView({super.key, required this.paginator});
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +74,8 @@ class ScrollView extends StatelessWidget {
             const BouncyBee(),
             const SizedBox(height: 30.0),
             Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0, vertical: 20.0),
                 decoration: const MagnoliaWavesBackground(),
                 child: Container(
                     width: double.infinity,
