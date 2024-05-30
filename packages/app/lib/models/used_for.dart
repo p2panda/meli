@@ -11,6 +11,7 @@ import 'package:app/models/schema_ids.dart';
 class UsedFor {
   final DocumentId id;
   DocumentViewId viewId;
+
   DocumentId sighting;
   String usedFor;
 
@@ -54,7 +55,7 @@ String get usedForFields {
       used_for
       sighting {
         meta {
-          documentId
+          $metaFields
         }
       }
     }
@@ -102,7 +103,8 @@ String allUsesQuery(List<DocumentId>? sightings, String? cursor) {
   final after = (cursor != null) ? '''after: "$cursor",''' : '';
   String filter = '';
   if (sightings != null) {
-    String sightingsString = sightings.map((sighting) => '''"$sighting"''').join(", ");
+    String sightingsString =
+        sightings.map((sighting) => '''"$sighting"''').join(", ");
     filter = '''filter: { sighting: { in: [$sightingsString] } },''';
   }
   const schemaId = SchemaIds.bee_attributes_used_for;
@@ -136,4 +138,14 @@ Future<DocumentViewId> createUsedFor(
 
 Future<DocumentViewId> deleteUsedFor(DocumentViewId viewId) async {
   return await delete(SchemaIds.bee_attributes_used_for, viewId);
+}
+
+Future<void> deleteAllUsedFor(DocumentId sightingId) async {
+  final jsonDocuments = await paginateOverEverything(
+      SchemaIds.bee_attributes_used_for, usedForFields,
+      filter: 'sighting: { eq: "$sightingId" }');
+
+  for (var json in jsonDocuments) {
+    await UsedFor.fromJson(json).delete();
+  }
 }

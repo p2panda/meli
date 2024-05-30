@@ -13,7 +13,7 @@ import 'package:app/models/base.dart';
 const MAX_BLOB_PIECE_LENGTH = 256 * 1000; // 256kb as per specification
 
 class Blob {
-  final String id;
+  final DocumentId id;
 
   Blob({required this.id});
 

@@ -3,6 +3,10 @@
 import 'dart:ui';
 
 import 'package:gql/ast.dart';
+import 'package:graphql/client.dart';
+
+import 'package:app/io/graphql/graphql.dart';
+import 'package:app/io/p2panda/schemas.dart';
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -58,4 +62,48 @@ abstract class Paginator<T> {
     next[DEFAULT_RESULTS_KEY]['documents'] = documents;
     return next;
   }
+}
+
+Future<List<Map<String, dynamic>>> paginateOverEverything(
+    SchemaId schemaId, String fields,
+    {String filter = '', int pageSize = 50}) async {
+  String filterStr = filter.isNotEmpty ? "filter: { $filter }," : "";
+
+  bool hasNextPage = true;
+  String? endCursor;
+  List<Map<String, dynamic>> documents = [];
+
+  while (hasNextPage) {
+    final afterStr = endCursor != null ? "after: \"$endCursor\"," : "";
+    final document = '''
+      query PaginateOverEverything {
+        all_$schemaId(
+          first: $pageSize,
+          $afterStr
+          $filterStr
+        ) {
+          $paginationFields
+          documents {
+            meta {
+              $metaFields
+            }
+            fields {
+              $fields
+            }
+          }
+        }
+      }
+    ''';
+
+    final result = await client.query(QueryOptions(document: gql(document)));
+    if (result.hasException) {
+      throw "Error during pagination: ${result.exception}";
+    }
+
+    endCursor = result.data!['endCursor'] as String;
+    hasNextPage = result.data!['hasNextPage'] as bool;
+    documents.addAll(result.data!['documents'] as List<Map<String, dynamic>>);
+  }
+
+  return documents;
 }

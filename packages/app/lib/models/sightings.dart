@@ -11,6 +11,7 @@ import 'package:app/models/local_names.dart';
 import 'package:app/models/location.dart';
 import 'package:app/models/schema_ids.dart';
 import 'package:app/models/species.dart';
+import 'package:app/models/used_for.dart';
 
 class Sighting {
   final DocumentId id;
@@ -122,10 +123,10 @@ class Sighting {
     // Remove associated "Hive Location" documents
     await deleteAllLocations(id);
 
-    // Remove associated "Blob" documents (images)
+    // Note: Blobs get automatically garbage-collected on node
 
     // Remove associated "Used For" documents
-    // @TODO
+    await deleteAllUsedFor(id);
 
     // Finally delete the sighting itself
     viewId = await deleteSighting(viewId);
