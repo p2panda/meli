@@ -327,8 +327,8 @@ class _HiveLocationFieldEditState extends State<HiveLocationFieldEdit> {
       _additionalInfo(),
       Padding(
           padding: const EdgeInsets.only(top: 10.0),
-          child:
-              SaveCancel(handleCancel: _handleCancel, handleSave: _handleSave)),
+          child: SaveCancelButtons(
+              handleCancel: _handleCancel, handleSave: _handleSave)),
     ]);
   }
 }

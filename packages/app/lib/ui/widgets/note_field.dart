@@ -88,7 +88,7 @@ class _NoteFieldState extends State<NoteField> {
                       textCapitalization: TextCapitalization.sentences),
                   if (_inputMode == InputMode.edit) ...[
                     const SizedBox(height: 12),
-                    SaveCancel(
+                    SaveCancelButtons(
                       handleSave: _handleSave,
                       handleCancel: _handleCancel,
                     )

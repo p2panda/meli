@@ -372,7 +372,7 @@ class _SpeciesFieldState extends State<SpeciesField> {
                     _editableValue(),
                     Padding(
                         padding: const EdgeInsets.only(top: 8.0),
-                        child: SaveCancel(
+                        child: SaveCancelButtons(
                           handleSave: _handleSubmit,
                           handleCancel: _toggleEditMode,
                         ))

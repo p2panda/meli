@@ -73,7 +73,7 @@ class _UsedForTextFieldState extends State<UsedForTextField> {
             onChanged: _onChange,
             textCapitalization: TextCapitalization.sentences),
         const SizedBox(height: 12),
-        SaveCancel(
+        SaveCancelButtons(
           handleSave: _handleSubmit,
           handleCancel: _handleCancel,
         )

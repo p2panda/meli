@@ -5,11 +5,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/ui/colors.dart';
 
-class SaveCancel extends StatelessWidget {
+class SaveCancelButtons extends StatelessWidget {
   final void Function()? handleSave;
   final void Function()? handleCancel;
 
-  const SaveCancel({super.key, this.handleSave, this.handleCancel});
+  const SaveCancelButtons({super.key, this.handleSave, this.handleCancel});
 
   @override
   Widget build(BuildContext context) {

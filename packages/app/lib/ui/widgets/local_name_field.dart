@@ -96,7 +96,7 @@ class _LocalNameFieldState extends State<LocalNameField> {
                     _editableValue(),
                     Padding(
                         padding: const EdgeInsets.only(top: 8.0),
-                        child: SaveCancel(
+                        child: SaveCancelButtons(
                           handleSave: _submit,
                           handleCancel: _cancel,
                         ))

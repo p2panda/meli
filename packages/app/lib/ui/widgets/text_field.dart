@@ -112,7 +112,7 @@ class _TextFieldState extends State<EditableTextField> {
               _editableValue(),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
-                child: SaveCancel(
+                child: SaveCancelButtons(
                   handleSave: _handleSubmit,
                   handleCancel: _toggleEditMode,
                 ),
