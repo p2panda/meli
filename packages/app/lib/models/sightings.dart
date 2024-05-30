@@ -8,6 +8,7 @@ import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/base.dart';
 import 'package:app/models/blobs.dart';
 import 'package:app/models/local_names.dart';
+import 'package:app/models/location.dart';
 import 'package:app/models/schema_ids.dart';
 import 'package:app/models/species.dart';
 
@@ -118,7 +119,7 @@ class Sighting {
   }
 
   Future<DocumentViewId> delete() async {
-    viewId = await deleteSighting(viewId);
+    viewId = await deleteSighting(id, viewId);
     return viewId;
   }
 }
@@ -328,6 +329,14 @@ Future<DocumentViewId> updateSighting(DocumentViewId viewId,
   return await update(SchemaIds.bee_sighting, viewId, fields);
 }
 
-Future<DocumentViewId> deleteSighting(DocumentViewId viewId) async {
+Future<DocumentViewId> deleteSighting(
+    DocumentId sightingId, DocumentViewId viewId) async {
+  // Remove associated "Hive Location" documents
+  await deleteAllLocations(sightingId);
+
+  // Remove associated "Used For" documents
+  // @TODO
+
+  // Finally delete the sighting itself
   return await delete(SchemaIds.bee_sighting, viewId);
 }
