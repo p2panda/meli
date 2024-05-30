@@ -135,8 +135,9 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
       // .. wait until sighting got materialized on node
       await untilDocumentViewAvailable(SchemaIds.bee_sighting, viewId);
 
-      // Go back to sightings overview
-      router.pop();
+      // Go back to sightings overview (use "replace" instead of "pop" method to
+      // force re-rendering of screen, to make sure it shows the new item)
+      router.pushReplacementNamed(RoutePaths.allSightings.name);
 
       // Show notification
       messenger.showSnackBar(SnackBar(
