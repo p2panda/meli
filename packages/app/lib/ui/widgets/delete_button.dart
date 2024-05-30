@@ -14,7 +14,7 @@ class DeleteSightingButton extends StatelessWidget {
 
   const DeleteSightingButton({super.key, required this.viewId});
 
-  _delete(BuildContext context) async {
+  void _delete(BuildContext context) async {
     final messenger = ScaffoldMessenger.of(context);
     final t = AppLocalizations.of(context)!;
 

@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/router.dart';
-import 'package:app/ui/widgets/delete_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -22,6 +20,7 @@ import 'package:app/ui/widgets/refresh_provider.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/species_field.dart';
 import 'package:app/ui/widgets/used_for_field.dart';
+import 'package:app/ui/widgets/delete_button.dart';
 
 class SightingScreen extends StatefulWidget {
   final String documentId;
