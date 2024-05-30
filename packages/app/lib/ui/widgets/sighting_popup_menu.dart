@@ -13,7 +13,7 @@ class SightingPopupMenu extends StatelessWidget {
 
   const SightingPopupMenu({super.key, required this.viewId});
 
-  void _onTapDelete(BuildContext context) {
+  void _onDelete(BuildContext context) {
     final messenger = ScaffoldMessenger.of(context);
     final t = AppLocalizations.of(context)!;
 
@@ -39,10 +39,10 @@ class SightingPopupMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupMenuButton(
         itemBuilder: (BuildContext context) => [
-              PopupMenuItem(
+              PopupMenuItem<void>(
                   child: Text(AppLocalizations.of(context)!.deleteSighting),
                   onTap: () {
-                    _onTapDelete(context);
+                    _onDelete(context);
                   }),
             ]);
   }
