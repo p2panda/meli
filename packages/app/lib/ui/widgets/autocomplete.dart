@@ -133,6 +133,9 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
             autofocus: widget.autofocus,
             onChanged: _onChanged,
             onEditingComplete: _onSubmit,
+            // Scroll down a bit more to make sure the keyboard doesn't hide
+            // the autocomplete options
+            scrollPadding: const EdgeInsets.only(bottom: 200.0),
             decoration: InputDecoration(
               suffixIcon: _isLoading
                   ? Transform.scale(
