@@ -107,7 +107,7 @@ Future<bool> isDocumentViewAvailable(
     SchemaId schemaId, DocumentViewId viewId) async {
   String query = '''
     query CheckDocumentStatus() {
-      status: all_$schemaId(meta: { viewId: "$viewId" }) {
+      status: all_$schemaId(meta: { viewId: { eq: "$viewId" } }) {
         totalCount
       }
     }
