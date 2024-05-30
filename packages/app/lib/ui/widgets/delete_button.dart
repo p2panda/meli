@@ -1,9 +1,10 @@
-import 'package:app/router.dart';
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter/material.dart';
 
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/confirm_dialog.dart';
-import 'package:flutter/material.dart';
 
 class DeleteButton extends StatelessWidget {
   final Function onDelete;
