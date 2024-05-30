@@ -18,9 +18,9 @@ import 'package:app/ui/widgets/local_name_field.dart';
 import 'package:app/ui/widgets/note_field.dart';
 import 'package:app/ui/widgets/refresh_provider.dart';
 import 'package:app/ui/widgets/scaffold.dart';
+import 'package:app/ui/widgets/sighting_popup_menu.dart';
 import 'package:app/ui/widgets/species_field.dart';
 import 'package:app/ui/widgets/used_for_field.dart';
-import 'package:app/ui/widgets/delete_button.dart';
 
 class SightingScreen extends StatefulWidget {
   final String documentId;
@@ -38,6 +38,7 @@ class _SightingScreenState extends State<SightingScreen> {
         title: AppLocalizations.of(context)!.sightingScreenTitle,
         backgroundColor: MeliColors.electric,
         appBarColor: MeliColors.electric,
+        actionRight: SightingPopupMenu(viewId: widget.documentId),
         body: SingleChildScrollView(
           child: Query(
               options:
@@ -174,7 +175,6 @@ class _SightingProfileState extends State<SightingProfile> {
         HiveLocationField(
             sightingId: sighting.id, onUpdate: _updateHiveLocation),
         NoteField(sighting.comment, onUpdate: _updateComment),
-        DeleteSightingButton(viewId: sighting.viewId)
       ]),
     );
   }
