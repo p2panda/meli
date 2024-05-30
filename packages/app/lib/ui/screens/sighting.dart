@@ -49,7 +49,8 @@ class _SightingScreenState extends State<SightingScreen> {
               backgroundColor: MeliColors.electric,
               appBarColor: MeliColors.electric,
               actionRight: sighting != null
-                  ? SightingPopupMenu(viewId: sighting.viewId)
+                  ? SightingPopupMenu(
+                      id: widget.documentId, viewId: sighting.viewId)
                   : null,
               body: SingleChildScrollView(
                 child: Builder(builder: (BuildContext context) {

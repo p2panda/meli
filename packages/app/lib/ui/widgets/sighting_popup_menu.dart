@@ -10,9 +10,10 @@ import 'package:app/ui/widgets/confirm_dialog.dart';
 import 'package:app/ui/widgets/refresh_provider.dart';
 
 class SightingPopupMenu extends StatelessWidget {
+  final DocumentId id;
   final DocumentViewId viewId;
 
-  const SightingPopupMenu({super.key, required this.viewId});
+  const SightingPopupMenu({super.key, required this.id, required this.viewId});
 
   void _onDelete(BuildContext context) {
     final messenger = ScaffoldMessenger.of(context);
@@ -27,8 +28,7 @@ class SightingPopupMenu extends StatelessWidget {
         labelAbort: t.sightingDeleteAlertCancel,
         labelConfirm: t.sightingDeleteAlertConfirm,
         onConfirm: () async {
-          // @TODO: also delete all uses documents and hive location documents.
-          await deleteSighting(viewId);
+          await deleteSighting(id, viewId);
 
           // Set flag for other widgets to tell them that they might need to
           // re-render their data. This will make sure that our updates are
