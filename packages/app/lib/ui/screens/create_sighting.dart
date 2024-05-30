@@ -136,7 +136,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
       await untilDocumentViewAvailable(SchemaIds.bee_sighting, viewId);
 
       // Go back to sightings overview
-      router.pop();
+      router.pop(true);
 
       // Show notification
       messenger.showSnackBar(SnackBar(
@@ -171,7 +171,7 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
         _addImage(file);
       } else {
         // If no file was captured navigate back to all sightings screen
-        router.pop();
+        router.pop(false);
       }
     });
   }

@@ -31,8 +31,10 @@ class AllSightingsScreen extends StatelessWidget {
             onPressed: () {
               router.push(RoutePaths.createSighting.path).then((value) {
                 // Refresh list after returning from creating a new sighting
-                if (paginator.refresh != null) {
-                  paginator.refresh!();
+                if (value == true) {
+                  if (paginator.refresh != null) {
+                    paginator.refresh!();
+                  }
                 }
               });
             }),
