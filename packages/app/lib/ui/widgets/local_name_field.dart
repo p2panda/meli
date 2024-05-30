@@ -79,12 +79,7 @@ class _LocalNameFieldState extends State<LocalNameField> {
         : null;
 
     return LocalNameAutocomplete(
-        initialValue: initialValue,
-        // Make sure that we focus the text field and show the keyboard as soon
-        // as we've entered "edit mode"
-        autofocus: true,
-        onSubmit: _submit,
-        onChanged: _changeValue);
+        initialValue: initialValue, onSubmit: _submit, onChanged: _changeValue);
   }
 
   @override
