@@ -88,7 +88,7 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
     }
   }
 
-  void _updateDescription(String value) async {
+  Future<void> _updateDescription(String value) async {
     await species.update(description: value);
     setState(() {});
   }
