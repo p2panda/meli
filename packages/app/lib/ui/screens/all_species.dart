@@ -59,7 +59,12 @@ class _SpeciesListState extends State<SpeciesList> {
     return SpeciesCard(
         onTap: () => {
               router.pushNamed(RoutePaths.species.name,
-                  pathParameters: {'documentId': species.id})
+                  pathParameters: {'documentId': species.id}).then((value) {
+                // Refresh list after returning from updating a species
+                if (widget.paginator.refresh != null) {
+                  widget.paginator.refresh!();
+                }
+              })
             },
         taxonomySpecies: species.species,
         id: species.id);
