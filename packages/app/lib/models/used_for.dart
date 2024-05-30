@@ -55,7 +55,7 @@ String get usedForFields {
       used_for
       sighting {
         meta {
-          $metaFields
+          documentId
         }
       }
     }
