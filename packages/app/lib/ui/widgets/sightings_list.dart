@@ -21,7 +21,12 @@ class _SightingsListState extends State<SightingsList> {
   Widget _item(Sighting sighting) {
     return SightingCard(
         onTap: () => router.pushNamed(RoutePaths.sighting.name,
-            pathParameters: {'documentId': sighting.id}),
+                pathParameters: {'documentId': sighting.id}).then((value) {
+              // Refresh list when we've returned from updating the sighting
+              if (widget.paginator.refresh != null) {
+                widget.paginator.refresh!();
+              }
+            }),
         date: sighting.datetime,
         localName: sighting.localName,
         species: sighting.species,

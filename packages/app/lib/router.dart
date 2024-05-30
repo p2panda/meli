@@ -34,7 +34,7 @@ final router = GoRouter(routes: [
   // app logic running yet while everything else is bootstrapping.
   _Route(RoutePaths.splash, (_) => Container(color: Colors.white)),
   _Route(RoutePaths.settings, (_) => const SettingsScreen()),
-  _Route(RoutePaths.allSightings, (_) => const AllSightingsScreen()),
+  _Route(RoutePaths.allSightings, (_) => AllSightingsScreen()),
   _Route(RoutePaths.allSpecies, (_) => AllSpeciesScreen()),
   _Route(
       RoutePaths.sighting,
