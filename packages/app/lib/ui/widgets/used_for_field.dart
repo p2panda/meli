@@ -59,8 +59,8 @@ class _UsedForFieldState extends State<UsedForField> {
     widget.onUpdate();
 
     // Refresh both paginators
+    setState(() {});
     listPaginator.refresh!();
-    tagPaginator.refresh!();
 
     // Hide the overlay
     _overlayKey.currentState!.hide();
@@ -133,11 +133,7 @@ class _UsedForFieldState extends State<UsedForField> {
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.titleLarge),
                         const SizedBox(height: 10),
-                        Expanded(
-                            child: SingleChildScrollView(
-                          child: UsedForTagSelector(
-                              paginator: tagPaginator, onTagClick: _onTagClick),
-                        )),
+                        UsedForTagSelector(onTagClick: _onTagClick),
                         const SizedBox(height: 10),
                         Text("Create New Use",
                             textAlign: TextAlign.center,

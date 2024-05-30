@@ -6,10 +6,11 @@ import 'package:app/models/base.dart';
 import 'package:app/models/used_for.dart';
 import 'package:app/ui/widgets/pagination_list.dart';
 
+const MINIMUM_PAGE_SIZE = 10;
+
 class DeduplicatedUsedForTagsList extends StatelessWidget {
   final PaginationBuilder<UsedFor> builder;
   final Paginator<UsedFor> paginator;
-  final minimumPageSize = 10;
 
   const DeduplicatedUsedForTagsList(
       {super.key, required this.builder, required this.paginator});
@@ -27,7 +28,7 @@ class DeduplicatedUsedForTagsList extends StatelessWidget {
 
     // We want to keep fetching more results (while there are any) until
     // we meet the minimum page size.
-    return data.documents.length < minimumPageSize && data.hasNextPage;
+    return data.documents.length < MINIMUM_PAGE_SIZE && data.hasNextPage;
   }
 
   @override

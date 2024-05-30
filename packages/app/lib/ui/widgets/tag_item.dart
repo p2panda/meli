@@ -17,10 +17,10 @@ class TagItem extends StatelessWidget {
           onClick(label);
         },
         child: Material(
-          elevation: 5,
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
+          elevation: 3,
+          borderRadius: const BorderRadius.all(Radius.circular(7)),
           child: Container(
-            margin: const EdgeInsets.all(5),
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
             child: Text(label, style: Theme.of(context).textTheme.titleMedium),
           ),
         ),
