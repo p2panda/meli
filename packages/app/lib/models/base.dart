@@ -66,7 +66,7 @@ abstract class Paginator<T> {
 
 Future<List<Map<String, dynamic>>> paginateOverEverything(
     SchemaId schemaId, String fields,
-    {String filter = '', int pageSize = 50}) async {
+    {String filter = '', int pageSize = DEFAULT_PAGE_SIZE}) async {
   String filterStr = filter.isNotEmpty ? "filter: { $filter }," : "";
 
   bool hasNextPage = true;
