@@ -2,6 +2,9 @@
 
 import 'dart:io';
 
+import 'package:app/ui/colors.dart';
+import 'package:app/ui/widgets/save_cancel_buttons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -112,42 +115,135 @@ class _UsedForFieldState extends State<UsedForField> {
         title: AppLocalizations.of(context)!.usedForCardTitle,
         isEditMode: isEditMode,
         onChanged: _toggleEditMode,
-        child: Container(
-          constraints: BoxConstraints(maxHeight: isEditMode ? 560 : 150),
-          child: LoadingOverlay(
-            key: _overlayKey,
-            child: Column(
-              children: [
-                SizedBox(
-                    height: 150,
-                    child: SingleChildScrollView(
-                        child: UsedForList(
-                      paginator: listPaginator,
-                      onDeleteClick: _deleteUse,
-                      isEditMode: isEditMode,
-                    ))),
-                ...(isEditMode
-                    ? [
-                        const SizedBox(height: 10),
-                        Text("Add Uses",
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.titleLarge),
-                        const SizedBox(height: 10),
-                        UsedForTagSelector(onTagClick: _onTagClick),
-                        const SizedBox(height: 10),
-                        Text("Create New Use",
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.titleLarge),
-                        const SizedBox(height: 10),
-                        UsedForTextField(
-                          submit: _createNewTag,
-                          cancel: _toggleEditMode,
-                        )
-                      ]
-                    : [const SizedBox()])
-              ],
-            ),
+        child: LoadingOverlay(
+          key: _overlayKey,
+          child: Column(
+            children: [
+              SizedBox(
+                  height: 150,
+                  child: SingleChildScrollView(
+                      child: UsedForList(
+                    paginator: listPaginator,
+                    onDeleteClick: _deleteUse,
+                    isEditMode: isEditMode,
+                  ))),
+              ...(isEditMode
+                  ? [
+                      // const SizedBox(height: 10),
+                      // Text("Add Uses",
+                      //     textAlign: TextAlign.center,
+                      //     style: Theme.of(context).textTheme.titleLarge),
+                      // const SizedBox(height: 10),
+                      // Expanded(
+                      //     child: SingleChildScrollView(
+                      //   child: UsedForTagSelector(
+                      //       paginator: tagPaginator, onTagClick: _onTagClick),
+                      // )),
+                      // const SizedBox(height: 10),
+                      // Text("Create New Use",
+                      //     textAlign: TextAlign.center,
+                      //     style: Theme.of(context).textTheme.titleLarge),
+                      const SizedBox(height: 10),
+                      CreateCancelButtons(
+                        handleCreate: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Dialog(
+                                    insetPadding: const EdgeInsets.all(20.0),
+                                    alignment: AlignmentDirectional.topCenter,
+                                    child: Padding(
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: Wrap(
+                                          runSpacing: 10.0,
+                                          children: [
+                                            Text("Add Existing",
+                                                textAlign: TextAlign.center,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleLarge),
+                                            Container(
+                                                constraints:
+                                                    const BoxConstraints(
+                                                        maxHeight: 300.0),
+                                                child: Scrollbar(
+                                                  trackVisibility: true,
+                                                  thumbVisibility: true,
+                                                  child: SingleChildScrollView(
+                                                      child: UsedForTagSelector(
+                                                          onTagClick:
+                                                              (String label) {
+                                                    _createNewTag(label);
+                                                    Navigator.pop(context);
+                                                  })),
+                                                )),
+                                            Text("Create New",
+                                                textAlign: TextAlign.center,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleLarge),
+                                            UsedForTextField(
+                                              submit: (String label) {
+                                                _createNewTag(label);
+                                                Navigator.pop(context);
+                                              },
+                                              cancel: () {
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ],
+                                        )));
+                              });
+                        },
+                        handleCancel: _toggleEditMode,
+                      )
+                    ]
+                  : [const SizedBox()])
+            ],
           ),
         ));
+  }
+}
+
+class CreateCancelButtons extends StatelessWidget {
+  final void Function()? handleCreate;
+  final void Function()? handleCancel;
+
+  const CreateCancelButtons({super.key, this.handleCreate, this.handleCancel});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
+    return Row(children: [
+      OverflowBar(
+        spacing: 10,
+        overflowAlignment: OverflowBarAlignment.start,
+        children: [
+          FilledButton(
+            style: FilledButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                foregroundColor: MeliColors.white,
+                backgroundColor: MeliColors.plum),
+            onPressed: handleCreate,
+            child: Text('Add'),
+          ),
+          OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  side: const BorderSide(width: 3.0, color: MeliColors.plum),
+                  foregroundColor: MeliColors.plum),
+              onPressed: handleCancel,
+              child: Text(
+                t.editCardCancelButton,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ))
+        ],
+      )
+    ]);
   }
 }
