@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/router.dart';
+import 'package:app/ui/widgets/delete_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -149,6 +151,12 @@ class _SightingProfileState extends State<SightingProfile> {
     setState(() {});
   }
 
+  void _deleteSighting() async {
+    await deleteSighting(sighting.viewId);
+    // @TODO: also delete all uses documents and hive location documents.
+    router.pushNamed("all_sightings");
+  }
+
   @override
   Widget build(BuildContext context) {
     final imagePaths =
@@ -173,6 +181,7 @@ class _SightingProfileState extends State<SightingProfile> {
         HiveLocationField(
             sightingId: sighting.id, onUpdate: _updateHiveLocation),
         NoteField(sighting.comment, onUpdate: _updateComment),
+        DeleteButton(onDelete: () => _deleteSighting())
       ]),
     );
   }
