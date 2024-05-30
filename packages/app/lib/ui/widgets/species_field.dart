@@ -131,6 +131,7 @@ class _SpeciesFieldState extends State<SpeciesField> {
     } catch (error) {
       _showErrorAlert(error.toString());
       setState(() {
+        _isEditMode = true;
         _isLoading = false;
       });
 
@@ -267,7 +268,7 @@ class _SpeciesFieldState extends State<SpeciesField> {
   }
 
   void _toggleEditMode() {
-    _reset();
+    // _reset();
     setState(() {
       _isEditMode = !_isEditMode;
     });
