@@ -27,7 +27,7 @@ class SightingPopupMenu extends StatelessWidget {
         onConfirm: () async {
           // @TODO: also delete all uses documents and hive location documents.
           await deleteSighting(viewId);
-          router.replaceNamed(RoutePaths.allSightings.name);
+          router.goNamed(RoutePaths.allSightings.name);
           messenger.showSnackBar(
               SnackBar(content: Text(t.sightingDeleteConfirmation)));
         },
