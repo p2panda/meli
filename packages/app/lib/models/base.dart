@@ -77,32 +77,31 @@ Future<List<Map<String, dynamic>>> paginateOverEverything(
     final afterStr = endCursor != null ? "after: \"$endCursor\"," : "";
     final document = '''
       query PaginateOverEverything {
-        all_$schemaId(
+        $DEFAULT_RESULTS_KEY: all_$schemaId(
           first: $pageSize,
           $afterStr
           $filterStr
         ) {
           $paginationFields
           documents {
-            meta {
-              $metaFields
-            }
-            fields {
-              $fields
-            }
+            $fields
           }
         }
       }
     ''';
 
-    final result = await client.query(QueryOptions(document: gql(document)));
-    if (result.hasException) {
-      throw "Error during pagination: ${result.exception}";
+    final response = await client.query(QueryOptions(document: gql(document)));
+    if (response.hasException) {
+      throw "Error during pagination: ${response.exception}";
     }
 
-    endCursor = result.data!['endCursor'] as String;
-    hasNextPage = result.data!['hasNextPage'] as bool;
-    documents.addAll(result.data!['documents'] as List<Map<String, dynamic>>);
+    final result = response.data![DEFAULT_RESULTS_KEY];
+    endCursor = result['endCursor'] as String;
+    hasNextPage = result['hasNextPage'] as bool;
+
+    for (var document in result['documents'] as List) {
+      documents.add(document as Map<String, dynamic>);
+    }
   }
 
   return documents;
