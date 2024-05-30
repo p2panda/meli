@@ -23,9 +23,11 @@ class _SightingsListState extends State<SightingsList> {
     return SightingCard(
         onTap: () => router.pushNamed(RoutePaths.sighting.name,
                 pathParameters: {'documentId': sighting.id}).then((value) {
-              // Refresh list when we've returned from updating a sighting
-              if (RefreshProvider.of(context)
-                      .isDirty(RefreshKeys.UpdatedSighting) &&
+              final refreshProvider = RefreshProvider.of(context);
+              // Refresh list when we've returned from updating or deleting a
+              // sighting
+              if ((refreshProvider.isDirty(RefreshKeys.UpdatedSighting) ||
+                      refreshProvider.isDirty(RefreshKeys.DeletedSighting)) &&
                   widget.paginator.refresh != null) {
                 widget.paginator.refresh!();
               }

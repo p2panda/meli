@@ -7,6 +7,7 @@ import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/widgets/confirm_dialog.dart';
+import 'package:app/ui/widgets/refresh_provider.dart';
 
 class SightingPopupMenu extends StatelessWidget {
   final DocumentViewId viewId;
@@ -16,6 +17,7 @@ class SightingPopupMenu extends StatelessWidget {
   void _onDelete(BuildContext context) {
     final messenger = ScaffoldMessenger.of(context);
     final t = AppLocalizations.of(context)!;
+    final refreshProvider = RefreshProvider.of(context);
 
     showDialog<String>(
       context: context,
@@ -27,7 +29,17 @@ class SightingPopupMenu extends StatelessWidget {
         onConfirm: () async {
           // @TODO: also delete all uses documents and hive location documents.
           await deleteSighting(viewId);
-          router.goNamed(RoutePaths.allSightings.name);
+
+          // Set flag for other widgets to tell them that they might need to
+          // re-render their data. This will make sure that our updates are
+          // reflected in the UI
+          refreshProvider.setDirty(RefreshKeys.DeletedSighting);
+
+          // First pop closes this dialog, second goes back to the view we came
+          // from
+          router.pop();
+          router.pop();
+
           messenger.showSnackBar(
               SnackBar(content: Text(t.sightingDeleteConfirmation)));
         },

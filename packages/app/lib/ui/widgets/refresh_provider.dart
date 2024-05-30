@@ -2,14 +2,11 @@
 
 import 'package:flutter/widgets.dart';
 
+/// Actions which might affect other views.
 enum RefreshKeys {
-  /// New sighting got created which might affect other views.
   CreatedSighting,
-
-  /// Sighting got updated with data which might affect other views.
   UpdatedSighting,
-
-  /// Species got updated with data which might affect other views.
+  DeletedSighting,
   UpdatedSpecies,
 }
 
