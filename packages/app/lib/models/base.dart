@@ -96,7 +96,7 @@ Future<List<Map<String, dynamic>>> paginateOverEverything(
     }
 
     final result = response.data![DEFAULT_RESULTS_KEY];
-    endCursor = result['endCursor'] as String;
+    endCursor = result['endCursor'] as String?;
     hasNextPage = result['hasNextPage'] as bool;
 
     for (var document in result['documents'] as List) {
