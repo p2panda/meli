@@ -145,7 +145,7 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
   }
 }
 
-typedef OnTap = Function(DocumentId id);
+typedef OnTap = void Function(DocumentId id);
 
 class RelatedSightings extends StatelessWidget {
   final DocumentId id;

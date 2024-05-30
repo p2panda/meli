@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:app/models/base.dart';
 import 'package:app/models/blobs.dart';
 import 'package:app/models/sightings.dart';
-import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/screens/species.dart';
 import 'package:app/ui/widgets/card.dart';
