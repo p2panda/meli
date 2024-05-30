@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/widgets/save_cancel_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -11,6 +10,7 @@ import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/error_card.dart';
 import 'package:app/ui/widgets/read_only_value.dart';
+import 'package:app/ui/widgets/save_cancel_buttons.dart';
 
 const BOX_ICON = Icons.hive;
 const BUILDING_ICON = Icons.home;

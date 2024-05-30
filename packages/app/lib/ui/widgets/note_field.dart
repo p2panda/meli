@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/widgets/editable_card.dart';
-import 'package:app/ui/widgets/save_cancel_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:app/ui/widgets/editable_card.dart';
+import 'package:app/ui/widgets/save_cancel_buttons.dart';
 
 typedef OnUpdate = void Function(String?);
 

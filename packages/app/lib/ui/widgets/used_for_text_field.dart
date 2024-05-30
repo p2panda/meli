@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/widgets/save_cancel_buttons.dart';
 import 'package:flutter/material.dart';
+
+import 'package:app/ui/widgets/save_cancel_buttons.dart';
 
 class UsedForTextField extends StatefulWidget {
   final void Function(String) submit;

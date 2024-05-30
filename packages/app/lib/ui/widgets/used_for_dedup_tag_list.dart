@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/models/used_for.dart';
-import 'package:app/ui/widgets/pagination_list.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app/models/base.dart';
+import 'package:app/models/used_for.dart';
+import 'package:app/ui/widgets/pagination_list.dart';
 
 class DeduplicatedUsedForTagsList extends StatelessWidget {
   final PaginationBuilder<UsedFor> builder;
