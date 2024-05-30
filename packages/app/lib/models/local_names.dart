@@ -107,8 +107,11 @@ class LocalNamesPaginator extends Paginator<LocalName> {
   PaginatedCollection<LocalName> parseJSON(Map<String, dynamic> json) {
     final list = json[DEFAULT_RESULTS_KEY]['documents'] as List;
     final documents = list
-        .where((sighting) =>
-            sighting['fields']['local_names']['documents'][0] != null)
+        .where((sighting) {
+          List<dynamic> local_names =
+              sighting['fields']['local_names']['documents'] as List;
+          return local_names.isNotEmpty && local_names[0] != null;
+        })
         .map((sighting) => LocalName.fromJson(sighting['fields']['local_names']
             ['documents'][0] as Map<String, dynamic>))
         .toList();
