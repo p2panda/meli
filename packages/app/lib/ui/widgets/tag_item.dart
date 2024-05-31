@@ -33,10 +33,14 @@ class TagItem extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(label, style: Theme.of(context).textTheme.titleMedium),
+                Flexible(
+                  child: Text(label,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleMedium),
+                ),
                 if (showDeleteIcon)
                   const Padding(
-                    padding: EdgeInsets.only(left: 5, bottom: 2),
+                    padding: EdgeInsets.only(left: 5, bottom: 1),
                     child: Icon(size: 20, color: MeliColors.plum, Icons.delete),
                   ),
               ],
