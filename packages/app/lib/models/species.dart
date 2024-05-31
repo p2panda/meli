@@ -66,6 +66,10 @@ class Species {
 
     return viewId;
   }
+
+  Future<void> delete() async {
+    await deleteSpecies(viewId);
+  }
 }
 
 class SpeciesPaginator extends Paginator<Species> {
