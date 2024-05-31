@@ -14,7 +14,7 @@ class LoadingOverlay extends StatefulWidget {
 }
 
 class LoadingOverlayState extends State<LoadingOverlay> {
-  bool _isLoading = true;
+  bool _isLoading = false;
 
   void show() {
     setState(() {
