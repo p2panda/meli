@@ -11,7 +11,6 @@ import 'package:app/models/schema_ids.dart';
 import 'package:app/models/used_for.dart';
 import 'package:app/ui/widgets/action_buttons.dart';
 import 'package:app/ui/widgets/editable_card.dart';
-import 'package:app/ui/widgets/loading_overlay.dart';
 import 'package:app/ui/widgets/used_for_list.dart';
 import 'package:app/ui/widgets/used_for_tag_selector.dart';
 import 'package:app/ui/widgets/used_for_text_field.dart';
@@ -31,16 +30,17 @@ class UsedForField extends StatefulWidget {
 }
 
 class _UsedForFieldState extends State<UsedForField> {
-  final GlobalKey<LoadingOverlayState> _overlayKey = GlobalKey();
   late Paginator<UsedFor> listPaginator =
       UsedForPaginator(sightings: [widget.sightingId]);
   final Paginator<UsedFor> tagPaginator = UsedForPaginator();
 
-  /// Flag indicating if we're currently editing the field or not.
   bool isEditMode = false;
+  bool isLoading = false;
 
   Future<void> _createUse(String usedForString) async {
-    // _overlayKey.currentState!.show();
+    setState(() {
+      isLoading = true;
+    });
 
     // Create a new UsedFor document which relates to the current sighting.
     DocumentViewId viewId = await createUsedFor(
@@ -52,13 +52,16 @@ class _UsedForFieldState extends State<UsedForField> {
 
     widget.onUpdate();
     listPaginator.refresh!();
-    // _overlayKey.currentState!.hide();
 
-    setState(() {});
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void _deleteUse(UsedFor usedFor) async {
-    // _overlayKey.currentState!.show();
+    setState(() {
+      isLoading = true;
+    });
 
     // Delete the used for document.
     DocumentViewId viewId = await deleteUsedFor(usedFor.viewId);
@@ -71,9 +74,10 @@ class _UsedForFieldState extends State<UsedForField> {
 
     widget.onUpdate();
     listPaginator.refresh!();
-    // _overlayKey.currentState!.hide();
 
-    setState(() {});
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void _toggleEditMode() {
@@ -89,31 +93,33 @@ class _UsedForFieldState extends State<UsedForField> {
   @override
   Widget build(BuildContext context) {
     return EditableCard(
-        title: AppLocalizations.of(context)!.usedForCardTitle,
-        isEditMode: isEditMode,
-        onChanged: _toggleEditMode,
-        child: Column(children: [
-          // @TODO: Needs to be fixed
-          // LoadingOverlay(key: _overlayKey, child: Text('test')),
-          UsedForList(
-            paginator: listPaginator,
-            onDeleteClick: _deleteUse,
-            isEditMode: isEditMode,
-          ),
-          const SizedBox(height: 10.0),
-          if (isEditMode)
-            ActionButtons(
-              actionLabel: "Add",
-              onAction: () {
-                showDialog<void>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AddUsedForDialog(onAddedTag: _onAddedTag);
-                    });
-              },
-              onCancel: _toggleEditMode,
-            )
-        ]));
+      title: AppLocalizations.of(context)!.usedForCardTitle,
+      isEditMode: isEditMode,
+      onChanged: _toggleEditMode,
+      child: Column(children: [
+        UsedForList(
+          paginator: listPaginator,
+          onDeleteClick: _deleteUse,
+          isLoading: isLoading,
+          isEditMode: isEditMode,
+        ),
+        const SizedBox(height: 10.0),
+        if (isEditMode)
+          ActionButtons(
+            actionLabel: "Add",
+            onAction: isLoading
+                ? null
+                : () {
+                    showDialog<void>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AddUsedForDialog(onAddedTag: _onAddedTag);
+                        });
+                  },
+            onCancel: isLoading ? null : _toggleEditMode,
+          )
+      ]),
+    );
   }
 }
 

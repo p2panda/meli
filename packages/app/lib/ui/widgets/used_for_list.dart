@@ -11,11 +11,13 @@ class UsedForList extends StatefulWidget {
   final Paginator<UsedFor> paginator;
   final void Function(UsedFor usedFor) onDeleteClick;
   final bool isEditMode;
+  final bool isLoading;
 
   const UsedForList(
       {super.key,
       required this.paginator,
       required this.onDeleteClick,
+      this.isLoading = false,
       this.isEditMode = false});
 
   @override
@@ -27,7 +29,7 @@ class _UsedForListState extends State<UsedForList> {
     return TagItem(
         label: document.usedFor,
         showDeleteIcon: widget.isEditMode,
-        onClick: widget.isEditMode
+        onClick: widget.isEditMode && !widget.isLoading
             ? (String label) {
                 widget.onDeleteClick(document);
               }
