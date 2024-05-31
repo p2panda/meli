@@ -44,19 +44,13 @@ class SpeciesUsesAggregateList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(maxHeight: 300),
-      child: SingleChildScrollView(
-        child: Container(
-            padding:
-                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
-            child: FetchAll(
-              paginator: SpeciesSightingsPaginator(id),
-              builder: (collection) {
-                return UsedForTagsList(sightings: collection);
-              },
-            )),
-      ),
-    );
+        padding: const EdgeInsets.only(top: 10, right: 18, bottom: 0, left: 18),
+        child: FetchAll(
+          paginator: SpeciesSightingsPaginator(id),
+          builder: (collection) {
+            return UsedForTagsList(sightings: collection);
+          },
+        ));
   }
 }
 
@@ -72,9 +66,7 @@ class UsedForTagsList extends StatelessWidget {
 
     return DeduplicatedUsedForTagsList(
         builder: (UsedFor usedFor) {
-          return Container(
-              padding: const EdgeInsets.only(bottom: 5.0),
-              child: TagItem(label: usedFor.usedFor, onClick: (item) => {}));
+          return TagItem(label: usedFor.usedFor);
         },
         paginator: paginator);
   }
