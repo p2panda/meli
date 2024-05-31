@@ -197,7 +197,7 @@ String locationQuery(DocumentId sightingId) {
 ///
 /// Even though we're only displaying _one_ hive location per sighting it might
 /// be possible that others exist. To make sure we're cleaning up after ourselves
-/// this method deletes _all known_ hive locations to that peer.
+/// this method deletes _all known_ hive locations to that sighting.
 Future<void> deleteAllLocations(DocumentId sightingId) async {
   final result = await client
       .query(QueryOptions(document: gql(locationQuery(sightingId))));
