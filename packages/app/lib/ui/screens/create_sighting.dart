@@ -2,7 +2,6 @@
 
 import 'dart:io';
 
-import 'package:app/ui/widgets/refresh_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -23,6 +22,7 @@ import 'package:app/ui/widgets/image_provider.dart';
 import 'package:app/ui/widgets/loading_overlay.dart';
 import 'package:app/ui/widgets/local_name_autocomplete.dart';
 import 'package:app/ui/widgets/location_tracker.dart';
+import 'package:app/ui/widgets/refresh_provider.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/simple_card.dart';
 

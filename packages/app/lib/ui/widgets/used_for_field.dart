@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/utils/sleep.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
@@ -39,7 +40,7 @@ class _UsedForFieldState extends State<UsedForField> {
   bool isEditMode = false;
 
   Future<void> _createUse(String usedForString) async {
-    _overlayKey.currentState!.show();
+    // _overlayKey.currentState!.show();
 
     // Create a new UsedFor document which relates to the current sighting.
     DocumentViewId viewId = await createUsedFor(
@@ -51,24 +52,26 @@ class _UsedForFieldState extends State<UsedForField> {
 
     widget.onUpdate();
     listPaginator.refresh!();
-    _overlayKey.currentState!.hide();
+    // _overlayKey.currentState!.hide();
 
     setState(() {});
   }
 
   void _deleteUse(UsedFor usedFor) async {
-    _overlayKey.currentState!.show();
+    // _overlayKey.currentState!.show();
 
     // Delete the used for document.
     DocumentViewId viewId = await deleteUsedFor(usedFor.viewId);
 
     // We want to wait until the delete is materialized and then refresh the
     // paginated query
-    await untilDocumentDeleted(SchemaIds.bee_attributes_used_for, viewId);
+    // @TODO: Not working right now
+    // await untilDocumentDeleted(SchemaIds.bee_attributes_used_for, viewId);
+    await sleep(500);
 
     widget.onUpdate();
     listPaginator.refresh!();
-    _overlayKey.currentState!.hide();
+    // _overlayKey.currentState!.hide();
 
     setState(() {});
   }
@@ -89,29 +92,28 @@ class _UsedForFieldState extends State<UsedForField> {
         title: AppLocalizations.of(context)!.usedForCardTitle,
         isEditMode: isEditMode,
         onChanged: _toggleEditMode,
-        child: LoadingOverlay(
-          key: _overlayKey,
-          child: Column(children: [
-            UsedForList(
-              paginator: listPaginator,
-              onDeleteClick: _deleteUse,
-              isEditMode: isEditMode,
-            ),
-            const SizedBox(height: 10.0),
-            if (isEditMode)
-              ActionButtons(
-                actionLabel: "Add",
-                onAction: () {
-                  showDialog<void>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AddUsedForDialog(onAddedTag: _onAddedTag);
-                      });
-                },
-                onCancel: _toggleEditMode,
-              )
-          ]),
-        ));
+        child: Column(children: [
+          // @TODO: Needs to be fixed
+          // LoadingOverlay(key: _overlayKey, child: Text('test')),
+          UsedForList(
+            paginator: listPaginator,
+            onDeleteClick: _deleteUse,
+            isEditMode: isEditMode,
+          ),
+          const SizedBox(height: 10.0),
+          if (isEditMode)
+            ActionButtons(
+              actionLabel: "Add",
+              onAction: () {
+                showDialog<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AddUsedForDialog(onAddedTag: _onAddedTag);
+                    });
+              },
+              onCancel: _toggleEditMode,
+            )
+        ]));
   }
 }
 

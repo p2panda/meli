@@ -30,19 +30,22 @@ class LoadingOverlayState extends State<LoadingOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        widget.child,
-        if (_isLoading)
-          const Opacity(
-            opacity: 0.7,
-            child: ModalBarrier(dismissible: false, color: MeliColors.electric),
-          ),
-        if (_isLoading)
-          const Center(
-            child: CircularProgressIndicator(color: MeliColors.black),
-          ),
-      ],
+    return Flexible(
+      child: Stack(
+        children: [
+          widget.child,
+          if (_isLoading)
+            const Opacity(
+              opacity: 0.7,
+              child:
+                  ModalBarrier(dismissible: false, color: MeliColors.electric),
+            ),
+          if (_isLoading)
+            const Center(
+              child: CircularProgressIndicator(color: MeliColors.black),
+            ),
+        ],
+      ),
     );
   }
 }
