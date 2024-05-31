@@ -68,6 +68,9 @@ class Species {
   }
 
   Future<void> delete() async {
+    // Delete the taxonomy_species document this species relates to first
+    await species.delete();
+    // Then delete the bee_species document
     await deleteSpecies(viewId);
   }
 }
