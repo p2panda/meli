@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:app/io/graphql/graphql.dart';
@@ -121,7 +122,7 @@ class _UsedForFieldState extends State<UsedForField> {
               ActionButtons(
                 actionLabel: "Add",
                 onAction: () {
-                  showDialog(
+                  showDialog<void>(
                       context: context,
                       builder: (BuildContext context) {
                         return AddUsedForDialog(onAddedTag: _onAddedTag);
@@ -144,38 +145,59 @@ class AddUsedForDialog extends StatelessWidget {
     return Dialog(
         insetPadding: const EdgeInsets.all(20.0),
         alignment: AlignmentDirectional.topCenter,
-        child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Wrap(
-              runSpacing: 10.0,
-              children: [
-                Text("Add Existing",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleLarge),
-                Container(
-                    constraints: const BoxConstraints(maxHeight: 300.0),
-                    child: Scrollbar(
-                      trackVisibility: true,
-                      thumbVisibility: true,
-                      child: SingleChildScrollView(
-                          child: UsedForTagSelector(onTagClick: (String label) {
-                        onAddedTag(label);
-                        Navigator.pop(context);
-                      })),
-                    )),
-                Text("Create New",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleLarge),
-                UsedForTextField(
-                  submit: (String label) {
-                    onAddedTag(label);
-                    Navigator.pop(context);
-                  },
-                  cancel: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            )));
+        child: Container(
+          constraints:
+              BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
+          child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  Text("Add Existing",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleLarge),
+                  Expanded(
+                    child: LayoutBuilder(builder: (context, constraints) {
+                      return Container(
+                          width: constraints.maxWidth,
+                          clipBehavior: Clip.hardEdge,
+                          decoration: const BoxDecoration(
+                              color: Colors.black12,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12.0))),
+                          child: ScrollShadow(
+                            size: 8,
+                            color: Colors.black.withOpacity(0.3),
+                            child: Scrollbar(
+                              trackVisibility: true,
+                              thumbVisibility: true,
+                              child: SingleChildScrollView(
+                                  child: Container(
+                                padding: const EdgeInsets.all(10.0),
+                                child: UsedForTagSelector(
+                                    onTagClick: (String label) {
+                                  onAddedTag(label);
+                                  Navigator.pop(context);
+                                }),
+                              )),
+                            ),
+                          ));
+                    }),
+                  ),
+                  const SizedBox(height: 20.0),
+                  Text("Create New",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleLarge),
+                  UsedForTextField(
+                    onSubmit: (String label) {
+                      onAddedTag(label);
+                      Navigator.pop(context);
+                    },
+                    onCancel: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              )),
+        ));
   }
 }

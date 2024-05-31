@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:app/ui/widgets/action_buttons.dart';
 
 class UsedForTextField extends StatefulWidget {
-  final void Function(String) submit;
-  final void Function() cancel;
+  final void Function(String) onSubmit;
+  final void Function() onCancel;
 
   const UsedForTextField(
-      {super.key, required this.submit, required this.cancel});
+      {super.key, required this.onSubmit, required this.onCancel});
 
   @override
   State<UsedForTextField> createState() => _UsedForTextFieldState();
@@ -20,24 +20,20 @@ class _UsedForTextFieldState extends State<UsedForTextField> {
   bool disabled = true;
 
   void _handleSubmit() {
-    if (disabled) {
-      return;
-    }
-
     if (_controller.text == '') {
       return;
     }
 
-    widget.submit(_controller.text);
-
+    widget.onSubmit(_controller.text);
     _controller.text = '';
+
     setState(() {
       disabled = true;
     });
   }
 
   void _handleCancel() {
-    widget.cancel();
+    widget.onCancel();
   }
 
   void _onChange(String newText) {
@@ -68,13 +64,12 @@ class _UsedForTextFieldState extends State<UsedForTextField> {
             decoration: const InputDecoration(border: OutlineInputBorder()),
             keyboardType: TextInputType.text,
             scrollPadding: const EdgeInsets.only(bottom: 100.0),
-            maxLines: 1,
-            minLines: 1,
             onChanged: _onChange,
             textCapitalization: TextCapitalization.sentences),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
         ActionButtons(
-          onAction: _handleSubmit,
+          actionLabel: 'Create',
+          onAction: disabled ? null : _handleSubmit,
           onCancel: _handleCancel,
         )
       ],
