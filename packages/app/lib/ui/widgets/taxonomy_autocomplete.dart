@@ -48,16 +48,26 @@ class _TaxonomyAutocompleteState extends State<TaxonomyAutocomplete> {
             final List<dynamic> documents =
                 result.data![DEFAULT_RESULTS_KEY]['documents'] as List<dynamic>;
 
-            final List<AutocompleteItem> options = documents.map((document) {
-              final result = BaseTaxonomy.fromJson(
-                  widget.schemaId, document as Map<String, dynamic>);
-              return AutocompleteItem(
-                  value: result.name,
-                  documentId: result.id,
-                  viewId: result.viewId);
-            }).toList();
+            final List<AutocompleteItem> options = [];
+            Set<String> seen = {};
 
-            return options;
+            for (var document in documents) {
+              final localName = BaseTaxonomy.fromJson(
+                  widget.schemaId, document as Map<String, dynamic>);
+
+              // De-duplicate results with same "name" value
+              if (seen.contains(localName.name)) {
+                continue;
+              }
+
+              seen.add(localName.name);
+              options.add(AutocompleteItem(
+                  value: localName.name,
+                  documentId: localName.id,
+                  viewId: localName.viewId));
+            }
+
+            return options.toList();
           } catch (error) {
             print(error.toString());
             return [];
