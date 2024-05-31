@@ -2,3 +2,4 @@ analyzer:
   exclude:
     # Generated file by flutter_rust_bridge can be ignored
     - lib/src/bridge_generated.dart
+    - lib/src/bridge_generated.freezed.dart
