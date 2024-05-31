@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/species_popup_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -34,15 +35,22 @@ class _SpeciesScreenState extends State<SpeciesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MeliScaffold(
-        title: AppLocalizations.of(context)!.speciesScreenTitle,
-        appBarColor: MeliColors.peach,
-        body: Query(
-            options:
-                QueryOptions(document: gql(speciesQuery(widget.documentId))),
-            builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
-              this.refetch = refetch;
+    return Query(
+        options: QueryOptions(document: gql(speciesQuery(widget.documentId))),
+        builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
+          Species? species;
 
+          if (!result.hasException && !result.isLoading) {
+            species = Species.fromJson(
+                result.data?['species'] as Map<String, dynamic>);
+          }
+
+          return MeliScaffold(
+            title: AppLocalizations.of(context)!.speciesScreenTitle,
+            appBarColor: MeliColors.peach,
+            actionRight:
+                species != null ? SpeciesPopupMenu(species: species) : null,
+            body: Builder(builder: (BuildContext context) {
               if (result.hasException) {
                 return ErrorCard(message: result.exception.toString());
               }
@@ -61,7 +69,9 @@ class _SpeciesScreenState extends State<SpeciesScreen> {
                   result.data?['species'] as Map<String, dynamic>);
 
               return SpeciesProfile(species, refetch);
-            }));
+            }),
+          );
+        });
   }
 }
 
