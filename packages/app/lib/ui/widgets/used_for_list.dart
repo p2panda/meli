@@ -34,7 +34,7 @@ class _UsedForListState extends State<UsedForList> {
 
   @override
   Widget build(BuildContext context) {
-    return PaginationBase<UsedFor>(
+    return PaginationBaseWithShruggie<UsedFor>(
         builder: (List<UsedFor> collection) {
           return Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,

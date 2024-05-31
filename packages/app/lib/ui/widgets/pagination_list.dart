@@ -10,6 +10,7 @@ import 'package:app/models/base.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/error_card.dart';
 import 'package:app/ui/widgets/info_card.dart';
+import 'package:app/ui/widgets/read_only_value.dart';
 
 typedef NextPageFunction = DocumentNode Function(String endCursor);
 
@@ -121,6 +122,16 @@ class PaginationBase<T> extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class PaginationBaseWithShruggie<T> extends PaginationBase<T> {
+  const PaginationBaseWithShruggie(
+      {super.key, required super.builder, required super.paginator});
+
+  @override
+  Widget _emptyResult(BuildContext context) {
+    return const ReadOnlyValue(null);
   }
 }
 
