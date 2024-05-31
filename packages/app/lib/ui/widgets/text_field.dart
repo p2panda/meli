@@ -2,9 +2,10 @@
 
 import 'package:flutter/material.dart';
 
+import 'package:app/ui/colors.dart';
+import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/read_only_value.dart';
 import 'package:app/ui/widgets/save_cancel_buttons.dart';
-import 'package:app/ui/widgets/editable_card.dart';
 
 typedef OnUpdate = Future<void> Function(String);
 
@@ -79,13 +80,15 @@ class _TextFieldState extends State<EditableTextField> {
       controller: _controller,
       maxLines: 5,
       onChanged: _changeValue,
+      scrollPadding: const EdgeInsets.only(bottom: 100.0),
+      textCapitalization: TextCapitalization.sentences,
       decoration: const InputDecoration(
-        focusedBorder: UnderlineInputBorder(
+        focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-                color: Colors.black, width: 2.0, style: BorderStyle.solid)),
-        enabledBorder: UnderlineInputBorder(
+                color: MeliColors.plum, width: 2, style: BorderStyle.solid)),
+        enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-                color: Colors.black, width: 2.0, style: BorderStyle.solid)),
+                color: MeliColors.plum, width: 2, style: BorderStyle.solid)),
       ),
     );
   }

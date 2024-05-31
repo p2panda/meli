@@ -15,11 +15,11 @@ import 'package:app/ui/widgets/error_card.dart';
 import 'package:app/ui/widgets/hive_location_field.dart';
 import 'package:app/ui/widgets/image_carousel.dart';
 import 'package:app/ui/widgets/local_name_field.dart';
-import 'package:app/ui/widgets/note_field.dart';
 import 'package:app/ui/widgets/refresh_provider.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/sighting_popup_menu.dart';
 import 'package:app/ui/widgets/species_field.dart';
+import 'package:app/ui/widgets/text_field.dart';
 import 'package:app/ui/widgets/used_for_field.dart';
 
 class SightingScreen extends StatefulWidget {
@@ -147,7 +147,7 @@ class _SightingProfileState extends State<SightingProfile> {
     setState(() {});
   }
 
-  void _updateComment(String? comment) async {
+  Future<void> _updateComment(String? comment) async {
     if (sighting.comment == comment) {
       // Nothing has changed
       return;
@@ -181,7 +181,9 @@ class _SightingProfileState extends State<SightingProfile> {
         UsedForField(sightingId: sighting.id, onUpdate: _updateUsedFor),
         HiveLocationField(
             sightingId: sighting.id, onUpdate: _updateHiveLocation),
-        NoteField(sighting.comment, onUpdate: _updateComment),
+        EditableTextField(sighting.comment,
+            title: AppLocalizations.of(context)!.noteCardTitle,
+            onUpdate: _updateComment),
       ]),
     );
   }
