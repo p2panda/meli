@@ -173,6 +173,7 @@ class AddUsedForDialog extends StatelessWidget {
                               thumbVisibility: true,
                               child: SingleChildScrollView(
                                   child: Container(
+                                width: constraints.maxWidth,
                                 padding: const EdgeInsets.all(10.0),
                                 child: UsedForTagSelector(
                                     onTagClick: (String label) {
