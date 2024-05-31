@@ -140,9 +140,12 @@ class AddUsedForDialog extends StatelessWidget {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  Text("Add Existing",
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 7.0),
+                    child: Text("Add Existing",
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleLarge),
+                  ),
                   Expanded(
                     child: LayoutBuilder(builder: (context, constraints) {
                       return Container(
@@ -172,10 +175,12 @@ class AddUsedForDialog extends StatelessWidget {
                           ));
                     }),
                   ),
-                  const SizedBox(height: 20.0),
-                  Text("Create New",
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0, bottom: 7.0),
+                    child: Text("Create New",
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleLarge),
+                  ),
                   UsedForTextField(
                     onSubmit: (String label) {
                       onAddedTag(label);

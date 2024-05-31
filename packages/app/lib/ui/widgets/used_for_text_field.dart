@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 
+import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/action_buttons.dart';
 
 class UsedForTextField extends StatefulWidget {
@@ -61,7 +62,18 @@ class _UsedForTextFieldState extends State<UsedForTextField> {
       children: [
         TextField(
             controller: _controller,
-            decoration: const InputDecoration(border: OutlineInputBorder()),
+            decoration: const InputDecoration(
+              focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: MeliColors.plum,
+                      width: 3,
+                      style: BorderStyle.solid)),
+              enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: MeliColors.plum,
+                      width: 3,
+                      style: BorderStyle.solid)),
+            ),
             keyboardType: TextInputType.text,
             scrollPadding: const EdgeInsets.only(bottom: 100.0),
             onChanged: _onChange,

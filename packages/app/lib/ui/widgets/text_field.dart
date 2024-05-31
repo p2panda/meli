@@ -85,10 +85,10 @@ class _TextFieldState extends State<EditableTextField> {
       decoration: const InputDecoration(
         focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-                color: MeliColors.plum, width: 2, style: BorderStyle.solid)),
+                color: MeliColors.plum, width: 3, style: BorderStyle.solid)),
         enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-                color: MeliColors.plum, width: 2, style: BorderStyle.solid)),
+                color: MeliColors.plum, width: 3, style: BorderStyle.solid)),
       ),
     );
   }
