@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/ui/widgets/species_popup_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -18,6 +17,7 @@ import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/sightings_tiles.dart';
 import 'package:app/ui/widgets/species_field.dart';
 import 'package:app/ui/widgets/species_local_names_aggregate.dart';
+import 'package:app/ui/widgets/species_popup_menu.dart';
 import 'package:app/ui/widgets/species_uses_aggregate.dart';
 import 'package:app/ui/widgets/text_field.dart';
 
