@@ -83,6 +83,9 @@
     "taxonomySpecies": "Species",
     "taxonomySubfamily": "Subfamily",
     "taxonomyTribe": "Tribe",
+    "usedForCardAddButton": "Add",
+    "usedForCardDialogAddExisting": "Add Existing",
+    "usedForCardDialogCreateNew": "Create New",
     "usedForCardTitle": "Used For",
-    "usedForTextSave": "Save"
+    "usedForCreateButton": "Create"
 }

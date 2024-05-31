@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/action_buttons.dart';
@@ -57,6 +58,8 @@ class _UsedForTextFieldState extends State<UsedForTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -80,7 +83,7 @@ class _UsedForTextFieldState extends State<UsedForTextField> {
             textCapitalization: TextCapitalization.sentences),
         const SizedBox(height: 10),
         ActionButtons(
-          actionLabel: 'Create',
+          actionLabel: t.usedForCreateButton,
           onAction: disabled ? null : _handleSubmit,
           onCancel: _handleCancel,
         )

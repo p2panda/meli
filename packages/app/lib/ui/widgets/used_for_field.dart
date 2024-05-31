@@ -102,8 +102,10 @@ class _UsedForFieldState extends State<UsedForField> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return EditableCard(
-      title: AppLocalizations.of(context)!.usedForCardTitle,
+      title: t.usedForCardTitle,
       isEditMode: isEditMode,
       onChanged: _toggleEditMode,
       child: Column(children: [
@@ -116,7 +118,7 @@ class _UsedForFieldState extends State<UsedForField> {
         const SizedBox(height: 10.0),
         if (isEditMode)
           ActionButtons(
-            actionLabel: "Add",
+            actionLabel: t.usedForCardAddButton,
             onAction: isLoading
                 ? null
                 : () {
@@ -140,6 +142,8 @@ class AddUsedForDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Dialog(
         insetPadding: const EdgeInsets.all(20.0),
         alignment: AlignmentDirectional.topCenter,
@@ -152,7 +156,7 @@ class AddUsedForDialog extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(bottom: 7.0),
-                    child: Text("Add Existing",
+                    child: Text(t.usedForCardDialogAddExisting,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge),
                   ),
@@ -187,7 +191,7 @@ class AddUsedForDialog extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 20.0, bottom: 7.0),
-                    child: Text("Create New",
+                    child: Text(t.usedForCardDialogCreateNew,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge),
                   ),
