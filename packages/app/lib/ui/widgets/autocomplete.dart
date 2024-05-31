@@ -12,7 +12,7 @@ typedef OnChanged = void Function(AutocompleteItem);
 
 /// Define maximum number of options shown in autocomplete, next to the current
 /// input value.
-const MAX_OPTIONS = 5;
+const MAX_OPTIONS = 3;
 
 class AutocompleteItem {
   final String value;
@@ -45,17 +45,17 @@ class MeliAutocomplete extends StatefulWidget {
 class _MeliAutocompleteState extends State<MeliAutocomplete> {
   late final Debounceable<Iterable<AutocompleteItem>?, String> _debouncedSearch;
 
-  // The query currently being searched for. If null, there is no pending
-  // request.
+  /// The query currently being searched for. If null, there is no pending
+  /// request.
   String? _currentQuery;
 
-  // The most recent options received from the API.
+  /// The most recent options received from the API.
   late Iterable<AutocompleteItem> _lastOptions = <AutocompleteItem>[];
 
-  // A network error was recieved on the most recent query.
+  /// A network error was recieved on the most recent query.
   bool _isError = false;
 
-  // Flag indicating that we're currently waiting for an network request.
+  /// Flag indicating that we're currently waiting for an network request.
   bool _isLoading = false;
 
   @override
@@ -100,16 +100,7 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
 
   void _onChanged(String value) {
     if (widget.onChanged != null) {
-      // Double-check if user actually typed _exactly_ the same value
-      // as one of our existing options
-      final Iterable<AutocompleteItem> duplicates = _lastOptions.where(
-          (element) => element.value == value && element.documentId != null);
-      if (duplicates.isNotEmpty) {
-        widget.onChanged!.call(duplicates.first);
-      } else {
-        // .. otherwise use newly created user value
-        widget.onChanged!.call(AutocompleteItem(value: value));
-      }
+      widget.onChanged!.call(AutocompleteItem(value: value));
     }
   }
 
@@ -129,9 +120,16 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
         fieldViewBuilder: (BuildContext context,
             TextEditingController controller,
             FocusNode focusNode,
+            // NOTE: We do not use "onFieldSubmitted" here as the flutter
+            // "Autocomplete" element automatically will then select the first
+            // value, potentially overriding manually entered values, which is
+            // not the intended behaviour. Read more about it here:
+            // https://stackoverflow.com/questions/76572748/flutter-autocomplete-how-to-set-selected-option-to-null
             VoidCallback onFieldSubmitted) {
           return TextFormField(
             autofocus: widget.autofocus,
+            autocorrect: false,
+            enableSuggestions: false,
             onChanged: _onChanged,
             onEditingComplete: _onSubmit,
             // Scroll down a bit more to make sure the keyboard doesn't hide
@@ -144,7 +142,7 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
                       child: const CircularProgressIndicator(
                         color: Colors.black,
                       ))
-                  : const Icon(Icons.arrow_drop_down, color: Colors.black),
+                  : const Icon(Icons.arrow_drop_down, color: MeliColors.plum),
               errorText: _isError ? 'Error, please try again.' : null,
               focusedBorder: const OutlineInputBorder(
                   borderSide: BorderSide(
@@ -159,9 +157,6 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
             ),
             controller: controller,
             focusNode: focusNode,
-            onFieldSubmitted: (String value) {
-              onFieldSubmitted();
-            },
           );
         },
         optionsViewBuilder: (BuildContext context, onSelected,
