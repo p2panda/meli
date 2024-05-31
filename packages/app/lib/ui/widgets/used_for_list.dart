@@ -27,6 +27,7 @@ class UsedForList extends StatefulWidget {
 class _UsedForListState extends State<UsedForList> {
   Widget _item(UsedFor document) {
     return TagItem(
+        key: ValueKey(document.id),
         label: document.usedFor,
         isDeleteMode: widget.isEditMode,
         onClick: widget.isEditMode && !widget.isLoading
