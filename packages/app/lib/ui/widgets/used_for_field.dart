@@ -1,15 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 
-import 'package:app/io/graphql/graphql.dart';
+import 'package:app/io/p2panda/documents.dart';
 import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/base.dart';
+import 'package:app/models/schema_ids.dart';
 import 'package:app/models/used_for.dart';
 import 'package:app/ui/widgets/action_buttons.dart';
 import 'package:app/ui/widgets/editable_card.dart';
@@ -41,57 +39,38 @@ class _UsedForFieldState extends State<UsedForField> {
   bool isEditMode = false;
 
   Future<void> _createUse(String usedForString) async {
-    // Show the overlay spinner
     _overlayKey.currentState!.show();
 
     // Create a new UsedFor document which relates to the current sighting.
-    DocumentViewId usedforViewId = await createUsedFor(
+    DocumentViewId viewId = await createUsedFor(
         sighting: widget.sightingId, usedFor: usedForString);
 
     // We want to wait until it is materialized and then refresh the
     // paginated query
-    bool isReady = false;
-    while (!isReady) {
-      final options = QueryOptions(document: gql(usedForQuery(usedforViewId)));
-      final result = await client.query(options);
-      isReady = (result.data?['document'] != null);
-      sleep(const Duration(milliseconds: 100));
-    }
+    await untilDocumentViewAvailable(SchemaIds.bee_attributes_used_for, viewId);
 
     widget.onUpdate();
-
-    // Refresh both paginators
-    setState(() {});
     listPaginator.refresh!();
-
-    // Hide the overlay
     _overlayKey.currentState!.hide();
+
+    setState(() {});
   }
 
   void _deleteUse(UsedFor usedFor) async {
-    // Show the overlay spinner
     _overlayKey.currentState!.show();
 
     // Delete the used for document.
-    await deleteUsedFor(usedFor.viewId);
+    DocumentViewId viewId = await deleteUsedFor(usedFor.viewId);
 
     // We want to wait until the delete is materialized and then refresh the
     // paginated query
-    bool isDeleted = false;
-    while (!isDeleted) {
-      final options = QueryOptions(document: gql(usedForQuery(usedFor.id)));
-      final result = await client.query(options);
-      isDeleted = (result.data?['document'] == null);
-      sleep(const Duration(milliseconds: 150));
-    }
+    await untilDocumentDeleted(SchemaIds.bee_attributes_used_for, viewId);
 
     widget.onUpdate();
-
-    // Refresh only the list paginator
     listPaginator.refresh!();
-
-    // Hide the overlay
     _overlayKey.currentState!.hide();
+
+    setState(() {});
   }
 
   void _toggleEditMode() {
