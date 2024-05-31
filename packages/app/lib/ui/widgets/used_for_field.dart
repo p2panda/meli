@@ -93,18 +93,14 @@ class _UsedForFieldState extends State<UsedForField> {
     _overlayKey.currentState!.hide();
   }
 
-  void _createNewTag(String usedFor) async {
-    await _createUse(usedFor);
-  }
-
   void _toggleEditMode() {
     setState(() {
       isEditMode = !isEditMode;
     });
   }
 
-  void _onTagClick(String usedFor) async {
-    await _createUse(usedFor);
+  void _onAddedTag(String value) async {
+    await _createUse(value);
   }
 
   @override
@@ -115,91 +111,71 @@ class _UsedForFieldState extends State<UsedForField> {
         onChanged: _toggleEditMode,
         child: LoadingOverlay(
           key: _overlayKey,
-          child: Column(
-            children: [
-              SizedBox(
-                  height: 150,
-                  child: SingleChildScrollView(
-                      child: UsedForList(
-                    paginator: listPaginator,
-                    onDeleteClick: _deleteUse,
-                    isEditMode: isEditMode,
-                  ))),
-              ...(isEditMode
-                  ? [
-                      // const SizedBox(height: 10),
-                      // Text("Add Uses",
-                      //     textAlign: TextAlign.center,
-                      //     style: Theme.of(context).textTheme.titleLarge),
-                      // const SizedBox(height: 10),
-                      // Expanded(
-                      //     child: SingleChildScrollView(
-                      //   child: UsedForTagSelector(
-                      //       paginator: tagPaginator, onTagClick: _onTagClick),
-                      // )),
-                      // const SizedBox(height: 10),
-                      // Text("Create New Use",
-                      //     textAlign: TextAlign.center,
-                      //     style: Theme.of(context).textTheme.titleLarge),
-                      const SizedBox(height: 10),
-                      ActionButtons(
-                        actionLabel: "Add",
-                        onAction: () {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Dialog(
-                                    insetPadding: const EdgeInsets.all(20.0),
-                                    alignment: AlignmentDirectional.topCenter,
-                                    child: Padding(
-                                        padding: const EdgeInsets.all(20.0),
-                                        child: Wrap(
-                                          runSpacing: 10.0,
-                                          children: [
-                                            Text("Add Existing",
-                                                textAlign: TextAlign.center,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleLarge),
-                                            Container(
-                                                constraints:
-                                                    const BoxConstraints(
-                                                        maxHeight: 300.0),
-                                                child: Scrollbar(
-                                                  trackVisibility: true,
-                                                  thumbVisibility: true,
-                                                  child: SingleChildScrollView(
-                                                      child: UsedForTagSelector(
-                                                          onTagClick:
-                                                              (String label) {
-                                                    _createNewTag(label);
-                                                    Navigator.pop(context);
-                                                  })),
-                                                )),
-                                            Text("Create New",
-                                                textAlign: TextAlign.center,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleLarge),
-                                            UsedForTextField(
-                                              submit: (String label) {
-                                                _createNewTag(label);
-                                                Navigator.pop(context);
-                                              },
-                                              cancel: () {
-                                                Navigator.pop(context);
-                                              },
-                                            ),
-                                          ],
-                                        )));
-                              });
-                        },
-                        onCancel: _toggleEditMode,
-                      )
-                    ]
-                  : [const SizedBox()])
-            ],
-          ),
+          child: Column(children: [
+            UsedForList(
+              paginator: listPaginator,
+              onDeleteClick: _deleteUse,
+              isEditMode: isEditMode,
+            ),
+            if (isEditMode)
+              ActionButtons(
+                actionLabel: "Add",
+                onAction: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AddUsedForDialog(onAddedTag: _onAddedTag);
+                      });
+                },
+                onCancel: _toggleEditMode,
+              )
+          ]),
         ));
+  }
+}
+
+class AddUsedForDialog extends StatelessWidget {
+  final void Function(String) onAddedTag;
+
+  const AddUsedForDialog({super.key, required this.onAddedTag});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+        insetPadding: const EdgeInsets.all(20.0),
+        alignment: AlignmentDirectional.topCenter,
+        child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Wrap(
+              runSpacing: 10.0,
+              children: [
+                Text("Add Existing",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleLarge),
+                Container(
+                    constraints: const BoxConstraints(maxHeight: 300.0),
+                    child: Scrollbar(
+                      trackVisibility: true,
+                      thumbVisibility: true,
+                      child: SingleChildScrollView(
+                          child: UsedForTagSelector(onTagClick: (String label) {
+                        onAddedTag(label);
+                        Navigator.pop(context);
+                      })),
+                    )),
+                Text("Create New",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleLarge),
+                UsedForTextField(
+                  submit: (String label) {
+                    onAddedTag(label);
+                    Navigator.pop(context);
+                  },
+                  cancel: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            )));
   }
 }
