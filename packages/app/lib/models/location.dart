@@ -148,6 +148,11 @@ class Location {
     } else if (type == LocationType.Building) {
       viewId = await deleteLocationBuilding(viewId);
     }
+
+    // Remove any other hive location as well, just to make sure we're cleaning
+    // up after ourselves
+    await deleteAllLocations(sightingId);
+
     return viewId;
   }
 }
