@@ -44,7 +44,8 @@ class SpeciesUsesAggregateList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.only(top: 10, right: 18, bottom: 0, left: 18),
+        padding:
+            const EdgeInsets.only(top: 10, right: 18, bottom: 10, left: 18),
         child: FetchAll(
           paginator: SpeciesSightingsPaginator(id),
           builder: (collection) {
