@@ -33,9 +33,14 @@ Future<bool> isDocumentViewAvailable(
 Future<bool> isDocumentDeleted(SchemaId schemaId, DocumentViewId viewId) async {
   String query = '''
     query CheckDocumentStatus() {
-      status: all_$schemaId(meta: { viewId: { eq: "$viewId" }, deleted: { eq: true }) {
-        totalCount
-      }
+      status: all_$schemaId(
+        meta: { 
+          viewId: { eq: "$viewId" },
+          deleted: { eq: true },
+        })
+        {
+          totalCount
+        }
     }
   ''';
 
