@@ -41,6 +41,7 @@ class _TagItemState extends State<TagItem> {
             child: InkWell(
               onTap: (widget.onClick != null)
                   ? () async {
+                      // Fade-out widget when deleting
                       if (widget.isDeleteMode) {
                         setState(() {
                           _visible = false;
