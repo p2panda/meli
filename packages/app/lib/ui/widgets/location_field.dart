@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/save_cancel_buttons.dart';
 import 'package:flutter/foundation.dart';
@@ -27,23 +28,27 @@ class LocationField extends StatefulWidget {
   State<LocationField> createState() => _LocationFieldState();
 }
 
-double DEFAULT_ZOOM = 10;
+double DEFAULT_ZOOM = 8;
 String CURRENT_FEATURE_ID = 'current';
 String TARGET_FEATURE_ID = 'target';
 
 class _LocationFieldState extends State<LocationField> {
+  // The latitude value displayed for the marker at the center of the map
   late double _lat;
-  late double _lon;
+  // The longitude value displayed for the marker at the center of the map
+  late double _lng;
 
   bool _isEditMode = false;
 
   MaplibreMapController? _mapController;
-  Circle? _currentMapMarker;
+
+  // The marker that uses the saved coordinates of the sighting
+  Circle? _existingMapMarker;
 
   @override
   void initState() {
     _lat = widget.latitude;
-    _lon = widget.longitude;
+    _lng = widget.longitude;
     super.initState();
   }
 
@@ -66,7 +71,7 @@ class _LocationFieldState extends State<LocationField> {
         const SizedBox(
           height: 20,
         ),
-        Text(t.sightingLocationLongitude(_lon),
+        Text(t.sightingLocationLongitude(_lng),
             style: Theme.of(context).textTheme.bodyLarge),
         Text(t.sightingLocationLatitude(_lat),
             style: Theme.of(context).textTheme.bodyLarge),
@@ -101,36 +106,37 @@ class _LocationFieldState extends State<LocationField> {
                   () => EagerGestureRecognizer()),
             },
             onStyleLoadedCallback: () async {
-              _currentMapMarker = await _mapController!.addCircle(CircleOptions(
-                  circleRadius: 8,
-                  circleColor: Colors.blue.toHexStringRGB(),
-                  geometry: LatLng(widget.latitude, widget.longitude)));
+              _existingMapMarker = await _mapController!.addCircle(
+                  createMapCircle(lat: widget.latitude, lng: widget.longitude));
             },
             onMapClick: (_, latLng) async {
               if (!_isEditMode) return;
-              if (_currentMapMarker == null) return;
+              if (_existingMapMarker == null) return;
 
-              var existingNextMarker = _mapController!.circles.where((c) {
-                return c != _currentMapMarker;
+              var nextMarker = _mapController!.circles.where((c) {
+                return c != _existingMapMarker;
               }).firstOrNull;
 
-              if (existingNextMarker == null) {
-                await _mapController!.addCircle(CircleOptions(
-                    circleRadius: 8,
-                    circleColor: Colors.blue.toHexStringRGB(),
-                    geometry: LatLng(latLng.latitude, latLng.longitude)));
+              // Add the "next" marker and update the visuals of the existing marker
+              if (nextMarker == null) {
+                await _mapController!.addCircle(createMapCircle(
+                    lat: latLng.latitude, lng: latLng.longitude));
 
-                await _mapController!.updateCircle(_currentMapMarker!,
-                    const CircleOptions(circleOpacity: 0.4));
-              } else {
                 await _mapController!.updateCircle(
-                    existingNextMarker, CircleOptions(geometry: latLng));
+                    _existingMapMarker!,
+                    const CircleOptions(
+                      circleOpacity: 0.5,
+                      circleStrokeOpacity: 0.5,
+                    ));
+              } else {
+                await _mapController!
+                    .updateCircle(nextMarker, CircleOptions(geometry: latLng));
               }
 
               _mapController!.animateCamera(CameraUpdate.newLatLng(latLng));
 
               setState(() {
-                _lon = latLng.longitude;
+                _lng = latLng.longitude;
                 _lat = latLng.latitude;
               });
             }));
@@ -138,17 +144,17 @@ class _LocationFieldState extends State<LocationField> {
 
   void _handleSave() async {
     // Do nothing if coordinates have not changed at all
-    if (_lat == widget.latitude && _lon == widget.longitude) {
+    if (_lat == widget.latitude && _lng == widget.longitude) {
       _handleCancel();
       return;
     }
 
     setState(() {
       _isEditMode = false;
-      widget.onUpdate(latitude: _lat, longitude: _lon);
+      widget.onUpdate(latitude: _lat, longitude: _lng);
     });
 
-    _resetMap(LatLng(_lat, _lon));
+    _resetMap(LatLng(_lat, _lng));
   }
 
   void _handleCancel() async {
@@ -157,19 +163,30 @@ class _LocationFieldState extends State<LocationField> {
     setState(() {
       _isEditMode = false;
       _lat = widget.latitude;
-      _lon = widget.longitude;
+      _lng = widget.longitude;
     });
   }
 
   Future<void> _resetMap(LatLng latLng) async {
-    await _mapController!.updateCircle(_currentMapMarker!,
-        CircleOptions(geometry: latLng, circleOpacity: 1.0));
+    await _mapController!.updateCircle(
+        _existingMapMarker!,
+        CircleOptions(
+            geometry: latLng, circleOpacity: 1.0, circleStrokeOpacity: 1.0));
 
     await _mapController!.removeCircles(_mapController!.circles.where((c) {
-      return c != _currentMapMarker;
+      return c != _existingMapMarker;
     }));
 
     _mapController!
         .animateCamera(CameraUpdate.newLatLngZoom(latLng, DEFAULT_ZOOM));
   }
+}
+
+CircleOptions createMapCircle({required double lat, required double lng}) {
+  return CircleOptions(
+      circleRadius: 8,
+      circleColor: MeliColors.magnolia.toHexStringRGB(),
+      circleStrokeColor: MeliColors.black.toHexStringRGB(),
+      circleStrokeWidth: 2.0,
+      geometry: LatLng(lat, lng));
 }
