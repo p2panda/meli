@@ -27,9 +27,11 @@ class _UsedForListState extends State<UsedForList> {
     return TagItem(
         label: document.usedFor,
         showDeleteIcon: widget.isEditMode,
-        onClick: (String label) {
-          widget.onDeleteClick(document);
-        });
+        onClick: widget.isEditMode
+            ? (String label) {
+                widget.onDeleteClick(document);
+              }
+            : null);
   }
 
   @override
