@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:graphql/client.dart';
 import 'package:p2panda/p2panda.dart';
 
+import 'package:app/io/graphql/graphql.dart';
 import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/base.dart';
 import 'package:app/models/schema_ids.dart';
@@ -157,7 +159,6 @@ String locationQuery(DocumentId sightingId) {
   const locationTreeSchemaId = SchemaIds.bee_attributes_location_tree;
 
   String parameters = '''
-    first: 1,
     filter: {
       sighting: { eq: "$sightingId" },
     },
@@ -192,10 +193,33 @@ String locationQuery(DocumentId sightingId) {
   ''';
 }
 
-// Expects multiple results from a multi-query GraphQL request over all
-// location types. This method will automatically select one of them based
-// on deterministic rules as the UI can only display one location at a time
-// for sightings.
+/// Deletes all hive locations which are associated with a sighting.
+///
+/// Even though we're only displaying _one_ hive location per sighting it might
+/// be possible that others exist. To make sure we're cleaning up after ourselves
+/// this method deletes _all known_ hive locations to that sighting.
+Future<void> deleteAllLocations(DocumentId sightingId) async {
+  final result = await client
+      .query(QueryOptions(document: gql(locationQuery(sightingId))));
+
+  if (result.hasException) {
+    throw "Deleting all hive locations related to sighting failed: ${result.exception}";
+  }
+
+  List<Location> locations =
+      getAllLocationsFromResult(result.data as Map<String, dynamic>);
+
+  for (var location in locations) {
+    await location.delete();
+  }
+}
+
+/// Returns one hive location for a sighting if it exists.
+///
+/// Expects multiple results from a multi-query GraphQL request over all
+/// location types. This method will automatically select one of them based
+/// on deterministic rules as the UI can only display one location at a time
+/// for sightings.
 Location? getLocationFromResults(Map<String, dynamic> result) {
   var boxLocations = result[BOX_RESULTS_KEY]['documents'] as List;
   var buildingLocations = result[BUILDING_RESULTS_KEY]['documents'] as List;
@@ -223,6 +247,31 @@ Location? getLocationFromResults(Map<String, dynamic> result) {
   }
 
   return null;
+}
+
+List<Location> getAllLocationsFromResult(Map<String, dynamic> result) {
+  List<Location> list = [];
+
+  for (var item in result[BOX_RESULTS_KEY]['documents'] as List) {
+    list.add(Location.fromJson(LocationType.Box, item as Map<String, dynamic>));
+  }
+
+  for (var item in result[BUILDING_RESULTS_KEY]['documents'] as List) {
+    list.add(
+        Location.fromJson(LocationType.Building, item as Map<String, dynamic>));
+  }
+
+  for (var item in result[GROUND_RESULTS_KEY]['documents'] as List) {
+    list.add(
+        Location.fromJson(LocationType.Ground, item as Map<String, dynamic>));
+  }
+
+  for (var item in result[TREE_RESULTS_KEY]['documents'] as List) {
+    list.add(
+        Location.fromJson(LocationType.Tree, item as Map<String, dynamic>));
+  }
+
+  return list;
 }
 
 /*
