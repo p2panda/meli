@@ -66,16 +66,15 @@ class _LocationFieldState extends State<LocationField> {
         const SizedBox(
           height: 20,
         ),
-        Text(t.sightingLocationFieldCoordinates(_lat, _lon),
-            style: const TextStyle(
-              fontSize: 16.0,
-            )),
-        if (_isEditMode) ...[
+        Text(t.sightingLocationLongitude(_lon),
+            style: Theme.of(context).textTheme.bodyLarge),
+        Text(t.sightingLocationLatitude(_lat),
+            style: Theme.of(context).textTheme.bodyLarge),
+        if (_isEditMode)
           Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: SaveCancelButtons(
                   handleCancel: _handleCancel, handleSave: _handleSave)),
-        ]
       ]),
     );
   }
