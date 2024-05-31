@@ -33,7 +33,7 @@ class AllSpeciesScreen extends StatelessWidget {
             child: LayoutBuilder(builder: (context, constraints) {
               return Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 decoration: const PeachWavesBackground(),
                 child: SingleChildScrollView(
@@ -58,17 +58,23 @@ class SpeciesList extends StatefulWidget {
 class _SpeciesListState extends State<SpeciesList> {
   Widget _item(Species species) {
     return SpeciesCard(
-        onTap: () => {
-              router.pushNamed(RoutePaths.species.name,
-                  pathParameters: {'documentId': species.id}).then((value) {
-                // Refresh list after returning from updating a species
-                if (RefreshProvider.of(context)
-                        .isDirty(RefreshKeys.UpdatedSpecies) &&
-                    widget.paginator.refresh != null) {
-                  widget.paginator.refresh!();
-                }
-              })
-            },
+        onTap: () =>
+        {
+          router.pushNamed(RoutePaths.species.name,
+              pathParameters: {'documentId': species.id}).then((value) {
+            // Refresh list after returning from updating or deleting a species
+            final refreshProvider = RefreshProvider.of(context);
+            final updated = refreshProvider
+                .isDirty(RefreshKeys.UpdatedSpecies);
+            final deleted =
+            refreshProvider
+                .isDirty(RefreshKeys.DeletedSpecies);
+
+            if ((updated || deleted) && widget.paginator.refresh != null) {
+              widget.paginator.refresh!();
+            }
+          })
+        },
         taxonomySpecies: species.species,
         id: species.id);
   }
