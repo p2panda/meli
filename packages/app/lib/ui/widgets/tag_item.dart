@@ -2,26 +2,45 @@
 
 import 'package:flutter/material.dart';
 
+import 'package:app/ui/colors.dart';
+
 class TagItem extends StatelessWidget {
   final String label;
-  final void Function(String) onClick;
+  final void Function(String)? onClick;
+  final bool showDeleteIcon;
 
-  const TagItem({super.key, required this.label, required this.onClick});
+  const TagItem(
+      {super.key,
+      required this.label,
+      this.onClick,
+      this.showDeleteIcon = false});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(5),
+      padding: const EdgeInsets.only(right: 10, bottom: 10),
       child: GestureDetector(
-        onTap: () {
-          onClick(label);
-        },
+        onTap: (onClick != null)
+            ? () {
+                onClick!(label);
+              }
+            : null,
         child: Material(
           elevation: 3,
           borderRadius: const BorderRadius.all(Radius.circular(7)),
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-            child: Text(label, style: Theme.of(context).textTheme.titleMedium),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(label, style: Theme.of(context).textTheme.titleMedium),
+                if (showDeleteIcon)
+                  const Padding(
+                    padding: EdgeInsets.only(left: 5, bottom: 2),
+                    child: Icon(size: 20, color: MeliColors.plum, Icons.delete),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:app/models/base.dart';
 import 'package:app/models/used_for.dart';
 import 'package:app/ui/widgets/pagination_list.dart';
+import 'package:app/ui/widgets/tag_item.dart';
 
 class UsedForList extends StatefulWidget {
   final Paginator<UsedFor> paginator;
@@ -22,46 +23,25 @@ class UsedForList extends StatefulWidget {
 }
 
 class _UsedForListState extends State<UsedForList> {
-  Widget _item(UsedFor usedFor) {
-    return Material(
-      elevation: 5,
-      borderRadius: const BorderRadius.all(Radius.circular(12)),
-      child: Container(
-        margin: const EdgeInsets.all(5),
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                  flex: 6,
-                  child: Text(usedFor.usedFor,
-                      style: Theme.of(context).textTheme.titleMedium)),
-              Expanded(
-                flex: 1,
-                child: widget.isEditMode
-                    ? Container(
-                        constraints: const BoxConstraints(maxHeight: 23),
-                        child: IconButton(
-                            padding: const EdgeInsets.all(0),
-                            onPressed: () {
-                              widget.onDeleteClick(usedFor);
-                            },
-                            icon: const Icon(size: 20, Icons.delete)),
-                      )
-                    : const SizedBox(),
-              )
-            ]),
-      ),
-    );
+  Widget _item(UsedFor document) {
+    return TagItem(
+        label: document.usedFor,
+        showDeleteIcon: widget.isEditMode,
+        onClick: (String label) {
+          widget.onDeleteClick(document);
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-    return PaginationList<UsedFor>(
-        builder: (UsedFor usedFor) {
-          return Container(
-              padding: const EdgeInsets.only(bottom: 5.0),
-              child: _item(usedFor));
+    return PaginationBase<UsedFor>(
+        builder: (List<UsedFor> collection) {
+          return Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: <Widget>[
+              ...collection.map((document) => _item(document)),
+            ],
+          );
         },
         paginator: widget.paginator);
   }
