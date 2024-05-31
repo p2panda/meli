@@ -8,6 +8,7 @@ enum RefreshKeys {
   UpdatedSighting,
   DeletedSighting,
   UpdatedSpecies,
+  DeletedSpecies,
 }
 
 /// Global state keeping track of events where data was changed or created. This
