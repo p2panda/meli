@@ -168,7 +168,8 @@ class _SpeciesFieldState extends State<SpeciesField> {
     for (final (index, item) in _taxonomy.reversed.indexed) {
       final rank = _taxonomySettings[_taxonomy.length - index - 1];
       if (item!.documentId == null) {
-        final id = await createTaxon(rank['schemaId']!,
+        // This method checks if a duplicate with similar values already exists
+        final id = await createDeduplicatedTaxon(rank['schemaId']!,
             name: item.value, parentId: parent?.documentId);
         parent =
             AutocompleteItem(value: item.value, documentId: id, viewId: id);
