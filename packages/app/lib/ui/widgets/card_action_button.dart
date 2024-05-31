@@ -20,6 +20,7 @@ class CardActionButton extends StatelessWidget {
         elevation: 5.0,
         heroTag: null,
         onPressed: onPressed,
+        splashColor: MeliColors.flurry,
         foregroundColor: MeliColors.black,
         backgroundColor: MeliColors.pink,
         child: icon);

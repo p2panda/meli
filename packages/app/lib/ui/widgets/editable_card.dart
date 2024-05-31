@@ -20,9 +20,10 @@ class EditableCard extends StatelessWidget {
       required this.onChanged});
 
   Widget _icon() {
-    final icon =
-        isEditMode ? const Icon(Icons.close_outlined) : const Icon(Icons.mode_edit_outlined);
-    return CardActionButton(icon: icon);
+    final icon = isEditMode
+        ? const Icon(Icons.close_outlined)
+        : const Icon(Icons.mode_edit_outlined);
+    return CardActionButton(icon: icon, onPressed: onChanged);
   }
 
   Widget _content() {
