@@ -104,8 +104,9 @@ class _SightingProfileState extends State<SightingProfile> {
     if (item == null) {
       // Remove local name from sighting
     } else if (item.documentId == null) {
-      // Create new local name to assign it then to sighting
-      localNames.add(await LocalName.create(name: item.value));
+      // Create new local name to assign it then to sighting. This method checks
+      // for existing local names with the same value before
+      localNames.add(await createDeduplicatedLocalName(item.value));
     } else if (item.documentId != null) {
       // Assign existing local name to sighting
       localNames.add(LocalName(
