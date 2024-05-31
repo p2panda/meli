@@ -2,9 +2,6 @@
 
 import 'dart:io';
 
-import 'package:app/ui/colors.dart';
-import 'package:app/ui/widgets/save_cancel_buttons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -13,6 +10,7 @@ import 'package:app/io/graphql/graphql.dart';
 import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/base.dart';
 import 'package:app/models/used_for.dart';
+import 'package:app/ui/widgets/action_buttons.dart';
 import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/loading_overlay.dart';
 import 'package:app/ui/widgets/used_for_list.dart';
@@ -144,8 +142,9 @@ class _UsedForFieldState extends State<UsedForField> {
                       //     textAlign: TextAlign.center,
                       //     style: Theme.of(context).textTheme.titleLarge),
                       const SizedBox(height: 10),
-                      CreateCancelButtons(
-                        handleCreate: () {
+                      ActionButtons(
+                        actionLabel: "Add",
+                        onAction: () {
                           showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -195,55 +194,12 @@ class _UsedForFieldState extends State<UsedForField> {
                                         )));
                               });
                         },
-                        handleCancel: _toggleEditMode,
+                        onCancel: _toggleEditMode,
                       )
                     ]
                   : [const SizedBox()])
             ],
           ),
         ));
-  }
-}
-
-class CreateCancelButtons extends StatelessWidget {
-  final void Function()? handleCreate;
-  final void Function()? handleCancel;
-
-  const CreateCancelButtons({super.key, this.handleCreate, this.handleCancel});
-
-  @override
-  Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context)!;
-
-    return Row(children: [
-      OverflowBar(
-        spacing: 10,
-        overflowAlignment: OverflowBarAlignment.start,
-        children: [
-          FilledButton(
-            style: FilledButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                foregroundColor: MeliColors.white,
-                backgroundColor: MeliColors.plum),
-            onPressed: handleCreate,
-            child: Text('Add'),
-          ),
-          OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  side: const BorderSide(width: 3.0, color: MeliColors.plum),
-                  foregroundColor: MeliColors.plum),
-              onPressed: handleCancel,
-              child: Text(
-                t.editCardCancelButton,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ))
-        ],
-      )
-    ]);
   }
 }

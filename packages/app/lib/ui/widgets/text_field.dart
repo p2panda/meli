@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/read_only_value.dart';
-import 'package:app/ui/widgets/save_cancel_buttons.dart';
+import 'package:app/ui/widgets/action_buttons.dart';
 
 typedef OnUpdate = Future<void> Function(String);
 
@@ -115,9 +115,9 @@ class _TextFieldState extends State<EditableTextField> {
               _editableValue(),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
-                child: SaveCancelButtons(
-                  handleSave: _handleSubmit,
-                  handleCancel: _toggleEditMode,
+                child: ActionButtons(
+                  onAction: _handleSubmit,
+                  onCancel: _toggleEditMode,
                 ),
               )
             ] else

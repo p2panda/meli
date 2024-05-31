@@ -10,7 +10,7 @@ import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/error_card.dart';
 import 'package:app/ui/widgets/read_only_value.dart';
-import 'package:app/ui/widgets/save_cancel_buttons.dart';
+import 'package:app/ui/widgets/action_buttons.dart';
 
 const BOX_ICON = Icons.hive;
 const BUILDING_ICON = Icons.home;
@@ -327,8 +327,7 @@ class _HiveLocationFieldEditState extends State<HiveLocationFieldEdit> {
       _additionalInfo(),
       Padding(
           padding: const EdgeInsets.only(top: 10.0),
-          child: SaveCancelButtons(
-              handleCancel: _handleCancel, handleSave: _handleSave)),
+          child: ActionButtons(onCancel: _handleCancel, onAction: _handleSave)),
     ]);
   }
 }

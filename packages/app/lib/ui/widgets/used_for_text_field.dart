@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:app/ui/widgets/save_cancel_buttons.dart';
+import 'package:app/ui/widgets/action_buttons.dart';
 
 class UsedForTextField extends StatefulWidget {
   final void Function(String) submit;
@@ -73,9 +73,9 @@ class _UsedForTextFieldState extends State<UsedForTextField> {
             onChanged: _onChange,
             textCapitalization: TextCapitalization.sentences),
         const SizedBox(height: 12),
-        SaveCancelButtons(
-          handleSave: _handleSubmit,
-          handleCancel: _handleCancel,
+        ActionButtons(
+          onAction: _handleSubmit,
+          onCancel: _handleCancel,
         )
       ],
     );

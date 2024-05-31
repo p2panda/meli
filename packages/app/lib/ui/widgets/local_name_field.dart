@@ -8,7 +8,7 @@ import 'package:app/ui/widgets/autocomplete.dart';
 import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/local_name_autocomplete.dart';
 import 'package:app/ui/widgets/read_only_value.dart';
-import 'package:app/ui/widgets/save_cancel_buttons.dart';
+import 'package:app/ui/widgets/action_buttons.dart';
 
 typedef OnUpdate = Future<void> Function(AutocompleteItem?);
 
@@ -96,9 +96,9 @@ class _LocalNameFieldState extends State<LocalNameField> {
                     _editableValue(),
                     Padding(
                         padding: const EdgeInsets.only(top: 8.0),
-                        child: SaveCancelButtons(
-                          handleSave: _submit,
-                          handleCancel: _cancel,
+                        child: ActionButtons(
+                          onAction: _submit,
+                          onCancel: _cancel,
                         ))
                   ]
                 : [ReadOnlyValue(displayValue)]));
