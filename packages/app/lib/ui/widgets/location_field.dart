@@ -170,6 +170,6 @@ class _LocationFieldState extends State<LocationField> {
     }));
 
     _mapController!
-        .moveCamera(CameraUpdate.newLatLngZoom(latLng, DEFAULT_ZOOM));
+        .animateCamera(CameraUpdate.newLatLngZoom(latLng, DEFAULT_ZOOM));
   }
 }
