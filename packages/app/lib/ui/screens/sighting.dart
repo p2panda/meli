@@ -18,6 +18,7 @@ import 'package:app/ui/widgets/local_name_field.dart';
 import 'package:app/ui/widgets/note_field.dart';
 import 'package:app/ui/widgets/refresh_provider.dart';
 import 'package:app/ui/widgets/scaffold.dart';
+import 'package:app/ui/widgets/sighting_popup_menu.dart';
 import 'package:app/ui/widgets/species_field.dart';
 import 'package:app/ui/widgets/used_for_field.dart';
 
@@ -33,35 +34,43 @@ class SightingScreen extends StatefulWidget {
 class _SightingScreenState extends State<SightingScreen> {
   @override
   Widget build(BuildContext context) {
-    return MeliScaffold(
-        title: AppLocalizations.of(context)!.sightingScreenTitle,
-        backgroundColor: MeliColors.electric,
-        appBarColor: MeliColors.electric,
-        body: SingleChildScrollView(
-          child: Query(
-              options:
-                  QueryOptions(document: gql(sightingQuery(widget.documentId))),
-              builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
-                if (result.hasException) {
-                  return ErrorCard(message: result.exception.toString());
-                }
+    return Query(
+        options: QueryOptions(document: gql(sightingQuery(widget.documentId))),
+        builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
+          Sighting? sighting;
 
-                if (result.isLoading) {
-                  return const Center(
-                    child: SizedBox(
-                        width: 50,
-                        height: 50,
-                        child:
-                            CircularProgressIndicator(color: MeliColors.black)),
-                  );
-                }
+          if (!result.hasException && !result.isLoading) {
+            sighting = Sighting.fromJson(
+                result.data?['sighting'] as Map<String, dynamic>);
+          }
 
-                final sighting = Sighting.fromJson(
-                    result.data?['sighting'] as Map<String, dynamic>);
+          return MeliScaffold(
+              title: AppLocalizations.of(context)!.sightingScreenTitle,
+              backgroundColor: MeliColors.electric,
+              appBarColor: MeliColors.electric,
+              actionRight: sighting != null
+                  ? SightingPopupMenu(viewId: sighting.viewId)
+                  : null,
+              body: SingleChildScrollView(
+                child: Builder(builder: (BuildContext context) {
+                  if (result.hasException) {
+                    return ErrorCard(message: result.exception.toString());
+                  }
 
-                return SightingProfile(sighting);
-              }),
-        ));
+                  if (result.isLoading) {
+                    return const Center(
+                      child: SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: CircularProgressIndicator(
+                              color: MeliColors.black)),
+                    );
+                  }
+
+                  return SightingProfile(sighting!);
+                }),
+              ));
+        });
   }
 }
 

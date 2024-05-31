@@ -7,6 +7,7 @@ import 'package:app/ui/colors.dart';
 class MeliScaffold extends StatefulWidget {
   final String? title;
   final Widget? body;
+  final Widget? actionRight;
   final Color backgroundColor;
   final Color appBarColor;
   final List<Widget> floatingActionButtons;
@@ -16,6 +17,7 @@ class MeliScaffold extends StatefulWidget {
       {super.key,
       this.body,
       this.title,
+      this.actionRight,
       this.floatingActionButtons = const [],
       this.fabAlignment = MainAxisAlignment.spaceBetween,
       this.appBarColor = MeliColors.flurry,
@@ -35,16 +37,24 @@ class _MeliScaffoldState extends State<MeliScaffold> {
         shadowColor: Colors.black54,
         forceMaterialTransparency: false,
         backgroundColor: widget.appBarColor,
-        title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          IconButton(
-              icon: const Icon(Icons.arrow_back_rounded),
-              onPressed: () {
-                Navigator.of(context).pop();
-              }),
-          const SizedBox(width: 7.0),
-          Text(widget.title!),
-          const SizedBox(width: 35.0),
-        ]),
+        title: Stack(
+          children: [
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              IconButton(
+                  icon: const Icon(Icons.arrow_back_rounded),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+              const SizedBox(width: 7.0),
+              Text(widget.title!),
+              const SizedBox(width: 35.0),
+            ]),
+            if (widget.actionRight != null)
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [widget.actionRight!]),
+          ],
+        ),
       );
     }
 

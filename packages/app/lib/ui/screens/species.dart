@@ -138,11 +138,13 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
               onTap: (DocumentId sightingId) {
                 router.pushNamed(RoutePaths.sighting.name,
                     pathParameters: {'documentId': sightingId}).then((value) {
+                  final refreshProvider = RefreshProvider.of(context);
                   // Force loading the species again after we've returned from
-                  // an updated sighting, to make sure that aggregated data over
-                  // all sightings is up-to-date
-                  if (RefreshProvider.of(context)
-                          .isDirty(RefreshKeys.UpdatedSighting) &&
+                  // an updated or deleted sighting, to make sure that
+                  // aggregated data over all sightings is up-to-date
+                  if ((refreshProvider.isDirty(RefreshKeys.UpdatedSighting) ||
+                          refreshProvider
+                              .isDirty(RefreshKeys.DeletedSighting)) &&
                       widget.refetch != null) {
                     widget.refetch!();
                   }
