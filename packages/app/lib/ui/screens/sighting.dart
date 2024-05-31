@@ -160,14 +160,15 @@ class _SightingProfileState extends State<SightingProfile> {
     setState(() {});
   }
 
-  void _updateLocation(
-      {required double latitude, required double longitude}) async {
-    if (sighting.latitude == latitude && sighting.longitude == longitude) {
+  void _updateLocation(Coordinates coordinates) async {
+    if (sighting.latitude == coordinates.latitude &&
+        sighting.longitude == coordinates.longitude) {
       // Nothing has changed
       return;
     }
 
-    await sighting.update(latitude: latitude, longitude: longitude);
+    await sighting.update(
+        latitude: coordinates.latitude, longitude: coordinates.longitude);
 
     setState(() {});
   }
@@ -199,8 +200,10 @@ class _SightingProfileState extends State<SightingProfile> {
             title: AppLocalizations.of(context)!.noteCardTitle,
             onUpdate: _updateComment),
         LocationField(
-            latitude: sighting.latitude,
-            longitude: sighting.longitude,
+            // Not the best way to check if a position has not been set, but works for now
+            coordinates: sighting.latitude == 0 && sighting.longitude == 0
+                ? null
+                : (latitude: sighting.latitude, longitude: sighting.longitude),
             onUpdate: _updateLocation),
       ]),
     );

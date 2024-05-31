@@ -9,34 +9,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
-typedef OnUpdate = void Function(
-    {required double latitude, required double longitude});
+typedef OnUpdate = void Function(Coordinates coordinates);
+typedef Coordinates = ({double latitude, double longitude});
 
 class LocationField extends StatefulWidget {
-  final double latitude;
-  final double longitude;
+  final Coordinates? coordinates;
 
   final OnUpdate onUpdate;
 
   const LocationField(
-      {super.key,
-      required this.longitude,
-      required this.latitude,
-      required this.onUpdate});
+      {super.key, required this.coordinates, required this.onUpdate});
 
   @override
   State<LocationField> createState() => _LocationFieldState();
 }
 
-double DEFAULT_ZOOM = 8;
-String CURRENT_FEATURE_ID = 'current';
-String TARGET_FEATURE_ID = 'target';
+const Coordinates BRAZIL_CENTROID_COORDINATES =
+    (latitude: -14.235004, longitude: -51.92528);
+const double DEFAULT_ZOOMED_OUT_LEVEL = 1.5;
+const double DEFAULT_ZOOMED_IN_LEVEL = 8;
 
 class _LocationFieldState extends State<LocationField> {
-  // The latitude value displayed for the marker at the center of the map
-  late double _lat;
-  // The longitude value displayed for the marker at the center of the map
-  late double _lng;
+  late Coordinates? _coordinates;
 
   bool _isEditMode = false;
 
@@ -47,8 +41,7 @@ class _LocationFieldState extends State<LocationField> {
 
   @override
   void initState() {
-    _lat = widget.latitude;
-    _lng = widget.longitude;
+    _coordinates = widget.coordinates;
     super.initState();
   }
 
@@ -71,10 +64,12 @@ class _LocationFieldState extends State<LocationField> {
         const SizedBox(
           height: 20,
         ),
-        Text(t.sightingLocationLongitude(_lng),
-            style: Theme.of(context).textTheme.bodyLarge),
-        Text(t.sightingLocationLatitude(_lat),
-            style: Theme.of(context).textTheme.bodyLarge),
+        if (_coordinates != null) ...[
+          Text(t.sightingLocationLongitude(_coordinates!.longitude),
+              style: Theme.of(context).textTheme.bodyLarge),
+          Text(t.sightingLocationLatitude(_coordinates!.latitude),
+              style: Theme.of(context).textTheme.bodyLarge),
+        ],
         if (_isEditMode)
           Padding(
               padding: const EdgeInsets.only(top: 10.0),
@@ -85,13 +80,20 @@ class _LocationFieldState extends State<LocationField> {
   }
 
   Widget _renderMap() {
+    final initialCameraPosition = _coordinates == null
+        ? CameraPosition(
+            zoom: DEFAULT_ZOOMED_OUT_LEVEL,
+            target: LatLng(BRAZIL_CENTROID_COORDINATES.latitude,
+                BRAZIL_CENTROID_COORDINATES.longitude))
+        : CameraPosition(
+            target: LatLng(_coordinates!.latitude, _coordinates!.longitude),
+            zoom: DEFAULT_ZOOMED_IN_LEVEL);
+
     return Container(
         alignment: Alignment.center,
         height: 200,
         child: MaplibreMap(
-            initialCameraPosition: CameraPosition(
-                target: LatLng(widget.latitude, widget.longitude),
-                zoom: DEFAULT_ZOOM),
+            initialCameraPosition: initialCameraPosition,
             scrollGesturesEnabled: _isEditMode,
             dragEnabled: _isEditMode,
             zoomGesturesEnabled: _isEditMode,
@@ -106,28 +108,33 @@ class _LocationFieldState extends State<LocationField> {
                   () => EagerGestureRecognizer()),
             },
             onStyleLoadedCallback: () async {
-              _existingMapMarker = await _mapController!.addCircle(
-                  createMapCircle(lat: widget.latitude, lng: widget.longitude));
+              if (_coordinates != null) {
+                _existingMapMarker = await _mapController!.addCircle(
+                    createMapCircle(
+                        latitude: _coordinates!.latitude,
+                        longitude: _coordinates!.longitude));
+              }
             },
             onMapClick: (_, latLng) async {
               if (!_isEditMode) return;
-              if (_existingMapMarker == null) return;
 
-              var nextMarker = _mapController!.circles.where((c) {
+              final nextMarker = _mapController!.circles.where((c) {
                 return c != _existingMapMarker;
               }).firstOrNull;
 
               // Add the "next" marker and update the visuals of the existing marker
               if (nextMarker == null) {
                 await _mapController!.addCircle(createMapCircle(
-                    lat: latLng.latitude, lng: latLng.longitude));
+                    latitude: latLng.latitude, longitude: latLng.longitude));
 
-                await _mapController!.updateCircle(
-                    _existingMapMarker!,
-                    const CircleOptions(
-                      circleOpacity: 0.5,
-                      circleStrokeOpacity: 0.5,
-                    ));
+                if (_existingMapMarker != null) {
+                  await _mapController!.updateCircle(
+                      _existingMapMarker!,
+                      const CircleOptions(
+                        circleOpacity: 0.5,
+                        circleStrokeOpacity: 0.5,
+                      ));
+                }
               } else {
                 await _mapController!
                     .updateCircle(nextMarker, CircleOptions(geometry: latLng));
@@ -136,57 +143,71 @@ class _LocationFieldState extends State<LocationField> {
               _mapController!.animateCamera(CameraUpdate.newLatLng(latLng));
 
               setState(() {
-                _lng = latLng.longitude;
-                _lat = latLng.latitude;
+                _coordinates =
+                    (latitude: latLng.latitude, longitude: latLng.longitude);
               });
             }));
   }
 
   void _handleSave() async {
     // Do nothing if coordinates have not changed at all
-    if (_lat == widget.latitude && _lng == widget.longitude) {
+    if (_coordinates == widget.coordinates) {
       _handleCancel();
       return;
     }
 
     setState(() {
       _isEditMode = false;
-      widget.onUpdate(latitude: _lat, longitude: _lng);
+      if (_coordinates != null) {
+        widget.onUpdate(_coordinates!);
+      }
     });
 
-    _resetMap(LatLng(_lat, _lng));
+    _resetMap(coordinates: _coordinates!, zoomLevel: DEFAULT_ZOOMED_IN_LEVEL);
   }
 
   void _handleCancel() async {
-    await _resetMap(LatLng(widget.latitude, widget.longitude));
+    if (widget.coordinates == null || _coordinates == null) {
+      await _resetMap(
+          coordinates: BRAZIL_CENTROID_COORDINATES,
+          zoomLevel: DEFAULT_ZOOMED_OUT_LEVEL);
+    } else {
+      await _resetMap(
+          coordinates: widget.coordinates!, zoomLevel: DEFAULT_ZOOMED_IN_LEVEL);
+    }
 
     setState(() {
       _isEditMode = false;
-      _lat = widget.latitude;
-      _lng = widget.longitude;
+      _coordinates = widget.coordinates;
     });
   }
 
-  Future<void> _resetMap(LatLng latLng) async {
-    await _mapController!.updateCircle(
-        _existingMapMarker!,
-        CircleOptions(
-            geometry: latLng, circleOpacity: 1.0, circleStrokeOpacity: 1.0));
+  Future<void> _resetMap(
+      {required Coordinates coordinates, required double zoomLevel}) async {
+    final latLng = LatLng(coordinates.latitude, coordinates.longitude);
+
+    if (_existingMapMarker != null) {
+      await _mapController!.updateCircle(
+          _existingMapMarker!,
+          CircleOptions(
+              geometry: latLng, circleOpacity: 1.0, circleStrokeOpacity: 1.0));
+    }
 
     await _mapController!.removeCircles(_mapController!.circles.where((c) {
       return c != _existingMapMarker;
     }));
 
     _mapController!
-        .animateCamera(CameraUpdate.newLatLngZoom(latLng, DEFAULT_ZOOM));
+        .animateCamera(CameraUpdate.newLatLngZoom(latLng, zoomLevel));
   }
 }
 
-CircleOptions createMapCircle({required double lat, required double lng}) {
+CircleOptions createMapCircle(
+    {required double latitude, required double longitude}) {
   return CircleOptions(
       circleRadius: 8,
       circleColor: MeliColors.magnolia.toHexStringRGB(),
       circleStrokeColor: MeliColors.black.toHexStringRGB(),
       circleStrokeWidth: 2.0,
-      geometry: LatLng(lat, lng));
+      geometry: LatLng(latitude, longitude));
 }
