@@ -2,8 +2,9 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:app/utils/debouncable.dart';
 import 'package:app/io/p2panda/publish.dart';
+import 'package:app/ui/colors.dart';
+import 'package:app/utils/debouncable.dart';
 
 typedef OnOptionsRequest = Future<Iterable<AutocompleteItem>> Function(String);
 
@@ -145,15 +146,15 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
                       ))
                   : const Icon(Icons.arrow_drop_down, color: Colors.black),
               errorText: _isError ? 'Error, please try again.' : null,
-              focusedBorder: const UnderlineInputBorder(
+              focusedBorder: const OutlineInputBorder(
                   borderSide: BorderSide(
-                      color: Colors.black,
-                      width: 2.0,
+                      color: MeliColors.plum,
+                      width: 3,
                       style: BorderStyle.solid)),
-              enabledBorder: const UnderlineInputBorder(
+              enabledBorder: const OutlineInputBorder(
                   borderSide: BorderSide(
-                      color: Colors.black,
-                      width: 2.0,
+                      color: MeliColors.plum,
+                      width: 3,
                       style: BorderStyle.solid)),
             ),
             controller: controller,
