@@ -35,8 +35,9 @@ providing all p2panda functionality via FFI bindings.
 ### Requirements
 
 > Listed versions are the ones we used successfully in our developer
-> environments, other versions might work well too, the exact NDK version is
-> _required_ though.
+> environments, other versions might work well too.
+
+> ⚠️ The _exact_ NDK version _is required_.
 
 * [Rust](https://www.rust-lang.org/tools/install) `1.74.0`
 * [Android SDK](https://developer.android.com/tools) `34.0.0`
@@ -100,6 +101,9 @@ command line tool.
 * [`packages/app`](packages/app): Android application built with Flutter
 
 Here are some examples on how to run the app using the Flutter command line tool:
+
+> ⚠️ Setting a "Flavour" _is required_ to build and run the .apk, either as a flutter command
+> line argument or as a build configuration in Android Studio (Edit Configurations > Build Flavour).
 
 ```bash
 # Manage emulators
