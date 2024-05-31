@@ -28,7 +28,7 @@ class _UsedForListState extends State<UsedForList> {
   Widget _item(UsedFor document) {
     return TagItem(
         label: document.usedFor,
-        showDeleteIcon: widget.isEditMode,
+        isDeleteMode: widget.isEditMode,
         onClick: widget.isEditMode && !widget.isLoading
             ? (String label) {
                 widget.onDeleteClick(document);
