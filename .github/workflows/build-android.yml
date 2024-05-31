@@ -1,10 +1,16 @@
 name: Build Android APK
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
+    inputs:
+      flavor:
+        type: choice
+        description: "APK build flavor"
+        required: true
+        options:
+          - normal
+          - qa
+        default: qa
 
 jobs:
   build-apk:
@@ -32,7 +38,7 @@ jobs:
         run: melos build
       - name: Build APK
         working-directory: ./packages/app
-        run: flutter build apk --flavor qa
+        run: flutter build apk --flavor "${{ inputs.flavor }}"
       - uses: actions/upload-artifact@v4
         with:
           name: app-qa-release
