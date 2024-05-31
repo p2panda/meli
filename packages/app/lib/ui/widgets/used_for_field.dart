@@ -3,7 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'package:app/io/graphql/graphql.dart';
 import 'package:app/io/p2panda/documents.dart';
 import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/base.dart';
@@ -30,11 +32,14 @@ class UsedForField extends StatefulWidget {
 }
 
 class _UsedForFieldState extends State<UsedForField> {
+  /// Paginator over all "Used For" documents for this sighting.
   late Paginator<UsedFor> listPaginator =
       UsedForPaginator(sightings: [widget.sightingId]);
-  final Paginator<UsedFor> tagPaginator = UsedForPaginator();
 
+  /// Flag indicating if we're currently editing the field or not.
   bool isEditMode = false;
+
+  /// Block UI elements because we're waiting for a response from the node.
   bool isLoading = false;
 
   Future<void> _createUse(String usedForString) async {
@@ -68,9 +73,14 @@ class _UsedForFieldState extends State<UsedForField> {
 
     // We want to wait until the delete is materialized and then refresh the
     // paginated query
-    // @TODO: Not working right now
-    // await untilDocumentDeleted(SchemaIds.bee_attributes_used_for, viewId);
-    await sleep(500);
+    while (true) {
+      final options = QueryOptions(document: gql(usedForQuery(usedFor.id)));
+      final result = await client.query(options);
+      if (result.data?['document'] == null) {
+        break;
+      }
+      await sleep(250);
+    }
 
     widget.onUpdate();
     listPaginator.refresh!();
