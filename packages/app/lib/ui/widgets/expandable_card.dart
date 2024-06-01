@@ -24,7 +24,11 @@ class _ExpandableCardState extends State<ExpandableCard> {
 
   Widget _icon() {
     final icon = isExpanded ? const Icon(Icons.remove) : const Icon(Icons.add);
-    return CardActionButton(icon: icon);
+    return CardActionButton(
+        icon: icon,
+        onPressed: () {
+          tileKey.currentState!.toggle();
+        });
   }
 
   Widget _content() {
