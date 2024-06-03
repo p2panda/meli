@@ -1,12 +1,12 @@
 {
+    "actionCancelButton": "Cancel",
+    "actionDefaultButton": "Save",
     "allSpeciesScreenTitle": "All Species",
     "createSightingError": "Something went wrong: {error}",
     "createSightingScreenTitle": "Add Sighting",
     "createSightingSuccess": "Yay, you've successfully added a new sighting to the database",
     "deleteSighting": "Delete Sighting",
     "deleteSpecies": "Delete Species",
-    "editCardCancelButton": "Cancel",
-    "editCardSaveButton": "Save",
     "editSpeciesErrorCantRemove": "Species needs to be defined",
     "editSpeciesErrorConfirm": "Ok",
     "editSpeciesErrorInvalidRankCase": "Rank \"{rank}\" can not be changed!",
@@ -83,6 +83,9 @@
     "taxonomySpecies": "Species",
     "taxonomySubfamily": "Subfamily",
     "taxonomyTribe": "Tribe",
+    "usedForCardAddButton": "Add",
+    "usedForCardDialogAddExisting": "Add Existing",
+    "usedForCardDialogCreateNew": "Create New",
     "usedForCardTitle": "Used For",
-    "usedForTextSave": "Save"
+    "usedForCreateButton": "Create"
 }

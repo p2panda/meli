@@ -44,20 +44,12 @@ class LocalNamesList extends StatelessWidget {
     LocalNamesPaginator paginator = LocalNamesPaginator(species: species);
 
     return Container(
-      constraints: const BoxConstraints(maxHeight: 300),
-      child: SingleChildScrollView(
-        child: Container(
-            padding:
-                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
-            child: DeduplicatedLocalNamesList(
-                builder: (LocalName localName) {
-                  return Container(
-                      padding: const EdgeInsets.only(bottom: 5.0),
-                      child: TagItem(
-                          label: localName.name, onClick: (item) => {}));
-                },
-                paginator: paginator)),
-      ),
-    );
+        padding:
+            const EdgeInsets.only(top: 10, right: 18, bottom: 10, left: 18),
+        child: DeduplicatedLocalNamesList(
+            builder: (LocalName localName) {
+              return TagItem(label: localName.name);
+            },
+            paginator: paginator));
   }
 }

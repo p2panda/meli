@@ -2,8 +2,6 @@
 
 import 'dart:math';
 
-import 'package:app/ui/colors.dart';
-import 'package:app/ui/widgets/save_cancel_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -13,6 +11,8 @@ import 'package:app/io/p2panda/schemas.dart';
 import 'package:app/models/base.dart';
 import 'package:app/models/schema_ids.dart';
 import 'package:app/models/taxonomy_species.dart';
+import 'package:app/ui/colors.dart';
+import 'package:app/ui/widgets/action_buttons.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/autocomplete.dart';
 import 'package:app/ui/widgets/editable_card.dart';
@@ -372,9 +372,9 @@ class _SpeciesFieldState extends State<SpeciesField> {
                     _editableValue(),
                     Padding(
                         padding: const EdgeInsets.only(top: 8.0),
-                        child: SaveCancelButtons(
-                          handleSave: _handleSubmit,
-                          handleCancel: _toggleEditMode,
+                        child: ActionButtons(
+                          onAction: _handleSubmit,
+                          onCancel: _toggleEditMode,
                         ))
                   ]
                 : [_readOnlyValue()]));

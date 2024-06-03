@@ -5,11 +5,18 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/ui/colors.dart';
 
-class SaveCancelButtons extends StatelessWidget {
-  final void Function()? handleSave;
-  final void Function()? handleCancel;
+class ActionButtons extends StatelessWidget {
+  final VoidCallback? onAction;
+  final VoidCallback? onCancel;
+  final String? cancelLabel;
+  final String? actionLabel;
 
-  const SaveCancelButtons({super.key, this.handleSave, this.handleCancel});
+  const ActionButtons(
+      {super.key,
+      this.onAction,
+      this.onCancel,
+      this.cancelLabel,
+      this.actionLabel});
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +34,8 @@ class SaveCancelButtons extends StatelessWidget {
                 ),
                 foregroundColor: MeliColors.white,
                 backgroundColor: MeliColors.plum),
-            onPressed: handleSave,
-            child: Text(t.editCardSaveButton),
+            onPressed: onAction,
+            child: Text(actionLabel ?? t.actionDefaultButton),
           ),
           OutlinedButton(
               style: OutlinedButton.styleFrom(
@@ -37,9 +44,9 @@ class SaveCancelButtons extends StatelessWidget {
                   ),
                   side: const BorderSide(width: 3.0, color: MeliColors.plum),
                   foregroundColor: MeliColors.plum),
-              onPressed: handleCancel,
+              onPressed: onCancel,
               child: Text(
-                t.editCardCancelButton,
+                cancelLabel ?? t.actionCancelButton,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ))
         ],

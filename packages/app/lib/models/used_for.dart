@@ -99,6 +99,23 @@ class UsedForPaginator extends Paginator<UsedFor> {
   }
 }
 
+Future<List<UsedFor>> getAllDeduplicatedUsedFor() async {
+  final jsonDocuments = await paginateOverEverything(
+      SchemaIds.bee_attributes_used_for, usedForFields);
+
+  List<UsedFor> documents = [];
+  for (var json in jsonDocuments) {
+    final usedFor = UsedFor.fromJson(json);
+    documents.add(usedFor);
+  }
+
+  // De-Duplicate documents by removing duplicate "used-for" strings
+  Set<String> seen = {};
+  documents.retainWhere((usedFor) => seen.add(usedFor.usedFor));
+
+  return documents;
+}
+
 String allUsesQuery(List<DocumentId>? sightings, String? cursor) {
   final after = (cursor != null) ? '''after: "$cursor",''' : '';
   String filter = '';
