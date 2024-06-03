@@ -40,7 +40,8 @@ class _UsedForTagSelectorState extends State<UsedForTagSelector> {
           }
 
           if (snapshot.data!.isEmpty) {
-            return const SizedBox();
+            return Text(AppLocalizations.of(context)!.paginationListNoResults,
+                textAlign: TextAlign.center);
           }
 
           return Wrap(
