@@ -1,4 +1,4 @@
-package com.p2panda.app
+package com.p2panda.meli
 
 import io.flutter.embedding.android.FlutterActivity
 

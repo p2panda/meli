@@ -29,8 +29,8 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace "com.p2panda.app"
-    // Set to mimimum version 33 for `geolocator` package
+    namespace "com.p2panda.meli"
+    // Set to minimum version 33 for `geolocator` package
     compileSdkVersion Math.max(flutter.compileSdkVersion, 33)
     // Pin NDK version to assure compatibility with cargo-ndk build (see
     // "packages/p2panda/native/build.rs" file for details)
