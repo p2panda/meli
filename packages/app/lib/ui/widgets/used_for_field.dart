@@ -69,7 +69,7 @@ class _UsedForFieldState extends State<UsedForField> {
     });
 
     // Delete the used for document.
-    DocumentViewId viewId = await deleteUsedFor(usedFor.viewId);
+    await deleteUsedFor(usedFor.viewId);
 
     // We want to wait until the delete is materialized and then refresh the
     // paginated query
