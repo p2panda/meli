@@ -103,7 +103,14 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
   }
 
   void _onChanged(String value) {
-    if (widget.onChanged != null) {
+    // Double-check if user actually typed _exactly_ the same value
+    // as one of our existing options
+    final Iterable<AutocompleteItem> duplicates = _lastOptions.where(
+        (element) => element.value == value && element.documentId != null);
+    if (duplicates.isNotEmpty) {
+      widget.onChanged!.call(duplicates.first);
+    } else {
+      // .. otherwise use newly created user value
       widget.onChanged!.call(AutocompleteItem(value: value));
     }
   }
@@ -224,7 +231,11 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
           // even when we're currently querying for new ones
           _lastOptions = options;
 
-          return options;
+          // Remove option if it is the same as initial value
+          final filtered = options
+              .where((element) => element.value != widget.initialValue?.value);
+
+          return filtered;
         },
         onSelected: (AutocompleteItem selection) {
           // Unfocus text field when user clicked on an option, this will hide
