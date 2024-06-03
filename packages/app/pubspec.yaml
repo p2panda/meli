@@ -11,6 +11,7 @@ dependencies:
   carousel_slider: 4.2.1
   convert: 3.1.1
   device_info_plus: 9.1.0
+  file_picker: 8.0.3
   flutter:
     sdk: flutter
   flutter_localizations:
@@ -21,6 +22,7 @@ dependencies:
   gql: 1.0.1-alpha+1709845491443
   graphql: 5.2.0-beta.7
   graphql_flutter: 5.2.0-beta.6
+  http: 1.2.1
   image_picker: 1.0.4
   intl: 0.19.0
   mime: 1.0.4

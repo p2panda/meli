@@ -13,6 +13,7 @@
     "editSpeciesErrorMessage": "{error}",
     "editSpeciesErrorNullCase": "A classificação \"{rank}\" precisa ser especificada!",
     "editSpeciesErrorTitle": "Não foi possível salvar a espécie",
+    "exportImages": "Exportar imagens",
     "hiveLocationBox": "Caixa",
     "hiveLocationBuilding": "Prédio",
     "hiveLocationCardTitle": "Localização da Colmeia",
