@@ -50,17 +50,18 @@ class HelloPanda extends StatelessWidget {
 class LocaleSettings extends StatelessWidget {
   const LocaleSettings({super.key});
 
-  Future<void> _onLanguageChange(BuildContext context, Locale? locale) async {
+  Future<void> _onLanguageChange(
+      BuildContext context, String? languageCode) async {
     final app = context.findAncestorStateOfType<MeliAppState>()!;
     final t = AppLocalizations.of(context)!;
     final messenger = ScaffoldMessenger.of(context);
 
-    bool success = await app.changeLocale(locale!);
+    bool success = await app.changeLocale(languageCode!);
 
     if (success) {
       messenger.showSnackBar(SnackBar(content: Builder(builder: (context) {
         return Text(AppLocalizations.of(context)!
-            .settingsLanguageChangeSuccess(locale.languageCode));
+            .settingsLanguageChangeSuccess(languageCode));
       })));
     } else {
       messenger.showSnackBar(SnackBar(
@@ -78,7 +79,7 @@ class LocaleSettings extends StatelessWidget {
         title: t.settingsLanguages,
         child: LayoutBuilder(
           builder: (context, constraints) {
-            return DropdownMenu<Locale>(
+            return DropdownMenu<String>(
                 inputDecorationTheme: const InputDecorationTheme(
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.only(left: 10.0)),
@@ -91,15 +92,15 @@ class LocaleSettings extends StatelessWidget {
                         WidgetStatePropertyAll<Color>(MeliColors.white),
                     side: WidgetStatePropertyAll<BorderSide>(
                         BorderSide(width: 0))),
-                initialSelection: currentLocale,
-                onSelected: (Locale? locale) async {
+                initialSelection: currentLocale.languageCode,
+                onSelected: (String? locale) async {
                   await _onLanguageChange(context, locale);
                 },
                 dropdownMenuEntries: [
-                  DropdownMenuEntry<Locale>(
-                      value: const Locale('en'), label: t.settingsEnglish),
-                  DropdownMenuEntry<Locale>(
-                      value: const Locale('pt'), label: t.settingsPortuguese)
+                  DropdownMenuEntry<String>(
+                      value: 'en', label: t.settingsEnglish),
+                  DropdownMenuEntry<String>(
+                      value: 'pt', label: t.settingsPortuguese)
                 ]);
           },
         ));

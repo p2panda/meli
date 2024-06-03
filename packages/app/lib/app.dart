@@ -24,21 +24,25 @@ class MeliAppState extends State<MeliApp> {
   @override
   void initState() {
     super.initState();
+
+    // Set locale to user setting if given
     _prefs.then((SharedPreferences prefs) {
-      final String localString = prefs.getString('locale') ?? 'pt';
-      setState(() {
-        _locale = Locale(localString);
-      });
+      final String? localString = prefs.getString('locale');
+      if (localString != null) {
+        setState(() {
+          _locale = Locale(localString);
+        });
+      }
     });
   }
 
-  Future<bool> changeLocale(Locale locale) async {
+  Future<bool> changeLocale(String languageCode) async {
     final SharedPreferences prefs = await _prefs;
-    bool success = await prefs.setString('locale', locale.toString());
+    bool success = await prefs.setString('locale', languageCode.toString());
 
     if (success) {
       setState(() {
-        _locale = locale;
+        _locale = Locale(languageCode);
       });
     }
 
@@ -60,9 +64,20 @@ class MeliAppState extends State<MeliApp> {
 
           // Setup localization
           locale: _locale,
-          localeResolutionCallback: (locale, supportedLocales) {
-            if (supportedLocales.contains(locale)) {
-              return locale;
+          localeListResolutionCallback: (locales, supportedLocales) {
+            // Check if we can fullfil the preferred locale of the device OS
+            // ordered by priority
+            if (locales != null) {
+              final supportedLanguageCodes =
+                  supportedLocales.map((supportedLocale) {
+                return supportedLocale.languageCode;
+              });
+
+              for (var locale in locales) {
+                if (supportedLanguageCodes.contains(locale.languageCode)) {
+                  return locale;
+                }
+              }
             }
 
             return const Locale('pt');
