@@ -13,6 +13,13 @@ scripts:
     exec: dart format .
     description: Format all Dart packages according to linter settings.
 
+  release:
+    run: bash scripts/release.sh
+    packageFilters:
+      flutter: true
+      scope: "*app*"
+    description: Compile .apk builds for all architectures
+
   build:
     run: bash scripts/build.sh
     description: Compile native p2panda library for Android.
