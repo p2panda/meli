@@ -5,7 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:app/io/p2panda/publish.dart';
-import 'package:app/models/location.dart';
+import 'package:app/models/hive_location.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/error_card.dart';
@@ -53,7 +53,7 @@ class _HiveLocationFieldState extends State<HiveLocationField> {
         isEditMode: isEditMode,
         child: Query(
             options:
-                QueryOptions(document: gql(locationQuery(widget.sightingId))),
+                QueryOptions(document: gql(locationQuery([widget.sightingId]))),
             builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
               if (result.hasException) {
                 return ErrorCard(message: result.exception.toString());
@@ -69,7 +69,7 @@ class _HiveLocationFieldState extends State<HiveLocationField> {
                 );
               }
 
-              Location? location =
+              HiveLocation? location =
                   getLocationFromResults(result.data as Map<String, dynamic>);
 
               // @TODO: Edit button should be disabled while widget is loading.
@@ -92,7 +92,7 @@ class _HiveLocationFieldState extends State<HiveLocationField> {
 }
 
 class HiveLocationFieldInner extends StatefulWidget {
-  final Location? initialValue;
+  final HiveLocation? initialValue;
   final DocumentId sightingId;
 
   final bool isEditMode;
@@ -110,7 +110,7 @@ class HiveLocationFieldInner extends StatefulWidget {
 }
 
 class _HiveLocationFieldInnerState extends State<HiveLocationFieldInner> {
-  late Location? location;
+  late HiveLocation? location;
 
   @override
   void initState() {
@@ -118,14 +118,14 @@ class _HiveLocationFieldInnerState extends State<HiveLocationFieldInner> {
     location = widget.initialValue;
   }
 
-  void _handleUpdate(LocationType? type, String? treeSpecies,
+  void _handleUpdate(HiveLocationType? type, String? treeSpecies,
       double? treeHeight, double? treeDiameter) async {
     if (location != null && type == null) {
       // Delete attached location if any existed
       await location!.delete();
       location = null;
-    } else if (location?.type == LocationType.Tree &&
-        type == LocationType.Tree) {
+    } else if (location?.type == HiveLocationType.Tree &&
+        type == HiveLocationType.Tree) {
       // Update location if it is a tree location (other location types do not
       // have any special fields to update so we ignore them)
       await location!.update(
@@ -138,7 +138,7 @@ class _HiveLocationFieldInnerState extends State<HiveLocationFieldInner> {
       }
 
       // Create new location and attach it to sighting
-      location = await Location.create(
+      location = await HiveLocation.create(
           type: type,
           sightingId: widget.sightingId,
           treeSpecies: treeSpecies,
@@ -168,7 +168,7 @@ class _HiveLocationFieldInnerState extends State<HiveLocationFieldInner> {
 }
 
 class HiveLocationFieldShow extends StatelessWidget {
-  final Location? location;
+  final HiveLocation? location;
 
   const HiveLocationFieldShow({super.key, required this.location});
 
@@ -176,13 +176,13 @@ class HiveLocationFieldShow extends StatelessWidget {
     IconData icon;
 
     switch (location!.type) {
-      case LocationType.Box:
+      case HiveLocationType.Box:
         icon = BOX_ICON;
-      case LocationType.Building:
+      case HiveLocationType.Building:
         icon = BUILDING_ICON;
-      case LocationType.Ground:
+      case HiveLocationType.Ground:
         icon = GROUND_ICON;
-      case LocationType.Tree:
+      case HiveLocationType.Tree:
         icon = TREE_ICON;
     }
 
@@ -198,21 +198,21 @@ class HiveLocationFieldShow extends StatelessWidget {
 
     String label;
     switch (location?.type) {
-      case LocationType.Box:
+      case HiveLocationType.Box:
         label = t.hiveLocationBox;
-      case LocationType.Building:
+      case HiveLocationType.Building:
         label = t.hiveLocationBuilding;
-      case LocationType.Ground:
+      case HiveLocationType.Ground:
         label = t.hiveLocationGround;
-      case LocationType.Tree:
+      case HiveLocationType.Tree:
         label = t.hiveLocationTree;
       case null:
         label = "";
     }
 
-    return ReadOnlyBase<Location>(
+    return ReadOnlyBase<HiveLocation>(
         value: location,
-        builder: (Location location) {
+        builder: (HiveLocation location) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 15.0),
             child: Column(children: [
@@ -223,14 +223,14 @@ class HiveLocationFieldShow extends StatelessWidget {
                   style: const TextStyle(
                       fontSize: 15.0, fontWeight: FontWeight.bold),
                 ),
-                if (location.type == LocationType.Tree &&
+                if (location.type == HiveLocationType.Tree &&
                     location.treeSpecies != null)
                   Text(location.treeSpecies!,
                       style: const TextStyle(fontStyle: FontStyle.italic)),
-                if (location.type == LocationType.Tree &&
+                if (location.type == HiveLocationType.Tree &&
                     location.height != null)
                   Text("${t.hiveLocationTreeHeight}: ${location.height!}m"),
-                if (location.type == LocationType.Tree &&
+                if (location.type == HiveLocationType.Tree &&
                     location.diameter != null)
                   Text("${t.hiveLocationTreeDiameter}: ${location.diameter!}m"),
               ]),
@@ -241,10 +241,10 @@ class HiveLocationFieldShow extends StatelessWidget {
 }
 
 typedef OnUpdate = void Function(
-    LocationType? type, String? species, double? height, double? diameter);
+    HiveLocationType? type, String? species, double? height, double? diameter);
 
 class HiveLocationFieldEdit extends StatefulWidget {
-  final Location? location;
+  final HiveLocation? location;
   final OnUpdate onUpdate;
   final Function onCancelled;
 
@@ -259,7 +259,7 @@ class HiveLocationFieldEdit extends StatefulWidget {
 }
 
 class _HiveLocationFieldEditState extends State<HiveLocationFieldEdit> {
-  LocationType? type;
+  HiveLocationType? type;
   String? treeSpecies;
   double? height;
   double? diameter;
@@ -271,7 +271,7 @@ class _HiveLocationFieldEditState extends State<HiveLocationFieldEdit> {
     if (widget.location != null) {
       type = widget.location!.type;
 
-      if (widget.location!.type == LocationType.Tree) {
+      if (widget.location!.type == HiveLocationType.Tree) {
         treeSpecies = widget.location!.treeSpecies;
         height = widget.location!.height;
         diameter = widget.location!.diameter;
@@ -280,7 +280,7 @@ class _HiveLocationFieldEditState extends State<HiveLocationFieldEdit> {
   }
 
   void _handleSave() {
-    if (type == LocationType.Tree) {
+    if (type == HiveLocationType.Tree) {
       widget.onUpdate(type, treeSpecies, height, diameter);
     } else if (type == null) {
       widget.onUpdate(null, null, null, null);
@@ -294,7 +294,7 @@ class _HiveLocationFieldEditState extends State<HiveLocationFieldEdit> {
   }
 
   Widget _additionalInfo() {
-    if (type == LocationType.Tree) {
+    if (type == HiveLocationType.Tree) {
       return Padding(
           padding: const EdgeInsets.symmetric(vertical: 10.0),
           child: HiveTreeLocationEdit(
@@ -318,7 +318,7 @@ class _HiveLocationFieldEditState extends State<HiveLocationFieldEdit> {
     return Column(children: [
       HiveLocationTypeSelector(
         locationType: type,
-        onUpdate: (LocationType? locationType) {
+        onUpdate: (HiveLocationType? locationType) {
           setState(() {
             type = locationType;
           });
@@ -430,16 +430,16 @@ class HiveTreeLocationEdit extends StatelessWidget {
   }
 }
 
-typedef OnTypeUpdated = void Function(LocationType? locationType);
+typedef OnTypeUpdated = void Function(HiveLocationType? locationType);
 
 class HiveLocationTypeSelector extends StatelessWidget {
-  final LocationType? locationType;
+  final HiveLocationType? locationType;
   final OnTypeUpdated onUpdate;
 
   const HiveLocationTypeSelector(
       {super.key, required this.locationType, required this.onUpdate});
 
-  void _onToggle(LocationType value) {
+  void _onToggle(HiveLocationType value) {
     if (locationType == value) {
       onUpdate(null);
     } else {
@@ -456,30 +456,30 @@ class HiveLocationTypeSelector extends StatelessWidget {
           label: t.hiveLocationBox,
           icon: const Icon(BOX_ICON),
           onPressed: () {
-            _onToggle(LocationType.Box);
+            _onToggle(HiveLocationType.Box);
           },
-          active: locationType == LocationType.Box),
+          active: locationType == HiveLocationType.Box),
       HiveLocationTypeButton(
           label: t.hiveLocationBuilding,
           icon: const Icon(BUILDING_ICON),
           onPressed: () {
-            _onToggle(LocationType.Building);
+            _onToggle(HiveLocationType.Building);
           },
-          active: locationType == LocationType.Building),
+          active: locationType == HiveLocationType.Building),
       HiveLocationTypeButton(
           label: t.hiveLocationGround,
           icon: const Icon(GROUND_ICON),
           onPressed: () {
-            _onToggle(LocationType.Ground);
+            _onToggle(HiveLocationType.Ground);
           },
-          active: locationType == LocationType.Ground),
+          active: locationType == HiveLocationType.Ground),
       HiveLocationTypeButton(
           label: t.hiveLocationTree,
           icon: const Icon(TREE_ICON),
           onPressed: () {
-            _onToggle(LocationType.Tree);
+            _onToggle(HiveLocationType.Tree);
           },
-          active: locationType == LocationType.Tree),
+          active: locationType == HiveLocationType.Tree),
     ]);
   }
 }

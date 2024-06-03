@@ -12,6 +12,7 @@ import 'package:app/models/taxonomy_species.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/error_card.dart';
+import 'package:app/ui/widgets/hive_locations_aggregate.dart';
 import 'package:app/ui/widgets/refresh_provider.dart';
 import 'package:app/ui/widgets/scaffold.dart';
 import 'package:app/ui/widgets/sightings_tiles.dart';
@@ -141,6 +142,8 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
             SpeciesUsesAggregate(id: species.id),
             const SizedBox(height: 20.0),
             SpeciesLocalNamesAggregate(id: species.id),
+            const SizedBox(height: 20.0),
+            HiveLocationsAggregate(id: species.id),
             const SizedBox(height: 20.0),
           ])),
           RelatedSightings(

@@ -13,7 +13,7 @@ const BUILDING_RESULTS_KEY = 'locationBuilding';
 const GROUND_RESULTS_KEY = 'locationGround';
 const TREE_RESULTS_KEY = 'locationTree';
 
-enum LocationType {
+enum HiveLocationType {
   Box,
   Building,
   Ground,
@@ -24,17 +24,17 @@ enum LocationType {
  * Generic location methods across all location types
  */
 
-class Location {
+class HiveLocation {
   final DocumentId id;
   DocumentViewId viewId;
 
-  final LocationType type;
+  final HiveLocationType type;
   final DocumentId sightingId;
   String? treeSpecies;
   double? height;
   double? diameter;
 
-  Location({
+  HiveLocation({
     required this.id,
     required this.viewId,
     required this.type,
@@ -44,12 +44,13 @@ class Location {
     this.diameter,
   });
 
-  factory Location.fromJson(LocationType type, Map<String, dynamic> result) {
+  factory HiveLocation.fromJson(
+      HiveLocationType type, Map<String, dynamic> result) {
     String? treeSpecies;
     double? height;
     double? diameter;
 
-    if (type == LocationType.Tree) {
+    if (type == HiveLocationType.Tree) {
       // Values are not nullable in p2panda schemas
       treeSpecies = result['fields']['tree_species'] as String;
       height = result['fields']['height'] as double;
@@ -69,7 +70,7 @@ class Location {
       }
     }
 
-    return Location(
+    return HiveLocation(
       id: result['meta']['documentId'] as DocumentId,
       viewId: result['meta']['viewId'] as DocumentViewId,
       type: type,
@@ -81,29 +82,29 @@ class Location {
     );
   }
 
-  static Future<Location> create(
-      {required LocationType type,
+  static Future<HiveLocation> create(
+      {required HiveLocationType type,
       required DocumentId sightingId,
       String? treeSpecies,
       double? height,
       double? diameter}) async {
     DocumentViewId? viewId;
 
-    if (type == LocationType.Tree) {
+    if (type == HiveLocationType.Tree) {
       viewId = await createLocationTree(
           sightingId: sightingId,
           treeSpecies: treeSpecies,
           height: height,
           diameter: diameter);
-    } else if (type == LocationType.Box) {
+    } else if (type == HiveLocationType.Box) {
       viewId = await createLocationBox(sightingId: sightingId);
-    } else if (type == LocationType.Ground) {
+    } else if (type == HiveLocationType.Ground) {
       viewId = await createLocationGround(sightingId: sightingId);
-    } else if (type == LocationType.Building) {
+    } else if (type == HiveLocationType.Building) {
       viewId = await createLocationBuilding(sightingId: sightingId);
     }
 
-    return Location(
+    return HiveLocation(
       id: viewId!,
       viewId: viewId,
       type: type,
@@ -116,7 +117,7 @@ class Location {
 
   Future<DocumentViewId> update(
       {String? treeSpecies, double? height, double? diameter}) async {
-    if (type != LocationType.Tree) {
+    if (type != HiveLocationType.Tree) {
       throw "Can only update locations of type 'tree'";
     }
 
@@ -139,13 +140,13 @@ class Location {
   }
 
   Future<DocumentViewId> delete() async {
-    if (type == LocationType.Tree) {
+    if (type == HiveLocationType.Tree) {
       viewId = await deleteLocationTree(viewId);
-    } else if (type == LocationType.Box) {
+    } else if (type == HiveLocationType.Box) {
       viewId = await deleteLocationBox(viewId);
-    } else if (type == LocationType.Ground) {
+    } else if (type == HiveLocationType.Ground) {
       viewId = await deleteLocationGround(viewId);
-    } else if (type == LocationType.Building) {
+    } else if (type == HiveLocationType.Building) {
       viewId = await deleteLocationBuilding(viewId);
     }
 
@@ -157,15 +158,16 @@ class Location {
   }
 }
 
-String locationQuery(DocumentId sightingId) {
+String locationQuery(List<DocumentId> sightingIds) {
   const locationBoxSchemaId = SchemaIds.bee_attributes_location_box;
   const locationBuildingSchemaId = SchemaIds.bee_attributes_location_building;
   const locationGroundSchemaId = SchemaIds.bee_attributes_location_ground;
   const locationTreeSchemaId = SchemaIds.bee_attributes_location_tree;
 
+  String sightingsString = sightingIds.map((id) => '''"$id"''').join(", ");
   String parameters = '''
     filter: {
-      sighting: { eq: "$sightingId" },
+      sighting: { in: [$sightingsString] },
     },
   ''';
 
@@ -205,13 +207,13 @@ String locationQuery(DocumentId sightingId) {
 /// this method deletes _all known_ hive locations to that sighting.
 Future<void> deleteAllLocations(DocumentId sightingId) async {
   final result = await client
-      .query(QueryOptions(document: gql(locationQuery(sightingId))));
+      .query(QueryOptions(document: gql(locationQuery([sightingId]))));
 
   if (result.hasException) {
     throw "Deleting all hive locations related to sighting failed: ${result.exception}";
   }
 
-  List<Location> locations =
+  List<HiveLocation> locations =
       getAllLocationsFromResult(result.data as Map<String, dynamic>);
 
   for (var location in locations) {
@@ -225,58 +227,155 @@ Future<void> deleteAllLocations(DocumentId sightingId) async {
 /// location types. This method will automatically select one of them based
 /// on deterministic rules as the UI can only display one location at a time
 /// for sightings.
-Location? getLocationFromResults(Map<String, dynamic> result) {
+HiveLocation? getLocationFromResults(Map<String, dynamic> result) {
   var boxLocations = result[BOX_RESULTS_KEY]['documents'] as List;
   var buildingLocations = result[BUILDING_RESULTS_KEY]['documents'] as List;
   var groundLocations = result[GROUND_RESULTS_KEY]['documents'] as List;
   var treeLocations = result[TREE_RESULTS_KEY]['documents'] as List;
 
   if (boxLocations.isNotEmpty) {
-    return Location.fromJson(
-        LocationType.Box, boxLocations[0] as Map<String, dynamic>);
+    return HiveLocation.fromJson(
+        HiveLocationType.Box, boxLocations[0] as Map<String, dynamic>);
   }
 
   if (buildingLocations.isNotEmpty) {
-    return Location.fromJson(
-        LocationType.Building, buildingLocations[0] as Map<String, dynamic>);
+    return HiveLocation.fromJson(HiveLocationType.Building,
+        buildingLocations[0] as Map<String, dynamic>);
   }
 
   if (groundLocations.isNotEmpty) {
-    return Location.fromJson(
-        LocationType.Ground, groundLocations[0] as Map<String, dynamic>);
+    return HiveLocation.fromJson(
+        HiveLocationType.Ground, groundLocations[0] as Map<String, dynamic>);
   }
 
   if (treeLocations.isNotEmpty) {
-    return Location.fromJson(
-        LocationType.Tree, treeLocations[0] as Map<String, dynamic>);
+    return HiveLocation.fromJson(
+        HiveLocationType.Tree, treeLocations[0] as Map<String, dynamic>);
   }
 
   return null;
 }
 
-List<Location> getAllLocationsFromResult(Map<String, dynamic> result) {
-  List<Location> list = [];
+List<HiveLocation> getAllLocationsFromResult(Map<String, dynamic> result) {
+  List<HiveLocation> list = [];
 
   for (var item in result[BOX_RESULTS_KEY]['documents'] as List) {
-    list.add(Location.fromJson(LocationType.Box, item as Map<String, dynamic>));
+    list.add(HiveLocation.fromJson(
+        HiveLocationType.Box, item as Map<String, dynamic>));
   }
 
   for (var item in result[BUILDING_RESULTS_KEY]['documents'] as List) {
-    list.add(
-        Location.fromJson(LocationType.Building, item as Map<String, dynamic>));
+    list.add(HiveLocation.fromJson(
+        HiveLocationType.Building, item as Map<String, dynamic>));
   }
 
   for (var item in result[GROUND_RESULTS_KEY]['documents'] as List) {
-    list.add(
-        Location.fromJson(LocationType.Ground, item as Map<String, dynamic>));
+    list.add(HiveLocation.fromJson(
+        HiveLocationType.Ground, item as Map<String, dynamic>));
   }
 
   for (var item in result[TREE_RESULTS_KEY]['documents'] as List) {
-    list.add(
-        Location.fromJson(LocationType.Tree, item as Map<String, dynamic>));
+    list.add(HiveLocation.fromJson(
+        HiveLocationType.Tree, item as Map<String, dynamic>));
   }
 
   return list;
+}
+
+class AggregatedHiveLocations {
+  int boxCounter = 0;
+  int buildingCounter = 0;
+  int groundCounter = 0;
+  int treeCounter = 0;
+  List<String> treeSpecies = [];
+  double treeAverageHeights = 0.0;
+  double treeMinHeight = 0.0;
+  double treeMaxHeight = 0.0;
+  double treeAverageDiameters = 0.0;
+  double treeMinDiameter = 0.0;
+  double treeMaxDiameter = 0.0;
+}
+
+Future<AggregatedHiveLocations> getAggregatedHiveLocations(
+    DocumentId speciesId) async {
+  // Get all sightings related to species first
+  final jsonDocuments = await paginateOverEverything(
+      SchemaIds.bee_sighting, "meta { documentId }",
+      filter: 'species: { in: ["$speciesId"] }');
+
+  List<DocumentId> sightingIds = [];
+  for (var json in jsonDocuments) {
+    sightingIds.add(json['meta']['documentId'] as DocumentId);
+  }
+
+  // Get all hive locations from all these sightings
+  final response = await client
+      .query(QueryOptions(document: gql(locationQuery(sightingIds))));
+
+  if (response.hasException) {
+    throw response.exception!;
+  }
+
+  final hiveLocations =
+      getAllLocationsFromResult(response.data as Map<String, dynamic>);
+
+  // Derive aggregated informations
+  var aggregated = AggregatedHiveLocations();
+  double heightSum = 0.0;
+  double diameterSum = 0.0;
+  int heightDataPointsNum = 0;
+  int diameterDataPointsNum = 0;
+
+  for (var location in hiveLocations) {
+    if (location.type == HiveLocationType.Box) {
+      aggregated.boxCounter += 1;
+    } else if (location.type == HiveLocationType.Building) {
+      aggregated.buildingCounter += 1;
+    } else if (location.type == HiveLocationType.Ground) {
+      aggregated.groundCounter += 1;
+    } else if (location.type == HiveLocationType.Tree) {
+      aggregated.treeCounter += 1;
+
+      if (location.diameter != null && location.diameter! > 0.0) {
+        diameterSum += location.diameter!;
+        diameterDataPointsNum += 1;
+
+        if (location.diameter! > aggregated.treeMaxDiameter) {
+          aggregated.treeMaxDiameter = location.diameter!;
+        }
+
+        if (location.diameter! < aggregated.treeMinDiameter ||
+            aggregated.treeMinDiameter == 0.0) {
+          aggregated.treeMinDiameter = location.diameter!;
+        }
+      }
+
+      if (location.height != null && location.height! > 0.0) {
+        heightSum += location.height!;
+        heightDataPointsNum += 1;
+
+        if (location.height! > aggregated.treeMaxHeight) {
+          aggregated.treeMaxHeight = location.height!;
+        }
+
+        if (location.height! < aggregated.treeMinHeight ||
+            aggregated.treeMinHeight == 0.0) {
+          aggregated.treeMinHeight = location.height!;
+        }
+      }
+
+      if (location.treeSpecies != null &&
+          location.treeSpecies!.isNotEmpty &&
+          !aggregated.treeSpecies.contains(location.treeSpecies)) {
+        aggregated.treeSpecies.add(location.treeSpecies!);
+      }
+    }
+  }
+
+  aggregated.treeAverageDiameters = diameterSum / diameterDataPointsNum;
+  aggregated.treeAverageHeights = heightSum / heightDataPointsNum;
+
+  return aggregated;
 }
 
 /*
