@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/models/used_for.dart';
-import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/error_card.dart';
 import 'package:app/ui/widgets/tag_item.dart';
 
@@ -24,15 +23,6 @@ class _UsedForTagSelectorState extends State<UsedForTagSelector> {
         future: getAllDeduplicatedUsedFor(),
         initialData: const [],
         builder: (BuildContext context, AsyncSnapshot<List<UsedFor>> snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return Center(
-                child: Container(
-                    padding: const EdgeInsets.all(30.0),
-                    child: const CircularProgressIndicator(
-                      color: MeliColors.black,
-                    )));
-          }
-
           if (snapshot.hasError) {
             return ErrorCard(
                 message: AppLocalizations.of(context)!
