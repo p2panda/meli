@@ -58,6 +58,10 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
   /// Flag indicating that we're currently waiting for an network request.
   bool _isLoading = false;
 
+  /// Keep a reference to the Autocomplete focus node instance, so we can
+  /// control its focus state from outside of it.
+  late FocusNode textInputFocusNode;
+
   @override
   void initState() {
     super.initState();
@@ -120,18 +124,21 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
         fieldViewBuilder: (BuildContext context,
             TextEditingController controller,
             FocusNode focusNode,
-            // NOTE: We do not use "onFieldSubmitted" here as the flutter
-            // "Autocomplete" element automatically will then select the first
-            // value, potentially overriding manually entered values, which is
-            // not the intended behaviour. Read more about it here:
-            // https://stackoverflow.com/questions/76572748/flutter-autocomplete-how-to-set-selected-option-to-null
             VoidCallback onFieldSubmitted) {
+          textInputFocusNode = focusNode;
+
           return TextFormField(
             autofocus: widget.autofocus,
             autocorrect: false,
             enableSuggestions: false,
             onChanged: _onChanged,
-            onEditingComplete: _onSubmit,
+            onEditingComplete: () {
+              // Remove focus from text-field, this will hide the keyboard
+              focusNode.unfocus();
+
+              // Submit the value to the parent widget
+              _onSubmit();
+            },
             // Scroll down a bit more to make sure the keyboard doesn't hide
             // the autocomplete options
             scrollPadding: const EdgeInsets.only(bottom: 200.0),
@@ -157,6 +164,13 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
             ),
             controller: controller,
             focusNode: focusNode,
+            onFieldSubmitted: (String value) {
+              // NOTE: We do not call "onFieldSubmitted" here as the flutter
+              // "Autocomplete" element automatically will then select the first
+              // value, potentially overriding manually entered values, which is
+              // not the intended behaviour. Read more about it here:
+              // https://stackoverflow.com/questions/76572748/flutter-autocomplete-how-to-set-selected-option-to-null
+            },
           );
         },
         optionsViewBuilder: (BuildContext context, onSelected,
@@ -213,6 +227,10 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
           return options;
         },
         onSelected: (AutocompleteItem selection) {
+          // Unfocus text field when user clicked on an option, this will hide
+          // the keyboard
+          textInputFocusNode.unfocus();
+
           if (widget.onChanged != null) {
             widget.onChanged!.call(selection);
           }
