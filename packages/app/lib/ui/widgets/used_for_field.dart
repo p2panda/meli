@@ -98,6 +98,7 @@ class _UsedForFieldState extends State<UsedForField> {
 
   void _onAddedTag(String value) async {
     await _createUse(value);
+    _toggleEditMode();
   }
 
   @override
