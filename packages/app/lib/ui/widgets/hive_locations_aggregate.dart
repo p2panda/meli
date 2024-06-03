@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:app/io/p2panda/publish.dart';
-import 'package:app/models/location.dart';
+import 'package:app/models/hive_location.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/card.dart';
 import 'package:app/ui/widgets/card_header.dart';

@@ -8,7 +8,7 @@ import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/base.dart';
 import 'package:app/models/blobs.dart';
 import 'package:app/models/local_names.dart';
-import 'package:app/models/location.dart';
+import 'package:app/models/hive_location.dart';
 import 'package:app/models/schema_ids.dart';
 import 'package:app/models/species.dart';
 import 'package:app/models/used_for.dart';

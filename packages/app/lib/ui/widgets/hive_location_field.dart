@@ -5,7 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:app/io/p2panda/publish.dart';
-import 'package:app/models/location.dart';
+import 'package:app/models/hive_location.dart';
 import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/error_card.dart';
