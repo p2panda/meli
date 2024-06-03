@@ -9,6 +9,7 @@ import 'package:app/ui/screens/create_sighting.dart';
 import 'package:app/ui/screens/settings.dart';
 import 'package:app/ui/screens/sighting.dart';
 import 'package:app/ui/screens/species.dart';
+import 'package:app/ui/screens/splash.dart';
 
 class RoutePath {
   final String name;
@@ -29,10 +30,7 @@ class RoutePaths {
 }
 
 final router = GoRouter(routes: [
-  // The splash route is just a dummy which gets loaded in the background while
-  // the native splash screen is shown. We have this in place to not have any
-  // app logic running yet while everything else is bootstrapping.
-  _Route(RoutePaths.splash, (_) => Container(color: Colors.white)),
+  _Route(RoutePaths.splash, (_) => const SplashScreen()),
   _Route(RoutePaths.settings, (_) => const SettingsScreen()),
   _Route(RoutePaths.allSightings, (_) => AllSightingsScreen()),
   _Route(RoutePaths.allSpecies, (_) => AllSpeciesScreen()),

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:app/app.dart';
 import 'package:app/io/p2panda/node.dart';
@@ -11,13 +10,6 @@ import 'package:app/models/schema_ids.dart';
 import 'package:app/router.dart';
 
 void main() async {
-  // Wait until we've established connection to native Flutter backend. We need
-  // to call this when we want to run native code before we call `runApp`
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-
-  // Keep native splash screen up until app has finished bootstrapping
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-
   // Start application
   runApp(const MeliApp());
 
@@ -26,9 +18,6 @@ void main() async {
 
   // Go to main screen
   router.go(RoutePaths.allSightings.path);
-
-  // Remove splash screen when bootstrap is complete
-  FlutterNativeSplash.remove();
 }
 
 Future<void> bootstrapNode() async {
