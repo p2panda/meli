@@ -50,3 +50,9 @@ flutter:
 
   # Enable code generation for localization
   generate: true
+
+# Run "dart run flutter_native_splash:create" in "app" folder after applying changes here
+flutter_native_splash:
+  color: "#ffffff"
+  android_12:
+    color: "#ffffff"
