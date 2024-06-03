@@ -53,7 +53,7 @@ class _HiveLocationFieldState extends State<HiveLocationField> {
         isEditMode: isEditMode,
         child: Query(
             options:
-                QueryOptions(document: gql(locationQuery(widget.sightingId))),
+                QueryOptions(document: gql(locationQuery([widget.sightingId]))),
             builder: (result, {VoidCallback? refetch, FetchMore? fetchMore}) {
               if (result.hasException) {
                 return ErrorCard(message: result.exception.toString());

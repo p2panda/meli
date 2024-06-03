@@ -158,15 +158,16 @@ class HiveLocation {
   }
 }
 
-String locationQuery(DocumentId sightingId) {
+String locationQuery(List<DocumentId> sightingIds) {
   const locationBoxSchemaId = SchemaIds.bee_attributes_location_box;
   const locationBuildingSchemaId = SchemaIds.bee_attributes_location_building;
   const locationGroundSchemaId = SchemaIds.bee_attributes_location_ground;
   const locationTreeSchemaId = SchemaIds.bee_attributes_location_tree;
 
+  String sightingsString = sightingIds.map((id) => '''"$id"''').join(", ");
   String parameters = '''
     filter: {
-      sighting: { eq: "$sightingId" },
+      sighting: { in: [$sightingsString] },
     },
   ''';
 
@@ -206,7 +207,7 @@ String locationQuery(DocumentId sightingId) {
 /// this method deletes _all known_ hive locations to that sighting.
 Future<void> deleteAllLocations(DocumentId sightingId) async {
   final result = await client
-      .query(QueryOptions(document: gql(locationQuery(sightingId))));
+      .query(QueryOptions(document: gql(locationQuery([sightingId]))));
 
   if (result.hasException) {
     throw "Deleting all hive locations related to sighting failed: ${result.exception}";
@@ -310,7 +311,28 @@ class AggregatedHiveLocations {
 }
 
 Future<AggregatedHiveLocations> getAggregatedHiveLocations(
-    DocumentId sightingId) async {
+    DocumentId speciesId) async {
+  // Get all sightings related to species first
+  final jsonDocuments = await paginateOverEverything(
+      SchemaIds.bee_sighting, "meta { documentId }",
+      filter: 'species: { in: ["$speciesId"] }');
+
+  List<DocumentId> sightingIds = [];
+  for (var json in jsonDocuments) {
+    sightingIds.add(json['meta']['documentId'] as DocumentId);
+  }
+
+  // Get all hive locations from all these sightings
+  final response = await client
+      .query(QueryOptions(document: gql(locationQuery(sightingIds))));
+
+  if (response.hasException) {
+    throw response.exception!;
+  }
+
+  final hiveLocations =
+      getAllLocationsFromResult(response.data as Map<String, dynamic>);
+
   return AggregatedHiveLocations();
 }
 
