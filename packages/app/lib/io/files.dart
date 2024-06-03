@@ -9,3 +9,8 @@ Future<String> get applicationSupportDirectory async {
   final directory = await provider.getApplicationSupportDirectory();
   return directory.path;
 }
+
+Future<String> get temporaryDirectory async {
+  final directory = await provider.getTemporaryDirectory();
+  return directory.path;
+}

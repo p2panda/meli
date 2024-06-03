@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:app/io/images.dart';
 import 'package:app/io/p2panda/documents.dart';
 import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/blobs.dart';
@@ -112,7 +113,9 @@ class _CreateSightingScreenState extends State<CreateSightingScreen> {
       // Publish each image as a blob on the node and collect ids in a list
       List<DocumentViewId> imageIds = [];
       for (final image in images) {
-        final imageId = await publishBlob(image);
+        final tempFile = await removeExifAndCompress(image);
+        final imageId = await publishBlob(tempFile);
+        await tempFile.delete();
         imageIds.add(imageId);
       }
 
