@@ -15,7 +15,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_native_splash: 2.2.17
+  flutter_native_splash: 2.4.0
   flutter_scroll_shadow: 1.2.4
   geolocator: 11.0.0
   go_router: 14.0.2
@@ -50,3 +50,9 @@ flutter:
 
   # Enable code generation for localization
   generate: true
+
+# Run "dart run flutter_native_splash:create" in "app" folder after applying changes here
+flutter_native_splash:
+  color: "#ffffff"
+  android_12:
+    color: "#ffffff"

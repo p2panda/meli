@@ -140,8 +140,10 @@ class _BouncyBeeState extends State<BouncyBee>
       },
       child: SlideTransition(
         position: _flyingBeeAnimation,
-        child:
-            const Center(child: Text("🐝", style: TextStyle(fontSize: 50.0))),
+        child: Image.asset(
+          "assets/images/meliponini.png",
+          width: 50,
+        ),
       ),
     );
   }
