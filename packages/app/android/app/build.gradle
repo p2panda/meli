@@ -22,6 +22,12 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     namespace "com.p2panda.app"
     // Set to mimimum version 33 for `geolocator` package
@@ -54,6 +60,15 @@ android {
         manifestPlaceholders = [applicationLabel: "Meli"]
     }
 
+   signingConfigs {
+       release {
+           keyAlias keystoreProperties['keyAlias']
+           keyPassword keystoreProperties['keyPassword']
+           storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+           storePassword keystoreProperties['storePassword']
+       }
+   }
+
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
@@ -65,10 +80,11 @@ android {
             debuggable true
             manifestPlaceholders = [applicationLabel: "Meli (Profile)"]
         }
+        // We do not intend to upload the .apk to any "App Store" but still sign releases
+        // with our developer keys to authenticate the official builds.
+        // Read more: https://docs.flutter.dev/deployment/android#configure-signing-in-gradle
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 
