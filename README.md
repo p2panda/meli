@@ -65,6 +65,15 @@ melos analyze
 melos format
 ```
 
+### Release
+
+> ⚠️ Make sure you have the `/packages/app/android/key.properties` file and key store file in place with the [signing keys](https://docs.flutter.dev/deployment/android#sign-the-app) for release.
+
+```bash
+# Build, obfuscate and sign releases for all architectures
+melos release
+```
+
 ### FFI packages
 
 To bring [`p2panda-rs`] and [`aquadoggo`] into a native Android environment
