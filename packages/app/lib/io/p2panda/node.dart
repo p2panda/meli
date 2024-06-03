@@ -7,7 +7,8 @@ import 'package:app/io/p2panda/p2panda.dart';
 import 'package:app/models/schema_ids.dart';
 import 'package:app/utils/sleep.dart';
 
-const List<String> relayAddresses = bool.hasEnvironment("RELAY_ADDRESS")
+const List<String> relayAddresses = (bool.hasEnvironment("RELAY_ADDRESS") &&
+        String.fromEnvironment("RELAY_ADDRESS") != "")
     ? [String.fromEnvironment("RELAY_ADDRESS")]
     : [];
 
