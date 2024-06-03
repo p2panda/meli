@@ -22,6 +22,7 @@
     "hiveLocationTreeHeight": "Height",
     "hiveLocationTreeSpecies": "Tree Species",
     "hiveLocationTreeSpeciesHint": "Enter tree species here",
+    "hiveLocationsAggregateNoData": "No data available",
     "imageDeleteAlertBody": "Are you sure you want to delete this image?",
     "imageDeleteAlertCancel": "No",
     "imageDeleteAlertConfirm": "Yes",
