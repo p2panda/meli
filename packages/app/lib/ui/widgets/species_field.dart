@@ -64,6 +64,9 @@ class _SpeciesFieldState extends State<SpeciesField> {
     }).toList(growable: false);
   }
 
+  /// Did data get changed?
+  bool _dirty = false;
+
   /// Flag indicating if we're currently editing or not.
   bool _isEditMode = false;
 
@@ -243,6 +246,13 @@ class _SpeciesFieldState extends State<SpeciesField> {
   }
 
   void _reset() {
+    // Do not reload everything if nothing has been changed
+    if (!_dirty) {
+      return;
+    }
+
+    _dirty = false;
+
     setState(() {
       _taxonomy = List.filled(9, null, growable: false);
       _showUpToRank = 1;
@@ -287,6 +297,8 @@ class _SpeciesFieldState extends State<SpeciesField> {
         rank['schemaId']!,
         _taxonomy[index],
         onChanged: (AutocompleteItem value) {
+          _dirty = true;
+
           // Set current state to the edited value
           if (value.value == '') {
             _taxonomy[index] = null;
