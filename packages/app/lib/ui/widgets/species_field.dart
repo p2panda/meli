@@ -297,6 +297,13 @@ class _SpeciesFieldState extends State<SpeciesField> {
         rank['label']!,
         rank['schemaId']!,
         _taxonomy[index],
+        onSubmit: () {
+          // Automatically submit final value if there's nothing more to
+          // fill out
+          if (_showUpToRank - 1 == index) {
+            _handleSubmit();
+          }
+        },
         onChanged: (AutocompleteItem value) {
           _dirty = true;
 
@@ -409,9 +416,10 @@ class Rank extends StatefulWidget {
   final AutocompleteItem? current;
   final String title;
   final OnChanged onChanged;
+  final Function onSubmit;
 
   const Rank(this.title, this.schemaId, this.current,
-      {super.key, required this.onChanged});
+      {super.key, required this.onChanged, required this.onSubmit});
 
   @override
   State<Rank> createState() => _RankState();
@@ -425,6 +433,9 @@ class _RankState extends State<Rank> {
       TaxonomyAutocomplete(
           schemaId: widget.schemaId,
           initialValue: widget.current,
+          onSubmit: () {
+            widget.onSubmit.call();
+          },
           onChanged: (AutocompleteItem value) {
             widget.onChanged.call(value);
           }),
