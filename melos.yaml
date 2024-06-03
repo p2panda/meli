@@ -4,11 +4,6 @@ repository: https://github.com/p2panda/meli
 packages:
   - packages/*
 
-command:
-  version:
-    hooks:
-      preCommit: bash scripts/version.sh
-
 scripts:
   analyze:
     exec: flutter analyze .
