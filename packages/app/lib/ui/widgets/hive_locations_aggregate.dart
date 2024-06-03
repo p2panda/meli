@@ -115,7 +115,7 @@ class HiveLocationAggregateItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
 
-    return Row(children: [
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
         padding: const EdgeInsets.only(right: 20.0),
         child: Icon(icon, size: 40, color: MeliColors.black),
