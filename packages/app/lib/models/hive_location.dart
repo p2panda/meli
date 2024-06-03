@@ -283,31 +283,17 @@ List<HiveLocation> getAllLocationsFromResult(Map<String, dynamic> result) {
 }
 
 class AggregatedHiveLocations {
-  final int boxCounter;
-  final int buildingCounter;
-  final int groundCounter;
-  final int treeCounter;
-  final List<String> treeSpecies;
-  final double treeAverageHeights;
-  final double treeMinHeight;
-  final double treeMaxHeight;
-  final double treeAverageDiameters;
-  final double treeMinDiameter;
-  final double treeMaxDiameter;
-
-  AggregatedHiveLocations({
-    this.boxCounter = 0,
-    this.buildingCounter = 0,
-    this.groundCounter = 0,
-    this.treeCounter = 0,
-    this.treeSpecies = const [],
-    this.treeAverageHeights = 0.0,
-    this.treeMinHeight = 0.0,
-    this.treeMaxHeight = 0.0,
-    this.treeAverageDiameters = 0.0,
-    this.treeMinDiameter = 0.0,
-    this.treeMaxDiameter = 0.0,
-  });
+  int boxCounter = 0;
+  int buildingCounter = 0;
+  int groundCounter = 0;
+  int treeCounter = 0;
+  List<String> treeSpecies = [];
+  double treeAverageHeights = 0.0;
+  double treeMinHeight = 0.0;
+  double treeMaxHeight = 0.0;
+  double treeAverageDiameters = 0.0;
+  double treeMinDiameter = 0.0;
+  double treeMaxDiameter = 0.0;
 }
 
 Future<AggregatedHiveLocations> getAggregatedHiveLocations(
@@ -333,7 +319,61 @@ Future<AggregatedHiveLocations> getAggregatedHiveLocations(
   final hiveLocations =
       getAllLocationsFromResult(response.data as Map<String, dynamic>);
 
-  return AggregatedHiveLocations();
+  // Derive aggregated informations
+  var aggregated = AggregatedHiveLocations();
+  double heightSum = 0.0;
+  double diameterSum = 0.0;
+  int heightDataPointsNum = 0;
+  int diameterDataPointsNum = 0;
+
+  for (var location in hiveLocations) {
+    if (location.type == HiveLocationType.Box) {
+      aggregated.boxCounter += 1;
+    } else if (location.type == HiveLocationType.Building) {
+      aggregated.buildingCounter += 1;
+    } else if (location.type == HiveLocationType.Ground) {
+      aggregated.groundCounter += 1;
+    } else if (location.type == HiveLocationType.Tree) {
+      aggregated.treeCounter += 1;
+
+      if (location.diameter != null && location.diameter! > 0.0) {
+        diameterSum += location.diameter!;
+        diameterDataPointsNum += 1;
+
+        if (location.diameter! > aggregated.treeMaxDiameter) {
+          aggregated.treeMaxDiameter = location.diameter!;
+        }
+
+        if (location.diameter! < aggregated.treeMinDiameter) {
+          aggregated.treeMinDiameter = location.diameter!;
+        }
+      }
+
+      if (location.height != null && location.height! > 0.0) {
+        heightSum += location.height!;
+        heightDataPointsNum += 1;
+
+        if (location.height! > aggregated.treeMaxHeight) {
+          aggregated.treeMaxHeight = location.height!;
+        }
+
+        if (location.height! < aggregated.treeMinHeight) {
+          aggregated.treeMinHeight = location.height!;
+        }
+      }
+
+      if (location.treeSpecies != null &&
+          location.treeSpecies!.isNotEmpty &&
+          !aggregated.treeSpecies.contains(location.treeSpecies)) {
+        aggregated.treeSpecies.add(location.treeSpecies!);
+      }
+    }
+  }
+
+  aggregated.treeAverageDiameters = diameterSum / diameterDataPointsNum;
+  aggregated.treeAverageHeights = heightSum / heightDataPointsNum;
+
+  return aggregated;
 }
 
 /*
