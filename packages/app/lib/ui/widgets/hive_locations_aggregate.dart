@@ -75,6 +75,7 @@ class HiveLocationsAggregate extends StatelessWidget {
                           title: t.hiveLocationTree,
                           counter: data.treeCounter,
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               if (heightStr.isNotEmpty)
                                 Text(t.hiveLocationsAggregateTreeHeight(
