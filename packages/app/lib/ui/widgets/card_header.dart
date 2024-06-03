@@ -27,6 +27,7 @@ class MeliCardHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 72.0,
       decoration: const BoxDecoration(
           color: Colors.white,
           border: Border.fromBorderSide(BorderSide(
