@@ -48,16 +48,26 @@ class _LocalNameAutocompleteState extends State<LocalNameAutocomplete> {
             final List<dynamic> documents =
                 result.data![DEFAULT_RESULTS_KEY]['documents'] as List<dynamic>;
 
-            final List<AutocompleteItem> options = documents.map((document) {
+            final List<AutocompleteItem> options = [];
+            Set<String> seen = {};
+
+            for (var document in documents) {
               final localName =
                   LocalName.fromJson(document as Map<String, dynamic>);
-              return AutocompleteItem(
+
+              // De-duplicate results with same "name" value
+              if (seen.contains(localName.name)) {
+                continue;
+              }
+
+              seen.add(localName.name);
+              options.add(AutocompleteItem(
                   value: localName.name,
                   documentId: localName.id,
-                  viewId: localName.viewId);
-            }).toList();
+                  viewId: localName.viewId));
+            }
 
-            return options;
+            return options.toList();
           } catch (error) {
             print(error.toString());
             return [];

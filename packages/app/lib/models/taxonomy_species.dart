@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:p2panda/p2panda.dart';
 
+import 'package:app/io/graphql/graphql.dart';
 import 'package:app/io/p2panda/publish.dart' as publish;
 import 'package:app/io/p2panda/schemas.dart';
 import 'package:app/models/base.dart';
@@ -26,8 +28,8 @@ class BaseTaxonomy {
 
   Future<publish.DocumentViewId> update(
       {required String name, publish.DocumentId? parentId}) async {
-    viewId = await updateTaxon(schemaId, viewId,
-        name: name, parentId: parentId);
+    viewId =
+        await updateTaxon(schemaId, viewId, name: name, parentId: parentId);
     this.name = name;
     return viewId;
   }
@@ -235,13 +237,18 @@ String getTaxonomy(int rank, publish.DocumentId documentId) {
   ''';
 }
 
-String searchTaxon(SchemaId schemaId, String query) {
+String searchTaxon(SchemaId schemaId, String query,
+    {bool strict = false, publish.DocumentId? parentId}) {
+  final op = strict ? "eq" : "contains";
+  final parentStr = parentId != null ? "parent: { eq: \"$parentId\" }," : "";
+
   return '''
     query SearchTaxon {
       $DEFAULT_RESULTS_KEY: all_$schemaId(
         first: 5,
         filter: {
-          name: { contains: "$query" },
+          name: { $op: "$query" },
+          $parentStr
         },
         orderBy: "name",
         orderDirection: ASC,
@@ -256,6 +263,47 @@ String searchTaxon(SchemaId schemaId, String query) {
 
 Future<publish.DocumentViewId> createTaxon(SchemaId schemaId,
     {required String name, publish.DocumentId? parentId}) async {
+  List<(String, OperationValue)> fields = [
+    ("name", OperationValue.string(name)),
+  ];
+
+  if (parentId != null) {
+    final rank = RANKS.firstWhere((element) => element['schemaId'] == schemaId);
+    if (rank['parent'] != null) {
+      fields.add((rank['parent']!, OperationValue.relation(parentId)));
+    }
+  }
+
+  return await publish.create(schemaId, fields);
+}
+
+/// Safely create a new taxon instance if we're not aware yet of one with
+/// the same "name" and "parent" value.
+Future<publish.DocumentViewId> createDeduplicatedTaxon(SchemaId schemaId,
+    {required String name, publish.DocumentId? parentId}) async {
+  // Check if duplicate with same name and parent exists
+  publish.DocumentId? parentIdFilter;
+  if (parentId != null) {
+    final rank = RANKS.firstWhere((element) => element['schemaId'] == schemaId);
+    if (rank['parent'] != null) {
+      parentIdFilter = parentId;
+    }
+  }
+
+  final response = await client.query(QueryOptions(
+      document: gql(searchTaxon(schemaId, name,
+          strict: true, parentId: parentIdFilter))));
+
+  if (!response.hasException) {
+    final documents =
+        response.data![DEFAULT_RESULTS_KEY]['documents'] as List<dynamic>;
+
+    if (documents.isNotEmpty) {
+      return documents[0]['meta']['viewId'] as String;
+    }
+  }
+
+  // Create Taxon if duplicate was not found
   List<(String, OperationValue)> fields = [
     ("name", OperationValue.string(name)),
   ];

@@ -29,19 +29,10 @@ class _LocalNameFieldState extends State<LocalNameField> {
   /// Contains changed value when user adjusted the field.
   AutocompleteItem? _dirty;
 
-  void _submit() async {
-    if (_dirty == null) {
-      // Nothing has changed
-    } else if (_dirty!.value == '') {
-      // Value is empty, we consider the user wants to remove it
-      await widget.onUpdate.call(null);
-    } else {
-      // Value gets updated (either with item from database or something new)
-      await widget.onUpdate.call(_dirty!);
-    }
-
-    // Any time the submit method is triggered we toggle out of edit mode
-    _toggleEditMode();
+  void _toggleEditMode() {
+    setState(() {
+      isEditMode = !isEditMode;
+    });
   }
 
   void _cancel() {
@@ -50,22 +41,23 @@ class _LocalNameFieldState extends State<LocalNameField> {
     });
   }
 
-  void _changeValue(AutocompleteItem newValue) async {
-    if (widget.current == null) {
-      // User selected an item when none was selected before
-      _dirty = newValue;
-    } else if (widget.current!.name != newValue.value) {
-      // User selected a different item than before
-      _dirty = newValue;
-    } else {
-      // User selected the same item or still no item as before .. do nothing!
-    }
+  void _onChanged(AutocompleteItem newValue) {
+    _dirty = newValue;
   }
 
-  void _toggleEditMode() {
-    setState(() {
-      isEditMode = !isEditMode;
-    });
+  void _onSubmit() {
+    if (_dirty == null) {
+      // Nothing has changed
+    } else if (_dirty!.value == '') {
+      // Value is empty, we consider the user wants to remove it
+      widget.onUpdate.call(null);
+    } else {
+      // Value gets updated (either with item from database or something new)
+      widget.onUpdate.call(_dirty!);
+    }
+
+    // Any time the submit method is triggered we toggle out of edit mode
+    _toggleEditMode();
   }
 
   Widget _editableValue() {
@@ -79,7 +71,7 @@ class _LocalNameFieldState extends State<LocalNameField> {
         : null;
 
     return LocalNameAutocomplete(
-        initialValue: initialValue, onSubmit: _submit, onChanged: _changeValue);
+        initialValue: initialValue, onSubmit: _onSubmit, onChanged: _onChanged);
   }
 
   @override
@@ -97,7 +89,7 @@ class _LocalNameFieldState extends State<LocalNameField> {
                     Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: ActionButtons(
-                          onAction: _submit,
+                          onAction: _onSubmit,
                           onCancel: _cancel,
                         ))
                   ]

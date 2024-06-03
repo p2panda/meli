@@ -4,6 +4,7 @@ import 'package:gql/ast.dart';
 import 'package:graphql/client.dart';
 import 'package:p2panda/p2panda.dart';
 
+import 'package:app/io/graphql/graphql.dart';
 import 'package:app/io/p2panda/publish.dart';
 import 'package:app/models/base.dart';
 import 'package:app/models/schema_ids.dart';
@@ -53,15 +54,16 @@ String get localNameFields {
   ''';
 }
 
-String searchLocalNamesQuery(String query) {
+String searchLocalNamesQuery(String query, {bool strict = false}) {
   const schemaId = SchemaIds.bee_local_name;
+  final op = strict ? "eq" : "contains";
 
   return '''
     query SearchLocalNames {
       $DEFAULT_RESULTS_KEY: all_$schemaId(
         first: 5,
         filter: {
-          name: { contains: "$query" },
+          name: { $op: "$query" },
         },
         orderBy: "name",
         orderDirection: ASC,
@@ -72,6 +74,24 @@ String searchLocalNamesQuery(String query) {
       }
     }
   ''';
+}
+
+/// Safely create a new local name instance if we're not aware yet of one with
+/// the same "name" value.
+Future<LocalName> createDeduplicatedLocalName(String name) async {
+  final response = await client.query(
+      QueryOptions(document: gql(searchLocalNamesQuery(name, strict: true))));
+
+  if (!response.hasException) {
+    final documents =
+        response.data![DEFAULT_RESULTS_KEY]['documents'] as List<dynamic>;
+
+    if (documents.isNotEmpty) {
+      return LocalName.fromJson(documents[0] as Map<String, dynamic>);
+    }
+  }
+
+  return await LocalName.create(name: name);
 }
 
 Future<DocumentViewId> createLocalName({required String name}) async {
