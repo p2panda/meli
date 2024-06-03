@@ -279,6 +279,24 @@ List<Location> getAllLocationsFromResult(Map<String, dynamic> result) {
   return list;
 }
 
+class AggregatedHiveLocations {
+  final int boxCounter;
+  final int buildingCounter;
+  final int groundCounter;
+  final int treeCounter;
+
+  AggregatedHiveLocations(
+      {this.boxCounter = 0,
+      this.buildingCounter = 0,
+      this.groundCounter = 0,
+      this.treeCounter = 0});
+}
+
+Future<AggregatedHiveLocations> getAggregatedHiveLocations(
+    DocumentId sightingId) async {
+  return AggregatedHiveLocations();
+}
+
 /*
  * Location: Tree
  */
