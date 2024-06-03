@@ -37,7 +37,10 @@ class MeliCardHeader extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(12.0))),
       child: Material(
         color: Colors.white,
+        borderRadius: BorderRadius.circular(8.0),
+        clipBehavior: Clip.hardEdge,
         child: InkWell(
+          splashColor: MeliColors.pink.withOpacity(0.5),
           onTap: onPress,
           child: Container(
             alignment: AlignmentDirectional.centerStart,
