@@ -64,8 +64,9 @@ class _SpeciesFieldState extends State<SpeciesField> {
     }).toList(growable: false);
   }
 
-  /// Did data get changed?
-  bool _dirty = false;
+  /// Do we need to to request data from the node? Needs to be true for initial
+  /// load.
+  bool _dirty = true;
 
   /// Flag indicating if we're currently editing or not.
   bool _isEditMode = false;
