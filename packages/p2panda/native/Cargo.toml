@@ -12,7 +12,7 @@ flutter_rust_bridge_codegen = "1.82.6"
 [dependencies]
 android_logger = "0.13.1"
 anyhow = "1.0.75"
-aquadoggo = "0.7.1"
+aquadoggo = "0.7.2"
 ed25519-dalek = "1.0.1"
 flutter_rust_bridge = "1.82.6"
 log = "0.4.19"
