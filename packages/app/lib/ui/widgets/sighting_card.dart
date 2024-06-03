@@ -79,7 +79,7 @@ class _SightingCardState extends State<SightingCard> {
           isSelected = false;
         });
       },
-      onTap: widget.onTap,
+      onTap: Feedback.wrapForTap(widget.onTap, context),
       child: MeliCard(
           elevation: 0,
           borderWidth: 3.0,

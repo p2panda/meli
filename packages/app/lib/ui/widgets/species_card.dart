@@ -88,7 +88,7 @@ class _SpeciesCardState extends State<SpeciesCard> {
           isSelected = false;
         });
       },
-      onTap: widget.onTap,
+      onTap: Feedback.wrapForTap(widget.onTap, context),
       child: MeliCard(
           elevation: 0,
           borderWidth: 4.0,

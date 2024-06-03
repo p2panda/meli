@@ -23,9 +23,12 @@ class SightingsTiles extends StatefulWidget {
 }
 
 class _SightingsTilesState extends State<SightingsTiles> {
-  Widget _item(Sighting sighting) {
+  Widget _item(Sighting sighting, BuildContext context) {
     return SightingTile(
-        onTap: () => widget.onTap(sighting.id),
+        onTap: () {
+          Feedback.forTap(context);
+          widget.onTap(sighting.id);
+        },
         date: sighting.datetime,
         image: sighting.images.firstOrNull);
   }
@@ -34,7 +37,7 @@ class _SightingsTilesState extends State<SightingsTiles> {
   Widget build(BuildContext context) {
     return PaginationGrid<Sighting>(
         builder: (Sighting sighting) {
-          return _item(sighting);
+          return _item(sighting, context);
         },
         paginator: widget.paginator);
   }
