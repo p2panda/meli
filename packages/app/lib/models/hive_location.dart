@@ -344,7 +344,8 @@ Future<AggregatedHiveLocations> getAggregatedHiveLocations(
           aggregated.treeMaxDiameter = location.diameter!;
         }
 
-        if (location.diameter! < aggregated.treeMinDiameter) {
+        if (location.diameter! < aggregated.treeMinDiameter ||
+            aggregated.treeMinDiameter == 0.0) {
           aggregated.treeMinDiameter = location.diameter!;
         }
       }
@@ -357,7 +358,8 @@ Future<AggregatedHiveLocations> getAggregatedHiveLocations(
           aggregated.treeMaxHeight = location.height!;
         }
 
-        if (location.height! < aggregated.treeMinHeight) {
+        if (location.height! < aggregated.treeMinHeight ||
+            aggregated.treeMinHeight == 0.0) {
           aggregated.treeMinHeight = location.height!;
         }
       }
