@@ -64,6 +64,10 @@ class _SpeciesFieldState extends State<SpeciesField> {
     }).toList(growable: false);
   }
 
+  /// Do we need to to request data from the node? Needs to be true for initial
+  /// load.
+  bool _dirty = true;
+
   /// Flag indicating if we're currently editing or not.
   bool _isEditMode = false;
 
@@ -243,6 +247,13 @@ class _SpeciesFieldState extends State<SpeciesField> {
   }
 
   void _reset() {
+    // Do not reload everything if nothing has been changed
+    if (!_dirty) {
+      return;
+    }
+
+    _dirty = false;
+
     setState(() {
       _taxonomy = List.filled(9, null, growable: false);
       _showUpToRank = 1;
@@ -286,7 +297,16 @@ class _SpeciesFieldState extends State<SpeciesField> {
         rank['label']!,
         rank['schemaId']!,
         _taxonomy[index],
+        onSubmit: () {
+          // Automatically submit final value if there's nothing more to
+          // fill out
+          if (_showUpToRank - 1 == index) {
+            _handleSubmit();
+          }
+        },
         onChanged: (AutocompleteItem value) {
+          _dirty = true;
+
           // Set current state to the edited value
           if (value.value == '') {
             _taxonomy[index] = null;
@@ -396,9 +416,10 @@ class Rank extends StatefulWidget {
   final AutocompleteItem? current;
   final String title;
   final OnChanged onChanged;
+  final Function onSubmit;
 
   const Rank(this.title, this.schemaId, this.current,
-      {super.key, required this.onChanged});
+      {super.key, required this.onChanged, required this.onSubmit});
 
   @override
   State<Rank> createState() => _RankState();
@@ -412,6 +433,9 @@ class _RankState extends State<Rank> {
       TaxonomyAutocomplete(
           schemaId: widget.schemaId,
           initialValue: widget.current,
+          onSubmit: () {
+            widget.onSubmit.call();
+          },
           onChanged: (AutocompleteItem value) {
             widget.onChanged.call(value);
           }),

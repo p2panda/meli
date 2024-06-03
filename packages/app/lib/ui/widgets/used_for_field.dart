@@ -98,6 +98,7 @@ class _UsedForFieldState extends State<UsedForField> {
 
   void _onAddedTag(String value) async {
     await _createUse(value);
+    _toggleEditMode();
   }
 
   @override
@@ -115,7 +116,6 @@ class _UsedForFieldState extends State<UsedForField> {
           isLoading: isLoading,
           isEditMode: isEditMode,
         ),
-        const SizedBox(height: 10.0),
         if (isEditMode)
           ActionButtons(
             actionLabel: t.usedForCardAddButton,
@@ -153,6 +153,7 @@ class AddUsedForDialog extends StatelessWidget {
           child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(bottom: 7.0),
@@ -160,7 +161,7 @@ class AddUsedForDialog extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge),
                   ),
-                  Expanded(
+                  Flexible(
                     child: LayoutBuilder(builder: (context, constraints) {
                       return Container(
                           width: constraints.maxWidth,

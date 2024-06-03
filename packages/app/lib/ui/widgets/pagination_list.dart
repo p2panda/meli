@@ -126,12 +126,17 @@ class PaginationBase<T> extends StatelessWidget {
 }
 
 class PaginationBaseWithShruggie<T> extends PaginationBase<T> {
+  final bool isEditMode;
+
   const PaginationBaseWithShruggie(
-      {super.key, required super.builder, required super.paginator});
+      {super.key,
+      required super.builder,
+      required super.paginator,
+      this.isEditMode = false});
 
   @override
   Widget _emptyResult(BuildContext context) {
-    return const ReadOnlyValue(null);
+    return isEditMode ? const SizedBox() : const ReadOnlyValue(null);
   }
 }
 
