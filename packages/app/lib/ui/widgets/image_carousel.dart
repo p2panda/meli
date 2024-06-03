@@ -165,7 +165,13 @@ class MeliMultiImageProvider extends EasyImageProvider {
 
   @override
   ImageProvider imageBuilder(BuildContext context, int index) {
-    return NetworkImage(paths[index]);
+    if (paths[index].contains('http')) {
+      return NetworkImage(paths[index]);
+    } else if (paths[index].startsWith('/')) {
+      return FileImage(File(paths[index]));
+    } else {
+      return AssetImage(paths[index]);
+    }
   }
 
   @override
