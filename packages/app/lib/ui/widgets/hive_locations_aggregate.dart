@@ -45,6 +45,11 @@ class HiveLocationsAggregate extends StatelessWidget {
 
                 final data = snapshot.data!;
 
+                var heightStr = treeDataStr(data.treeMinHeight,
+                    data.treeMaxHeight, data.treeAverageHeights);
+                var diameterStr = treeDataStr(data.treeMinDiameter,
+                    data.treeMaxDiameter, data.treeAverageDiameters);
+
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 15, horizontal: 13),
@@ -69,7 +74,19 @@ class HiveLocationsAggregate extends StatelessWidget {
                           icon: TREE_ICON,
                           title: t.hiveLocationTree,
                           counter: data.treeCounter,
-                          child: const Text('test')),
+                          child: Column(
+                            children: [
+                              if (heightStr.isNotEmpty)
+                                Text(t.hiveLocationsAggregateTreeHeight(
+                                    heightStr)),
+                              if (diameterStr.isNotEmpty)
+                                Text(t.hiveLocationsAggregateTreeDiameter(
+                                    diameterStr)),
+                              if (data.treeSpecies.isNotEmpty)
+                                Text(t.hiveLocationsAggregateTreeSpecies(
+                                    data.treeSpecies.join(", "))),
+                            ],
+                          ))
                     ],
                   ),
                 );
@@ -122,4 +139,16 @@ class HiveLocationAggregateItem extends StatelessWidget {
       ))
     ]);
   }
+}
+
+String treeDataStr(double min, double max, double average) {
+  if (min == 0.0 && max == 0.0 && average == 0.0) {
+    return '';
+  }
+
+  if (min == max && max == average) {
+    return "${average}m";
+  }
+
+  return '$min-${max}m (Ø ${average}m)';
 }

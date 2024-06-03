@@ -284,12 +284,27 @@ class AggregatedHiveLocations {
   final int buildingCounter;
   final int groundCounter;
   final int treeCounter;
+  final List<String> treeSpecies;
+  final double treeAverageHeights;
+  final double treeMinHeight;
+  final double treeMaxHeight;
+  final double treeAverageDiameters;
+  final double treeMinDiameter;
+  final double treeMaxDiameter;
 
-  AggregatedHiveLocations(
-      {this.boxCounter = 0,
-      this.buildingCounter = 0,
-      this.groundCounter = 0,
-      this.treeCounter = 0});
+  AggregatedHiveLocations({
+    this.boxCounter = 0,
+    this.buildingCounter = 0,
+    this.groundCounter = 0,
+    this.treeCounter = 0,
+    this.treeSpecies = const [],
+    this.treeAverageHeights = 0.0,
+    this.treeMinHeight = 0.0,
+    this.treeMaxHeight = 0.0,
+    this.treeAverageDiameters = 0.0,
+    this.treeMinDiameter = 0.0,
+    this.treeMaxDiameter = 0.0,
+  });
 }
 
 Future<AggregatedHiveLocations> getAggregatedHiveLocations(
