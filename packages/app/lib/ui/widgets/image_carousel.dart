@@ -26,10 +26,13 @@ class _ImageCarouselState extends State<ImageCarousel> {
   int _currentIndex = 0;
 
   void _showFullscreen() {
-    MeliMultiImageProvider multiImageProvider =
-        MeliMultiImageProvider(widget.imagePaths, initialIndex: _currentIndex);
-    showImageViewerPager(context, multiImageProvider,
-        doubleTapZoomable: true, useSafeArea: true);
+    showImageViewerPager(context,
+        MeliMultiImageProvider(widget.imagePaths, initialIndex: _currentIndex),
+        doubleTapZoomable: true,
+        useSafeArea: true,
+        // NOTE: Setting this to true causes a funny bug where parts of the
+        // bottom will be missing across the app after closing the gallery!
+        immersive: false);
   }
 
   Widget _deleteButton() {
