@@ -115,7 +115,6 @@ class _UsedForFieldState extends State<UsedForField> {
           isLoading: isLoading,
           isEditMode: isEditMode,
         ),
-        const SizedBox(height: 10.0),
         if (isEditMode)
           ActionButtons(
             actionLabel: t.usedForCardAddButton,

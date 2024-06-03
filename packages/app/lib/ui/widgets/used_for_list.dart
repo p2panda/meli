@@ -40,6 +40,7 @@ class _UsedForListState extends State<UsedForList> {
   @override
   Widget build(BuildContext context) {
     return PaginationBaseWithShruggie<UsedFor>(
+        isEditMode: widget.isEditMode,
         builder: (List<UsedFor> collection) {
           return Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,
