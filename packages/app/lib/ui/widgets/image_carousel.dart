@@ -2,8 +2,9 @@
 
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:easy_image_viewer/easy_image_viewer.dart';
+import 'package:flutter/material.dart';
 
 import 'package:app/ui/widgets/card.dart';
 import 'package:app/ui/colors.dart';
@@ -24,6 +25,13 @@ class _ImageCarouselState extends State<ImageCarousel> {
   final CarouselController _controller = CarouselController();
   int _currentIndex = 0;
 
+  void _showFullscreen() {
+    MeliMultiImageProvider multiImageProvider =
+        MeliMultiImageProvider(widget.imagePaths, initialIndex: _currentIndex);
+    showImageViewerPager(context, multiImageProvider,
+        doubleTapZoomable: true, useSafeArea: true);
+  }
+
   Widget _deleteButton() {
     return Container(
         alignment: Alignment.bottomCenter,
@@ -43,7 +51,8 @@ class _ImageCarouselState extends State<ImageCarousel> {
             color: Colors.transparent,
             onPressed: () {
               _controller.previousPage(
-                  duration: const Duration(milliseconds: 300), curve: Curves.linear);
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.linear);
             },
             icon: Icons.navigate_before));
   }
@@ -55,48 +64,51 @@ class _ImageCarouselState extends State<ImageCarousel> {
             color: Colors.transparent,
             onPressed: () {
               _controller.nextPage(
-                  duration: const Duration(milliseconds: 300), curve: Curves.linear);
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.linear);
             },
             icon: Icons.navigate_next));
   }
 
   @override
   Widget build(BuildContext context) {
-    return MeliCard(
-      borderColor: MeliColors.black,
-      borderWidth: 3.0,
-      child: Container(
-        clipBehavior: Clip.hardEdge,
-        height: 200.0,
-        decoration: ShapeDecoration(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: Stack(
-          children: [
-            CarouselSlider(
-              carouselController: _controller,
-              options: CarouselOptions(
-                  height: 200.0,
-                  onPageChanged: (value, reason) {
-                    setState(() {
-                      _currentIndex = value;
-                    });
-                  },
-                  enableInfiniteScroll: false,
-                  viewportFraction: 1,
-                  padEnds: false,
-                  enlargeCenterPage: false),
-              items: widget.imagePaths.map((path) {
-                return CarouselItem(imagePath: path);
-              }).toList(),
+    return GestureDetector(
+      onTap: _showFullscreen,
+      child: MeliCard(
+        borderColor: MeliColors.black,
+        borderWidth: 3.0,
+        child: Container(
+          clipBehavior: Clip.hardEdge,
+          height: 200.0,
+          decoration: ShapeDecoration(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
-            if (widget.onDelete != null) _deleteButton(),
-            if (_currentIndex > 0) _previousButton(),
-            if (_currentIndex < widget.imagePaths.length - 1)
-              _nextButton(),
-          ],
+          ),
+          child: Stack(
+            children: [
+              CarouselSlider(
+                carouselController: _controller,
+                options: CarouselOptions(
+                    height: 200.0,
+                    onPageChanged: (value, reason) {
+                      setState(() {
+                        _currentIndex = value;
+                      });
+                    },
+                    enableInfiniteScroll: false,
+                    viewportFraction: 1,
+                    padEnds: false,
+                    enlargeCenterPage: false),
+                items: widget.imagePaths.map((path) {
+                  return CarouselItem(imagePath: path);
+                }).toList(),
+              ),
+              if (widget.onDelete != null) _deleteButton(),
+              if (_currentIndex > 0) _previousButton(),
+              if (_currentIndex < widget.imagePaths.length - 1) _nextButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -142,4 +154,20 @@ class CarouselButton extends StatelessWidget {
         onPressed: onPressed,
         child: Icon(icon, color: Colors.white));
   }
+}
+
+class MeliMultiImageProvider extends EasyImageProvider {
+  final List<String> paths;
+  @override
+  final int initialIndex;
+
+  MeliMultiImageProvider(this.paths, {this.initialIndex = 0});
+
+  @override
+  ImageProvider imageBuilder(BuildContext context, int index) {
+    return NetworkImage(paths[index]);
+  }
+
+  @override
+  int get imageCount => paths.length;
 }
