@@ -355,7 +355,14 @@ class _SpeciesFieldState extends State<SpeciesField> {
                   rank['label']!,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                Text(taxon.value),
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: Text(taxon.value,
+                        style:
+                            const TextStyle(overflow: TextOverflow.ellipsis)),
+                  ),
+                ),
               ]);
         }).toList());
   }
@@ -400,7 +407,7 @@ class _RankState extends State<Rank> {
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(widget.title),
+      Text(widget.title, style: const TextStyle(fontWeight: FontWeight.bold)),
       TaxonomyAutocomplete(
           schemaId: widget.schemaId,
           initialValue: widget.current,

@@ -43,7 +43,10 @@ class _SightingCardState extends State<SightingCard> {
     }
 
     return Text(title,
-        style: const TextStyle(fontSize: 20.0, fontFamily: 'Staatliches'));
+        style: const TextStyle(
+            fontSize: 20.0,
+            fontFamily: 'Staatliches',
+            overflow: TextOverflow.ellipsis));
   }
 
   Widget get _icon {
@@ -92,8 +95,11 @@ class _SightingCardState extends State<SightingCard> {
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _title,
-                        _icon,
+                        Flexible(child: _title),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20.0),
+                          child: _icon,
+                        ),
                       ]),
                   _date,
                 ],
