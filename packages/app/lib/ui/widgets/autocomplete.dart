@@ -58,6 +58,10 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
   /// Flag indicating that we're currently waiting for an network request.
   bool _isLoading = false;
 
+  /// Keep a reference to the Autocomplete focus node instance, so we can
+  /// control its focus state from outside of it.
+  late FocusNode textInputFocusNode;
+
   @override
   void initState() {
     super.initState();
@@ -99,7 +103,14 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
   }
 
   void _onChanged(String value) {
-    if (widget.onChanged != null) {
+    // Double-check if user actually typed _exactly_ the same value
+    // as one of our existing options
+    final Iterable<AutocompleteItem> duplicates = _lastOptions.where(
+        (element) => element.value == value && element.documentId != null);
+    if (duplicates.isNotEmpty) {
+      widget.onChanged!.call(duplicates.first);
+    } else {
+      // .. otherwise use newly created user value
       widget.onChanged!.call(AutocompleteItem(value: value));
     }
   }
@@ -120,18 +131,21 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
         fieldViewBuilder: (BuildContext context,
             TextEditingController controller,
             FocusNode focusNode,
-            // NOTE: We do not use "onFieldSubmitted" here as the flutter
-            // "Autocomplete" element automatically will then select the first
-            // value, potentially overriding manually entered values, which is
-            // not the intended behaviour. Read more about it here:
-            // https://stackoverflow.com/questions/76572748/flutter-autocomplete-how-to-set-selected-option-to-null
             VoidCallback onFieldSubmitted) {
+          textInputFocusNode = focusNode;
+
           return TextFormField(
             autofocus: widget.autofocus,
             autocorrect: false,
             enableSuggestions: false,
             onChanged: _onChanged,
-            onEditingComplete: _onSubmit,
+            onEditingComplete: () {
+              // Remove focus from text-field, this will hide the keyboard
+              focusNode.unfocus();
+
+              // Submit the value to the parent widget
+              _onSubmit();
+            },
             // Scroll down a bit more to make sure the keyboard doesn't hide
             // the autocomplete options
             scrollPadding: const EdgeInsets.only(bottom: 200.0),
@@ -157,6 +171,13 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
             ),
             controller: controller,
             focusNode: focusNode,
+            onFieldSubmitted: (String value) {
+              // NOTE: We do not call "onFieldSubmitted" here as the flutter
+              // "Autocomplete" element automatically will then select the first
+              // value, potentially overriding manually entered values, which is
+              // not the intended behaviour. Read more about it here:
+              // https://stackoverflow.com/questions/76572748/flutter-autocomplete-how-to-set-selected-option-to-null
+            },
           );
         },
         optionsViewBuilder: (BuildContext context, onSelected,
@@ -210,17 +231,17 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
           // even when we're currently querying for new ones
           _lastOptions = options;
 
-          // Do not show user input if it is the same value as an option
-          final duplicates = options
-              .where((element) => element.value == textEditingValue.text);
+          // Remove option if it is the same as initial value
+          final filtered = options
+              .where((element) => element.value != widget.initialValue?.value);
 
-          // Include what the user is currently typing to make this an selectable
-          // "free form" option
-          return textEditingValue.text.isNotEmpty && duplicates.isEmpty
-              ? [AutocompleteItem(value: textEditingValue.text), ...options]
-              : options;
+          return filtered;
         },
         onSelected: (AutocompleteItem selection) {
+          // Unfocus text field when user clicked on an option, this will hide
+          // the keyboard
+          textInputFocusNode.unfocus();
+
           if (widget.onChanged != null) {
             widget.onChanged!.call(selection);
           }
