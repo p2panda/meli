@@ -13,6 +13,11 @@ Future<String> get applicationSupportDirectory async {
   return directory.path;
 }
 
+Future<String> get temporaryDirectory async {
+  final directory = await provider.getTemporaryDirectory();
+  return directory.path;
+}
+
 Future<void> downloadAndExportImages(
     List<String> blobIds, String targetDirectory) async {
   for (var id in blobIds) {
