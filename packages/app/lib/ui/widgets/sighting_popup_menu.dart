@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:app/io/files.dart';
 import 'package:app/models/sightings.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/widgets/confirm_dialog.dart';
@@ -12,6 +14,18 @@ class SightingPopupMenu extends StatelessWidget {
   final Sighting sighting;
 
   const SightingPopupMenu({super.key, required this.sighting});
+
+  void _onExportImages(BuildContext context) async {
+    String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+
+    if (selectedDirectory != null) {
+      await downloadAndExportImages(
+          sighting.images.map((blob) {
+            return blob.id;
+          }).toList(),
+          selectedDirectory!);
+    }
+  }
 
   void _onDelete(BuildContext context) {
     final messenger = ScaffoldMessenger.of(context);
@@ -47,10 +61,17 @@ class SightingPopupMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return PopupMenuButton(
         itemBuilder: (BuildContext context) => [
               PopupMenuItem<void>(
-                  child: Text(AppLocalizations.of(context)!.deleteSighting),
+                  child: Text(t.exportImages),
+                  onTap: () {
+                    _onExportImages(context);
+                  }),
+              PopupMenuItem<void>(
+                  child: Text(t.deleteSighting),
                   onTap: () {
                     _onDelete(context);
                   }),

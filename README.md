@@ -102,8 +102,8 @@ command line tool.
 
 Here are some examples on how to run the app using the Flutter command line tool:
 
-> ⚠️ Setting a "Flavour" _is required_ to build and run the .apk, either as a flutter command
-> line argument or as a build configuration in Android Studio (Edit Configurations > Build Flavour).
+> ⚠️ Setting a "Flavor" _is required_ to build and run the .apk, either as a flutter command
+> line argument or as a build configuration in Android Studio (Edit Configurations > Build Flavor).
 
 ```bash
 # Manage emulators
