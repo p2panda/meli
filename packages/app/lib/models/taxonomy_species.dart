@@ -238,9 +238,11 @@ String getTaxonomy(int rank, publish.DocumentId documentId) {
 }
 
 String searchTaxon(SchemaId schemaId, String query,
-    {bool strict = false, publish.DocumentId? parentId}) {
+    {bool strict = false, publish.DocumentId? parentId, String? parentField}) {
   final op = strict ? "eq" : "contains";
-  final parentStr = parentId != null ? "parent: { eq: \"$parentId\" }," : "";
+
+  final parentStr =
+      parentId != null ? "$parentField: { eq: \"$parentId\" }," : "";
 
   return '''
     query SearchTaxon {
@@ -281,18 +283,21 @@ Future<publish.DocumentViewId> createTaxon(SchemaId schemaId,
 /// the same "name" and "parent" value.
 Future<publish.DocumentViewId> createDeduplicatedTaxon(SchemaId schemaId,
     {required String name, publish.DocumentId? parentId}) async {
-  // Check if duplicate with same name and parent exists
+  // All ranks have a parent, except the last one
   publish.DocumentId? parentIdFilter;
+  String? parentField;
   if (parentId != null) {
     final rank = RANKS.firstWhere((element) => element['schemaId'] == schemaId);
     if (rank['parent'] != null) {
       parentIdFilter = parentId;
+      parentField = rank['parent'];
     }
   }
 
-  final response = await client.query(QueryOptions(
-      document: gql(searchTaxon(schemaId, name,
-          strict: true, parentId: parentIdFilter))));
+  // Check if duplicate with same name and parent exists
+  final query = searchTaxon(schemaId, name,
+      strict: true, parentId: parentIdFilter, parentField: parentField);
+  final response = await client.query(QueryOptions(document: gql(query)));
 
   if (!response.hasException) {
     final documents =
@@ -301,6 +306,8 @@ Future<publish.DocumentViewId> createDeduplicatedTaxon(SchemaId schemaId,
     if (documents.isNotEmpty) {
       return documents[0]['meta']['viewId'] as String;
     }
+  } else {
+    throw response.exception.toString();
   }
 
   // Create Taxon if duplicate was not found
