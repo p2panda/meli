@@ -63,6 +63,7 @@
     "settingsSystemInfoError": "Não foi possível obter informações do sistema",
     "settingsSystemInfoSDK": "Versão do SDK do Android",
     "settingsSystemInformation": "Informações do Sistema",
+    "settingsVersionNumber": "Versão",
     "sightingDeleteAlertBody": "Tem certeza de que deseja excluir esta observação?",
     "sightingDeleteAlertCancel": "Cancelar",
     "sightingDeleteAlertConfirm": "Excluir",
