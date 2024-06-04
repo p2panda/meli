@@ -81,7 +81,10 @@ class ScrollView extends StatelessWidget {
               MultiSliver(
                 children: [
                   const SliverToBoxAdapter(child: SizedBox(height: 40.0)),
-                  SightingsList(paginator: paginator),
+                  SliverCrossAxisPadded(
+                      paddingStart: 20,
+                      paddingEnd: 20,
+                      child: SightingsList(paginator: paginator)),
                   const SliverToBoxAdapter(child: SizedBox(height: 40.0)),
                 ],
               ),

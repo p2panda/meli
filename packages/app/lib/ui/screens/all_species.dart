@@ -39,7 +39,7 @@ class AllSpeciesScreen extends StatelessWidget {
                 child: CustomScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
                     slivers: [
-                      const SliverToBoxAdapter(child: SizedBox(height: 80.0)),
+                      const SliverToBoxAdapter(child: SizedBox(height: 120.0)),
                       SpeciesList(paginator: paginator),
                       const SliverToBoxAdapter(child: SizedBox(height: 20.0)),
                     ]),
