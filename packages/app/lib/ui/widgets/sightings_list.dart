@@ -25,9 +25,11 @@ class _SightingsListState extends State<SightingsList> {
                 pathParameters: {'documentId': sighting.id}).then((value) {
               final refreshProvider = RefreshProvider.of(context);
               // Refresh list when we've returned from updating or deleting a
-              // sighting
+              // sighting or species
               if ((refreshProvider.isDirty(RefreshKeys.UpdatedSighting) ||
-                      refreshProvider.isDirty(RefreshKeys.DeletedSighting)) &&
+                      refreshProvider.isDirty(RefreshKeys.DeletedSighting) ||
+                      refreshProvider.isDirty(RefreshKeys.UpdatedSpecies) ||
+                      refreshProvider.isDirty(RefreshKeys.DeletedSpecies)) &&
                   widget.paginator.refresh != null) {
                 widget.paginator.refresh!();
               }
@@ -40,11 +42,16 @@ class _SightingsListState extends State<SightingsList> {
 
   @override
   Widget build(BuildContext context) {
-    return PaginationList<Sighting>(
-        builder: (Sighting sighting) {
-          return Container(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: _item(sighting));
+    return SliverPaginationBase<Sighting>(
+        builder: (List<Sighting> collection) {
+          return SliverList.builder(
+              itemCount: collection.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                    padding: const EdgeInsets.only(
+                        bottom: 20.0, left: 20.0, right: 20.0),
+                    child: _item(collection[index]));
+              });
         },
         paginator: widget.paginator);
   }

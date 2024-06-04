@@ -13,12 +13,12 @@ class MeliImage extends StatelessWidget {
 
   const MeliImage({super.key, required this.image, this.externalError});
 
-  Widget _error(BuildContext context, String message) {
+  Widget _error(BuildContext context, String message, IconData icon) {
     return Container(
         color: MeliColors.peach,
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Icon(
-            Icons.warning_rounded,
+          Icon(
+            icon,
             size: 40.0,
             color: MeliColors.black,
           ),
@@ -32,11 +32,12 @@ class MeliImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (externalError != null) {
-      return _error(context, externalError!);
+      return _error(context, externalError!, Icons.warning_rounded);
     }
 
     if (image == null) {
-      return _error(context, AppLocalizations.of(context)!.imageMissingError);
+      return _error(context, AppLocalizations.of(context)!.imageMissingError,
+          Icons.image_not_supported);
     }
 
     return Image.network(
@@ -64,7 +65,8 @@ class MeliImage extends StatelessWidget {
         );
       },
       errorBuilder: (context, error, stack) {
-        return _error(context, AppLocalizations.of(context)!.imageLoadingError);
+        return _error(context, AppLocalizations.of(context)!.imageLoadingError,
+            Icons.warning_rounded);
       },
     );
   }

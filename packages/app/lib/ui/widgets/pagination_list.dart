@@ -297,6 +297,8 @@ class PaginationGrid<T> extends StatelessWidget {
           },
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
+            mainAxisSpacing: 10.0,
+            crossAxisSpacing: 10.0,
           ),
         );
       },
