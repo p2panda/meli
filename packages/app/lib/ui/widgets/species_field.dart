@@ -298,6 +298,8 @@ class _SpeciesFieldState extends State<SpeciesField> {
         rank['schemaId']!,
         _taxonomy[index],
         onSubmit: () {
+          _dirty = true;
+
           // Automatically submit final value if there's nothing more to
           // fill out
           if (_showUpToRank - 1 == index) {
