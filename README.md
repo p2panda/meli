@@ -67,10 +67,12 @@ melos format
 
 ### Release
 
-> ⚠️ Make sure you have the `/packages/app/android/key.properties` file and key store file in place with the [signing keys](https://docs.flutter.dev/deployment/android#sign-the-app) for release.
+To configure the release to connect to a relay node you will need to set
+`RELAY_ADDRESS`, without it the app will only discover other peers via mDNS on
+a local network.
 
 ```bash
-# Build, obfuscate and sign releases for all architectures
+# Build and obfuscate releases for all architectures
 RELAY_ADDRESS=203.0.113.0:2022 melos release
 ```
 
@@ -111,8 +113,9 @@ command line tool.
 
 Here are some examples on how to run the app using the Flutter command line tool:
 
-> ⚠️ Setting a "Flavor" _is required_ to build and run the .apk, either as a flutter command
-> line argument or as a build configuration in Android Studio (Edit Configurations > Build Flavor).
+> ⚠️ Setting a "Flavor" _is required_ to build and run the .apk, either as a
+> flutter command line argument or as a build configuration in Android Studio
+> (Edit Configurations > Build Flavor).
 
 ```bash
 # Manage emulators
@@ -130,8 +133,9 @@ flutter run --flavor normal --device-id <id>
 
 ### Relay Node
 
-To configure your app to connect to a relay node you will need to set `RELAY_ADDRESS` with the 
-correct ipv4 address and port number via an environment variable or the command line like so.
+To configure your app to connect to a relay node you will need to set
+`RELAY_ADDRESS` with the correct ipv4 address and port number via an
+environment variable or the command line like so.
 
 ```bash
 flutter run --dart-define=RELAY_ADDRESS=203.0.113.0:2022
