@@ -17,10 +17,18 @@ class UsedForTagSelector extends StatefulWidget {
 }
 
 class _UsedForTagSelectorState extends State<UsedForTagSelector> {
+  Future<List<UsedFor>>? _aggregate;
+
+  @override
+  void initState() {
+    super.initState();
+    _aggregate = getAllDeduplicatedUsedFor();
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<UsedFor>>(
-        future: getAllDeduplicatedUsedFor(),
+        future: _aggregate,
         initialData: const [],
         builder: (BuildContext context, AsyncSnapshot<List<UsedFor>> snapshot) {
           if (snapshot.hasError) {

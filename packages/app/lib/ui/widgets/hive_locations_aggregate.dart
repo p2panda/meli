@@ -12,10 +12,23 @@ import 'package:app/ui/widgets/counter.dart';
 import 'package:app/ui/widgets/error_card.dart';
 import 'package:app/ui/widgets/hive_location_field.dart';
 
-class HiveLocationsAggregate extends StatelessWidget {
+class HiveLocationsAggregate extends StatefulWidget {
   final DocumentId id;
 
   const HiveLocationsAggregate({super.key, required this.id});
+
+  @override
+  State<HiveLocationsAggregate> createState() => _HiveLocationsAggregateState();
+}
+
+class _HiveLocationsAggregateState extends State<HiveLocationsAggregate> {
+  Future<AggregatedHiveLocations>? _aggregate;
+
+  @override
+  void initState() {
+    super.initState();
+    _aggregate = getAggregatedHiveLocations(widget.id);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +41,7 @@ class HiveLocationsAggregate extends StatelessWidget {
             title: t.hiveLocationCardTitle,
           ),
           FutureBuilder<AggregatedHiveLocations>(
-              future: getAggregatedHiveLocations(id),
+              future: _aggregate,
               builder: (context, snapshot) {
                 if (snapshot.connectionState != ConnectionState.done) {
                   return Center(
