@@ -5,6 +5,7 @@
     "createSightingError": "Something went wrong: {error}",
     "createSightingScreenTitle": "Add Sighting",
     "createSightingSuccess": "Yay, you've successfully added a new sighting to the database",
+    "createSpeciesSuccess": "Added new species \"{taxon}\" to database!",
     "deleteSighting": "Delete Sighting",
     "deleteSpecies": "Delete Species",
     "editSpeciesErrorCantRemove": "Species needs to be defined",

@@ -148,6 +148,7 @@ class _SpeciesFieldState extends State<SpeciesField> {
 
   Future<void> _submit() async {
     final t = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
 
     Future<bool> askUserToConfirm(String taxon) async {
       final value = await showDialog<bool>(
@@ -188,6 +189,7 @@ class _SpeciesFieldState extends State<SpeciesField> {
 
     // Check if this action will create a new "Species" and ask the user if they
     // want to proceed with this!
+    String? newSpeciesName;
     if (_taxonomy.first?.documentId == null) {
       final duplicateSpeciesTaxon = await checkIfDuplicateTaxonExists(
           _taxonomySettings[0]['schemaId']!,
@@ -198,6 +200,8 @@ class _SpeciesFieldState extends State<SpeciesField> {
         if (!userConfirmed) {
           _reset();
           return;
+        } else {
+          newSpeciesName = _taxonomy.first!.value;
         }
       }
     }
@@ -239,6 +243,12 @@ class _SpeciesFieldState extends State<SpeciesField> {
         id: parent!.documentId!,
         viewId: parent.viewId!,
         name: parent.value)));
+
+    if (newSpeciesName != null) {
+      messenger.showSnackBar(SnackBar(
+        content: Text(t.createSpeciesSuccess(newSpeciesName)),
+      ));
+    }
 
     _reset();
   }

@@ -5,6 +5,7 @@
     "createSightingError": "Algo deu errado: {error}",
     "createSightingScreenTitle": "Adicionar Observação",
     "createSightingSuccess": "Parabéns, você adicionou uma nova observação ao banco de dados com sucesso",
+    "createSpeciesSuccess": "Adicionada nova espécie \"{taxon}\" ao banco de dados!",
     "deleteSighting": "Excluir Observação",
     "deleteSpecies": "Excluir Espécie",
     "editSpeciesErrorCantRemove": "A espécie precisa ser definida",
