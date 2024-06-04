@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:p2panda/p2panda.dart';
 
-import 'package:app/io/graphql/graphql.dart';
+import 'package:app/io/graphql/queries.dart';
 import 'package:app/io/p2panda/publish.dart' as publish;
 import 'package:app/io/p2panda/schemas.dart';
 import 'package:app/models/base.dart';
@@ -263,25 +262,7 @@ String searchTaxon(SchemaId schemaId, String query,
   ''';
 }
 
-Future<publish.DocumentViewId> createTaxon(SchemaId schemaId,
-    {required String name, publish.DocumentId? parentId}) async {
-  List<(String, OperationValue)> fields = [
-    ("name", OperationValue.string(name)),
-  ];
-
-  if (parentId != null) {
-    final rank = RANKS.firstWhere((element) => element['schemaId'] == schemaId);
-    if (rank['parent'] != null) {
-      fields.add((rank['parent']!, OperationValue.relation(parentId)));
-    }
-  }
-
-  return await publish.create(schemaId, fields);
-}
-
-/// Safely create a new taxon instance if we're not aware yet of one with
-/// the same "name" and "parent" value.
-Future<publish.DocumentViewId> createDeduplicatedTaxon(SchemaId schemaId,
+Future<TaxonomySpecies?> checkIfDuplicateTaxonExists(SchemaId schemaId,
     {required String name, publish.DocumentId? parentId}) async {
   // All ranks have a parent, except the last one
   publish.DocumentId? parentIdFilter;
@@ -295,21 +276,20 @@ Future<publish.DocumentViewId> createDeduplicatedTaxon(SchemaId schemaId,
   }
 
   // Check if duplicate with same name and parent exists
-  final query = searchTaxon(schemaId, name,
+  final taxonQuery = searchTaxon(schemaId, name,
       strict: true, parentId: parentIdFilter, parentField: parentField);
-  final response = await client.query(QueryOptions(document: gql(query)));
+  final response = await query(query: taxonQuery);
+  final documents = response[DEFAULT_RESULTS_KEY]['documents'] as List<dynamic>;
 
-  if (!response.hasException) {
-    final documents =
-        response.data![DEFAULT_RESULTS_KEY]['documents'] as List<dynamic>;
-
-    if (documents.isNotEmpty) {
-      return documents[0]['meta']['viewId'] as String;
-    }
-  } else {
-    throw response.exception.toString();
+  if (documents.isNotEmpty) {
+    return TaxonomySpecies.fromJson(documents[0] as Map<String, dynamic>);
   }
 
+  return null;
+}
+
+Future<publish.DocumentViewId> createTaxon(SchemaId schemaId,
+    {required String name, publish.DocumentId? parentId}) async {
   // Create Taxon if duplicate was not found
   List<(String, OperationValue)> fields = [
     ("name", OperationValue.string(name)),

@@ -15,6 +15,7 @@ import 'package:app/ui/colors.dart';
 import 'package:app/ui/widgets/action_buttons.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/autocomplete.dart';
+import 'package:app/ui/widgets/confirm_dialog.dart';
 import 'package:app/ui/widgets/editable_card.dart';
 import 'package:app/ui/widgets/read_only_value.dart';
 import 'package:app/ui/widgets/taxonomy_autocomplete.dart';
@@ -146,6 +147,28 @@ class _SpeciesFieldState extends State<SpeciesField> {
   }
 
   Future<void> _submit() async {
+    final t = AppLocalizations.of(context)!;
+
+    Future<bool> askUserToConfirm(String taxon) async {
+      final value = await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) => ConfirmDialog(
+          title: t.speciesCreateDialogTitle,
+          message: t.speciesCreateMessage(taxon),
+          labelAbort: t.speciesCreateAbortButton,
+          labelConfirm: t.speciesCreateConfirmButton,
+          onConfirm: () {
+            Navigator.pop(context, true);
+          },
+          onAbort: () {
+            Navigator.pop(context, false);
+          },
+        ),
+      );
+
+      return value ?? false;
+    }
+
     if (widget.current == null) {
       if (_taxonomy[0] == null || _taxonomy[0]!.value == '') {
         // Nothing has changed, therefore do nothing
@@ -163,17 +186,49 @@ class _SpeciesFieldState extends State<SpeciesField> {
       }
     }
 
-    // Create all taxons which do not exist yet
+    // Check if this action will create a new "Species" and ask the user if they
+    // want to proceed with this!
+    if (_taxonomy.first?.documentId == null) {
+      final duplicateSpeciesTaxon = await checkIfDuplicateTaxonExists(
+          _taxonomySettings[0]['schemaId']!,
+          name: _taxonomy.first!.value);
+
+      if (duplicateSpeciesTaxon == null) {
+        final userConfirmed = await askUserToConfirm(_taxonomy.first!.value);
+        if (!userConfirmed) {
+          _reset();
+          return;
+        }
+      }
+    }
+
+    // Create all taxons which do not exist yet after checking for duplicates
     AutocompleteItem? parent;
     for (final (index, item) in _taxonomy.reversed.indexed) {
       final rank = _taxonomySettings[_taxonomy.length - index - 1];
+
+      // Autocomplete could not find an already existing item
       if (item!.documentId == null) {
-        // This method checks if a duplicate with similar values already exists
-        final id = await createDeduplicatedTaxon(rank['schemaId']!,
-            name: item.value, parentId: parent?.documentId);
-        parent =
-            AutocompleteItem(value: item.value, documentId: id, viewId: id);
+        // .. to be sure we're checking again if the node knows about a duplicate
+        final duplicateTaxon = await checkIfDuplicateTaxonExists(
+            rank['schemaId']!,
+            name: item.value,
+            parentId: parent?.documentId);
+
+        if (duplicateTaxon != null) {
+          parent = AutocompleteItem(
+              value: duplicateTaxon.name,
+              documentId: duplicateTaxon.id,
+              viewId: duplicateTaxon.viewId);
+        } else {
+          // Create new taxon if duplicate has not been found
+          final viewId = await createTaxon(rank['schemaId']!,
+              name: item.value, parentId: parent?.documentId);
+          parent = AutocompleteItem(
+              value: item.value, documentId: viewId, viewId: viewId);
+        }
       } else {
+        // Use taxon document directly suggested by autocomplete
         parent = item;
       }
     }
