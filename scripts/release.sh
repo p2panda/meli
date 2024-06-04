@@ -2,22 +2,31 @@
 
 set -e
 
-cd ./packages/app
+FLAVOR=normal
+DEBUG_INFO_PATH=./build/app/outputs/flutter-apk
 
-# Clean up old build artefacts
+echo "◆ Clean up previous builds"
+echo
+
+cd ./packages/app
 rm -rf ./build/app/outputs/flutter-apk
 
-# Make a build per architecture
-flutter build apk \
-  --flavor normal \
-  --split-per-abi \
-  --release \
-  --obfuscate \
-  --split-debug-info ./build/app/outputs/flutter-apk
+echo "◆ Build multiple .apk files per architecture"
+echo
 
-# Make a bundle for all architectures
 flutter build apk \
-  --flavor normal \
   --release \
+  --flavor $FLAVOR \
+  --split-per-abi \
   --obfuscate \
-  --split-debug-info ./build/app/outputs/flutter-apk
+  --split-debug-info $DEBUG_INFO_PATH
+
+echo
+echo "◆ Build combined .apk file for all architectures"
+echo
+
+flutter build apk \
+  --release \
+  --flavor $FLAVOR \
+  --obfuscate \
+  --split-debug-info $DEBUG_INFO_PATH
