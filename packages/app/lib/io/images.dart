@@ -29,5 +29,5 @@ Future<File> removeExifAndCompress(File file) async {
     throw "Processing image failed ${file.path}";
   }
 
-  return File(result.path)!;
+  return File(result.path);
 }

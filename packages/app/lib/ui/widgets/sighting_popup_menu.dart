@@ -23,7 +23,7 @@ class SightingPopupMenu extends StatelessWidget {
           sighting.images.map((blob) {
             return blob.id;
           }).toList(),
-          selectedDirectory!);
+          selectedDirectory);
     }
   }
 
