@@ -13,6 +13,7 @@
     "editSpeciesErrorMessage": "{error}",
     "editSpeciesErrorNullCase": "Rank \"{rank}\" needs to be specified!",
     "editSpeciesErrorTitle": "Could not save species",
+    "exportImages": "Export Images",
     "hiveLocationBox": "Box",
     "hiveLocationBuilding": "Building",
     "hiveLocationCardTitle": "Location of Hive",

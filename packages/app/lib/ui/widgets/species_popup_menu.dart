@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import 'package:app/models/species.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:app/models/species.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/widgets/confirm_dialog.dart';
 import 'package:app/ui/widgets/refresh_provider.dart';
@@ -47,10 +47,12 @@ class SpeciesPopupMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return PopupMenuButton(
         itemBuilder: (BuildContext context) => [
               PopupMenuItem<void>(
-                  child: Text(AppLocalizations.of(context)!.deleteSpecies),
+                  child: Text(t.deleteSpecies),
                   onTap: () {
                     _onDelete(context);
                   }),
