@@ -3,7 +3,9 @@
 set -e
 
 FLAVOR=normal
-DEBUG_INFO_PATH=./build/app/outputs/flutter-apk
+TARGET_DIR=./build/app/outputs/flutter-apk
+
+version=$(grep 'version:' ./packages/app/pubspec.yaml | awk '{ print $2 }')
 
 echo "◆ Clean up previous builds"
 echo
@@ -20,7 +22,7 @@ flutter build apk \
   --flavor $FLAVOR \
   --split-per-abi \
   --obfuscate \
-  --split-debug-info $DEBUG_INFO_PATH
+  --split-debug-info $TARGET_DIR
 
 echo
 echo "◆ Build combined .apk file for all architectures"
@@ -31,4 +33,18 @@ flutter build apk \
   --release \
   --flavor $FLAVOR \
   --obfuscate \
-  --split-debug-info $DEBUG_INFO_PATH
+  --split-debug-info $TARGET_DIR
+
+echo
+echo "◆ Give files nice names"
+echo
+
+cd $TARGET_DIR
+
+for file in *.apk*; do
+  new_file=$(echo "$file" | sed "s/app/meli/")
+  new_file=$(echo "$new_file" | sed "s/normal/$version/")
+  new_file=$(echo "$new_file" | sed "s/\+/-/")
+  mv $file $new_file
+  echo "- $new_file"
+done
