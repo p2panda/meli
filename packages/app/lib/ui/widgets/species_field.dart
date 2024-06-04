@@ -64,10 +64,6 @@ class _SpeciesFieldState extends State<SpeciesField> {
     }).toList(growable: false);
   }
 
-  /// Do we need to to request data from the node? Needs to be true for initial
-  /// load.
-  bool _dirty = true;
-
   /// Flag indicating if we're currently editing or not.
   bool _isEditMode = false;
 
@@ -247,13 +243,6 @@ class _SpeciesFieldState extends State<SpeciesField> {
   }
 
   void _reset() {
-    // Do not reload everything if nothing has been changed
-    if (!_dirty) {
-      return;
-    }
-
-    _dirty = false;
-
     setState(() {
       _taxonomy = List.filled(9, null, growable: false);
       _showUpToRank = 1;
@@ -298,8 +287,6 @@ class _SpeciesFieldState extends State<SpeciesField> {
         rank['schemaId']!,
         _taxonomy[index],
         onSubmit: () {
-          _dirty = true;
-
           // Automatically submit final value if there's nothing more to
           // fill out
           if (_showUpToRank - 1 == index) {
@@ -307,8 +294,6 @@ class _SpeciesFieldState extends State<SpeciesField> {
           }
         },
         onChanged: (AutocompleteItem value) {
-          _dirty = true;
-
           // Set current state to the edited value
           if (value.value == '') {
             _taxonomy[index] = null;
