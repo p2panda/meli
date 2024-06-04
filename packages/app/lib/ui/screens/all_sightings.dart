@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:flutter/material.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 import 'package:app/models/base.dart';
 import 'package:app/models/sightings.dart';
@@ -67,22 +68,26 @@ class ScrollView extends StatelessWidget {
 
         return Future.delayed(const Duration(milliseconds: 150));
       },
-      child: SingleChildScrollView(
+      child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(children: [
+          slivers: [
             const TopBar(),
             const BouncyBee(),
-            const SizedBox(height: 30.0),
-            Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20.0, vertical: 20.0),
-                decoration: const MagnoliaWavesBackground(),
-                child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.only(top: 30.0, bottom: 20.0),
-                    child: SightingsList(paginator: paginator))),
-            const SizedBox(height: 40.0),
-          ])),
+            const SliverToBoxAdapter(child: SizedBox(height: 30.0)),
+            SliverStack(children: [
+              SliverPositioned.fill(
+                child: Container(decoration: const MagnoliaWavesBackground()),
+              ),
+              MultiSliver(
+                children: [
+                  const SliverToBoxAdapter(child: SizedBox(height: 40.0)),
+                  SightingsList(paginator: paginator),
+                  const SliverToBoxAdapter(child: SizedBox(height: 40.0)),
+                ],
+              ),
+            ]),
+            const SliverToBoxAdapter(child: SizedBox(height: 40.0)),
+          ]),
     );
   }
 }
@@ -92,14 +97,16 @@ class TopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-      alignment: Alignment.centerRight,
-      child: IconButton(
-          icon: const Icon(Icons.settings_outlined),
-          onPressed: () {
-            router.push(RoutePaths.settings.path);
-          }),
+    return SliverToBoxAdapter(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+        alignment: Alignment.centerRight,
+        child: IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () {
+              router.push(RoutePaths.settings.path);
+            }),
+      ),
     );
   }
 }
@@ -128,21 +135,25 @@ class _BouncyBeeState extends State<BouncyBee>
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (details) {
-        _beeAnimationController.forward();
-      },
-      onTapUp: (details) {
-        _beeAnimationController.reverse();
-      },
-      onTapCancel: () {
-        _beeAnimationController.reverse();
-      },
-      child: SlideTransition(
-        position: _flyingBeeAnimation,
-        child: Image.asset(
-          "assets/images/meliponini.png",
-          width: 50,
+    return SliverToBoxAdapter(
+      child: GestureDetector(
+        onTapDown: (details) {
+          _beeAnimationController.forward();
+        },
+        onTapUp: (details) {
+          _beeAnimationController.reverse();
+        },
+        onTapCancel: () {
+          _beeAnimationController.reverse();
+        },
+        child: SlideTransition(
+          position: _flyingBeeAnimation,
+          child: Image.asset(
+            filterQuality: FilterQuality.high,
+            "assets/images/meliponini.png",
+            width: 50,
+            height: 50,
+          ),
         ),
       ),
     );

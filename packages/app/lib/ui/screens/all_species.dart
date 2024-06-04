@@ -36,11 +36,13 @@ class AllSpeciesScreen extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 decoration: const PeachWavesBackground(),
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(top: 80.0, bottom: 20.0),
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: SpeciesList(paginator: paginator),
-                ),
+                child: CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    slivers: [
+                      const SliverToBoxAdapter(child: SizedBox(height: 80.0)),
+                      SpeciesList(paginator: paginator),
+                      const SliverToBoxAdapter(child: SizedBox(height: 20.0)),
+                    ]),
               );
             })));
   }
@@ -79,16 +81,17 @@ class _SpeciesListState extends State<SpeciesList> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.only(top: 30.0, bottom: 20.0),
-        child: PaginationList<Species>(
-            builder: (Species species) {
-              return Container(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: _item(species));
-            },
-            paginator: widget.paginator));
+    return SliverPaginationBase<Species>(
+        builder: (List<Species> collection) {
+          return SliverList.builder(
+              itemCount: collection.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: _item(collection[index]));
+              });
+        },
+        paginator: widget.paginator);
   }
 }
 
