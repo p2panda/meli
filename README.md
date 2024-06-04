@@ -71,7 +71,7 @@ melos format
 
 ```bash
 # Build, obfuscate and sign releases for all architectures
-melos release
+RELAY_ADDRESS=203.0.113.0:2022 melos release
 ```
 
 ### FFI packages

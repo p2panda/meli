@@ -15,6 +15,7 @@ echo "◆ Build multiple .apk files per architecture"
 echo
 
 flutter build apk \
+  --dart-define=RELAY_ADDRESS=$RELAY_ADDRESS \
   --release \
   --flavor $FLAVOR \
   --split-per-abi \
@@ -26,6 +27,7 @@ echo "◆ Build combined .apk file for all architectures"
 echo
 
 flutter build apk \
+  --dart-define=RELAY_ADDRESS=$RELAY_ADDRESS \
   --release \
   --flavor $FLAVOR \
   --obfuscate \
