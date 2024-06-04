@@ -3,6 +3,7 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:app/app.dart';
 import 'package:app/ui/colors.dart';
@@ -117,8 +118,10 @@ class SystemInfo extends StatefulWidget {
 class _SystemInfoState extends State<SystemInfo> {
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
 
-  Future<AndroidDeviceInfo> get _getSystemInfo async {
-    return await deviceInfoPlugin.androidInfo;
+  Future<(AndroidDeviceInfo, PackageInfo)> get _getInfo async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    AndroidDeviceInfo deviceInfo = await deviceInfoPlugin.androidInfo;
+    return (deviceInfo, packageInfo);
   }
 
   @override
@@ -127,22 +130,26 @@ class _SystemInfoState extends State<SystemInfo> {
 
     return ExpandableCard(
       title: t.settingsSystemInformation,
-      child: FutureBuilder<AndroidDeviceInfo>(
-          future: _getSystemInfo,
+      child: FutureBuilder<(AndroidDeviceInfo, PackageInfo)>(
+          future: _getInfo,
           builder: (BuildContext context,
-              AsyncSnapshot<AndroidDeviceInfo> snapshot) {
+              AsyncSnapshot<(AndroidDeviceInfo, PackageInfo)> snapshot) {
             if (snapshot.hasData) {
+              final deviceInfo = snapshot.data!.$1;
+              final packageInfo = snapshot.data!.$2;
+
               return Container(
                 padding: const EdgeInsets.all(10.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                        '${t.settingsSystemInfoDevice}: ${snapshot.data!.device}'),
+                        '${t.settingsVersionNumber}: ${packageInfo.version} (${packageInfo.buildNumber})'),
+                    Text('${t.settingsSystemInfoDevice}: ${deviceInfo.device}'),
                     Text(
-                        '${t.settingsSystemInfoSDK}: ${snapshot.data!.version.sdkInt}'),
+                        '${t.settingsSystemInfoSDK}: ${deviceInfo.version.sdkInt}'),
                     Text(
-                        '${t.settingsSystemInfoAndroid}: ${snapshot.data!.version.release}'),
+                        '${t.settingsSystemInfoAndroid}: ${deviceInfo.version.release}'),
                   ],
                 ),
               );

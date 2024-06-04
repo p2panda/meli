@@ -25,9 +25,11 @@ class _SightingsListState extends State<SightingsList> {
                 pathParameters: {'documentId': sighting.id}).then((value) {
               final refreshProvider = RefreshProvider.of(context);
               // Refresh list when we've returned from updating or deleting a
-              // sighting
+              // sighting or species
               if ((refreshProvider.isDirty(RefreshKeys.UpdatedSighting) ||
-                      refreshProvider.isDirty(RefreshKeys.DeletedSighting)) &&
+                      refreshProvider.isDirty(RefreshKeys.DeletedSighting) ||
+                      refreshProvider.isDirty(RefreshKeys.UpdatedSpecies) ||
+                      refreshProvider.isDirty(RefreshKeys.DeletedSpecies)) &&
                   widget.paginator.refresh != null) {
                 widget.paginator.refresh!();
               }

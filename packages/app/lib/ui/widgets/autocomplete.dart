@@ -216,6 +216,10 @@ class _MeliAutocompleteState extends State<MeliAutocomplete> {
               ));
         },
         optionsBuilder: (TextEditingValue textEditingValue) async {
+          if (textEditingValue.text.isEmpty) {
+            return [];
+          }
+
           setState(() {
             _isLoading = true;
           });
