@@ -63,6 +63,7 @@
     "settingsSystemInfoError": "Could not retrieve system informations",
     "settingsSystemInfoSDK": "Android SDK Version",
     "settingsSystemInformation": "System Information",
+    "settingsVersionNumber": "Version",
     "sightingDeleteAlertBody": "Are you sure you want to delete this sighting?",
     "sightingDeleteAlertCancel": "Cancel",
     "sightingDeleteAlertConfirm": "Delete",
