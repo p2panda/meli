@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
 import 'package:app/io/files.dart';
@@ -30,4 +31,14 @@ Future<File> removeExifAndCompress(File file) async {
   }
 
   return File(result.path);
+}
+
+Future<void> downloadAndExportImages(
+    List<String> blobIds, String targetDirectory) async {
+  for (var id in blobIds) {
+    final http.Response response =
+        await http.get(Uri.parse("$BLOBS_BASE_PATH/$id"));
+    final file = File("$targetDirectory/$id.jpg");
+    await file.writeAsBytes(response.bodyBytes);
+  }
 }
