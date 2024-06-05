@@ -24,9 +24,6 @@ Future<void> startNode() async {
   // peer id will be a hashed version of the public key and it will not leak
   final key = await keyPair;
 
-  // @TODO: Better logging here
-  print(relayAddresses);
-
   // Start node in background thread
   p2panda.startNode(
     keyPair: key,
