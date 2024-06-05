@@ -24,8 +24,10 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.p2panda.meli"
+
     // Set to minimum version 33 for `geolocator` package
     compileSdkVersion Math.max(flutter.compileSdkVersion, 33)
+
     // Pin NDK version to assure compatibility with cargo-ndk build (see
     // "packages/p2panda/native/build.rs" file for details)
     ndkVersion "25.2.9519653"
@@ -84,9 +86,15 @@ android {
     }
 
     variantFilter { variant ->
-        def names = variant.flavors*.name
         // Skip qa flavor for debug and profile builds
-        if (names.contains('qa') && (variant.buildType.name == "debug" || variant.buildType.name == "profile")) {
+        def names = variant.flavors*.name
+        if (
+          names.contains('qa') &&
+          (
+            variant.buildType.name == "debug" ||
+            variant.buildType.name == "profile"
+          )
+        ) {
             setIgnore(true)
         }
     }
