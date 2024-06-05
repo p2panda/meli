@@ -23,9 +23,11 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.p2panda.app"
-    // Set to mimimum version 33 for `geolocator` package
+    namespace "com.p2panda.meli"
+
+    // Set to minimum version 33 for `geolocator` package
     compileSdkVersion Math.max(flutter.compileSdkVersion, 33)
+
     // Pin NDK version to assure compatibility with cargo-ndk build (see
     // "packages/p2panda/native/build.rs" file for details)
     ndkVersion "25.2.9519653"
@@ -45,9 +47,7 @@ android {
 
     defaultConfig {
         applicationId "com.p2panda.meli"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -66,8 +66,8 @@ android {
             manifestPlaceholders = [applicationLabel: "Meli (Profile)"]
         }
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // We do not intend to upload the .apk to any "App Store" and just
+            // sign with the debug keys
             signingConfig signingConfigs.debug
         }
     }
@@ -86,9 +86,15 @@ android {
     }
 
     variantFilter { variant ->
-        def names = variant.flavors*.name
         // Skip qa flavor for debug and profile builds
-        if (names.contains('qa') && (variant.buildType.name == "debug" || variant.buildType.name == "profile")) {
+        def names = variant.flavors*.name
+        if (
+          names.contains('qa') &&
+          (
+            variant.buildType.name == "debug" ||
+            variant.buildType.name == "profile"
+          )
+        ) {
             setIgnore(true)
         }
     }

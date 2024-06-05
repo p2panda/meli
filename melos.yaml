@@ -4,11 +4,6 @@ repository: https://github.com/p2panda/meli
 packages:
   - packages/*
 
-command:
-  version:
-    hooks:
-      preCommit: bash scripts/version.sh
-
 scripts:
   analyze:
     exec: flutter analyze .
@@ -17,6 +12,13 @@ scripts:
   format:
     exec: dart format .
     description: Format all Dart packages according to linter settings.
+
+  release:
+    run: bash scripts/release.sh
+    packageFilters:
+      flutter: true
+      scope: "*app*"
+    description: Compile .apk builds for all architectures
 
   build:
     run: bash scripts/build.sh
