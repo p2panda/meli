@@ -28,7 +28,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: "temurin" # AdoptOpenJDK is now Eclipse Temurin
-          java-version: "11"
+          java-version: "17"
       - uses: kuhnroyal/flutter-fvm-config-action@v2
         id: fvm-config-action
       - name: Using Flutter ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
