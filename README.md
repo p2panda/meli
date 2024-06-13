@@ -40,6 +40,7 @@ providing all p2panda functionality via FFI bindings.
 > ⚠️ The _exact_ NDK version _is required_.
 
 * [Rust](https://www.rust-lang.org/tools/install) `1.74.0`
+* [Java](https://dev.java/) `17`
 * [Android SDK](https://developer.android.com/tools) `34.0.0`
 * [Android NDK](https://developer.android.com/ndk/) `25.2.9519653`
 * [Flutter SDK](https://docs.flutter.dev/get-started/install) `3.22.0` and Dart SDK `3.4.0`
