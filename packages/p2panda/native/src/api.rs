@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use std::net::{SocketAddr, ToSocketAddrs};
-
 use android_logger::{Config, FilterBuilder};
 use anyhow::{anyhow, Result};
 use aquadoggo::{AllowList, Configuration};
@@ -230,12 +228,6 @@ pub fn start_node(
             ),
     );
 
-    // In case a domain name based relay address was passed we need to perfom an ip lookup.
-    let relay_socket_addresses = relay_addresses
-        .iter()
-        .filter_map(|address_str| address_str.to_socket_addrs().unwrap_or_default().next())
-        .collect::<Vec<SocketAddr>>();
-
     // Set node configuration
     let mut config = Configuration::default();
     config.database_url = database_url;
@@ -248,20 +240,10 @@ pub fn start_node(
         .collect::<Result<Vec<SchemaId>, _>>()?;
     config.allow_schema_ids = AllowList::Set(allow_schema_ids);
     config.network.mdns = true;
-    config.network.relay_addresses = relay_socket_addresses
-        .iter()
-        .map(|address| {
-            // Format address correctly as Multiaddr string.
-            let ip_version = if address.is_ipv4() { "ip4" } else { "ip6" };
-            format!(
-                "/{}/{}/udp/{}/quic-v1",
-                ip_version,
-                address.ip().to_string(),
-                address.port()
-            )
-            .parse()
-        })
-        .collect::<Result<_, _>>()?;
+    config.network.relay_addresses = relay_addresses
+        .into_iter()
+        .map(|address| address.into())
+        .collect();
 
     // Convert key pair from external FFI type to internal one
     let secret_key: SecretKey = SecretKey::from_bytes(&key_pair.private_key())?;
