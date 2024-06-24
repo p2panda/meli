@@ -14,6 +14,10 @@ import 'dart:ffi' as ffi;
 part 'bridge_generated.freezed.dart';
 
 abstract class P2Panda {
+  Stream<LogEntry> subscribeLogStream({dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kSubscribeLogStreamConstMeta;
+
   /// Create, sign and encode a p2panda entry.
   ///
   /// Takes large u64 integers for log id and seq num as strings. If we would declare them as u64
@@ -60,7 +64,8 @@ abstract class P2Panda {
   ///
   /// Supports Android logging for logs coming from the node.
   Future<void> startNode(
-      {required KeyPair keyPair,
+      {required String logLevel,
+      required KeyPair keyPair,
       required String databaseUrl,
       required String blobsBasePath,
       required List<String> relayAddresses,
@@ -149,6 +154,28 @@ class KeyPair {
       );
 }
 
+class LogEntry {
+  final int timestamp;
+  final LogLevel level;
+  final String tag;
+  final String msg;
+
+  const LogEntry({
+    required this.timestamp,
+    required this.level,
+    required this.tag,
+    required this.msg,
+  });
+}
+
+enum LogLevel {
+  Trace,
+  Debug,
+  Info,
+  Warn,
+  Error,
+}
+
 /// Operations are categorised by their action type.
 ///
 /// An action defines the operation format and if this operation creates, updates or deletes a data
@@ -225,6 +252,23 @@ class P2PandaImpl implements P2Panda {
   factory P2PandaImpl.wasm(FutureOr<WasmModule> module) =>
       P2PandaImpl(module as ExternalLibrary);
   P2PandaImpl.raw(this._platform);
+  Stream<LogEntry> subscribeLogStream({dynamic hint}) {
+    return _platform.executeStream(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_subscribe_log_stream(port_),
+      parseSuccessData: _wire2api_log_entry,
+      parseErrorData: null,
+      constMeta: kSubscribeLogStreamConstMeta,
+      argValues: [],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kSubscribeLogStreamConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "subscribe_log_stream",
+        argNames: [],
+      );
+
   Future<Uint8List> signAndEncodeEntry(
       {required String logId,
       required String seqNum,
@@ -331,24 +375,27 @@ class P2PandaImpl implements P2Panda {
       );
 
   Future<void> startNode(
-      {required KeyPair keyPair,
+      {required String logLevel,
+      required KeyPair keyPair,
       required String databaseUrl,
       required String blobsBasePath,
       required List<String> relayAddresses,
       required List<String> allowSchemaIds,
       dynamic hint}) {
-    var arg0 = _platform.api2wire_box_autoadd_key_pair(keyPair);
-    var arg1 = _platform.api2wire_String(databaseUrl);
-    var arg2 = _platform.api2wire_String(blobsBasePath);
-    var arg3 = _platform.api2wire_StringList(relayAddresses);
-    var arg4 = _platform.api2wire_StringList(allowSchemaIds);
+    var arg0 = _platform.api2wire_String(logLevel);
+    var arg1 = _platform.api2wire_box_autoadd_key_pair(keyPair);
+    var arg2 = _platform.api2wire_String(databaseUrl);
+    var arg3 = _platform.api2wire_String(blobsBasePath);
+    var arg4 = _platform.api2wire_StringList(relayAddresses);
+    var arg5 = _platform.api2wire_StringList(allowSchemaIds);
     return _platform.executeNormal(FlutterRustBridgeTask(
-      callFfi: (port_) =>
-          _platform.inner.wire_start_node(port_, arg0, arg1, arg2, arg3, arg4),
+      callFfi: (port_) => _platform.inner
+          .wire_start_node(port_, arg0, arg1, arg2, arg3, arg4, arg5),
       parseSuccessData: _wire2api_unit,
       parseErrorData: _wire2api_FrbAnyhowException,
       constMeta: kStartNodeConstMeta,
       argValues: [
+        logLevel,
         keyPair,
         databaseUrl,
         blobsBasePath,
@@ -363,6 +410,7 @@ class P2PandaImpl implements P2Panda {
       const FlutterRustBridgeTaskConstMeta(
         debugName: "start_node",
         argNames: [
+          "logLevel",
           "keyPair",
           "databaseUrl",
           "blobsBasePath",
@@ -533,12 +581,32 @@ class P2PandaImpl implements P2Panda {
     );
   }
 
+  LogEntry _wire2api_log_entry(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return LogEntry(
+      timestamp: _wire2api_u64(arr[0]),
+      level: _wire2api_log_level(arr[1]),
+      tag: _wire2api_String(arr[2]),
+      msg: _wire2api_String(arr[3]),
+    );
+  }
+
+  LogLevel _wire2api_log_level(dynamic raw) {
+    return LogLevel.values[raw as int];
+  }
+
   OperationAction _wire2api_operation_action(dynamic raw) {
     return OperationAction.values[raw as int];
   }
 
   String? _wire2api_opt_String(dynamic raw) {
     return raw == null ? null : _wire2api_String(raw);
+  }
+
+  int _wire2api_u64(dynamic raw) {
+    return castInt(raw);
   }
 
   int _wire2api_u8(dynamic raw) {
@@ -845,6 +913,20 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
   late final _init_frb_dart_api_dl = _init_frb_dart_api_dlPtr
       .asFunction<int Function(ffi.Pointer<ffi.Void>)>();
 
+  void wire_subscribe_log_stream(
+    int port_,
+  ) {
+    return _wire_subscribe_log_stream(
+      port_,
+    );
+  }
+
+  late final _wire_subscribe_log_streamPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'wire_subscribe_log_stream');
+  late final _wire_subscribe_log_stream =
+      _wire_subscribe_log_streamPtr.asFunction<void Function(int)>();
+
   void wire_sign_and_encode_entry(
     int port_,
     ffi.Pointer<wire_uint_8_list> log_id,
@@ -955,6 +1037,7 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
 
   void wire_start_node(
     int port_,
+    ffi.Pointer<wire_uint_8_list> log_level,
     ffi.Pointer<wire_KeyPair> key_pair,
     ffi.Pointer<wire_uint_8_list> database_url,
     ffi.Pointer<wire_uint_8_list> blobs_base_path,
@@ -963,6 +1046,7 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
   ) {
     return _wire_start_node(
       port_,
+      log_level,
       key_pair,
       database_url,
       blobs_base_path,
@@ -975,6 +1059,7 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
       ffi.NativeFunction<
           ffi.Void Function(
               ffi.Int64,
+              ffi.Pointer<wire_uint_8_list>,
               ffi.Pointer<wire_KeyPair>,
               ffi.Pointer<wire_uint_8_list>,
               ffi.Pointer<wire_uint_8_list>,
@@ -983,6 +1068,7 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
   late final _wire_start_node = _wire_start_nodePtr.asFunction<
       void Function(
           int,
+          ffi.Pointer<wire_uint_8_list>,
           ffi.Pointer<wire_KeyPair>,
           ffi.Pointer<wire_uint_8_list>,
           ffi.Pointer<wire_uint_8_list>,
