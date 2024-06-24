@@ -9,7 +9,7 @@ use anyhow::{anyhow, Result};
 use aquadoggo::{AllowList, Configuration};
 use ed25519_dalek::SecretKey;
 use flutter_rust_bridge::{RustOpaque, StreamSink};
-use log::{Level, LevelFilter, Log, Record};
+use log::{warn, Level, LevelFilter, Log, Record};
 use p2panda_rs::document::DocumentViewId;
 use p2panda_rs::entry;
 use p2panda_rs::entry::traits::{AsEncodedEntry, AsEntry};
@@ -300,6 +300,15 @@ pub fn decode_operation(operation: Vec<u8>) -> Result<(OperationAction, String)>
     ))
 }
 
+fn init_logging(level: LevelFilter) {
+    let logger = LOGGER.get_or_init(|| Logger::new(level));
+    if let Err(err) = log::set_logger(logger) {
+        warn!("logger setup failed: {err}");
+    } else {
+        log::set_max_level(level);
+    }
+}
+
 /// Runs a p2panda node in a separate thread in the background.
 ///
 /// Supports Android logging for logs coming from the node.
@@ -311,13 +320,7 @@ pub fn start_node(
     relay_addresses: Vec<String>,
     allow_schema_ids: Vec<String>,
 ) -> Result<()> {
-    let logger = LOGGER.get_or_init(|| Logger::new(
-        LevelFilter::from_str(&log_level).expect("unknown log level"),
-    ));
-
-    if let Err(err) = log::set_logger(logger) {
-        panic!("logger setup failed: {err}");
-    }
+    init_logging(LevelFilter::from_str(&log_level).expect("unknown log level"));
 
     // Set node configuration
     let mut config = Configuration::default();
