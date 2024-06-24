@@ -12,6 +12,9 @@ const List<String> relayAddresses = (bool.hasEnvironment("RELAY_ADDRESS") &&
     ? [String.fromEnvironment("RELAY_ADDRESS")]
     : [];
 
+const String logLevel =
+    String.fromEnvironment("LOG_LEVEL", defaultValue: "ERROR");
+
 /// Start a p2panda node in the background.
 Future<void> startNode() async {
   // Determine folder where we can persist data
@@ -26,12 +29,17 @@ Future<void> startNode() async {
 
   // Start node in background thread
   p2panda.startNode(
+    logLevel: logLevel,
     keyPair: key,
     databaseUrl: databaseUrl,
     blobsBasePath: basePath,
     relayAddresses: relayAddresses,
     allowSchemaIds: ALL_SCHEMA_IDS,
   );
+
+  p2panda.subscribeLogStream().listen((logEntry) {
+    print(logEntry.msg);
+  });
 
   // .. since we can't `await` the FFI binding method from Rust we need to
   // poll here to find out until the node is ready
