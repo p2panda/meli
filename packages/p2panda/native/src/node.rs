@@ -8,6 +8,16 @@ use p2panda_rs::identity::KeyPair;
 use tokio::runtime;
 use tokio::sync::mpsc::{channel, Sender};
 
+struct PanicDetector {}
+
+impl Drop for PanicDetector {
+    fn drop(&mut self) {
+        if std::thread::panicking() {
+            panic!("OUUUCH");
+        }
+    }
+}
+
 pub struct Manager {
     shutdown_signal: Sender<bool>,
 }
@@ -17,6 +27,8 @@ impl Manager {
         let (shutdown_signal, mut on_shutdown) = channel(4);
 
         thread::spawn(move || {
+            let _ = PanicDetector {};
+
             let rt = runtime::Builder::new_current_thread()
                 .enable_all()
                 .build()
@@ -32,6 +44,7 @@ impl Manager {
 
                 node.shutdown().await;
             });
+
         });
 
         Ok(Manager { shutdown_signal })

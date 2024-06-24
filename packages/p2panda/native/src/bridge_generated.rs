@@ -22,6 +22,22 @@ use std::sync::Arc;
 
 // Section: wire functions
 
+fn wire_subscribe_log_stream_impl(port_: MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, (), _>(
+        WrapInfo {
+            debug_name: "subscribe_log_stream",
+            port: Some(port_),
+            mode: FfiCallMode::Stream,
+        },
+        move || {
+            move |task_callback| {
+                Result::<_, ()>::Ok(subscribe_log_stream(
+                    task_callback.stream_sink::<_, LogEntry>(),
+                ))
+            }
+        },
+    )
+}
 fn wire_sign_and_encode_entry_impl(
     port_: MessagePort,
     log_id: impl Wire2Api<String> + UnwindSafe,
@@ -110,6 +126,7 @@ fn wire_decode_operation_impl(port_: MessagePort, operation: impl Wire2Api<Vec<u
 }
 fn wire_start_node_impl(
     port_: MessagePort,
+    log_level: impl Wire2Api<String> + UnwindSafe,
     key_pair: impl Wire2Api<KeyPair> + UnwindSafe,
     database_url: impl Wire2Api<String> + UnwindSafe,
     blobs_base_path: impl Wire2Api<String> + UnwindSafe,
@@ -123,6 +140,7 @@ fn wire_start_node_impl(
             mode: FfiCallMode::Normal,
         },
         move || {
+            let api_log_level = log_level.wire2api();
             let api_key_pair = key_pair.wire2api();
             let api_database_url = database_url.wire2api();
             let api_blobs_base_path = blobs_base_path.wire2api();
@@ -130,6 +148,7 @@ fn wire_start_node_impl(
             let api_allow_schema_ids = allow_schema_ids.wire2api();
             move |task_callback| {
                 start_node(
+                    api_log_level,
                     api_key_pair,
                     api_database_url,
                     api_blobs_base_path,
@@ -284,6 +303,43 @@ impl rust2dart::IntoIntoDart<KeyPair> for KeyPair {
     }
 }
 
+impl support::IntoDart for LogEntry {
+    fn into_dart(self) -> support::DartAbi {
+        vec![
+            self.timestamp.into_into_dart().into_dart(),
+            self.level.into_into_dart().into_dart(),
+            self.tag.into_into_dart().into_dart(),
+            self.msg.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for LogEntry {}
+impl rust2dart::IntoIntoDart<LogEntry> for LogEntry {
+    fn into_into_dart(self) -> Self {
+        self
+    }
+}
+
+impl support::IntoDart for LogLevel {
+    fn into_dart(self) -> support::DartAbi {
+        match self {
+            Self::Trace => 0,
+            Self::Debug => 1,
+            Self::Info => 2,
+            Self::Warn => 3,
+            Self::Error => 4,
+        }
+        .into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for LogLevel {}
+impl rust2dart::IntoIntoDart<LogLevel> for LogLevel {
+    fn into_into_dart(self) -> Self {
+        self
+    }
+}
+
 impl support::IntoDart for OperationAction {
     fn into_dart(self) -> support::DartAbi {
         match self {
@@ -311,6 +367,11 @@ support::lazy_static! {
 mod io {
     use super::*;
     // Section: wire functions
+
+    #[no_mangle]
+    pub extern "C" fn wire_subscribe_log_stream(port_: i64) {
+        wire_subscribe_log_stream_impl(port_)
+    }
 
     #[no_mangle]
     pub extern "C" fn wire_sign_and_encode_entry(
@@ -357,6 +418,7 @@ mod io {
     #[no_mangle]
     pub extern "C" fn wire_start_node(
         port_: i64,
+        log_level: *mut wire_uint_8_list,
         key_pair: *mut wire_KeyPair,
         database_url: *mut wire_uint_8_list,
         blobs_base_path: *mut wire_uint_8_list,
@@ -365,6 +427,7 @@ mod io {
     ) {
         wire_start_node_impl(
             port_,
+            log_level,
             key_pair,
             database_url,
             blobs_base_path,

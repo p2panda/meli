@@ -1,11 +1,15 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use android_logger::{Config, FilterBuilder};
+use std::str::FromStr;
+use std::sync::OnceLock;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
+use android_logger::{AndroidLogger, Config, Filter, FilterBuilder};
 use anyhow::{anyhow, Result};
 use aquadoggo::{AllowList, Configuration};
 use ed25519_dalek::SecretKey;
-use flutter_rust_bridge::RustOpaque;
-use log::LevelFilter;
+use flutter_rust_bridge::{RustOpaque, StreamSink};
+use log::{warn, Level, LevelFilter, Log, Record};
 use p2panda_rs::document::DocumentViewId;
 use p2panda_rs::entry;
 use p2panda_rs::entry::traits::{AsEncodedEntry, AsEntry};
@@ -20,6 +24,104 @@ use tokio::sync::OnceCell;
 use crate::node::Manager;
 
 static NODE_INSTANCE: OnceCell<Manager> = OnceCell::const_new();
+
+static STREAM_SINK: OnceCell<StreamSink<LogEntry>> = OnceCell::const_new();
+
+static LOGGER: OnceLock<Logger> = OnceLock::new();
+
+pub enum LogLevel {
+    Trace,
+    Debug,
+    Info,
+    Warn,
+    Error,
+}
+
+pub struct LogEntry {
+    pub timestamp: u64,
+    pub level: LogLevel,
+    pub tag: String,
+    pub msg: String,
+}
+
+struct Logger {
+    android_logger: AndroidLogger,
+    max_level: LevelFilter,
+    filter: Filter,
+}
+
+impl Logger {
+    fn new(max_level: LevelFilter) -> Logger {
+        let filter = FilterBuilder::new()
+            .filter(Some("aquadoggo"), max_level)
+            .build();
+        let android_logger =
+            AndroidLogger::new(Config::default().with_max_level(LevelFilter::Trace));
+
+        Logger {
+            android_logger,
+            max_level,
+            filter,
+        }
+    }
+
+    fn record_to_entry(record: &Record) -> LogEntry {
+        let timestamp = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap_or_else(|_| Duration::from_secs(0))
+            .as_millis() as u64;
+
+        let level = match record.level() {
+            Level::Trace => LogLevel::Trace,
+            Level::Debug => LogLevel::Debug,
+            Level::Info => LogLevel::Info,
+            Level::Warn => LogLevel::Warn,
+            Level::Error => LogLevel::Error,
+        };
+
+        let tag = record.file().unwrap_or_else(|| record.target()).to_owned();
+
+        let msg = format!("{}", record.args());
+
+        LogEntry {
+            timestamp,
+            level,
+            tag,
+            msg,
+        }
+    }
+}
+
+impl Log for Logger {
+    fn enabled(&self, metadata: &log::Metadata) -> bool {
+        metadata.level() <= self.max_level
+    }
+
+    fn log(&self, record: &log::Record) {
+        if !self.enabled(record.metadata()) {
+            return;
+        }
+
+        if !self.filter.matches(record) {
+            return;
+        }
+
+        match STREAM_SINK.get() {
+            Some(sink) => {
+                sink.add(Logger::record_to_entry(record));
+            }
+            None => (),
+        }
+
+        self.android_logger.log(record);
+    }
+
+    fn flush(&self) {}
+}
+
+pub fn subscribe_log_stream(sink: StreamSink<LogEntry>) {
+    let _ = STREAM_SINK.set(sink);
+}
 
 pub type HexString = String;
 
@@ -207,26 +309,27 @@ pub fn decode_operation(operation: Vec<u8>) -> Result<(OperationAction, String)>
     ))
 }
 
+fn init_logging(level: LevelFilter) {
+    let logger = LOGGER.get_or_init(|| Logger::new(level));
+    if let Err(err) = log::set_logger(logger) {
+        warn!("logger setup failed: {err}");
+    } else {
+        log::set_max_level(level);
+    }
+}
+
 /// Runs a p2panda node in a separate thread in the background.
 ///
 /// Supports Android logging for logs coming from the node.
 pub fn start_node(
+    log_level: String,
     key_pair: KeyPair,
     database_url: String,
     blobs_base_path: String,
     relay_addresses: Vec<String>,
     allow_schema_ids: Vec<String>,
 ) -> Result<()> {
-    // Initialise logging for Android developer console
-    android_logger::init_once(
-        Config::default()
-            .with_max_level(LevelFilter::Trace)
-            .with_filter(
-                FilterBuilder::new()
-                    .filter(Some("aquadoggo"), LevelFilter::Debug)
-                    .build(),
-            ),
-    );
+    init_logging(LevelFilter::from_str(&log_level).expect("unknown log level"));
 
     // Set node configuration
     let mut config = Configuration::default();
