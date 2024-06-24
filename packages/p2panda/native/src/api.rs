@@ -4,7 +4,7 @@ use std::str::FromStr;
 use std::sync::OnceLock;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use android_logger::{AndroidLogger, Config, FilterBuilder};
+use android_logger::{AndroidLogger, Config, Filter, FilterBuilder};
 use anyhow::{anyhow, Result};
 use aquadoggo::{AllowList, Configuration};
 use ed25519_dalek::SecretKey;
@@ -29,23 +29,39 @@ static STREAM_SINK: OnceCell<StreamSink<LogEntry>> = OnceCell::const_new();
 
 static LOGGER: OnceLock<Logger> = OnceLock::new();
 
+pub enum LogLevel {
+    Trace,
+    Debug,
+    Info,
+    Warn,
+    Error,
+}
+
+pub struct LogEntry {
+    pub timestamp: u64,
+    pub level: LogLevel,
+    pub tag: String,
+    pub msg: String,
+}
+
 struct Logger {
     android_logger: AndroidLogger,
     max_level: LevelFilter,
+    filter: Filter,
 }
 
 impl Logger {
     fn new(max_level: LevelFilter) -> Logger {
-        let android_config = Config::default().with_max_level(max_level).with_filter(
-            FilterBuilder::new()
-                .filter(Some("aquadoggo"), LevelFilter::Debug)
-                .build(),
-        );
-        let android_logger = AndroidLogger::new(android_config);
+        let filter = FilterBuilder::new()
+            .filter(Some("aquadoggo"), max_level)
+            .build();
+        let android_logger =
+            AndroidLogger::new(Config::default().with_max_level(LevelFilter::Trace));
 
         Logger {
             android_logger,
             max_level,
+            filter,
         }
     }
 
@@ -82,6 +98,14 @@ impl Log for Logger {
     }
 
     fn log(&self, record: &log::Record) {
+        if !self.enabled(record.metadata()) {
+            return;
+        }
+
+        if !self.filter.matches(record) {
+            return;
+        }
+
         match STREAM_SINK.get() {
             Some(sink) => {
                 sink.add(Logger::record_to_entry(record));
@@ -97,21 +121,6 @@ impl Log for Logger {
 
 pub fn subscribe_log_stream(sink: StreamSink<LogEntry>) {
     let _ = STREAM_SINK.set(sink);
-}
-
-pub enum LogLevel {
-    Trace,
-    Debug,
-    Info,
-    Warn,
-    Error,
-}
-
-pub struct LogEntry {
-    pub timestamp: u64,
-    pub level: LogLevel,
-    pub tag: String,
-    pub msg: String,
 }
 
 pub type HexString = String;
