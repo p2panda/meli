@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use std::str::FromStr;
+use std::sync::OnceLock;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use android_logger::{AndroidLogger, Config, FilterBuilder};
@@ -26,7 +27,7 @@ static NODE_INSTANCE: OnceCell<Manager> = OnceCell::const_new();
 
 static STREAM_SINK: OnceCell<StreamSink<LogEntry>> = OnceCell::const_new();
 
-static LOGGER: OnceCell<Logger> = OnceCell::const_new();
+static LOGGER: OnceLock<Logger> = OnceLock::new();
 
 struct Logger {
     android_logger: AndroidLogger,
@@ -310,9 +311,13 @@ pub fn start_node(
     relay_addresses: Vec<String>,
     allow_schema_ids: Vec<String>,
 ) -> Result<()> {
-    let _ = LOGGER.set(Logger::new(
+    let logger = LOGGER.get_or_init(|| Logger::new(
         LevelFilter::from_str(&log_level).expect("unknown log level"),
     ));
+
+    if let Err(err) = log::set_logger(logger) {
+        panic!("logger setup failed: {err}");
+    }
 
     // Set node configuration
     let mut config = Configuration::default();
