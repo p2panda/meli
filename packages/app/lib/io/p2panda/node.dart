@@ -37,10 +37,6 @@ Future<void> startNode() async {
     allowSchemaIds: ALL_SCHEMA_IDS,
   );
 
-  p2panda.subscribeLogStream().listen((logEntry) {
-    print(logEntry.msg);
-  });
-
   // .. since we can't `await` the FFI binding method from Rust we need to
   // poll here to find out until the node is ready
   await _untilReady();
