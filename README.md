@@ -72,9 +72,15 @@ To configure the release to connect to a relay node you will need to set
 `RELAY_ADDRESS`, without it the app will only discover other peers via mDNS on
 a local network.
 
+Optionally you can also set a Pre-Shared Secret via `PSK` to connect to a
+network protected by a shared secret.
+
+Lastly you might want to distinct between `normal` and `qa` release flavors to
+distinct "staging" releases from "production" ones.
+
 ```bash
 # Build and obfuscate releases for all architectures
-RELAY_ADDRESS=203.0.113.0:2022 melos release
+PSK="<secret>" FLAVOR=normal RELAY_ADDRESS=203.0.113.0:2022 melos release
 ```
 
 ### FFI packages
