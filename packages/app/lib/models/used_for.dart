@@ -12,7 +12,7 @@ class UsedFor {
   final DocumentId id;
   DocumentViewId viewId;
 
-  DocumentId sighting;
+  DocumentId? sighting;
   String usedFor;
 
   UsedFor(
@@ -25,8 +25,9 @@ class UsedFor {
     return UsedFor(
         id: result['meta']['documentId'] as DocumentId,
         viewId: result['meta']['viewId'] as DocumentViewId,
-        sighting:
-            result['fields']['sighting']['meta']['documentId'] as DocumentId,
+        sighting: result['fields']['sighting'] != null
+            ? result['fields']['sighting']['meta']['documentId'] as DocumentId
+            : null,
         usedFor: result['fields']['used_for'] as String);
   }
 
