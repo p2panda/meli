@@ -29,6 +29,7 @@ echo "◆ Build combined .apk file for all architectures"
 echo
 
 flutter build apk \
+  --dart-define=PSK=$PSK \
   --dart-define=RELAY_ADDRESS=$RELAY_ADDRESS \
   --release \
   --flavor $FLAVOR \
