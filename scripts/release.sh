@@ -43,7 +43,7 @@ cd $TARGET_DIR
 
 for file in *.apk*; do
   new_file=$(echo "$file" | sed "s/app/meli/")
-  new_file=$(echo "$new_file" | sed "s/normal/$version/")
+  new_file=$(echo "$new_file" | sed "s/$FLAVOR/$FLAVOR-$version/")
   new_file=$(echo "$new_file" | sed "s/\+/-/")
   mv $file $new_file
   echo "- $new_file"
