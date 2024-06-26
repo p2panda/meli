@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:app/io/p2panda/publish.dart';
@@ -13,7 +14,7 @@ import 'package:app/ui/widgets/image.dart';
 
 class SpeciesCard extends StatefulWidget {
   final DocumentId id;
-  final TaxonomySpecies taxonomySpecies;
+  final TaxonomySpecies? taxonomySpecies;
 
   final VoidCallback onTap;
 
@@ -30,9 +31,13 @@ class SpeciesCard extends StatefulWidget {
 class _SpeciesCardState extends State<SpeciesCard> {
   bool isSelected = false;
 
-  Widget get _title {
+  Widget _title(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Text(
-      widget.taxonomySpecies.name,
+      widget.taxonomySpecies != null
+          ? widget.taxonomySpecies!.name
+          : t.sightingUnspecified,
       textAlign: TextAlign.center,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(
@@ -111,7 +116,7 @@ class _SpeciesCardState extends State<SpeciesCard> {
               padding: const EdgeInsets.only(
                   top: 8.0, right: 6.0, bottom: 10.0, left: 6.0),
               alignment: AlignmentDirectional.center,
-              child: _title,
+              child: _title(context),
             ),
           ])),
     );

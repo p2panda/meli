@@ -36,8 +36,8 @@ class _SightingCardState extends State<SightingCard> {
   Widget get _title {
     String title = AppLocalizations.of(context)!.sightingUnspecified;
 
-    if (widget.species != null) {
-      title = widget.species!.species.name;
+    if (widget.species != null && widget.species!.species != null) {
+      title = widget.species!.species!.name;
     } else if (widget.localName != null) {
       title = widget.localName!.name;
     }

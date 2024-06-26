@@ -129,7 +129,7 @@ class _SightingProfileState extends State<SightingProfile> {
   }
 
   Future<void> _updateSpecies(TaxonomySpecies? taxon) async {
-    if (sighting.species?.species.id == taxon?.id) {
+    if (sighting.species?.species?.id == taxon?.id) {
       // Nothing has changed
       return;
     }
@@ -199,8 +199,8 @@ class SightingProfileTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     List<String> title = [];
 
-    if (sighting.species != null) {
-      title.add(sighting.species!.species.name);
+    if (sighting.species != null && sighting.species!.species != null) {
+      title.add(sighting.species!.species!.name);
     }
 
     if (sighting.localName != null) {

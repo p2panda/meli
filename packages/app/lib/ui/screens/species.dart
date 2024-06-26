@@ -103,7 +103,7 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
   }
 
   Future<void> _updateTaxon(TaxonomySpecies? taxon) async {
-    if (species.species.id == taxon?.id) {
+    if (species.species?.id == taxon?.id) {
       // Nothing has changed
       return;
     } else if (taxon != null) {
@@ -120,6 +120,8 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.only(top: 0.0, right: 20.0, left: 20.0),
       decoration: const SeaWavesBackground(),
@@ -127,7 +129,9 @@ class _SpeciesProfileState extends State<SpeciesProfile> {
         slivers: [
           SliverList(
               delegate: SliverChildListDelegate([
-            SpeciesProfileTitle(species.species.name),
+            SpeciesProfileTitle(species.species != null
+                ? species.species!.name
+                : t.sightingUnspecified),
             const SizedBox(height: 100.0),
             SpeciesField(
               species.species,
