@@ -46,7 +46,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.p2panda.meli"
+        applicationId "org.p2panda.meli"
         minSdkVersion 23
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
