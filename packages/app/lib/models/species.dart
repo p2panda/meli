@@ -14,7 +14,7 @@ class Species {
   final DocumentId id;
   DocumentViewId viewId;
 
-  TaxonomySpecies species;
+  TaxonomySpecies? species;
   String description;
 
   Species(
@@ -27,8 +27,10 @@ class Species {
     return Species(
         id: result['meta']['documentId'] as DocumentId,
         viewId: result['meta']['viewId'] as DocumentViewId,
-        species: TaxonomySpecies.fromJson(
-            result['fields']['species'] as Map<String, dynamic>),
+        species: result['fields']['species'] != null
+            ? TaxonomySpecies.fromJson(
+                result['fields']['species'] as Map<String, dynamic>)
+            : null,
         description: result['fields']['description'] as String);
   }
 
@@ -68,8 +70,10 @@ class Species {
   }
 
   Future<void> delete() async {
-    // Delete the taxonomy_species document this species relates to first
-    await species.delete();
+    if (species != null) {
+      // Delete the taxonomy_species document this species relates to first
+      await species!.delete();
+    }
     // Then delete the bee_species document
     await deleteSpecies(viewId);
   }
