@@ -2,7 +2,7 @@
 
 set -e
 
-FLAVOR=normal
+FLAVOR=${FLAVOR:-normal}
 TARGET_DIR=./build/app/outputs/flutter-apk
 
 version=$(grep 'version:' ./packages/app/pubspec.yaml | awk '{ print $2 }')
