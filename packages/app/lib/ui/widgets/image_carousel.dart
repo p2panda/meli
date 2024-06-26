@@ -6,8 +6,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 
-import 'package:app/ui/widgets/card.dart';
 import 'package:app/ui/colors.dart';
+import 'package:app/ui/screens/create_sighting.dart';
+import 'package:app/ui/widgets/card.dart';
 
 typedef DeleteFunction = void Function(int);
 
@@ -129,7 +130,10 @@ class CarouselItem extends StatelessWidget {
     double width = double.infinity;
 
     if (imagePath.contains('http')) {
-      return Image.network(imagePath, fit: fit, width: width);
+      return Image.network(imagePath, fit: fit, width: width,
+          errorBuilder: (context, item, stackTrace) {
+        return Image.asset(PLACEHOLDER_IMG, fit: fit, width: width);
+      });
     } else if (imagePath.startsWith('/')) {
       return Image.file(File(imagePath), fit: fit, width: width);
     } else {
