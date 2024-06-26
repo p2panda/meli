@@ -17,6 +17,7 @@ echo "◆ Build multiple .apk files per architecture"
 echo
 
 flutter build apk \
+  --dart-define=PSK=$PSK \
   --dart-define=RELAY_ADDRESS=$RELAY_ADDRESS \
   --release \
   --flavor $FLAVOR \
