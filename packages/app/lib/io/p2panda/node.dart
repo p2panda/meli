@@ -12,6 +12,8 @@ const List<String> relayAddresses = (bool.hasEnvironment("RELAY_ADDRESS") &&
     ? [String.fromEnvironment("RELAY_ADDRESS")]
     : [];
 
+const String preSharedSecret = String.fromEnvironment("PSK", defaultValue: "");
+
 /// Start a p2panda node in the background.
 Future<void> startNode() async {
   // Determine folder where we can persist data
@@ -27,6 +29,7 @@ Future<void> startNode() async {
   // Start node in background thread
   p2panda.startNode(
     keyPair: key,
+    preSharedSecret: preSharedSecret,
     databaseUrl: databaseUrl,
     blobsBasePath: basePath,
     relayAddresses: relayAddresses,

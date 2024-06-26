@@ -61,6 +61,7 @@ abstract class P2Panda {
   /// Supports Android logging for logs coming from the node.
   Future<void> startNode(
       {required KeyPair keyPair,
+      required String preSharedSecret,
       required String databaseUrl,
       required String blobsBasePath,
       required List<String> relayAddresses,
@@ -332,24 +333,27 @@ class P2PandaImpl implements P2Panda {
 
   Future<void> startNode(
       {required KeyPair keyPair,
+      required String preSharedSecret,
       required String databaseUrl,
       required String blobsBasePath,
       required List<String> relayAddresses,
       required List<String> allowSchemaIds,
       dynamic hint}) {
     var arg0 = _platform.api2wire_box_autoadd_key_pair(keyPair);
-    var arg1 = _platform.api2wire_String(databaseUrl);
-    var arg2 = _platform.api2wire_String(blobsBasePath);
-    var arg3 = _platform.api2wire_StringList(relayAddresses);
-    var arg4 = _platform.api2wire_StringList(allowSchemaIds);
+    var arg1 = _platform.api2wire_String(preSharedSecret);
+    var arg2 = _platform.api2wire_String(databaseUrl);
+    var arg3 = _platform.api2wire_String(blobsBasePath);
+    var arg4 = _platform.api2wire_StringList(relayAddresses);
+    var arg5 = _platform.api2wire_StringList(allowSchemaIds);
     return _platform.executeNormal(FlutterRustBridgeTask(
-      callFfi: (port_) =>
-          _platform.inner.wire_start_node(port_, arg0, arg1, arg2, arg3, arg4),
+      callFfi: (port_) => _platform.inner
+          .wire_start_node(port_, arg0, arg1, arg2, arg3, arg4, arg5),
       parseSuccessData: _wire2api_unit,
       parseErrorData: _wire2api_FrbAnyhowException,
       constMeta: kStartNodeConstMeta,
       argValues: [
         keyPair,
+        preSharedSecret,
         databaseUrl,
         blobsBasePath,
         relayAddresses,
@@ -364,6 +368,7 @@ class P2PandaImpl implements P2Panda {
         debugName: "start_node",
         argNames: [
           "keyPair",
+          "preSharedSecret",
           "databaseUrl",
           "blobsBasePath",
           "relayAddresses",
@@ -956,6 +961,7 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
   void wire_start_node(
     int port_,
     ffi.Pointer<wire_KeyPair> key_pair,
+    ffi.Pointer<wire_uint_8_list> pre_shared_secret,
     ffi.Pointer<wire_uint_8_list> database_url,
     ffi.Pointer<wire_uint_8_list> blobs_base_path,
     ffi.Pointer<wire_StringList> relay_addresses,
@@ -964,6 +970,7 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
     return _wire_start_node(
       port_,
       key_pair,
+      pre_shared_secret,
       database_url,
       blobs_base_path,
       relay_addresses,
@@ -978,12 +985,14 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
               ffi.Pointer<wire_KeyPair>,
               ffi.Pointer<wire_uint_8_list>,
               ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
               ffi.Pointer<wire_StringList>,
               ffi.Pointer<wire_StringList>)>>('wire_start_node');
   late final _wire_start_node = _wire_start_nodePtr.asFunction<
       void Function(
           int,
           ffi.Pointer<wire_KeyPair>,
+          ffi.Pointer<wire_uint_8_list>,
           ffi.Pointer<wire_uint_8_list>,
           ffi.Pointer<wire_uint_8_list>,
           ffi.Pointer<wire_StringList>,

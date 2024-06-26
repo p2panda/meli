@@ -212,6 +212,7 @@ pub fn decode_operation(operation: Vec<u8>) -> Result<(OperationAction, String)>
 /// Supports Android logging for logs coming from the node.
 pub fn start_node(
     key_pair: KeyPair,
+    pre_shared_secret: String,
     database_url: String,
     blobs_base_path: String,
     relay_addresses: Vec<String>,
@@ -223,7 +224,7 @@ pub fn start_node(
             .with_max_level(LevelFilter::Trace)
             .with_filter(
                 FilterBuilder::new()
-                    .filter(Some("aquadoggo"), LevelFilter::Debug)
+                    .filter(Some("aquadoggo"), LevelFilter::Info)
                     .build(),
             ),
     );
@@ -244,6 +245,13 @@ pub fn start_node(
         .into_iter()
         .map(|address| address.into())
         .collect();
+    if !pre_shared_secret.is_empty() {
+        config.network.psk = Some(
+            format!("/key/swarm/psk/1.0.0/\n/base16/\n{}", pre_shared_secret)
+                .parse()
+                .expect("Invalid Pre-Shared Key"),
+        );
+    }
 
     // Convert key pair from external FFI type to internal one
     let secret_key: SecretKey = SecretKey::from_bytes(&key_pair.private_key())?;

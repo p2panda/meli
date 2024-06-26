@@ -111,6 +111,7 @@ fn wire_decode_operation_impl(port_: MessagePort, operation: impl Wire2Api<Vec<u
 fn wire_start_node_impl(
     port_: MessagePort,
     key_pair: impl Wire2Api<KeyPair> + UnwindSafe,
+    pre_shared_secret: impl Wire2Api<String> + UnwindSafe,
     database_url: impl Wire2Api<String> + UnwindSafe,
     blobs_base_path: impl Wire2Api<String> + UnwindSafe,
     relay_addresses: impl Wire2Api<Vec<String>> + UnwindSafe,
@@ -124,6 +125,7 @@ fn wire_start_node_impl(
         },
         move || {
             let api_key_pair = key_pair.wire2api();
+            let api_pre_shared_secret = pre_shared_secret.wire2api();
             let api_database_url = database_url.wire2api();
             let api_blobs_base_path = blobs_base_path.wire2api();
             let api_relay_addresses = relay_addresses.wire2api();
@@ -131,6 +133,7 @@ fn wire_start_node_impl(
             move |task_callback| {
                 start_node(
                     api_key_pair,
+                    api_pre_shared_secret,
                     api_database_url,
                     api_blobs_base_path,
                     api_relay_addresses,
@@ -358,6 +361,7 @@ mod io {
     pub extern "C" fn wire_start_node(
         port_: i64,
         key_pair: *mut wire_KeyPair,
+        pre_shared_secret: *mut wire_uint_8_list,
         database_url: *mut wire_uint_8_list,
         blobs_base_path: *mut wire_uint_8_list,
         relay_addresses: *mut wire_StringList,
@@ -366,6 +370,7 @@ mod io {
         wire_start_node_impl(
             port_,
             key_pair,
+            pre_shared_secret,
             database_url,
             blobs_base_path,
             relay_addresses,
