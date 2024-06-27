@@ -143,6 +143,22 @@ fn wire_start_node_impl(
         },
     )
 }
+fn wire_subscribe_event_stream_impl(port_: MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, (), _>(
+        WrapInfo {
+            debug_name: "subscribe_event_stream",
+            port: Some(port_),
+            mode: FfiCallMode::Stream,
+        },
+        move || {
+            move |task_callback| {
+                Result::<_, ()>::Ok(subscribe_event_stream(
+                    task_callback.stream_sink::<_, NodeEvent>(),
+                ))
+            }
+        },
+    )
+}
 fn wire_shutdown_node_impl(port_: MessagePort) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, (), _>(
         WrapInfo {
@@ -287,6 +303,22 @@ impl rust2dart::IntoIntoDart<KeyPair> for KeyPair {
     }
 }
 
+impl support::IntoDart for NodeEvent {
+    fn into_dart(self) -> support::DartAbi {
+        match self {
+            Self::PeerConnected => 0,
+            Self::PeerDisconnected => 1,
+        }
+        .into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for NodeEvent {}
+impl rust2dart::IntoIntoDart<NodeEvent> for NodeEvent {
+    fn into_into_dart(self) -> Self {
+        self
+    }
+}
+
 impl support::IntoDart for OperationAction {
     fn into_dart(self) -> support::DartAbi {
         match self {
@@ -376,6 +408,11 @@ mod io {
             relay_addresses,
             allow_schema_ids,
         )
+    }
+
+    #[no_mangle]
+    pub extern "C" fn wire_subscribe_event_stream(port_: i64) {
+        wire_subscribe_event_stream_impl(port_)
     }
 
     #[no_mangle]

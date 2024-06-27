@@ -7,6 +7,7 @@ import 'package:app/ui/colors.dart';
 class MeliScaffold extends StatefulWidget {
   final String? title;
   final Widget? body;
+  final Widget? actionLeft;
   final Widget? actionRight;
   final Color backgroundColor;
   final Color appBarColor;
@@ -17,6 +18,7 @@ class MeliScaffold extends StatefulWidget {
       {super.key,
       this.body,
       this.title,
+      this.actionLeft,
       this.actionRight,
       this.floatingActionButtons = const [],
       this.fabAlignment = MainAxisAlignment.spaceBetween,
@@ -39,6 +41,10 @@ class _MeliScaffoldState extends State<MeliScaffold> {
         backgroundColor: widget.appBarColor,
         title: Stack(
           children: [
+            if (widget.actionLeft != null)
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [widget.actionLeft!]),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               IconButton(
                   icon: const Icon(Icons.arrow_back_rounded),

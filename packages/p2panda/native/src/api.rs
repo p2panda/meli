@@ -4,7 +4,7 @@ use android_logger::{Config, FilterBuilder};
 use anyhow::{anyhow, Result};
 use aquadoggo::{AllowList, Configuration};
 use ed25519_dalek::SecretKey;
-use flutter_rust_bridge::RustOpaque;
+use flutter_rust_bridge::{RustOpaque, StreamSink};
 use log::LevelFilter;
 use p2panda_rs::document::DocumentViewId;
 use p2panda_rs::entry;
@@ -20,6 +20,8 @@ use tokio::sync::OnceCell;
 use crate::node::Manager;
 
 static NODE_INSTANCE: OnceCell<Manager> = OnceCell::const_new();
+
+pub(crate) static NODE_EVENTS_SINK: OnceCell<StreamSink<NodeEvent>> = OnceCell::const_new();
 
 pub type HexString = String;
 
@@ -221,12 +223,12 @@ pub fn start_node(
     // Initialise logging for Android developer console
     android_logger::init_once(
         Config::default()
-            .with_max_level(LevelFilter::Trace)
-            .with_filter(
-                FilterBuilder::new()
-                    .filter(Some("aquadoggo"), LevelFilter::Info)
-                    .build(),
-            ),
+            .with_max_level(LevelFilter::Info)
+            // .with_filter(
+            //     FilterBuilder::new()
+            //         .filter(Some("aquadoggo"), LevelFilter::Info)
+            //         .build(),
+            // ),
     );
 
     // Set node configuration
@@ -264,6 +266,16 @@ pub fn start_node(
         .map_err(|_| anyhow!("Node already initialised"))?;
 
     Ok(())
+}
+
+pub enum NodeEvent {
+    PeerConnected,
+    PeerDisconnected,
+}
+
+/// Listen to events coming from the aquadoggo node.
+pub fn subscribe_event_stream(sink: StreamSink<NodeEvent>) {
+    let _ = NODE_EVENTS_SINK.set(sink);
 }
 
 /// Turns off running node.

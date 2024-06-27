@@ -7,6 +7,7 @@ import 'package:app/models/base.dart';
 import 'package:app/models/species.dart';
 import 'package:app/router.dart';
 import 'package:app/ui/colors.dart';
+import 'package:app/ui/widgets/connected_peers.dart';
 import 'package:app/ui/widgets/pagination_list.dart';
 import 'package:app/ui/widgets/refresh_provider.dart';
 import 'package:app/ui/widgets/scaffold.dart';
@@ -21,6 +22,7 @@ class AllSpeciesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MeliScaffold(
         title: AppLocalizations.of(context)!.allSpeciesScreenTitle,
+        actionLeft: const ConnectedPeers(),
         body: RefreshIndicator(
             color: MeliColors.black,
             onRefresh: () {

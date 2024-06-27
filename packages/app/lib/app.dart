@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:app/io/graphql/graphql.dart' as graphql;
 import 'package:app/router.dart';
+import 'package:app/ui/widgets/connected_peers_provider.dart';
 import 'package:app/ui/widgets/image_provider.dart';
 import 'package:app/ui/widgets/refresh_provider.dart';
 
@@ -56,7 +57,8 @@ class MeliAppState extends State<MeliApp> {
     return GraphQLProvider(
         client: client,
         child: RefreshProvider(
-            child: MeliCameraProvider(MaterialApp.router(
+            child: MeliCameraProvider(ConnectedPeersProvider(
+                child: MaterialApp.router(
           // Register router for navigation
           routerDelegate: router.routerDelegate,
           routeInformationProvider: router.routeInformationProvider,
@@ -90,6 +92,6 @@ class MeliAppState extends State<MeliApp> {
 
           // Disable "debug" banner shown in top right corner during development
           debugShowCheckedModeBanner: false,
-        ))));
+        )))));
   }
 }
