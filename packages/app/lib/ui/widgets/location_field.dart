@@ -34,7 +34,7 @@ class _LocationFieldState extends State<LocationField> {
 
   bool _isEditMode = false;
 
-  MaplibreMapController? _mapController;
+  MapLibreMapController? _mapController;
 
   // The marker that uses the saved coordinates of the sighting
   Circle? _existingMapMarker;
@@ -89,7 +89,7 @@ class _LocationFieldState extends State<LocationField> {
     return Container(
         alignment: Alignment.center,
         height: 200,
-        child: MaplibreMap(
+        child: MapLibreMap(
             initialCameraPosition: initialCameraPosition,
             scrollGesturesEnabled: _isEditMode,
             dragEnabled: _isEditMode,
