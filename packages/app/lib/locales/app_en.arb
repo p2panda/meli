@@ -71,6 +71,32 @@
     "sightingDeleteAlertConfirm": "Delete",
     "sightingDeleteAlertTitle": "Delete Sighting",
     "sightingDeleteConfirmation": "Sighting deleted.",
+    "sightingLocationFieldTitle": "Location",
+    "sightingLocationLatitude": "Latitude: {latitude}",
+    "@sightingLocationLatitude": {
+        "placeholders": {
+            "latitude": {
+                "type": "double",
+                "format": "decimalPattern",
+                "optionalParameters": {
+                    "decimalDigits": 4
+                }
+            }
+        }
+    },
+    "sightingLocationLongitude": "Longitude: {longitude}",
+    "@sightingLocationLongitude": {
+        "placeholders": {
+            "longitude": {
+                "type": "double",
+                "format": "decimalPattern",
+                "optionalParameters": {
+                    "decimalDigits": 4
+                }
+            }
+        }
+    },
+    "sightingLocationNoLocation": "No location set",
     "sightingScreenTitle": "Sighting",
     "sightingUnspecified": "Unknown species",
     "speciesCardTitle": "Species",

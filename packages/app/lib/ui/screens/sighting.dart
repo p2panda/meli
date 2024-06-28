@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:app/ui/widgets/location_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -159,6 +160,19 @@ class _SightingProfileState extends State<SightingProfile> {
     setState(() {});
   }
 
+  void _updateLocation(Coordinates coordinates) async {
+    if (sighting.latitude == coordinates.latitude &&
+        sighting.longitude == coordinates.longitude) {
+      // Nothing has changed
+      return;
+    }
+
+    await sighting.update(
+        latitude: coordinates.latitude, longitude: coordinates.longitude);
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final imagePaths =
@@ -185,6 +199,12 @@ class _SightingProfileState extends State<SightingProfile> {
         EditableTextField(sighting.comment,
             title: AppLocalizations.of(context)!.noteCardTitle,
             onUpdate: _updateComment),
+        LocationField(
+            // Not the best way to check if a position has not been set, but works for now
+            coordinates: sighting.latitude == 0 && sighting.longitude == 0
+                ? null
+                : (latitude: sighting.latitude, longitude: sighting.longitude),
+            onUpdate: _updateLocation),
       ]),
     );
   }
