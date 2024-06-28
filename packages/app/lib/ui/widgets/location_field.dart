@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'package:app/ui/colors.dart';
+import 'package:app/ui/widgets/action_buttons.dart';
 import 'package:app/ui/widgets/editable_card.dart';
-import 'package:app/ui/widgets/save_cancel_buttons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -71,10 +71,7 @@ class _LocationFieldState extends State<LocationField> {
               style: Theme.of(context).textTheme.bodyLarge),
         ],
         if (_isEditMode)
-          Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: SaveCancelButtons(
-                  handleCancel: _handleCancel, handleSave: _handleSave)),
+          ActionButtons(onCancel: _handleCancel, onAction: _handleSave)
       ]),
     );
   }
