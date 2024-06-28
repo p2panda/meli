@@ -2,6 +2,7 @@
 
 import 'package:app/ui/widgets/action_buttons.dart';
 import 'package:app/ui/widgets/editable_card.dart';
+import 'package:app/ui/widgets/read_only_value.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +86,7 @@ class _LocationFieldState extends State<LocationField> {
           height: 20,
         ),
         if (_coordinates == null)
-          Text(t.sightingLocationNoLocation)
+          ReadOnlyValue(t.sightingLocationNoLocation)
         else ...[
           Text(t.sightingLocationLongitude(_coordinates!.longitude),
               style: Theme.of(context).textTheme.bodyLarge),
