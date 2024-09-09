@@ -70,6 +70,11 @@ abstract class P2Panda {
 
   FlutterRustBridgeTaskConstMeta get kStartNodeConstMeta;
 
+  /// Listen to events coming from the aquadoggo node.
+  Stream<NodeEvent> subscribeEventStream({dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kSubscribeEventStreamConstMeta;
+
   /// Turns off running node.
   Future<void> shutdownNode({dynamic hint});
 
@@ -148,6 +153,11 @@ class KeyPair {
   Future<Uint8List> publicKey({dynamic hint}) => bridge.publicKeyMethodKeyPair(
         that: this,
       );
+}
+
+enum NodeEvent {
+  PeerConnected,
+  PeerDisconnected,
 }
 
 /// Operations are categorised by their action type.
@@ -376,6 +386,23 @@ class P2PandaImpl implements P2Panda {
         ],
       );
 
+  Stream<NodeEvent> subscribeEventStream({dynamic hint}) {
+    return _platform.executeStream(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_subscribe_event_stream(port_),
+      parseSuccessData: _wire2api_node_event,
+      parseErrorData: null,
+      constMeta: kSubscribeEventStreamConstMeta,
+      argValues: [],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kSubscribeEventStreamConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "subscribe_event_stream",
+        argNames: [],
+      );
+
   Future<void> shutdownNode({dynamic hint}) {
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) => _platform.inner.wire_shutdown_node(port_),
@@ -536,6 +563,10 @@ class P2PandaImpl implements P2Panda {
       bridge: this,
       field0: _wire2api_PandaKeyPair(arr[0]),
     );
+  }
+
+  NodeEvent _wire2api_node_event(dynamic raw) {
+    return NodeEvent.values[raw as int];
   }
 
   OperationAction _wire2api_operation_action(dynamic raw) {
@@ -997,6 +1028,20 @@ class P2PandaWire implements FlutterRustBridgeWireBase {
           ffi.Pointer<wire_uint_8_list>,
           ffi.Pointer<wire_StringList>,
           ffi.Pointer<wire_StringList>)>();
+
+  void wire_subscribe_event_stream(
+    int port_,
+  ) {
+    return _wire_subscribe_event_stream(
+      port_,
+    );
+  }
+
+  late final _wire_subscribe_event_streamPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'wire_subscribe_event_stream');
+  late final _wire_subscribe_event_stream =
+      _wire_subscribe_event_streamPtr.asFunction<void Function(int)>();
 
   void wire_shutdown_node(
     int port_,
