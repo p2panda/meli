@@ -26,6 +26,10 @@ runs a full p2panda node and allows decentralised and offline-first
 collaboration among users, it is developed with Flutter and uses the p2panda
 SDK for its p2p functionalities.
 
+## Preview
+
+<img width="300" src="documentation/app.gif">
+
 ## Development
 
 This is a [Melos](https://melos.invertase.dev) mono-repository managing both
