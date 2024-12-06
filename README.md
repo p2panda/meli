@@ -6,11 +6,11 @@
 
 <div align="center">
   <h3>
-    <a href="https://p2panda.org/about/contribute">
+    <a href="https://aquadoggo.p2panda.org/about/contribute">
       Contribute
     </a>
     <span> | </span>
-    <a href="https://p2panda.org">
+    <a href="https://aquadoggo.p2panda.org/">
       Website
     </a>
   </h3>
@@ -21,7 +21,7 @@
 This Android app is a collaborative database for sighting and categorisation of
 [Meliponini](https://en.wikipedia.org/wiki/Stingless_bee) bee species in the
 Brazilian Amazon. This project is a collaboration between
-[p2panda](https://p2panda.org/) and [Meli](https://www.meli-bees.org/). The app
+[p2panda](https://aquadoggo.p2panda.org/) and [Meli](https://www.meli-bees.org/). The app
 runs a full p2panda node and allows decentralised and offline-first
 collaboration among users, it is developed with Flutter and uses the p2panda
 SDK for its p2p functionalities.
@@ -181,6 +181,6 @@ Project funded under grant agreement No 871528*
 
 [`flutter_rust_bridge`]: https://github.com/fzyzcjy/flutter_rust_bridge
 
-[`p2panda-rs`]: https://github.com/p2panda/p2panda
+[`p2panda-rs`]: https://github.com/p2panda/p2panda/tree/v1
 
-[`p2panda`]: https://p2panda.org
+[`p2panda`]: https://aquadoggo.p2panda.org/
